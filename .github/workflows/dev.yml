@@ -10,9 +10,8 @@ on:
     branches:
       - 'main'
 env:
-  AWS_REGION: 
-  ECR_REPOSITORY: 
-  CONTAINER_NAME: 
+  AWS_REGION: 'ap-northeast-2'
+  ECR_REPOSITORY: 'slam-server'
 
 jobs:
   ci-cd:
