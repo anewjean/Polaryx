@@ -70,4 +70,4 @@ jobs:
             docker pull $IMAGE
             docker stop slam-container || true
             docker rm slam-container || true      
-            docker run -d --name slam-container -p 80:80 $IMAGE
+            docker run -d --name slam-container -p 8000:8000 $IMAGE
