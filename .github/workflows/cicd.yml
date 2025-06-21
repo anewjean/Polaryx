@@ -89,6 +89,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            cd /home/ec2-user
             docker-compose pull
             docker-compose down
             docker-compose up -d
