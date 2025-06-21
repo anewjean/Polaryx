@@ -1,4 +1,4 @@
-name: Dev-CD
+name: CI-CD
 
 permissions:
   contents: read
@@ -11,7 +11,8 @@ on:
       - 'main'
 env:
   AWS_REGION: 'ap-northeast-2'
-  ECR_REPOSITORY: 'slam-server'
+  BE_ECR_REPOSITORY: 'slam-server'
+  FE_ECR_REPOSITORY: 'slam-server-front'
 
 jobs:
   ci-cd:
@@ -21,16 +22,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Nextjs
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
-      - name: 📦 Cache dependencies
+      - name:  Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('BE/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -43,19 +50,26 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v1     
 
       - name: Build and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          BE_ECR_REPOSITORY: ${{ env.BE_ECR_REPOSITORY }}
+          FE_ECR_REPOSITORY: ${{ env.FE_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
             docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-            docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+              -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
+              -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
+            docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
+            docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest
+
+            docker build \
+            -t $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$BE_ECR_REPOSITORY:latest ./BE
+            docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG
+            docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:latest
     
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
@@ -64,10 +78,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            IMAGE=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+            FE_IMAGE=${{ steps.login-ecr.outputs.registry }}/${{ env.FE_ECR_REPOSITORY }}:latest
+            BE_IMAGE=${{ steps.login-ecr.outputs.registry }}/${{ env.BE_ECR_REPOSITORY }}:latest
 
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker pull $IMAGE
+            docker pull $FE_IMAGE
+            docker pull $BE_IMAGE
             docker stop slam-container || true
             docker rm slam-container || true      
+            docker run -d --name slam-container -p 3000:3000 $IMAGE
             docker run -d --name slam-container -p 8000:8000 $IMAGE
