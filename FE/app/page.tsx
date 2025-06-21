@@ -1,6 +1,7 @@
+"use client"
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Terminal } from "lucide-react"
-
 import { useEffect, useState } from 'react';
 
 export default function Home() {
