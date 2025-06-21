@@ -1,22 +1,21 @@
-name: Dev-CD
+name: CI
 
 permissions:
-  contents: read
+  contents: write
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
-      - 'main'
+      - 'cicd'
 env:
   AWS_REGION: 'ap-northeast-2'
   ECR_REPOSITORY: 'slam-server'
 
 jobs:
   ci-cd:
-    if: github.event.pull_request.merged == true
+    if: github.event.after == true
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
