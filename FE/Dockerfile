@@ -1,10 +1,10 @@
 FROM node:20-alpine
 
-WORKDIR /app
-COPY ./FE/package*.json ./
+WORKDIR /my-app
+COPY ./package*.json .
 RUN npm install
 
-COPY ./FE .
+COPY . .
 RUN npm run build
 
 CMD ["npm", "run", "start"]
