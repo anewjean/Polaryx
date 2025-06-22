@@ -53,8 +53,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1     
 
-          
-
       - name: Build and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -93,11 +91,11 @@ jobs:
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
         
-
             docker-compose pull
             docker-compose down
             docker-compose build --no-cache
             docker-compose up -d
+            docker image prune -a -f
 
 
 # 수정 전.
