@@ -15,6 +15,8 @@ export default function Home() {
       .then(res => res.json())
       .then(data => setMessage(data.message))
       .catch(err => console.error(err));
+
+    console.log(message);
   }, []);
 
   return (
