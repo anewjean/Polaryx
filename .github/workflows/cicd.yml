@@ -53,6 +53,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1     
 
+          
+
       - name: Build and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -61,7 +63,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
             docker build \
-              --build-arg NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000 \
               -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
               -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
             docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
