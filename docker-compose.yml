@@ -4,8 +4,8 @@ services:
     build:
       context: ./FE
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: http://backend:8000
+      # args:
+      #   NEXT_PUBLIC_API_URL: http://backend:8000
     image: 897729099078.dkr.ecr.ap-northeast-2.amazonaws.com/slam-server-front:latest
     ports:
       - "3000:3000"
