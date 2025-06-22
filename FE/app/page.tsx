@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 export default function Home() {
   const [message, setMessage] = useState('');
 
+  console.log(process.env.NEXT_PUBLIC_API_URL)
+  
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/ping`) // Docker Compose 내부 네트워크 주소
       .then(res => res.json())
