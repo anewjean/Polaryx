@@ -91,9 +91,19 @@ jobs:
           script: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
-            docker stop $(docker ps -q)
-            docker rm $(docker ps -aq)
-            docker-compose build --no-cache frontend
+        
+
             docker-compose pull
             docker-compose down
+            docker-compose build --no-cache
             docker-compose up -d
+
+
+# 수정 전.
+# docker stop $(docker ps -q)
+# docker rm $(docker ps -aq)
+# docker-compose build --no-cache frontend
+# docker-compose pull
+# docker-compose down
+# docker-compose up -d
+            
