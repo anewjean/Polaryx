@@ -11,6 +11,6 @@ RUN npm install
 
 COPY . .
 # 수정 (NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 추가)
-RUN RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
+RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
 # RUN npm run build
 CMD ["npm", "run", "start"]
