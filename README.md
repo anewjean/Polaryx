@@ -24,26 +24,28 @@
 - 기본 포맷: `<타입>: <무엇을 변경했는지 요약>`
 
 - ✅ 예시:
-  `✨Feat(/app/page.tsx): 로그인 폼 UI 구현`
-  , `🐛Fix(*): 결제 실패 오류 수정`
+  `✨Feat: 로그인 폼 UI 구현`  
+  , `🐛Fix: 결제 실패 오류 수정`
 
 
+### 🔖Commit Message Editor 활용
 
-### 🔖 커밋 타입 목록
-
-| 타입        | 의미                                     |
-|-------------|------------------------------------------|
-| ✨ `Feat`     | 새로운 기능 추가                          |
-| 🐛 `Fix`      | 버그 수정                                 |
-| 🔨 `Env`      | 개발 환경 설정 변경                        |
-| ♻️ `Refactor` | 코드 리팩토링 (기능 변경 없이 구조 개선)   |
-| 💄 `Design`   | CSS 등 디자인 관련 수정                   |
-| 💡 `Comment`  | 주석 추가 및 수정                         |
-| ✏️ `Docs`     | 문서 작성 및 수정                         |
-| 👷 `Chore`    | 빌드/배포/의존성 등 기타 작업              |
-| 🚚 `Rename`   | 파일 또는 폴더명 변경                     |
-| 🔥 `Remove`   | 파일 삭제                                 |
-| ⏪ `Revert`   | 커밋 되돌리기                             |
+**설치 및 세팅**
+- VS Code의 extension에서 Commit Message Edetior 설치
+- Source Control 패널에서 Commit Message 입력창 우측 상단에 연필 모양 버튼 선택
+- Commit Message Editor 창 우측 상단의 톱니바퀴 모양 버튼 선택
+- Import 버튼 선택 후 'Commit_message_convention.json' 파일 선택 (repo에 있음)
+- 우측 상단에 Save 버튼 선택 
+  
+**사용법**
+- git add 후 Source Control 패널로 이동
+- Commit Message 입력창 우측 상단에 연필 모양 버튼 선택
+- Edit as text 탭에서 Load tempate 버튼 선택
+- Commit type 복사 후, Edit as form 탭으로 이동
+- 각 입력 필드에 맞춰 작성 (type은 복사한 내용을 붙여넣기 / (타입 설명) 삭제)
+- 하단의 Save 버튼 선택
+- Source Control 패널의 Commit Message 입력 창에 입력된 내용 확인
+- Commit 버튼 선택
 
 ---
 
