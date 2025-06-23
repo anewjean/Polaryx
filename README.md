@@ -34,7 +34,7 @@
 - VS Code의 extension에서 Commit Message Edetior 설치
 - Source Control 패널에서 Commit Message 입력창 우측 상단에 연필 모양 버튼 선택
 - Commit Message Editor 창 우측 상단의 톱니바퀴 모양 버튼 선택
-- Import 버튼 선택 후 'Commit_message_convention.json' 파일 선택 (repo에 있음)
+- Import 버튼 선택 후 'Commit_message_convention.json' 파일 선택 (Slack에 있음)
 - 우측 상단에 Save 버튼 선택 
   
 **사용법**
