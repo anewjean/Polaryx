@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { notoSansKr, lato } from './ui/fonts';  // 글꼴
 import "./globals.css";
 

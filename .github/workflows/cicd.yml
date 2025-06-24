@@ -6,7 +6,7 @@ permissions:
 on:
   pull_request:
     types:
-      - closed
+      - open
     branches:
       - 'main'
 env:
