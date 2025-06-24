@@ -118,5 +118,79 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-noto-sans-kr), var(--font-lato), sans-serif;
   }
+}
+
+/* font 관련 설정 */
+
+ /* 영어만 있을 경우 Lato로 */
+:lang(en) {
+  font-family: var(--font-lato), sans-serif;
+}
+
+/* 한글일 경우 강제로 Noto Sans KR */
+:lang(ko) {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+}
+
+/* italic 설정 */
+.italic {
+  font-style: italic;
+  display: inline-block;  /* skewX는 블록 및 인라인 블록 요소에만 작동함 */
+  transform: skewX(-15deg);
+}
+
+/* 글꼴 크기 */
+
+/* 28px bold
+ * 예) 채팅 맨 상단의 채널명
+ */
+.text-xxl {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* 18px bold - 제일 중요해서 강조되는 글씨
+ * 예) 워크 스페이스명, 채팅방 내 채널명
+ */
+.text-l {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 15px - 가장 기본적인 글씨, 대부분의 경우 사용
+ * 예) 채팅방 내 채팅, 선택되지 않은 채널명 (왼쪽 두번째 사이드바 : 채널창)
+ */
+.text-m {
+  font-size: 15px;
+}
+
+/* 15px bold - 강조해야 하는 부분
+ * 예) 채팅방 내 채팅명, 현재 채널명 (왼쪽 두번째 사이드바 : 채널창)
+ */
+.text-m-bold {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/* 13px
+ * 예) 채팅방 상단의 메시지, 캔버스 추가, 파일 & 참여인원 수, 채팅방의 날짜, 검색창의 글씨
+ */
+.text-s {
+  font-size: 13px;
+}
+
+/* 12px
+ * 예) 이모지 공감 숫자, 채팅을 보낸 시간
+ */
+.text-xs {
+  font-size: 12px;
+}
+
+/* 11px
+ * 예) 맨 왼쪽 사이드바의 홈, DM, 내 활동 등
+ */
+.text-xxs {
+  font-size: 11px;
 }
