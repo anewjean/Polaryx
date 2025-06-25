@@ -6,7 +6,7 @@ permissions:
 on:
   pull_request:
     types:
-      - open
+      - opened
     branches:
       - 'main'
 env:
@@ -16,7 +16,6 @@ env:
 
 jobs:
   ci-cd:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
