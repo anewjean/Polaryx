@@ -6,7 +6,7 @@ permissions:
 on:
   pull_request:
     types:
-      - closed
+      - opened
     branches:
       - 'main'
 env:
@@ -16,7 +16,10 @@ env:
 
 jobs:
   ci-cd:
+<<<<<<< HEAD
     if: github.event.pull_request.merged == true
+=======
+>>>>>>> a4f0d9244a8c07e6ce5675c700d6f4bf88675392
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -91,9 +94,27 @@ jobs:
           script: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
+<<<<<<< HEAD
             docker stop $(docker ps -q)
             docker rm $(docker ps -aq)
             docker-compose build --no-cache frontend
             docker-compose pull
             docker-compose down
             docker-compose up -d
+=======
+        
+            docker-compose pull
+            docker-compose down
+            docker-compose up -d
+            docker image prune -a -f
+
+
+# 수정 전.
+# docker stop $(docker ps -q)
+# docker rm $(docker ps -aq)
+# docker-compose build --no-cache frontend
+# docker-compose pull
+# docker-compose down
+# docker-compose up -d
+            
+>>>>>>> a4f0d9244a8c07e6ce5675c700d6f4bf88675392
