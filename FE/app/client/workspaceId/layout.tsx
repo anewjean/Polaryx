@@ -8,13 +8,7 @@ import {
 import { useState } from "react";
 
 // 프로필 표시 테스트 버튼
-export function OpenProfile({
-  isOpen,
-  toggle,
-}: {
-  isOpen: boolean;
-  toggle: () => void;
-}) {
+export function OpenProfile({ isOpen, toggle }: { isOpen: boolean; toggle: () => void }) {
   return (
     <button onClick={toggle} className="fixed top right-4 z-50 text-black">
       {isOpen ? "닫기" : "열기"}
@@ -22,7 +16,7 @@ export function OpenProfile({
   );
 }
 
-export default function workspaceLayout({
+export default function WorkspaceLayout({
   children,
   channel,
   sidebar,
@@ -69,22 +63,12 @@ export default function workspaceLayout({
         className="h-full w-full"
         onLayout={handleLayout}
       >
-        <ResizablePanel
-          id="sidebar"
-          defaultSize={sidebarWidth}
-          minSize={10}
-          maxSize={30}
-        >
+        <ResizablePanel id="sidebar" defaultSize={sidebarWidth} minSize={10} maxSize={30}>
           {/* 사이드바 영역*/}
           {sidebar}
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel
-          id="channel"
-          defaultSize={channelWidth}
-          minSize={40}
-          maxSize={90}
-        >
+        <ResizablePanel id="channel" defaultSize={channelWidth} minSize={40} maxSize={90}>
           {/* 채널 영역*/}
           {channel}
         </ResizablePanel>
