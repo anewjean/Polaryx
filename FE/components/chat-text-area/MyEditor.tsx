@@ -32,7 +32,7 @@ export default function MyEditor({
   });
 
   return (
-    <div className="rounded-t-md border-input border">
+    <div className="rounded-t-md border-input border h-[100vh]">
       <EditorContext.Provider value={{ editor }}>
         <div className="p-2 bg-muted/50">
           <div className="tiptap-button-group" data-orientation="horizontal">
@@ -49,12 +49,13 @@ export default function MyEditor({
             <CodeBlockButton />
           </div>
         </div>
-
-        <EditorContent
-          editor={editor}
-          role="presentation"
-          className="bg-transparent rounded-b-md px-3 py-2 text-sm min-h-16 w-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors resize-none"
-        />
+        <div className="h-30">
+          <EditorContent
+            editor={editor}
+            role="presentation"
+            className="bg-transparent rounded-b-md px-3 py-2 text-sm min-h-16 w-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors resize-none"
+          />
+        </div>
         <div>
           <CustomButton />
         </div>

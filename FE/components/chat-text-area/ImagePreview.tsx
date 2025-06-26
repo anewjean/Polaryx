@@ -28,16 +28,15 @@ export default function ImagePreview({ files }: ImagePreviewProps) {
   }, [files]);
 
   return (
-    <div className="p-4 border rounded-lg">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="p-4 -mt-32">
+      <div className="grid grid-cols-8 gap-4">
         {files.map((file, index) => (
-          <div key={index} className="border rounded-lg p-2">
+          <div key={index} className="border rounded-lg">
             <img
               src={previews[index]}
               alt={file.name}
-              className="w-full h-32 object-cover rounded"
+              className="w-20 h-20 object-cover rounded"
             />
-            <p className="text-sm mt-2 truncate">{file.name}</p>
           </div>
         ))}
       </div>
