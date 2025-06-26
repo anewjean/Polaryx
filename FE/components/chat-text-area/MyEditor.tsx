@@ -11,7 +11,7 @@ import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
 import CustomButton from "./CustomButton";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export default function MyEditor() {
   // 텍스트 영역
@@ -19,20 +19,8 @@ export default function MyEditor() {
   const [files, setFiles] = useState<File[]>([]);
 
   // 파일 추가 시 확장되는 높이
-  const [editorHeight, setEditorHeight] = useState<number>(10);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const finalHeight = isOpen ? editorHeight + 70 : editorHeight;
   const editorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (editorRef.current) {
-      const editorElement = editorRef.current;
-      const contentHeight = editorElement.scrollHeight;
-      const baseHeight = Math.max(40, contentHeight);
-      // const expandedHeight = isOpen ? 70 : 0;
-      setEditorHeight(baseHeight);
-    }
-  }, [text, isOpen]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -66,11 +54,7 @@ export default function MyEditor() {
             <CodeBlockButton />
           </div>
         </div>
-        <div
-          className={`transition-all duration-300 ease-in`}
-          ref={editorRef}
-          style={{ height: `${finalHeight}px` }}
-        >
+        <div className={`transition-all duration-300 ease-in`} ref={editorRef} style={{}}>
           <EditorContent
             editor={editor}
             role="presentation"

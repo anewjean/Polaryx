@@ -148,7 +148,7 @@
       top: 0;
       height: 100%;
       width: 0.25em;
-      background-color: var(--blockquote-bg-color);
+      background-color: black; // style: blockquote color
       content: "";
       border-radius: 0;
     }
@@ -180,7 +180,7 @@
       padding: 0.125rem 0.375rem;
       position: absolute;
       top: -1.3em;
-      user-select: none;
+      user-select: text; // hack: drag 보이지 않음
       white-space: nowrap;
     }
   }
@@ -381,15 +381,11 @@
 /* =====================
      PLACEHOLDER
      ===================== */
-.is-empty[data-placeholder]:has(
-    > .ProseMirror-trailingBreak:only-child
-  )::before {
+.is-empty[data-placeholder]:has(> .ProseMirror-trailingBreak:only-child)::before {
   content: "Write, type '/' for commands…";
 }
 
-.is-empty[data-placeholder]:has(
-    > .ProseMirror-trailingBreak:only-child
-  ):before {
+.is-empty[data-placeholder]:has(> .ProseMirror-trailingBreak:only-child):before {
   pointer-events: none;
   height: 0;
   position: absolute;

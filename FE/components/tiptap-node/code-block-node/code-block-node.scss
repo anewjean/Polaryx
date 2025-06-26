@@ -21,10 +21,11 @@
    ===================== */
 .tiptap.ProseMirror {
   // Inline code
+  // style: inline code color
   code {
-    background-color: var(--tt-inline-code-bg-color);
+    background-color: #e8e8e8; // var(--tt-inline-code-bg-color);
     color: var(--tt-inline-code-text-color);
-    border: 1px solid var(--tt-inline-code-border-color);
+    border: 1px solid gray; //var(--tt-inline-code-border-color);
     font-family: "JetBrains Mono NL", monospace;
     font-size: 0.875em;
     line-height: 1.4;
@@ -34,9 +35,9 @@
 
   // Code blocks
   pre {
-    background-color: var(--tt-codeblock-bg);
+    background-color: #f5f5f5;
     color: var(--tt-codeblock-text);
-    border: 1px solid var(--tt-codeblock-border);
+    border: 1px solid #e0e0e0;
     margin-top: 1.5em;
     margin-bottom: 1.5em;
     padding: 1em;

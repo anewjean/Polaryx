@@ -28,7 +28,7 @@ export default function ImagePreview({ files }: ImagePreviewProps) {
   }, [files]);
 
   return (
-    <div className="p-4 -mt-32">
+    <div className="p-4">
       <div className="grid grid-cols-8 gap-4">
         {files.map((file, index) => (
           <div key={index} className="border rounded-lg">
