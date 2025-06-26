@@ -4,13 +4,23 @@ import { useState, useRef } from "react";
 import { Plus } from "lucide-react";
 import ImagePreview from "./ImagePreview";
 
-export default function CustomButton() {
-  const [files, setFiles] = useState<File[]>([]);
+export default function CustomButton({
+  files,
+  setFiles,
+  setIsOpen,
+  isOpen,
+}: {
+  files: File[];
+  setFiles: (files: File[]) => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
     setFiles([...files, ...selected]);
+    setIsOpen(true);
   };
 
   return (

@@ -11,14 +11,29 @@ import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
 import CustomButton from "./CustomButton";
+import { useEffect, useRef, useState } from "react";
 
-export default function MyEditor({
-  content,
-  isEditable,
-}: {
-  content: string;
-  isEditable: boolean;
-}) {
+export default function MyEditor() {
+  // 텍스트 영역
+  const [text, setText] = useState<string>("HelloWorld");
+  const [files, setFiles] = useState<File[]>([]);
+
+  // 파일 추가 시 확장되는 높이
+  const [editorHeight, setEditorHeight] = useState<number>(10);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const finalHeight = isOpen ? editorHeight + 70 : editorHeight;
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      const editorElement = editorRef.current;
+      const contentHeight = editorElement.scrollHeight;
+      const baseHeight = Math.max(40, contentHeight);
+      // const expandedHeight = isOpen ? 70 : 0;
+      setEditorHeight(baseHeight);
+    }
+  }, [text, isOpen]);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -27,12 +42,14 @@ export default function MyEditor({
         openOnClick: false,
       }),
     ],
-    content: content,
-    editable: isEditable,
+    content: text,
+    onUpdate: ({ editor }) => {
+      setText(editor.getText());
+    },
   });
 
   return (
-    <div className="rounded-t-md border-input border h-[100vh]">
+    <div className="rounded-t-lg rounded-b-lg border-input border">
       <EditorContext.Provider value={{ editor }}>
         <div className="p-2 bg-muted/50">
           <div className="tiptap-button-group" data-orientation="horizontal">
@@ -49,7 +66,11 @@ export default function MyEditor({
             <CodeBlockButton />
           </div>
         </div>
-        <div className="h-30">
+        <div
+          className={`transition-all duration-300 ease-in`}
+          ref={editorRef}
+          style={{ height: `${finalHeight}px` }}
+        >
           <EditorContent
             editor={editor}
             role="presentation"
@@ -57,7 +78,12 @@ export default function MyEditor({
           />
         </div>
         <div>
-          <CustomButton />
+          <CustomButton
+            files={files}
+            setFiles={setFiles}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
         </div>
       </EditorContext.Provider>
     </div>
