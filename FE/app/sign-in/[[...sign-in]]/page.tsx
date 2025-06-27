@@ -1,5 +1,5 @@
 import { ClerkProvider, SignIn } from '@clerk/nextjs'
-import { light } from "@clerk/themes"
+import { experimental__simple } from "@clerk/themes"
 
 export default function Page() {
   return (
@@ -8,7 +8,7 @@ export default function Page() {
             className="flex justify-center items-center"
             style={{padding:50}}
             >
-            <SignIn appearance={{baseTheme: light}}/>
+            <SignIn appearance={{baseTheme: experimental__simple}}/>
         </div>
     </ClerkProvider>
   )
