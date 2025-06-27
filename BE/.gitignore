@@ -7,3 +7,4 @@
 test.db
 .env
 /app/.DS_Store
+.cursor

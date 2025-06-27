@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
-from BE.app.domain.messenger.router import websocket_controller as messeger
+from BE.app.domain.message.router import websocket_controller as message
 
 load_dotenv()
 
@@ -33,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router=messeger.router)
+app.include_router(router=message.router)
 
 @app.get("/ping")
 async def pong():

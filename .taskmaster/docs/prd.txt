@@ -29,7 +29,7 @@
 🔹 알림 시스템
 - 무엇을 하는가: 멘션, DM, 초대 등 이벤트 발생 시 사용자에게 알림 전송
 - 중요성: 중요한 메시지를 놓치지 않도록 유도
-- 작동 방식: WebSocket 이벤트 또는 서버 알림 푸시
+- 작동 방식: Web Push API로 브라우저 앱을 통해 알림
 
 🔹 검색 기능
 - 무엇을 하는가: 메시지, 사용자, 파일 검색
@@ -114,6 +114,9 @@ APIs: RESTful API (회원가입/채널/파일 등) + WebSocket 이벤트 메시�
  - id
  - name
  - description
+ - created_at
+ - updated_at
+ - deleted_at
 
 6. Roles
  - id
