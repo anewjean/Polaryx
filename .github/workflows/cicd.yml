@@ -96,11 +96,3 @@ jobs:
             docker-compose down
             docker-compose up -d
             docker image prune -a -f
-
-# 수정 전.
-# docker stop $(docker ps -q)
-# docker rm $(docker ps -aq)
-# docker-compose build --no-cache frontend
-# docker-compose pull
-# docker-compose down
-# docker-compose up -d
