@@ -3,12 +3,12 @@ import "../globals.css";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col h-full min-h-screen">
+    <div className="flex flex-col min-h-screen w-full">
       {/* 상단 바 */}
-      <header className="w-full h-11 flex items-center px-4 bg-gray-800 shadow-xl">
+      <header className="h-11 flex justify-left items-center p-4 bg-black shadow-xl">
         <span className="font-bold text-xl text-white">SLAM</span>
       </header>
-      <div>{children}</div>
+      <main className="flex flex-1 min-h-0 flex-row">{children}</main>
     </div>
   );
 }
