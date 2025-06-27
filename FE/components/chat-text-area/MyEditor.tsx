@@ -65,12 +65,6 @@ export default function MyEditor() {
             <BlockquoteButton />
             <MarkButton type="code" />
             <CodeBlockButton />
-            {/* <CustomButton
-              files={files}
-              setFiles={setFiles}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            /> */}
             <ImageUploadButton text="" />
           </div>
         </div>

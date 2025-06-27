@@ -152,10 +152,10 @@ export default () => {
       const file = event.target.files?.[0];
       if (file && editor) {
         // 파일 유효성 검사
-        if (!file.type.startsWith("image/")) {
-          alert("이미지 파일만 선택할 수 있습니다.");
-          return;
-        }
+        // if (!file.type.startsWith("image/")) {
+        //   alert("이미지 파일만 선택할 수 있습니다.");
+        //   return;
+        // }
 
         // 파일 크기 제한 (5MB)
         if (file.size > 5 * 1024 * 1024) {
@@ -167,7 +167,21 @@ export default () => {
         const base64 = await convertFileToBase64(file);
 
         // 에디터에 이미지 삽입
-        editor.chain().focus().setImage({ src: base64 }).run();
+        if (file.type.startsWith("image/")) {
+          editor.chain().focus().setImage({ src: base64 }).run();
+        } else {
+          const ext = file.name.split(".").pop()?.toLowerCase() || "";
+          console.log(ext);
+
+          let defaultImg = "@/"; // 기본값
+
+          if (ext === "pdf") defaultImg = "/upload_default.png";
+          else if (["doc", "docx"].includes(ext)) defaultImg = "/upload_default.png";
+          else if (["xls", "xlsx"].includes(ext)) defaultImg = "/upload_default.png";
+          else if (["ppt", "pptx"].includes(ext)) defaultImg = "/upload_default.png";
+
+          editor.chain().focus().setImage({ src: defaultImg }).run();
+        }
 
         // 파일 입력 초기화
         if (fileInputRef.current) {
