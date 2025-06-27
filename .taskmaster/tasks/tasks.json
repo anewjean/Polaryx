@@ -1,0 +1,170 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Infrastructure",
+        "description": "Initialize the project repository with React (Next.js) frontend and FastAPI backend, configure TypeScript, and set up Docker containers for development.",
+        "details": "1. Create a monorepo structure with separate frontend and backend directories\n2. Frontend setup:\n   - Initialize Next.js with TypeScript: `npx create-next-app --typescript`\n   - Configure ESLint and Prettier\n   - Set up basic folder structure (components, hooks, pages, styles, utils)\n3. Backend setup:\n   - Create FastAPI project structure\n   - Set up Python virtual environment\n   - Configure CORS, middleware, and basic routes\n4. Docker configuration:\n   - Create Dockerfile for frontend\n   - Create Dockerfile for backend\n   - Create docker-compose.yml for local development\n5. Set up GitHub Actions for CI/CD pipeline\n6. Configure development environment variables",
+        "testStrategy": "1. Verify Docker containers build and run successfully\n2. Ensure frontend and backend can communicate\n3. Test CI/CD pipeline with a simple commit\n4. Validate development environment with a basic health check endpoint",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implement Authentication System",
+        "description": "Develop user authentication with JWT and OAuth2 integration for social login, including registration, login, and token refresh functionality.",
+        "details": "1. Backend implementation:\n   - Create User model in database\n   - Implement JWT token generation and validation\n   - Create RefreshToken model and logic\n   - Set up OAuth2 providers (Google)\n   - Implement endpoints for:\n     - User registration\n     - Login (email/password and social)\n     - Token refresh\n     - Logout\n2. Frontend implementation:\n   - Create authentication context\n   - Build login and registration forms\n   - Implement OAuth login buttons\n   - Create protected route wrapper\n   - Set up token storage and refresh logic\n3. Database schema:\n   ```sql\n   CREATE TABLE Users (\n     id VARCHAR PRIMARY KEY,\n     name VARCHAR NOT NULL,\n     email VARCHAR UNIQUE NOT NULL,\n     workspace_id VARCHAR,\n     provider VARCHAR,\n     provider_id VARCHAR,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP\n   );\n   \n   CREATE TABLE RefreshTokens (\n     id VARCHAR PRIMARY KEY,\n     user_id VARCHAR NOT NULL,\n     token VARCHAR NOT NULL,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     FOREIGN KEY (user_id) REFERENCES Users(id)\n   );\n   ```",
+        "testStrategy": "1. Unit tests for token generation, validation, and refresh\n2. Integration tests for authentication endpoints\n3. E2E tests for login and registration flows\n4. Test social login with mock OAuth providers\n5. Security testing for token expiration and refresh logic",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Create Workspace and Team Management",
+        "description": "Implement workspace creation, team management, and user invitation functionality with role-based access control.",
+        "details": "1. Database models implementation:\n   ```sql\n   CREATE TABLE Workspaces (\n     id VARCHAR PRIMARY KEY,\n     name VARCHAR NOT NULL,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP\n   );\n   \n   CREATE TABLE Groups (\n     id VARCHAR PRIMARY KEY,\n     name VARCHAR NOT NULL,\n     description TEXT\n   );\n   \n   CREATE TABLE Roles (\n     id VARCHAR PRIMARY KEY,\n     name VARCHAR NOT NULL,\n     group_id VARCHAR NOT NULL,\n     permissions JSONB NOT NULL,\n     FOREIGN KEY (group_id) REFERENCES Groups(id)\n   );\n   \n   CREATE TABLE UserGroupMembership (\n     id VARCHAR PRIMARY KEY,\n     user_id VARCHAR NOT NULL,\n     group_id VARCHAR NOT NULL,\n     role_id VARCHAR NOT NULL,\n     FOREIGN KEY (user_id) REFERENCES Users(id),\n     FOREIGN KEY (group_id) REFERENCES Groups(id),\n     FOREIGN KEY (role_id) REFERENCES Roles(id)\n   );\n   ```\n2. Backend implementation:\n   - Create workspace CRUD endpoints\n   - Implement group management API\n   - Build role and permission system\n   - Create invitation system with email notifications\n   - Implement RBAC middleware\n3. Frontend implementation:\n   - Create workspace creation flow\n   - Build team management interface\n   - Implement invitation sending UI\n   - Create role assignment interface\n   - Build permission-based UI rendering",
+        "testStrategy": "1. Unit tests for RBAC logic\n2. API tests for workspace and team management endpoints\n3. Test invitation flow with mock email service\n4. Verify permission enforcement across different user roles\n5. Test workspace isolation (users can only access their workspace data)",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement Channel and Section Management",
+        "description": "Create functionality for managing channels, sections, and tabs within workspaces, including public/private channels and member management.",
+        "details": "1. Database models implementation:\n   ```sql\n   CREATE TABLE Sections (\n     id VARCHAR PRIMARY KEY,\n     name VARCHAR NOT NULL,\n     type VARCHAR NOT NULL CHECK (type IN ('Announce', 'Course', 'Channel', 'DM', 'Admin')),\n     is_private BOOLEAN NOT NULL DEFAULT false\n   );\n   \n   CREATE TABLE Tabs (\n     id VARCHAR PRIMARY KEY,\n     workspace_id VARCHAR NOT NULL,\n     section_id VARCHAR NOT NULL,\n     name VARCHAR NOT NULL,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP,\n     FOREIGN KEY (workspace_id) REFERENCES Workspaces(id),\n     FOREIGN KEY (section_id) REFERENCES Sections(id)\n   );\n   \n   CREATE TABLE TabMembers (\n     id VARCHAR PRIMARY KEY,\n     tab_id VARCHAR NOT NULL,\n     user_id VARCHAR NOT NULL,\n     FOREIGN KEY (tab_id) REFERENCES Tabs(id),\n     FOREIGN KEY (user_id) REFERENCES Users(id)\n   );\n   ```\n2. Backend implementation:\n   - Create section CRUD endpoints\n   - Implement tab management API\n   - Build channel creation and configuration\n   - Implement channel member management\n   - Create access control for private channels\n3. Frontend implementation:\n   - Design sidebar with sections and channels\n   - Create channel creation modal\n   - Build channel settings interface\n   - Implement member invitation UI\n   - Create channel joining/leaving functionality",
+        "testStrategy": "1. Unit tests for channel access control\n2. API tests for channel and section management\n3. Test channel visibility based on privacy settings\n4. Verify channel member operations (add/remove)\n5. Test channel organization within sections",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Real-time Messaging System",
+        "description": "Create WebSocket-based real-time messaging system for channels and direct messages, including message persistence and delivery status.",
+        "details": "1. Database models implementation:\n   ```sql\n   CREATE TABLE Messages (\n     id VARCHAR PRIMARY KEY,\n     channel_id VARCHAR NOT NULL,\n     sender_id VARCHAR NOT NULL,\n     content TEXT NOT NULL,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP,\n     FOREIGN KEY (channel_id) REFERENCES Tabs(id),\n     FOREIGN KEY (sender_id) REFERENCES Users(id)\n   );\n   \n   CREATE TABLE SubMessages (\n     id VARCHAR PRIMARY KEY,\n     message_id VARCHAR NOT NULL,\n     sender_id VARCHAR NOT NULL,\n     content TEXT NOT NULL,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP,\n     FOREIGN KEY (message_id) REFERENCES Messages(id),\n     FOREIGN KEY (sender_id) REFERENCES Users(id)\n   );\n   ```\n2. Backend implementation:\n   - Set up WebSocket server with FastAPI\n   - Implement message broadcasting to channel members\n   - Create message persistence logic\n   - Build message read status tracking\n   - Implement reconnection handling\n   - Create message pagination API\n3. Frontend implementation:\n   - Set up WebSocket client with reconnection logic\n   - Create message composition UI\n   - Build message display components\n   - Implement message loading and pagination\n   - Create typing indicators\n   - Build read receipts visualization",
+        "testStrategy": "1. Unit tests for WebSocket message handling\n2. Test message persistence and retrieval\n3. Verify message delivery to correct recipients\n4. Test reconnection scenarios\n5. Load testing for concurrent message handling\n6. Test message pagination and history loading",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Implement File Sharing System",
+        "description": "Create functionality for uploading, storing, and sharing files and images within channels and direct messages using AWS S3.",
+        "details": "1. Backend implementation:\n   - Set up AWS S3 integration\n   - Create file upload endpoints\n   - Implement file metadata storage\n   - Build file access control\n   - Create presigned URL generation for secure access\n   - Implement file deletion and management\n2. Frontend implementation:\n   - Create file upload UI components\n   - Build drag-and-drop file upload\n   - Implement file preview functionality\n   - Create file attachment display in messages\n   - Build file browser/gallery for channels\n3. Database extensions:\n   ```sql\n   ALTER TABLE Messages ADD COLUMN attachments JSONB;\n   ```\n4. File handling logic:\n   - Generate unique file names\n   - Validate file types and sizes\n   - Create thumbnails for images\n   - Handle file versioning",
+        "testStrategy": "1. Test file upload with various file types and sizes\n2. Verify file access control (permissions)\n3. Test presigned URL generation and expiration\n4. Verify file deletion and cleanup\n5. Test file preview for different file types\n6. Performance testing for large file uploads",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Implement Notification System",
+        "description": "Create a real-time notification system for mentions, direct messages, and channel events with browser notifications using Web Push API.",
+        "details": "1. Backend implementation:\n   - Create notification events system\n   - Implement mention detection in messages\n   - Build notification storage and tracking\n   - Create Web Push API integration\n   - Implement notification preferences\n2. Frontend implementation:\n   - Request and manage notification permissions\n   - Create notification badges in UI\n   - Build notification center/drawer\n   - Implement sound alerts\n   - Create notification settings UI\n3. Notification types:\n   - Direct messages\n   - @mentions\n   - Channel invitations\n   - Thread replies\n   - System announcements\n4. Database extensions:\n   ```sql\n   CREATE TABLE Notifications (\n     id VARCHAR PRIMARY KEY,\n     user_id VARCHAR NOT NULL,\n     type VARCHAR NOT NULL,\n     content JSONB NOT NULL,\n     is_read BOOLEAN DEFAULT false,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     FOREIGN KEY (user_id) REFERENCES Users(id)\n   );\n   ```",
+        "testStrategy": "1. Test notification generation for different events\n2. Verify notification delivery when user is offline\n3. Test notification preferences and filtering\n4. Verify browser notification display\n5. Test notification read status tracking\n6. Verify notification center functionality",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Search Functionality",
+        "description": "Create search functionality for messages, files, and users across channels and workspaces using PostgreSQL Full Text Search.",
+        "details": "1. Backend implementation:\n   - Set up PostgreSQL Full Text Search\n   - Create search indices for messages and files\n   - Implement search API endpoints\n   - Build search result ranking and filtering\n   - Create search history tracking\n2. Frontend implementation:\n   - Create search bar component\n   - Build search results display\n   - Implement search filters UI\n   - Create search history display\n   - Build keyboard shortcuts for search\n3. Search features:\n   - Message content search\n   - File name and content search\n   - User search\n   - Channel search\n   - Date range filtering\n   - Search within specific channels\n4. Database extensions:\n   ```sql\n   CREATE INDEX messages_content_idx ON Messages USING gin(to_tsvector('english', content));\n   ```",
+        "testStrategy": "1. Test search accuracy with various queries\n2. Verify search performance with large datasets\n3. Test search filters and combinations\n4. Verify search results respect user permissions\n5. Test search history functionality\n6. Verify search works across different content types",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement User Profile Management",
+        "description": "Create functionality for users to view and edit their profiles, including personal information, preferences, and workspace-specific settings.",
+        "details": "1. Backend implementation:\n   - Create profile CRUD endpoints\n   - Implement workspace-specific profile settings\n   - Build profile image upload and storage\n   - Create user preference storage\n   - Implement user status management\n2. Frontend implementation:\n   - Create profile view/edit UI\n   - Build profile image upload component\n   - Implement user status selector\n   - Create preferences management UI\n   - Build profile card for user information\n3. Database extensions:\n   ```sql\n   CREATE TABLE WorkspaceMembers (\n     id VARCHAR PRIMARY KEY,\n     user_id VARCHAR NOT NULL,\n     workspace_id VARCHAR NOT NULL,\n     group_id VARCHAR,\n     nickname VARCHAR,\n     email VARCHAR,\n     github VARCHAR,\n     blog VARCHAR,\n     image VARCHAR,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP,\n     FOREIGN KEY (user_id) REFERENCES Users(id),\n     FOREIGN KEY (workspace_id) REFERENCES Workspaces(id),\n     FOREIGN KEY (group_id) REFERENCES Groups(id)\n   );\n   ```",
+        "testStrategy": "1. Test profile CRUD operations\n2. Verify profile image upload and display\n3. Test workspace-specific profile settings\n4. Verify user status updates and display\n5. Test profile data validation\n6. Verify profile privacy settings",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Learning Materials Management",
+        "description": "Create functionality for creating, organizing, and accessing learning materials within the platform as specified in the MVP requirements.",
+        "details": "1. Backend implementation:\n   - Create learning material model and schema\n   - Implement CRUD endpoints for materials\n   - Build categorization and tagging system\n   - Create access control for materials\n   - Implement version history tracking\n2. Frontend implementation:\n   - Create material editor interface\n   - Build material viewer component\n   - Implement material organization UI\n   - Create material search and filtering\n   - Build version history display\n3. Database extensions:\n   ```sql\n   CREATE TABLE LearningMaterials (\n     id VARCHAR PRIMARY KEY,\n     workspace_id VARCHAR NOT NULL,\n     creator_id VARCHAR NOT NULL,\n     title VARCHAR NOT NULL,\n     content TEXT NOT NULL,\n     category VARCHAR,\n     tags JSONB,\n     version INTEGER DEFAULT 1,\n     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n     updated_at TIMESTAMP,\n     deleted_at TIMESTAMP,\n     FOREIGN KEY (workspace_id) REFERENCES Workspaces(id),\n     FOREIGN KEY (creator_id) REFERENCES Users(id)\n   );\n   ```",
+        "testStrategy": "1. Test material creation and editing\n2. Verify material access control\n3. Test categorization and tagging\n4. Verify version history tracking\n5. Test material search functionality\n6. Verify material rendering in different formats",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement Responsive UI and Cross-platform Support",
+        "description": "Ensure the application is responsive and works well on different devices and screen sizes, with optimized layouts for both desktop and mobile.",
+        "details": "1. Frontend implementation:\n   - Create responsive layout components\n   - Implement mobile-first CSS approach\n   - Build adaptive navigation (sidebar/bottom bar)\n   - Create touch-friendly UI elements\n   - Implement device-specific optimizations\n   - Build progressive web app capabilities\n2. Responsive features:\n   - Collapsible sidebar for small screens\n   - Touch-friendly input controls\n   - Optimized message display for mobile\n   - Simplified navigation for small screens\n   - Adaptive modal and popup positioning\n3. Testing across devices:\n   - Desktop (various resolutions)\n   - Tablets (portrait and landscape)\n   - Mobile phones (various sizes)\n   - Different browsers (Chrome, Firefox, Safari)",
+        "testStrategy": "1. Test UI on various screen sizes and devices\n2. Verify touch interactions work correctly\n3. Test performance on lower-end devices\n4. Verify PWA installation and offline capabilities\n5. Test responsive layout breakpoints\n6. Verify accessibility across different devices",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement System Monitoring and Error Handling",
+        "description": "Create comprehensive error handling, logging, and monitoring systems to ensure application reliability and facilitate debugging.",
+        "details": "1. Backend implementation:\n   - Set up structured logging\n   - Implement error tracking and reporting\n   - Create health check endpoints\n   - Build performance monitoring\n   - Implement rate limiting and protection\n2. Frontend implementation:\n   - Create global error boundary\n   - Implement error reporting to backend\n   - Build user-friendly error messages\n   - Create offline detection and handling\n   - Implement performance monitoring\n3. Monitoring features:\n   - API response times\n   - WebSocket connection stability\n   - Database query performance\n   - Error rates and types\n   - User activity metrics\n4. Error handling strategy:\n   - Graceful degradation\n   - Automatic retry for transient errors\n   - Detailed logging for debugging\n   - User-friendly error messages",
+        "testStrategy": "1. Test error handling for various failure scenarios\n2. Verify logging captures necessary information\n3. Test monitoring alerts and thresholds\n4. Verify rate limiting effectiveness\n5. Test application behavior under load\n6. Verify error reporting and tracking",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-06-27T08:01:27.691Z",
+      "updated": "2025-06-27T08:01:27.691Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
