@@ -60,6 +60,8 @@ jobs:
         run: |
           docker build \
             --build-arg NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000 \
+            --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} \
+            --build-arg CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
@@ -94,11 +96,3 @@ jobs:
             docker-compose down
             docker-compose up -d
             docker image prune -a -f
-
-# 수정 전.
-# docker stop $(docker ps -q)
-# docker rm $(docker ps -aq)
-# docker-compose build --no-cache frontend
-# docker-compose pull
-# docker-compose down
-# docker-compose up -d
