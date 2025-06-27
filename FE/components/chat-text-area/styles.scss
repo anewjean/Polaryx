@@ -45,12 +45,22 @@
     display: block;
     height: auto;
     margin: 1.5rem 0;
-    max-width: 100%;
+    max-width: 100px;
+    max-height: 100px;
 
     &.ProseMirror-selectednode {
       outline: 3px solid var(--purple);
     }
   }
+}
+
+.editor-container .ProseMirror {
+  text-align: left;
+}
+.editor-container .ProseMirror img {
+  display: inline-block;
+  margin-right: 12px;
+  vertical-align: top;
 }
 
 .toolbar {

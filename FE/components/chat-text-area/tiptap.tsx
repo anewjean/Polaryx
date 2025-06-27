@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./styles.scss";
 
 import Dropcursor from "@tiptap/extension-dropcursor";
@@ -24,6 +24,7 @@ import ToolBar from "./toolbar";
 
 export default () => {
   const [text, setText] = useState("helloWorld");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     editable: true,
     extensions: [
@@ -137,13 +138,49 @@ export default () => {
     }
   }, [editor]);
 
-  const addImage = useCallback(() => {
-    const url = window.prompt("URL");
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  }, [editor]);
+  const handleFileSelect = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file && editor) {
+        // 파일 유효성 검사
+        if (!file.type.startsWith("image/")) {
+          alert("이미지 파일만 선택할 수 있습니다.");
+          return;
+        }
+
+        // 파일 크기 제한 (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert("파일 크기는 5MB 이하여야 합니다.");
+          return;
+        }
+
+        // 파일을 base64로 변환
+        const base64 = await convertFileToBase64(file);
+
+        // 에디터에 이미지 삽입
+        editor.chain().focus().setImage({ src: base64 }).run();
+
+        // 파일 입력 초기화
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }
+    },
+    [editor],
+  );
+
+  const addImage = useCallback(() => {
+    fileInputRef.current?.click(); // 숨겨진 input 클릭
+  }, []);
 
   if (!editor) {
     return null;
@@ -151,6 +188,13 @@ export default () => {
 
   return (
     <div className="chat-text-area">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx"
+        onChange={handleFileSelect}
+        style={{ display: "none" }}
+      />
       <div className="toolbar-container">
         <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
       </div>

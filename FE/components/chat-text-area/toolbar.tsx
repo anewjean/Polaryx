@@ -1,4 +1,5 @@
 import { Editor } from "@tiptap/react";
+import { HardDriveUploadIcon } from "lucide-react";
 import "./styles.scss";
 import { BoldIcon } from "@/components/tiptap-icons/bold-icon";
 import { ItalicIcon } from "../tiptap-icons/italic-icon";
@@ -89,7 +90,7 @@ const ToolBar = ({
           onClick={addImage}
           className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}
         >
-          <ImageIcon className="w-4 h-4" />
+          <HardDriveUploadIcon className="w-4 h-4" />
         </button>
       </div>
     </div>
