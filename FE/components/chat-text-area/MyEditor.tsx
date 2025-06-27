@@ -6,12 +6,17 @@ import { LinkPopover } from "../tiptap-ui/link-popover";
 import { ListButton } from "../tiptap-ui/list-button";
 import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button";
 import { BlockquoteButton } from "../tiptap-ui/blockquote-button";
+import { Image } from "@tiptap/extension-image";
+import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button";
+import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node";
+import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
+import { useRef, useState } from "react";
 
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
-import CustomButton from "./CustomButton";
-import { useRef, useState } from "react";
+import "@/components/tiptap-node/image-node/image-node.scss";
+// import CustomButton from "./CustomButton";
 
 export default function MyEditor() {
   // 텍스트 영역
@@ -26,8 +31,16 @@ export default function MyEditor() {
     immediatelyRender: false,
     extensions: [
       StarterKit,
+      Image,
       Link.configure({
         openOnClick: false,
+      }),
+      ImageUploadNode.configure({
+        accept: "image/*",
+        maxSize: MAX_FILE_SIZE,
+        limit: 3,
+        upload: handleImageUpload,
+        onError: (error) => console.error("Image upload error:", error),
       }),
     ],
     content: text,
@@ -52,6 +65,13 @@ export default function MyEditor() {
             <BlockquoteButton />
             <MarkButton type="code" />
             <CodeBlockButton />
+            {/* <CustomButton
+              files={files}
+              setFiles={setFiles}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            /> */}
+            <ImageUploadButton text="" />
           </div>
         </div>
         <div className={`transition-all duration-300 ease-in`} ref={editorRef} style={{}}>
@@ -59,14 +79,6 @@ export default function MyEditor() {
             editor={editor}
             role="presentation"
             className="bg-transparent rounded-b-md px-3 py-2 text-sm min-h-16 w-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors resize-none"
-          />
-        </div>
-        <div>
-          <CustomButton
-            files={files}
-            setFiles={setFiles}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
           />
         </div>
       </EditorContext.Provider>
