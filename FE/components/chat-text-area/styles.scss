@@ -145,7 +145,7 @@
 
 .chat-text-area {
   border: 2px solid gainsboro;
-  border-radius: 20px;
+  border-radius: 10px;
 
   .toolbar-container {
     background-color: #f5f5f5;
@@ -155,18 +155,10 @@
   .add-button {
     display: flex;
     justify-content: flex-end;
-    padding: 10px 15px;
+    padding: 5px 15px;
 
     .add-button-send {
-      background-color: green;
-      border: 1px solid gainsboro;
-      border-radius: 15px;
-      padding: 10px 10px;
       cursor: pointer;
-
-      &:hover {
-        background-color: greenyellow;
-      }
     }
   }
 
