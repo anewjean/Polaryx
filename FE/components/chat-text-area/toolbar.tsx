@@ -1,25 +1,20 @@
 import { Editor } from "@tiptap/react";
-import { HardDriveUploadIcon } from "lucide-react";
+import {
+  HardDriveUploadIcon,
+  BoldIcon,
+  ItalicIcon,
+  StrikethroughIcon,
+  LinkIcon,
+  ListOrderedIcon,
+  ListIcon,
+  TextQuoteIcon,
+  CodeIcon,
+} from "lucide-react";
 import "./styles.scss";
-import { BoldIcon } from "@/components/tiptap-icons/bold-icon";
-import { ItalicIcon } from "../tiptap-icons/italic-icon";
-import { StrikeIcon } from "../tiptap-icons/strike-icon";
-import { LinkIcon } from "../tiptap-icons/link-icon";
-import { ListOrderedIcon } from "../tiptap-icons/list-ordered-icon";
-import { ListIcon } from "../tiptap-icons/list-icon";
-import { BlockQuoteIcon } from "../tiptap-icons/block-quote-icon";
-import { CodeIcon, ImageIcon } from "lucide-react";
+
 import { CodeBlockIcon } from "../tiptap-icons/code-block-icon";
 
-const ToolBar = ({
-  editor,
-  setLink,
-  addImage,
-}: {
-  editor: Editor;
-  setLink: () => void;
-  addImage: () => void;
-}) => {
+const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () => void; addImage: () => void }) => {
   return (
     <div className="toolbar">
       <div className="itemBox">
@@ -41,13 +36,10 @@ const ToolBar = ({
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`toolbarBtn ${editor.isActive("strike") ? "is-active" : ""}`}
         >
-          <StrikeIcon className="w-4 h-4" />
+          <StrikethroughIcon className="w-4 h-4" />
         </button>
 
-        <button
-          onClick={setLink}
-          className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}
-        >
+        <button onClick={setLink} className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}>
           <LinkIcon className="w-4 h-4" />
         </button>
 
@@ -69,7 +61,7 @@ const ToolBar = ({
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`toolbarBtn ${editor.isActive("blockquote") ? "is-active" : ""}`}
         >
-          <BlockQuoteIcon className="w-4 h-4" />
+          <TextQuoteIcon className="w-4 h-4" />
         </button>
 
         <button
@@ -86,10 +78,7 @@ const ToolBar = ({
           <CodeBlockIcon className="w-4 h-4" />
         </button>
 
-        <button
-          onClick={addImage}
-          className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}
-        >
+        <button onClick={addImage} className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}>
           <HardDriveUploadIcon className="w-4 h-4" />
         </button>
       </div>
