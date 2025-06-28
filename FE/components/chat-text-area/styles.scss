@@ -76,13 +76,16 @@
     max-height: 100px;
 
     &.ProseMirror-selectednode {
-      outline: 3px solid var(--purple);
+      outline: 3px solid purple;
     }
   }
 }
 
 .editor-container .ProseMirror {
   text-align: left;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 .editor-container .ProseMirror img {
   display: inline-block;
@@ -127,12 +130,12 @@
     width: 1px;
     height: 25px;
     margin: 0 15px;
-    background-color: var(--black);
+    background-color: black;
   }
 }
 
 .chat-text-area {
-  border: 1px solid #cacad6;
+  border: 2px solid gainsboro;
   border-radius: 20px;
 
   .toolbar-container {
