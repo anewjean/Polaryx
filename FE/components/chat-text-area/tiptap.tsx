@@ -196,6 +196,12 @@ export default () => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
 
+  const handleSend = () => {
+    // 메시지 전송 로직 (예: 서버로 전송, 상태 초기화 등)
+    alert("메시지 전송!");
+    // editor.commands.clearContent(); // 필요시 입력창 비우기
+  };
+
   if (!editor) {
     return null;
   }
@@ -213,12 +219,15 @@ export default () => {
         <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
       </div>
       <div className="editor-container">
-        <EditorContent editor={editor} />
-      </div>
-      <div className="add-button">
-        <button className="add-button-send">
-          <Send className="w-4 h-4" />
-        </button>
+        <EditorContent
+          editor={editor}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault(); // 줄바꿈 방지
+              handleSend();
+            }
+          }}
+        />
       </div>
     </div>
   );
