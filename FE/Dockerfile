@@ -14,6 +14,8 @@ COPY ./package*.json .
 RUN npm install
 
 COPY . .
-RUN NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL npm run build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
+RUN npm run build
+
 # RUN npm run build
 CMD ["npm", "run", "start"]
