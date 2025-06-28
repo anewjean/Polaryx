@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Send } from "lucide-react";
 import "./styles.scss";
 
 import StarterKit from "@tiptap/starter-kit";
@@ -25,7 +24,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 
-export default () => {
+const TipTap = () => {
   const [text, setText] = useState("helloWorld");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
@@ -38,7 +37,7 @@ export default () => {
         // Use different placeholders depending on the node type:
         // placeholder: ({ node }) => {
         //   if (node.type.name === 'heading') {
-        //     return 'What’s the title?'
+        //     return 'What's the title?'
         //   }
 
         //   return 'Can you add some further context?'
@@ -232,3 +231,5 @@ export default () => {
     </div>
   );
 };
+
+export default TipTap;
