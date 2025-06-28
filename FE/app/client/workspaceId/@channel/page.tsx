@@ -14,6 +14,7 @@ export default function ChannelDefault() {
           width: `${channelWidth}%`,
         }}
       >
+        {/* 채팅 입력 컴포넌트 */}
         <TipTap />
       </div>
     </div>
