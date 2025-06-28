@@ -19,3 +19,5 @@ RUN npm run build
 
 # RUN npm run build
 CMD ["npm", "run", "start"]
+
+RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
