@@ -121,6 +121,7 @@ const TipTap = () => {
   });
 
   const setLink = useCallback(() => {
+    if (!editor) return;
     const previousUrl = editor.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
 
@@ -139,7 +140,7 @@ const TipTap = () => {
     // update link
     try {
       editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-    } catch (e) {
+    } catch (e: any) {
       alert(e.message);
     }
   }, [editor]);
