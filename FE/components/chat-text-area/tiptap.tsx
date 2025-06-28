@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { Send } from "lucide-react";
 import "./styles.scss";
 
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import Image from "@tiptap/extension-image";
 import CodeBlock from "@tiptap/extension-code-block";
@@ -29,6 +31,19 @@ export default () => {
   const editor = useEditor({
     editable: true,
     extensions: [
+      StarterKit,
+      Placeholder.configure({
+        // Use a placeholder:
+        placeholder: "나만무 team3",
+        // Use different placeholders depending on the node type:
+        // placeholder: ({ node }) => {
+        //   if (node.type.name === 'heading') {
+        //     return 'What’s the title?'
+        //   }
+
+        //   return 'Can you add some further context?'
+        // },
+      }),
       Document,
       Paragraph,
       Text,
