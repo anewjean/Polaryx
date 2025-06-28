@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Send } from "lucide-react";
 import "./styles.scss";
 
 import Dropcursor from "@tiptap/extension-dropcursor";
@@ -50,9 +51,7 @@ export default () => {
         isAllowedUri: (url, ctx) => {
           try {
             // construct URL
-            const parsedUrl = url.includes(":")
-              ? new URL(url)
-              : new URL(`${ctx.defaultProtocol}://${url}`);
+            const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
 
             // use default validation
             if (!ctx.defaultValidate(parsedUrl.href)) {
@@ -68,9 +67,7 @@ export default () => {
             }
 
             // only allow protocols specified in ctx.protocols
-            const allowedProtocols = ctx.protocols.map((p) =>
-              typeof p === "string" ? p : p.scheme,
-            );
+            const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
 
             if (!allowedProtocols.includes(protocol)) {
               return false;
@@ -93,15 +90,10 @@ export default () => {
         shouldAutoLink: (url) => {
           try {
             // construct URL
-            const parsedUrl = url.includes(":")
-              ? new URL(url)
-              : new URL(`https://${url}`);
+            const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
 
             // only auto-link if the domain is not in the disallowed list
-            const disallowedDomains = [
-              "example-no-autolink.com",
-              "another-no-autolink.com",
-            ];
+            const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
             const domain = parsedUrl.hostname;
 
             return !disallowedDomains.includes(domain);
@@ -151,12 +143,6 @@ export default () => {
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file && editor) {
-        // 파일 유효성 검사
-        // if (!file.type.startsWith("image/")) {
-        //   alert("이미지 파일만 선택할 수 있습니다.");
-        //   return;
-        // }
-
         // 파일 크기 제한 (5MB)
         if (file.size > 5 * 1024 * 1024) {
           alert("파일 크기는 5MB 이하여야 합니다.");
@@ -171,9 +157,8 @@ export default () => {
           editor.chain().focus().setImage({ src: base64 }).run();
         } else {
           const ext = file.name.split(".").pop()?.toLowerCase() || "";
-          console.log(ext);
 
-          let defaultImg = "@/"; // 기본값
+          let defaultImg = "/upload_default.png"; // 기본값
 
           if (ext === "pdf") defaultImg = "/upload_default.png";
           else if (["doc", "docx"].includes(ext)) defaultImg = "/upload_default.png";
@@ -214,6 +199,11 @@ export default () => {
       </div>
       <div className="editor-container">
         <EditorContent editor={editor} />
+      </div>
+      <div className="add-button">
+        <button className="add-button-send">
+          <Send className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
