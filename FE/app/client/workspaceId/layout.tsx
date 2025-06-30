@@ -20,7 +20,6 @@ export default function WorkspaceLayout({
   const [sidebarWidth, setSidebarWidth] = useState(20);
   const [profileWidth, setProfileWidth] = useState(20);
   const { channelWidth, setChannelWidth } = useChannelStore();
-  // const [channelWidth, setChannelWidth] = useState(80);
 
   // 프로필 표시를 위한 state
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -47,14 +46,15 @@ export default function WorkspaceLayout({
   };
 
   return (
-    <div className="flex-1 flex flex-row h-full w-full">
-      <OpenProfile isOpen={isProfileOpen} toggle={toggleProfile} />
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full w-full"
-        onLayout={handleLayout}
-      >
-        <ResizablePanel id="sidebar" defaultSize={sidebarWidth} minSize={10} maxSize={30}>
+    <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 flex-row min-h-0 w-full">
+        <OpenProfile isOpen={isProfileOpen} toggle={toggleProfile} />
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="flex-1 min-h-0"
+          onLayout={handleLayout}
+        >
+          <ResizablePanel id="sidebar" defaultSize={sidebarWidth} minSize={10} maxSize={30}>
           {/* 사이드바 영역: 너비값을 함께 전달 */}
           {React.isValidElement(sidebar)
             ? React.cloneElement(sidebar, { width: sidebarWidth })
@@ -85,6 +85,7 @@ export default function WorkspaceLayout({
           </>
         )}
       </ResizablePanelGroup>
+      </div>
     </div>
   );
 }
