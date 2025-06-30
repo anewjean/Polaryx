@@ -18,7 +18,7 @@ export default function WorkspaceLayout({
   profile: React.ReactElement<{ width: number }>;
 }) {
   const [sidebarWidth, setSidebarWidth] = useState(20);
-  const [profileWidth, setProfileWidth] = useState(20);
+  const [profileWidth, setProfileWidth] = useState(15);
   const { channelWidth, setChannelWidth } = useChannelStore();
 
   // 프로필 표시를 위한 state
@@ -72,8 +72,8 @@ export default function WorkspaceLayout({
             <ResizablePanel
               id="profile"
               defaultSize={profileWidth}
-              minSize={20}
-              maxSize={40}
+              minSize={15}
+              maxSize={30}
               style={{ boxShadow: "-8px 0 16px rgba(0, 0, 0, 0.1)" }}
             >
               {/* 프로필 영역 */}
