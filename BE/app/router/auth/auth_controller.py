@@ -89,7 +89,7 @@ async def auth_callback(provider: Provider, code: str):
 
             user = userinfo_res.json()
 
-            print(1)
+            print(user)
 
             ########################################
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
