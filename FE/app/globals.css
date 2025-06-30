@@ -1,4 +1,4 @@
-@layer theme, base, clerk, components, utilities;
+@layer theme, base, components, utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -195,3 +195,12 @@
 .text-xxs {
   font-size: 11px;
 }
+
+/* 기본 얇은 스크롤바 */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.2) transparent;
+}
+
+
+
