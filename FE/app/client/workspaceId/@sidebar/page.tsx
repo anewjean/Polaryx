@@ -1,7 +1,8 @@
 "use client";
 
+import "@/app/globals.css";
 import React from "react";
-
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import {
   SidebarProvider,
@@ -15,8 +16,11 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Megaphone, Landmark, Users, Mail, ShieldUser } from "lucide-react";
+import { Megaphone, Landmark, Users, Mail, ShieldUser, ChevronRight, ChevronDown } from "lucide-react";
 import { School } from "lucide-react";
 import { ChevronsUpDown } from "lucide-react";
 
@@ -26,6 +30,8 @@ type SidebarProps = {
 
 export default function AppSidebar({ width }: SidebarProps) {
   const { workspaceId } = useParams();
+  const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
   const sections = [
     { label: "Announcements", icon: Megaphone, href: `/${workspaceId}` },
@@ -42,12 +48,19 @@ export default function AppSidebar({ width }: SidebarProps) {
     { label: "너비 조절 테스트", href: `/${workspaceId}/settings` },
   ];
 
+  const subTabs = [
+    { label: "[WEEK01] 컴퓨팅 사고로의 전환", href: `/${workspaceId}` },
+    { label: "[WEEK02] 컴퓨팅 사고로의 전환", href: `/${workspaceId}/channels` },
+    { label: "[WEEK03] 컴퓨팅 사고로의 전환", href: `/${workspaceId}/members` },
+    { label: "[WEEK04] 컴퓨팅 사고로의 전환", href: `/${workspaceId}/settings` },
+  ];
+
   return (
     <SidebarProvider>
       <Sidebar collapsible="none" className="flex flex-1 min-h-0 min-w-0 flex-col p-1 bg-gray-800 text-gray-400">
-        {/* 사이드바 헤더 */}
+        {/* 사이드바 헤더 (mvp에서는 단순 정보 표시) */}
         <SidebarHeader>
-          <SidebarMenuButton className="h-13 p-2 hover:bg-[rgba(255,255,255,0.10)]">
+          <div className="h-13 p-2">
             <div className="flex flex-row items-center w-full gap-2">
               {/* 아이콘 */}
               <div className="bg-blue-600 rounded-lg p-2 flex items-center justify-center">
@@ -59,10 +72,10 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <span className="text-xs text-gray-400 truncate">교육기관명</span>
               </div>
             </div>
-          </SidebarMenuButton>
+          </div>
         </SidebarHeader>
         {/* 사이드바 컨텐츠 */}
-        <SidebarContent className="flex flex-1 min-h-0 flex-col overflow-y-auto space-y-4">
+        <SidebarContent className="flex flex-1 min-h-0 flex-col overflow-y-auto scrollbar-thin">
           {/* Announcements */}
           <SidebarGroup className="flex flex-col flex-none">
             <SidebarGroupLabel className="flex items-center gap-2">
@@ -73,9 +86,9 @@ export default function AppSidebar({ width }: SidebarProps) {
               <SidebarMenu className="flex flex-col gap-0">
                 {tabs.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild className="hover:bg-[rgba(255,255,255,0.10)]">
-                      <a href={item.href} className="flex items-center px-2 py-1 space-x-2 rounded">
-                        <span className="text-gray-400">{item.label}</span>
+                    <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
+                      <a href={item.href} className="truncate">
+                        {item.label}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -90,17 +103,31 @@ export default function AppSidebar({ width }: SidebarProps) {
               <span className="text-m font-bold text-gray-200 truncate">Courses</span>
             </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="flex flex-col gap-0">
+              <div className="flex flex-col gap-0">
                 {tabs.map((item) => (
-                  <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild className="hover:bg-[rgba(255,255,255,0.10)]">
-                      <a href={item.href} className="flex items-center px-2 py-1 space-x-2 rounded">
-                        <span className="text-gray-400">{item.label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <div key={item.label}>
+                    <div className="flex items-center px-2 py-1 space-x-2 rounded">
+                      <ChevronRight onClick={() => setMenuOpen((v) => !v)} size={20} className="text-gray-400" />
+                      <span className="flex-1 min-w-0 truncate">{item.label}</span>
+                      {/* <SidebarGroup className="flex flex-row flex-none">                        
+                          <SidebarGroupContent>
+                            <SidebarMenu className="flex flex-row gap-0">
+                              {subTabs.map((item) => (
+                                <SidebarMenuItem key={item.label}>
+                                  <SidebarMenuButton>
+                                    <a href={item.href} className="flex items-center px-2 py-1 space-x-2 rounded">
+                                      <span className="flex-1 min-w-0 truncate">{item.label}</span>
+                                    </a>
+                                  </SidebarMenuButton>
+                                </SidebarMenuItem>
+                              ))}
+                            </SidebarMenu>
+                          </SidebarGroupContent>
+                        </SidebarGroup>                                                                                         */}
+                    </div>
+                  </div>
                 ))}
-              </SidebarMenu>
+              </div>
             </SidebarGroupContent>
           </SidebarGroup>
           {/* Channels */}
@@ -113,9 +140,9 @@ export default function AppSidebar({ width }: SidebarProps) {
               <SidebarMenu className="flex flex-col gap-0">
                 {tabs.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild className="hover:bg-[rgba(255,255,255,0.10)]">
-                      <a href={item.href} className="flex items-center px-2 py-1 space-x-2 rounded">
-                        <span className="text-gray-400">{item.label}</span>
+                    <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
+                      <a href={item.href} className="truncate">
+                        {item.label}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -133,9 +160,9 @@ export default function AppSidebar({ width }: SidebarProps) {
               <SidebarMenu className="flex flex-col gap-0">
                 {tabs.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild className="hover:bg-[rgba(255,255,255,0.10)]">
-                      <a href={item.href} className="flex items-center px-2 py-1 space-x-2 rounded">
-                        <span className="text-gray-400">{item.label}</span>
+                    <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
+                      <a href={item.href} className="truncate">
+                        {item.label}
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -144,8 +171,14 @@ export default function AppSidebar({ width }: SidebarProps) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        {/* 사이드바 푸터 */}
         <SidebarFooter>
-          <SidebarMenuButton className="h-13 p-2 hover:bg-[rgba(255,255,255,0.10)]">
+          <SidebarMenuButton
+            isActive={isProfileMenuOpen}
+            disableActive={true}
+            onClick={() => setProfileMenuOpen((v) => !v)}
+            className="h-13 p-2 data-[active=true]:bg-[rgba(255,255,255,0.1)]"
+          >
             <div className="flex flex-row items-center w-full gap-2">
               {/* 프로필 이미지 */}
               <div className="bg-gray-600 rounded-lg p-2 size-9 flex items-center justify-center" />

@@ -10,7 +10,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${notoSansKr.variable} ${lato.variable} min-h-screen flex flex-col`}>{children}</body>
+      <body
+        className={`${notoSansKr.variable} ${lato.variable} h-screen overflow-hidden flex flex-col`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
