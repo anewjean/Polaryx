@@ -1,5 +1,22 @@
+"use client";
+
+import TipTap from "@/components/chat-text-area/tiptap";
+import { useChannelStore } from "@/store/channelStore";
+
 export default function ChannelDefault() {
+  const { channelWidth } = useChannelStore();
+
   return (
-    <div className="p-4 text-gray-800">특정 채널로 리다이렉트 시켜야 함 / 채널 영역의 너비가 줄어들었을 때 텍스트가 줄 바꿈처리되어야 함</div>
+    <div className="relative text-gray-800">
+      <div
+        className={`fixed bottom-0 p-4`}
+        style={{
+          width: `${channelWidth}%`,
+        }}
+      >
+        {/* 채팅 입력 컴포넌트 */}
+        <TipTap />
+      </div>
+    </div>
   );
 }
