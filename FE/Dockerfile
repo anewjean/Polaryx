@@ -10,7 +10,8 @@ COPY ./package*.json .
 RUN npm install
 
 COPY . .
-RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
+# 필요없는 부분 제거
+# RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
 RUN npm run build
 
 # RUN npm run build 
