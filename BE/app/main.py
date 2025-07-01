@@ -9,21 +9,15 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
 from BE.app.router.message import websocket_controller as message
+<<<<<<< HEAD
 from BE.app.router.workspace_members import workspace_members_controller as workspace_members
+=======
+from BE.app.router.auth import auth_controller as auth
+>>>>>>> e9b0c7ca12bfa256942457a0a81613c22809fbe2
 
 load_dotenv()
 
 app = FastAPI()
-
-# GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-# GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-# GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
-# GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
-# GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
-# GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI")
-# GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-# GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
-# GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,11 +29,16 @@ app.add_middleware(
 )
 
 app.include_router(router=message.router)
+<<<<<<< HEAD
 app.include_router(router=workspace_members.router)
+=======
+app.include_router(router=auth.router)
+>>>>>>> e9b0c7ca12bfa256942457a0a81613c22809fbe2
 
 @app.get("/ping")
 async def pong():
     return {"message": "pong from backend"}
+<<<<<<< HEAD
 
 @app.get("/")
 def root():
@@ -130,3 +129,5 @@ def root():
 #             "avatar": user_data["avatar_url"],
 #             "profile": user_data["html_url"],
 #         }
+=======
+>>>>>>> e9b0c7ca12bfa256942457a0a81613c22809fbe2
