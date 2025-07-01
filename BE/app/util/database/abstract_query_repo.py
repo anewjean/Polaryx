@@ -6,3 +6,4 @@ class AbstractQueryRepo(metaclass=ABCMeta):
     
     def get_sql(self, sql_name):
         return self.queries[sql_name]
+
