@@ -3,7 +3,9 @@
 import "@/app/globals.css";
 import React from "react";
 import { useState } from "react";
+import { useProfileStore } from "@/store/profileStore";
 import { useParams } from "next/navigation";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   SidebarProvider,
   Sidebar,
@@ -20,6 +22,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+
 import { Megaphone, Landmark, Users, Mail, ShieldUser, ChevronRight, ChevronDown } from "lucide-react";
 import { School } from "lucide-react";
 import { ChevronsUpDown } from "lucide-react";
@@ -173,10 +176,10 @@ export default function AppSidebar({ width }: SidebarProps) {
         </SidebarContent>
         {/* 사이드바 푸터 */}
         <SidebarFooter>
+          {/* 선택 시 프로필 메뉴가 표시 */}
           <SidebarMenuButton
             isActive={isProfileMenuOpen}
-            disableActive={true}
-            onClick={() => setProfileMenuOpen((v) => !v)}
+            disableActive={true}            
             className="h-13 p-2 data-[active=true]:bg-[rgba(255,255,255,0.1)]"
           >
             <div className="flex flex-row items-center w-full gap-2">
