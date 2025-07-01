@@ -111,8 +111,9 @@ async def auth_callback(provider: Provider, code: str):
                 ########################################
                 
                 # return user
-                return {"access_token": jwt_token, "token_type": "bearer"}
-
+                redirect_to = f"http://localhost:3000/auth/callback?token={jwt_token}"
+                return RedirectResponse(redirect_to)
+            
     elif provider.value == "github":
         async with httpx.AsyncClient() as client:
             # Step 1: access_token 요청
