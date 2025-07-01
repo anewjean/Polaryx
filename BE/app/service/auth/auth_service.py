@@ -10,21 +10,21 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
 REFRESH_TOKEN_EXPIRE_MINUTES = 12960
 
+db = DBFactory.get_db("MYSQL")
+query_repo = QueryRepo()
 
 class AuthService:
 
-    def find_db(data):
-        db = DBFactory.get_db("MYSQL")
-        query_repo = QueryRepo()
-        
+    def find_db(data):        
         params = {"user_email": data["user_email"], "user_provider_id": data["user_provider_id"]}
 
         # 일단 email로 먼저 찾아내기.
         sql = query_repo.get_sql("find_user_by_email")
-        result = db.execute(sql, params)
+        result = db.execute(sql, {"user_email": data["user_email"]})
 
         # 만약 email과 일치하는 회원이 없다면 바로 짤.
         if result is None:
+            print("\n\n email과 일치하는 회원이 없다.")
             return None
         
         # email을 통해 데이터를 찾아오긴 했지만,
@@ -36,7 +36,7 @@ class AuthService:
 
         # 만약 provider_id도 존재하지만, 접근 시도하는 데이터의
         # provider_id와 다른것도 짤.
-        elif result[0][4] is not params["user_provider_id"]:
+        elif result[0][4] != params["user_provider_id"]:
             return None
         
         # 위 사항들에 해당되지 않는다면, 다시 provider_id와 email로 제대로 찾아와서 반환
@@ -84,14 +84,17 @@ class TokenSerive:
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     # 발급받은 refresh_token을 refresh_token DB에 저장해두기.
-    def save_refresh_token_to_db(refresh_token):
-        db = DBFactory.get_db("MYSQL")
-        query_repo = QueryRepo()
-
+    def save_refresh_token_to_db(data: dict):
         sql = query_repo.get_sql("save_refresh_token")
-        db.execute(sql, refresh_token)
+        db.execute(sql, data)
 
         return
+    
+    def find_and_get_refresh_token(data: dict):
+        sql = query_repo.get_sql("find_refresh_token_by_refresh_token")
+        result = db.execute(sql, data)
+
+        return result
 
     
     # 유효성 검사(사용자 상태 검사(탈퇴, 비활), 소셜 토큰 정보 검사)
