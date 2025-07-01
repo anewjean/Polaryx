@@ -96,9 +96,9 @@ async def auth_callback(provider: Provider, code: str):
             user_INdb = AuthService.find_db(user["email"])
             ########################################
 
-            if user_INdb is None:
+            if not user_INdb:
                 print("Failed")
-                return
+                return RedirectResponse(url="http://localhost:3000/auth/callback?error=not_found")
 
             else:
                 print(user_INdb)
