@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { MiniProfile } from "./MiniProfile";
+import { useMessageStore } from "@/store/messageStore";
 
 interface ChatPageProps {
   name: string;
@@ -8,7 +9,8 @@ interface ChatPageProps {
 }
 
 // 채팅방 내 채팅
-export function ChatPage(props: ChatPageProps) {
+export function ChatPage() {
+  const messages = useMessageStore((state) => state.messages);
   const [showProfile, setShowProfile] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   return (
@@ -37,11 +39,11 @@ export function ChatPage(props: ChatPageProps) {
       </div>
       <div className="w-[100%] m-[-12px -8px -16px -16px] p-[8px 8px 8px 16px]">
         <div className="flex items-baseline space-x-1.5">
-          <button className="text-m-bold cursor-pointer hover:underline">{props.name}</button>
-          <div className="text-xs chat-time-stamp">{props.time}</div>
+          <button className="text-m-bold cursor-pointer hover:underline">Dongseok Lee (이동석)</button>
+          <div className="text-xs chat-time-stamp">2025-06-19 10:00:00</div>
         </div>
         <div className="text-m">
-          {props.message.map((msg, i) => (
+          {messages.map((msg, i) => (
             <p key={i} className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""}>
               {msg}
             </p>
