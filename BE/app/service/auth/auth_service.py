@@ -16,22 +16,24 @@ query_repo = QueryRepo()
 class AuthService:
 
     def find_db(data):        
-        params = {"user_email": data["user_email"], "user_provider_id": data["user_provider_id"]}
+        params = {"user_email": data["user_email"], 
+                  "user_provider_id": data["user_provider_id"], 
+                  "user_id": data["user_id"]}
 
         # 일단 email로 먼저 찾아내기.
         sql = query_repo.get_sql("find_user_by_email")
         result = db.execute(sql, {"user_email": data["user_email"]})
 
         # 만약 email과 일치하는 회원이 없다면 바로 짤.
-        if result is None:
+        if not result:
             print("\n\n email과 일치하는 회원이 없다.")
             return None
         
         # email을 통해 데이터를 찾아오긴 했지만,
-        # provider_id 가 존재하지 않는 경우,
-        # provider_id 업데이트
-        if result[0][4] is None:
-            sql = query_repo.get_sql("find_user_by_email_and_update_provider_id")
+        # provider_id 가 존재하지 않는 경우, 즉 처음으로 로그인 했을 때,
+        # provider_id와 id 업데이트
+        if result[0][4] is "0":
+            sql = query_repo.get_sql("update_provider_id_and_id")
             db.execute(sql, params)
 
         # 만약 provider_id도 존재하지만, 접근 시도하는 데이터의
@@ -42,7 +44,6 @@ class AuthService:
         # 위 사항들에 해당되지 않는다면, 다시 provider_id와 email로 제대로 찾아와서 반환
         sql = query_repo.get_sql("find_user_by_provider_id_and_email")
         result = db.execute(sql, params)
-
         return result
 
         
@@ -96,5 +97,8 @@ class TokenSerive:
 
         return result
 
+    # 저장해둔 refresh_token이 유효하지 않다면 db에서 제거하기.
     
+
+
     # 유효성 검사(사용자 상태 검사(탈퇴, 비활), 소셜 토큰 정보 검사)

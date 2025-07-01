@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 from pathlib import Path
 from fastapi.responses import RedirectResponse
 from datetime import datetime, UTC
+from uuid6 import uuid7
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
 
@@ -90,13 +91,21 @@ async def auth_callback(provider: Provider, code: str):
 
             user = userinfo_res.json()
 
-            data = {"user_email": user["email"], "user_provider_id": user["id"]}
+            # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
+            uuid_obj1 = uuid7()
+            uuid_obj2 = uuid7()
+            # 16바이트 바이너리로 변환
+            user_uuid = uuid_obj1.bytes
+            refresh_token_uuid = uuid_obj2.bytes
 
-            ########################################
+            data = {"user_email": user["email"], "user_provider_id": user["id"], "user_id": user_uuid}
+
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
             user_INdb = AuthService.find_db(data)
-            ########################################
 
+            ########################################
+            # 이건 개선 해야 하는 곳.
+            # 회원 목록에 없다면, 관리자 문의 페이지로 이동시켜야 함.
             if not user_INdb:
                 print("Failed")
                 return RedirectResponse(url="http://localhost:3000/auth/callback?error=not_found")
@@ -117,24 +126,17 @@ async def auth_callback(provider: Provider, code: str):
 
                 jwt_access_token = TokenSerive.create_access_token(data)
 
-                created_at = datetime.now(UTC)
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
-                print("--확인 구간--\n\n")
-                print(jwt_access_token)
-                print(jwt_refresh_token)
-                print("-----\n")
 
-                data={"user_id": user_INdb[0][0], 
+                data={"id": refresh_token_uuid,
+                      "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
-                      "created_at": created_at
                       }
                 
+                print("\n\n")
+                print(data)
+                print("\n\n")
                 TokenSerive.save_refresh_token_to_db(data)
-                db_token = TokenSerive.find_and_get_refresh_token(data)
-                print("---db token---\n\n")
-                print(db_token)
-                print("-------\n")
-                ########################################
 
                 redirect_to = f"http://localhost:3000/auth/callback?token={jwt_access_token}"
                 return RedirectResponse(redirect_to)
@@ -182,11 +184,12 @@ async def auth_callback(provider: Provider, code: str):
 @router.get("/logout")
 async def logout(refresh_token):
     refresh_token
-
+    return
 
 
 
 # 로그인 유지도 하기
-        
-
-# 로그인
+@router.get("/refresh")
+async def reaccess(refresh_token):
+    refresh_token
+    return
