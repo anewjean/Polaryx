@@ -2,14 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 
 type JWTPayload = { email: string; exp: number };
 type Workspace = {
-    id: string;
-    name: string;
-    
-}
+  id: string;
+  name: string;
+};
 export default function AuthCallbackPage() {
   const router = useRouter();
   const params = useSearchParams();
@@ -18,7 +16,6 @@ export default function AuthCallbackPage() {
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
     // 백엔드에서 ?error=some_code 로 왔을 때
@@ -35,20 +32,12 @@ export default function AuthCallbackPage() {
       return;
     }
 
-    // 성공 flow
     localStorage.setItem("accessToken", token);
-
-    try {
-      const decoded = jwtDecode<JWTPayload>(token);
-      setEmail(decoded.email);
-    } catch {
-      setError("토큰 복호화에 실패했습니다.");
-    }
 
     setIsLoading(false);
 
     setTimeout(() => {
-      router.replace("/client/workspaceId"); // fetch +  해서 찾고
+      router.replace("/client/workspaceId");
     }, 1500);
   }, [token, errorParam, router]);
 

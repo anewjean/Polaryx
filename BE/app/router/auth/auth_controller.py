@@ -7,6 +7,7 @@ import httpx
 from urllib.parse import urlencode
 from pathlib import Path
 from fastapi.responses import RedirectResponse
+from datetime import datetime, UTC
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
 
@@ -89,11 +90,11 @@ async def auth_callback(provider: Provider, code: str):
 
             user = userinfo_res.json()
 
-            print(1)
+            data = {"user_email": user["email"], "user_provider_id": user["id"]}
 
             ########################################
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-            user_INdb = AuthService.find_db(user["email"])
+            user_INdb = AuthService.find_db(data)
             ########################################
 
             if not user_INdb:
@@ -113,39 +114,65 @@ async def auth_callback(provider: Provider, code: str):
                 # return user
                 redirect_to = f"http://localhost:3000/auth/callback?token={jwt_token}"
                 return RedirectResponse(redirect_to)
-            
-    elif provider.value == "github":
-        async with httpx.AsyncClient() as client:
-            # Step 1: access_token 요청
-            token_res = await client.post(
-                GITHUBS_TOKEN_URL,
-                headers={"Accept": "application/json"},
-                data={
-                    "code": code,
-                    "client_id": GITHUBS_CLIENT_ID,
-                    "client_secret": GITHUBS_CLIENT_SECRET,
-                    "redirect_uri": GITHUBS_REDIRECT_URI,
-                },
-            )
-            token_json = token_res.json()
-            access_token = token_json.get("access_token")
 
-            if not access_token:
-                return {"error": "Access token not received"}
+                jwt_access_token = TokenSerive.create_access_token(data)
 
-            # Step 2: 유저 정보 요청
-            user_res = await client.get(
-                GITHUBS_USERINFO_URL,
-                headers={"Authorization": f"Bearer {access_token}"}
-            )
+                created_at = datetime.now(UTC)
+                jwt_refresh_token = TokenSerive.create_refresh_token(data)
+                print("--확인 구간--\n\n")
+                print(jwt_access_token)
+                print(jwt_refresh_token)
+                print("-----\n")
 
-            user = user_res.json()
+                data={"user_id": user_INdb[0][0], 
+                      "user_refresh_token": jwt_refresh_token, 
+                      "created_at": created_at
+                      }
+                
+                TokenSerive.save_refresh_token_to_db(data)
+                db_token = TokenSerive.find_and_get_refresh_token(data)
+                print("---db token---\n\n")
+                print(db_token)
+                print("-------\n")
+                ########################################
 
-            ########################################
-            # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-            ########################################
+                redirect_to = f"http://localhost:3000/auth/callback?token={jwt_access_token}"
+                return RedirectResponse(redirect_to)
 
-            return {"user": user}
+    # github 구현 부분. 미완.
+
+    # elif provider.value == "github":
+    #     async with httpx.AsyncClient() as client:
+    #         # Step 1: access_token 요청
+    #         token_res = await client.post(
+    #             GITHUBS_TOKEN_URL,
+    #             headers={"Accept": "application/json"},
+    #             data={
+    #                 "code": code,
+    #                 "client_id": GITHUBS_CLIENT_ID,
+    #                 "client_secret": GITHUBS_CLIENT_SECRET,
+    #                 "redirect_uri": GITHUBS_REDIRECT_URI,
+    #             },
+    #         )
+    #         token_json = token_res.json()
+    #         access_token = token_json.get("access_token")
+
+    #         if not access_token:
+    #             return {"error": "Access token not received"}
+
+    #         # Step 2: 유저 정보 요청
+    #         user_res = await client.get(
+    #             GITHUBS_USERINFO_URL,
+    #             headers={"Authorization": f"Bearer {access_token}"}
+    #         )
+
+    #         user = user_res.json()
+
+    #         ########################################
+    #         # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
+    #         ########################################
+
+    #         return {"user": user}
         
 
 # JWT 발급
