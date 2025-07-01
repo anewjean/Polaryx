@@ -5,7 +5,6 @@ import React from "react";
 import { useState } from "react";
 import { useProfileStore } from "@/store/profileStore";
 import { useParams } from "next/navigation";
-import { useProfileStore } from "@/store/profileStore";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from "@/components/ui/popover";
 import {

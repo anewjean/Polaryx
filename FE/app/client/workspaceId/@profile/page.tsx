@@ -7,6 +7,7 @@ import { Mail } from "lucide-react";
 import { SquarePen } from "lucide-react";
 import { CardModal } from "@/components/modal/CardModal";
 import { Input } from "@/components/ui/input";
+import { useProfileStore } from "@/store/profileStore";
 
 type ProfileProps = { width: number };
 
@@ -18,6 +19,7 @@ export default function ProfilePage({ width }: ProfileProps) {
   const userGithub = "https://github.com/";
   const userBlog = "https://blog.naver.com/";
   const userGroup = ["정글8기", "307호", "나만무3팀"];
+  const close = useProfileStore(s => s.setClose);
 
   return (
     <div
@@ -28,7 +30,7 @@ export default function ProfilePage({ width }: ProfileProps) {
       <div className="flex flex-row w-full">
         <h1 className="flex flex-1 items-center justify-start text-xl font-bold">Profile</h1>
         <button className="flex flex-1 items-center justify-end text-sm">
-          <X size={20} />
+          <X size={20} onClick={close}/>
         </button>
       </div>
       {/* 프로필 이미지 */}
