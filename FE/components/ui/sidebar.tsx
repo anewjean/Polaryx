@@ -447,7 +447,7 @@ p-2 text-left text-sm outline-hidden ring-sidebar-ring
 transition-[width,height,padding]
 hover:bg-[rgba(255,255,255,0.10)] hover:text-gray-400
 focus-visible:ring-2
-active:bg-[rgba(255,255,255,0.5)] active:text-gray-900
+active:bg-[rgba(255,255,255,0.10)] active:text-gray-400
 disabled:pointer-events-none disabled:opacity-50
 group-has-data-[sidebar=menu-action]/menu-item:pr-8
 aria-disabled:pointer-events-none aria-disabled:opacity-50
