@@ -1,0 +1,18 @@
+from fastapi import APIRouter, Depends
+from BE.app.schema.workspace_members.request import UpdateWorkspaceMemberRequest
+from BE.app.schema.workspace_members.response import WorkspaceMemberResponse
+from BE.app.service.workspace_members import WorkspaceMembersService
+
+router = APIRouter()
+service = WorkspaceMembersService()
+
+@router.get("/workspace_members/me", response_model=WorkspaceMemberResponse)
+def get_my_profile():
+    # TODO: 나중에 JWT에서 현재 사용자 정보 추출
+    workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
+    return service.get_profile(workspace_member_id)
+
+@router.patch("/workspace_members/me", response_model=WorkspaceMemberResponse)
+def update_my_profile(payload: UpdateWorkspaceMemberRequest):
+    workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
+    return service.update_profile(workspace_member_id, payload)
