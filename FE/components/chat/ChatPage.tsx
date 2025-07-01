@@ -2,16 +2,12 @@ import { useState, useRef } from "react";
 import { MiniProfile } from "./MiniProfile";
 import { useMessageStore } from "@/store/messageStore";
 import { ChatEditButton } from "./chatEditButton";
-
-interface ChatPageProps {
-  name: string;
-  time: string;
-  message: string[];
-}
+import { EditInput } from "./EditInput";
 
 // 채팅방 내 채팅
 export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
+  const updateMessage = useMessageStore((state) => state.updateMessage);
   const [showProfile, setShowProfile] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -55,16 +51,30 @@ export function ChatPage() {
               onMouseLeave={() => setHoverIdx(null)}
               style={{ display: "flex", alignItems: "center" }}
             >
-              <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
-                {msg}
-              </p>
-              <ChatEditButton
-                visible={hoverIdx === i}
-                onClick={() => {
-                  setEditIdx(i);
-                  setEditValue(msg);
-                }}
-              />
+              {editIdx === i ? (
+                <EditInput
+                  value={editValue || ""}
+                  onChange={setEditValue}
+                  onSave={() => {
+                    updateMessage(i, editValue || "");
+                    setEditIdx(null);
+                  }}
+                  onCancel={() => setEditIdx(null)}
+                />
+              ) : (
+                <>
+                  <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
+                    {msg}
+                  </p>
+                  <ChatEditButton
+                    visible={hoverIdx === i}
+                    onClick={() => {
+                      setEditIdx(i);
+                      setEditValue(msg);
+                    }}
+                  />
+                </>
+              )}
             </div>
           ))}
         </div>

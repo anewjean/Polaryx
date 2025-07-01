@@ -1,6 +1,5 @@
 "use client";
 
-import MessageList from "@/components/chat-text-area/MessageList";
 import TipTap from "@/components/chat-text-area/tiptap";
 import { WebSocketClient } from "@/components/ws/webSocketClient";
 import { useChannelStore } from "@/store/channelStore";
