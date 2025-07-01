@@ -27,11 +27,23 @@ class MySQL(DBImpl):
             self.cursor = self.connection.cursor()
 
             if bind_value is None:
-                self.cursor.execute(query, self.bind_value)
+                self.cursor.execute(query)
             else:
                 self.cursor.execute(query, bind_value)
+            
+            query_type = query.strip().split()[0].lower()
+            if query_type == "select":
+                result = self.cursor.fetchall()
+            
+            elif query_type in ("insert", "update", "delete"):
+                
+                self.connection.commit()
 
-            result = self.cursor.fetchall()
+                result = {
+                    "rowcount": self.cursor.rowcount,
+                    "lastrowid": getattr(self.cursor, "lastrowid", None)  # insert일 경우
+                }
+
             self.cursor.close()
             return result 
         except Exception as e:
