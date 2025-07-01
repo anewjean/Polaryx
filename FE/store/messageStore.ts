@@ -5,6 +5,8 @@ interface MessageStore {
   setMessage: (msg: string) => void;
   sendFlag: boolean;
   setSendFlag: (flag: boolean) => void;
+  messages: string[];
+  appendMessage: (msg: string) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -12,4 +14,6 @@ export const useMessageStore = create<MessageStore>((set) => ({
   setMessage: (msg) => set({ message: msg }),
   sendFlag: false,
   setSendFlag: (flag) => set({ sendFlag: flag }),
+  messages: [],
+  appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
 }));

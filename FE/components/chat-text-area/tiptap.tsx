@@ -27,7 +27,7 @@ import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 
 const TipTap = () => {
-  const { message, setMessage, setSendFlag } = useMessageStore();
+  const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     editable: true,
@@ -203,6 +203,7 @@ const TipTap = () => {
     const content = editor?.getText() || "";
     if (!content.trim()) return;
 
+    appendMessage(content);
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();
