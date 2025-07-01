@@ -1,6 +1,7 @@
 "use client";
 
 import TipTap from "@/components/chat-text-area/tiptap";
+import { WebSocketClient } from "@/components/ws/webSocketClient";
 import { useChannelStore } from "@/store/channelStore";
 
 export default function ChannelDefault() {
@@ -16,6 +17,7 @@ export default function ChannelDefault() {
       >
         {/* 채팅 입력 컴포넌트 */}
         <TipTap />
+        <WebSocketClient />
       </div>
     </div>
   );

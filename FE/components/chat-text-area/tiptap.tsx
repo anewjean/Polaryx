@@ -23,9 +23,11 @@ import Link from "@tiptap/extension-link";
 import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
+import { useMessageStore } from "@/store/messageStore";
+import { WebSocketClient } from "../ws/webSocketClient";
 
 const TipTap = () => {
-  const [text, setText] = useState("helloWorld");
+  const { message, setMessage, setSendFlag } = useMessageStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     editable: true,
@@ -117,7 +119,7 @@ const TipTap = () => {
         },
       }),
     ],
-    content: text,
+    content: message,
   });
 
   const setLink = useCallback(() => {
@@ -196,10 +198,14 @@ const TipTap = () => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
 
-  const handleSend = () => {
-    // 메시지 전송 로직 (예: 서버로 전송, 상태 초기화 등)
-    alert("메시지 전송!");
-    // editor.commands.clearContent(); // 필요시 입력창 비우기
+  const handleSend = async () => {
+    console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
+    const content = editor?.getText() || "";
+    if (!content.trim()) return;
+
+    setMessage(content); // 메시지 저장
+    setSendFlag(true); // 전송 트리거
+    editor?.commands.clearContent();
   };
 
   if (!editor) {
