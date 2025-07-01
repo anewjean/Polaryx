@@ -1,12 +1,13 @@
 import { create } from "zustand";
 
 interface ProfileStore {
-    isOpen: boolean;
-    setOpen: (open: boolean) => void;
+  isOpen: boolean;
+  setOpen: () => void;
+  setClose: () => void;
 }
 
 export const useProfileStore = create<ProfileStore>((set) => ({
-    isOpen: false,
-    setOpen: (open: boolean) => set({ isOpen: open })
+  isOpen: false,
+  setOpen: () => set({ isOpen: true }),
+  setClose: () => set({ isOpen: false }),
 }));
-  

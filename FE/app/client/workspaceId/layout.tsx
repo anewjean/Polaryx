@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChannelStore } from "@/store/channelStore";
 import { useProfileStore } from "@/store/profileStore";
 
@@ -18,46 +18,53 @@ export default function WorkspaceLayout({
   profile: React.ReactElement<{ width: number }>;
 }) {
   const [sidebarWidth, setSidebarWidth] = useState(20);
+  const [currentSidebarWidth, setCurrentSidebarWidth] = useState(20);
   const [profileWidth, setProfileWidth] = useState(15);
 
-  // 채널 너비 추적을 위한 state
+  // 채널 너비 추적을 위한 state 구독
   const { channelWidth, setChannelWidth } = useChannelStore();
 
-  // 프로필 표시를 위한 state
-  const { isOpen, setOpen } = useProfileStore();
+  // 프로필 표시를 위한 state 구독
+  const { isOpen } = useProfileStore();
+
+  // 채널 너비 갱신 (사이드바 너비는 유지)
+  useEffect(() => {
+    if (isOpen) {
+      setChannelWidth(100 - currentSidebarWidth - profileWidth);
+    } else {
+      setChannelWidth(100 - currentSidebarWidth);
+    }
+  }, [isOpen, currentSidebarWidth, profileWidth, setChannelWidth]);
+
+  // 사이드바 너비가 변경 시 defaultSize 업데이트
+  useEffect(() => {
+    setCurrentSidebarWidth(sidebarWidth);
+  }, [sidebarWidth]);
 
   // 패널 크기 변경 시 상태 업데이트
   const handleLayout = (sizes: number[]) => {
     setSidebarWidth(sizes[0]);
+    setChannelWidth(sizes[1]);
     if (isOpen) {
-      setChannelWidth(sizes[1]);
       setProfileWidth(sizes[2]);
-    } else {
-      setChannelWidth(sizes[1]);
     }
-  };
-
-  // 프로필 표시 테스트용 버튼
-  const openProfile = () => {
-    if (isOpen) {
-      setChannelWidth(100 - sidebarWidth);
-    } else {
-      setChannelWidth(100 - sidebarWidth - profileWidth);
-    }
-    setOpen(true);
   };
 
   return (
     <div className="flex flex-1 min-h-0">
       <div className="flex flex-1 flex-row min-h-0 w-full">
-        {/* <Button onClick={openProfile}>Open Profile</Button>    */}
-        <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0" onLayout={handleLayout}>
-          <ResizablePanel id="sidebar" defaultSize={sidebarWidth} minSize={10} maxSize={30}>
+        <ResizablePanelGroup
+          key="workspace-layout-group"
+          direction="horizontal"
+          className="flex-1 min-h-0"
+          onLayout={handleLayout}
+        >
+          <ResizablePanel defaultSize={currentSidebarWidth} minSize={10} maxSize={30}>
             {/* 사이드바 영역: 너비값을 함께 전달 */}
-            {React.isValidElement(sidebar) ? React.cloneElement(sidebar, { width: sidebarWidth }) : sidebar}
+            {React.cloneElement(sidebar, { width: sidebarWidth })}
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel id="channel" defaultSize={channelWidth} minSize={30} maxSize={90}>
+          <ResizablePanel defaultSize={channelWidth} minSize={30} maxSize={90}>
             {/* 채널 영역*/}
             {channel}
           </ResizablePanel>
@@ -66,7 +73,6 @@ export default function WorkspaceLayout({
             <>
               <ResizableHandle />
               <ResizablePanel
-                id="profile"
                 defaultSize={profileWidth}
                 minSize={15}
                 maxSize={30}
