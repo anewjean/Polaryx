@@ -34,13 +34,16 @@ class MySQL(DBImpl):
             query_type = query.strip().split()[0].lower()
             if query_type == "select":
                 result = self.cursor.fetchall()
+            
             elif query_type in ("insert", "update", "delete"):
+                
+                self.connection.commit()
+
                 result = {
                     "rowcount": self.cursor.rowcount,
                     "lastrowid": getattr(self.cursor, "lastrowid", None)  # insert일 경우
                 }
-            else:
-                result = None  # 기타 쿼리 (create table 등)
+
             self.cursor.close()
             return result 
         except Exception as e:
