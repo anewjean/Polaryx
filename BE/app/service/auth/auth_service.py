@@ -7,10 +7,49 @@ from BE.app.repository.auth.mysql_query_repo import QueryRepo
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
+REFRESH_TOKEN_EXPIRE_MINUTES = 12960
 
 
 class AuthService:
+
+    def find_db(data):
+        db = DBFactory.get_db("MYSQL")
+        query_repo = QueryRepo()
+        
+        params = {"user_email": data["user_email"], "user_provider_id": data["user_provider_id"]}
+
+        # 일단 email로 먼저 찾아내기.
+        sql = query_repo.get_sql("find_user_by_email")
+        result = db.execute(sql, params)
+
+        # 만약 email과 일치하는 회원이 없다면 바로 짤.
+        if result is None:
+            return None
+        
+        # email을 통해 데이터를 찾아오긴 했지만,
+        # provider_id 가 존재하지 않는 경우,
+        # provider_id 업데이트
+        if result[0][4] is None:
+            sql = query_repo.get_sql("find_user_by_email_and_update_provider_id")
+            db.execute(sql, params)
+
+        # 만약 provider_id도 존재하지만, 접근 시도하는 데이터의
+        # provider_id와 다른것도 짤.
+        elif result[0][4] is not params["user_provider_id"]:
+            return None
+        
+        # 위 사항들에 해당되지 않는다면, 다시 provider_id와 email로 제대로 찾아와서 반환
+        sql = query_repo.get_sql("find_user_by_provider_id_and_email")
+        result = db.execute(sql, params)
+
+        return result
+
+        
+
+
+    
+class TokenSerive:
 
     # 로그인2(토큰 재발급?? 언제하는거임?)
     # JWT 구조에서는 2개의 토큰을 사용함.
@@ -19,22 +58,6 @@ class AuthService:
     # 만약 access 토큰의 유효시간이 끝났는데, refresh는 아니다?
     # -> 그럼 재발급.
 
-    def find_db(user_email):
-        db = DBFactory.get_db("MYSQL")
-        query_repo = QueryRepo()
-        
-        params = {"user_email": user_email}
-        sql = query_repo.get_sql("find_user_by_email")
-        
-        result = db.execute(sql, params)
-        
-        return result
-
-
-    
-class TokenSerive:
-
-    
     # 토큰 관련(JWT 생성 / 검증)
     # -> 소셜 로그인을 통한 회원과, 직접 회원가입한 회원은 다른 토큰 사용.
     # 만약 직접 회원가입했다? -> 그럼 자체 토큰 사용해야됨.
@@ -49,15 +72,27 @@ class TokenSerive:
         to_encode.update({"exp": expire})
 
         return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    # 소셜 토큰과 자체 토큰의 차이점
-    # 1. 소셜 토큰: 소셜 사용자 인증
-    # 2. 자체 토큰: 서비스 내 로그인 유지
-
-    # 소셜 로그인 토큰 검증
-
-    def social_token():
-        return
     
+    # 그럼 이제 해야되는거? 리프레시 토큰도 발급해서 refresh_token 데이터베이스에 넣어주기
+    # 그럼
+    def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
+        to_encode = data.copy()
+
+        expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
+        to_encode.update({"exp": expire})
+
+        return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    # 발급받은 refresh_token을 refresh_token DB에 저장해두기.
+    def save_refresh_token_to_db(refresh_token):
+        db = DBFactory.get_db("MYSQL")
+        query_repo = QueryRepo()
+
+        sql = query_repo.get_sql("save_refresh_token")
+        db.execute(sql, refresh_token)
+
+        return
+
     
     # 유효성 검사(사용자 상태 검사(탈퇴, 비활), 소셜 토큰 정보 검사)
 

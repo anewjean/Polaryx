@@ -89,29 +89,35 @@ async def auth_callback(provider: Provider, code: str):
 
             user = userinfo_res.json()
 
-            print(1)
+            data = {"user_email": user["email"], "user_provider_id": user["id"]}
 
             ########################################
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-            user_INdb = AuthService.find_db(user["email"])
+            user_INdb = AuthService.find_db(data)
             ########################################
 
+            # 이건 개선 해야 하는 곳.
+            # 회원 목록에 없다면, 관리자 문의 페이지로 이동시켜야 함.
             if user_INdb is None:
                 print("Failed")
                 return
-
+            
             else:
-                print(user_INdb)
                 ########### #############################
-                # 토큰 발급
-                data = {"email": user_INdb[0][2]}
-                print(data)
-                
-                jwt_token = TokenSerive.create_access_token(data)
+                # DB에 존재하는 회원이라면 토큰 발급. 액세스, 리프레시 모두
+                # by email, provider_id
+                data = [{"email": user_INdb[0][2]}, {"provider_id": user_INdb[0][4]}]
+                # print(data) # 디버깅용
+
+                jwt_access_token = TokenSerive.create_access_token(data)
+                jwt_refresh_token = TokenSerive.create_refresh_token(data)
+
+                TokenSerive.save_refresh_token_to_db(jwt_refresh_token)
                 ########################################
+
                 
-                # return user
-                return {"access_token": jwt_token, "token_type": "bearer"}
+                return {"access_token": jwt_access_token, "token_type": "bearer"}
+
 
     elif provider.value == "github":
         async with httpx.AsyncClient() as client:
