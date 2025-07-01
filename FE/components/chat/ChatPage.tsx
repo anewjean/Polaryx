@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { MiniProfile } from "./MiniProfile";
 import { useMessageStore } from "@/store/messageStore";
+import { ChatEditButton } from "./chatEditButton";
 
 interface ChatPageProps {
   name: string;
@@ -13,6 +14,10 @@ export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
   const [showProfile, setShowProfile] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState<string | null>(null);
+
   return (
     <div className="flex p-[8px_20px] hover:bg-[#f8f8f8]">
       <div className="relative">
@@ -44,9 +49,23 @@ export function ChatPage() {
         </div>
         <div className="text-m">
           {messages.map((msg, i) => (
-            <p key={i} className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""}>
-              {msg}
-            </p>
+            <div
+              key={i}
+              onMouseEnter={() => setHoverIdx(i)}
+              onMouseLeave={() => setHoverIdx(null)}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
+                {msg}
+              </p>
+              <ChatEditButton
+                visible={hoverIdx === i}
+                onClick={() => {
+                  setEditIdx(i);
+                  setEditValue(msg);
+                }}
+              />
+            </div>
           ))}
         </div>
       </div>
