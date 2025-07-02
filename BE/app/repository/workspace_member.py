@@ -59,6 +59,6 @@ class QueryRepo(AbstractQueryRepo):
     
     def find_all(self, workspace_id: int) -> List[WorkspaceMember]:
         param = {
-            "workspace_id": int
+            "workspace_id": workspace_id
         }
         return self.db.execute(find_all_workspace_members, param)
