@@ -1,15 +1,7 @@
-import { ClerkProvider, SignIn } from '@clerk/nextjs'
-import { experimental__simple } from "@clerk/themes"
-
 export default function Page() {
   return (
-    <ClerkProvider>
-        <div
-            className="flex justify-center items-center"
-            style={{padding:50}}
-            >
-            <SignIn appearance={{baseTheme: experimental__simple}}/>
-        </div>
-    </ClerkProvider>
-  )
+    <div className="flex justify-center items-center" style={{ padding: 50 }}>
+      <p>여긴 로그인하는 곳</p>
+    </div>
+  );
 }

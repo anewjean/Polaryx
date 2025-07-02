@@ -3,6 +3,7 @@
 type ProfileProps = { width: number };
 
 export default function ProfilePage({ width }: ProfileProps) {
+  
   return (
     <div
       className="h-full w-full overflow-auto p-4 bg-background text-foreground"
