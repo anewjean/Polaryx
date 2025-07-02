@@ -28,6 +28,10 @@ find_refresh_token_by_refresh_token = """
 SELECT * FROM refresh_tokens WHERE token = %(user_refresh_token)s;
 """
 
+remove_refresh_token_by_user_id_and_token = """
+DELETE FROM refresh_tokens WHERE user_id = %(user_id)s AND token = %(user_refresh_token)s;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         super().__init__()
@@ -37,3 +41,4 @@ class QueryRepo(AbstractQueryRepo):
         self.queries["update_provider_id_and_id"] = update_provider_id_and_id
         self.queries["save_refresh_token"] = save_refresh_token
         self.queries["find_refresh_token_by_refresh_token"] = find_refresh_token_by_refresh_token
+        self.queries["remove_refresh_token_by_user_id_and_token"] = remove_refresh_token_by_user_id_and_token

@@ -1,9 +1,9 @@
-import jwt
 from datetime import datetime, timedelta, UTC
 import os
+from fastapi import HTTPException
 from BE.app.util.database.db_factory import DBFactory
 from BE.app.repository.auth.mysql_query_repo import QueryRepo
-
+from jose import jwt, JWTError, ExpiredSignatureError
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -66,7 +66,7 @@ class TokenSerive:
     # 그래서 인증 방식이 다르기 때문에 둘을 나눠서 구현.
     # 그렇다고 소셜 토큰으로 모든걸 해결할 수 없음.
     # 소셜 로그인도 자체 토큰이 필요함.
-    def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
         to_encode = data.copy()
 
         expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
@@ -76,7 +76,7 @@ class TokenSerive:
     
     # 그럼 이제 해야되는거? 리프레시 토큰도 발급해서 refresh_token 데이터베이스에 넣어주기
     # 그럼
-    def create_refresh_token(data: dict, expires_delta: timedelta | None = None):
+    def create_refresh_token(data: dict, expires_delta: timedelta | None = None) -> str:
         to_encode = data.copy()
 
         expire = datetime.now(UTC) + (expires_delta or timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES))
@@ -89,17 +89,43 @@ class TokenSerive:
         sql = query_repo.get_sql("save_refresh_token")
         db.execute(sql, data)
 
-        return
     
-    def find_and_get_refresh_token(data: dict):
+    def find_and_get_refresh_token(data: dict) -> str:
         sql = query_repo.get_sql("find_refresh_token_by_refresh_token")
         result = db.execute(sql, data)
 
-        return result
+        return result["token"]
 
     # 저장해둔 refresh_token이 유효하지 않다면 db에서 제거하기.
-    
+    def delete_refresh_token_from_db(data: dict):
+        sql = query_repo.get_sql("remove_refresh_token_by_user_id_and_token")
+        params = {"user_id": data["user_id"], "user_refresh_token": data["token"]}
+        db.execute(sql, params)
 
+    # 토큰 유효성 검사
+    def verify_token_get_user_id_and_email(data: dict) -> dict:
 
-    # 유효성 검사(사용자 상태 검사(탈퇴, 비활), 소셜 토큰 정보 검사)
+        if not TokenSerive.is_token_expired(data["user_refresh_token"]):
+            raise HTTPException(status_code=401, detail="expire refresh token")            
 
+        if not TokenSerive.is_token_bad(data["user_refresh_token"]):
+            raise HTTPException(status_code=401, detail="Invalid refresh token")
+                
+        payload = jwt.decode(data["user_refresh_token"], SECRET_KEY, algorithms=[ALGORITHM])
+        result = {"user_id": payload.get("user_id"), "email": payload.get("email")}
+        return result
+
+    def is_token_expired(token: str) -> bool:
+        try:
+            jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+            return False
+        except ExpiredSignatureError:
+            return True
+        
+
+    def is_token_bad(token: str) -> bool:
+        try:
+            jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+            return False
+        except JWTError:
+            return True
