@@ -24,10 +24,11 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
-import { WebSocketClient } from "../ws/webSocketClient";
+import { useMessageProfileStore } from "@/store/messageProfileStore";
 
 const TipTap = () => {
   const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
+  const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     editable: true,
@@ -202,6 +203,13 @@ const TipTap = () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
     const content = editor?.getText() || "";
     if (!content.trim()) return;
+
+    // 메시지 전송 시 profile data 저장
+    addProfile({
+      nickname: "Dongseok Lee (이동석)",
+      timestamp: new Date().getTime(),
+      image: "/profileTest.png",
+    });
 
     appendMessage(content);
     setMessage(content); // 메시지 저장

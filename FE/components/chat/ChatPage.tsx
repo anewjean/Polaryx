@@ -5,11 +5,14 @@ import { ChatEditButton } from "./chatEditButton";
 import { EditInput } from "./EditInput";
 import { updateMessage } from "@/apis/messages";
 import { WebSocketClient } from "../ws/webSocketClient";
+import { ShowDate } from "./ShowDate";
+import { useMessageProfileStore } from "@/store/messageProfileStore";
 
 // 채팅방 내 채팅
 export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
   const updateMessage = useMessageStore((state) => state.updateMessage);
+  const profile = useMessageProfileStore((state) => state.profiles[0]);
   const [showProfile, setShowProfile] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -17,9 +20,12 @@ export function ChatPage() {
   const [editValue, setEditValue] = useState<string>("");
   const [hiddenIdxs, setHiddenIdxs] = useState<number[]>([]);
 
+  if (!profile) return null; // 프로필이 없을 때
+
   return (
     <>
       <WebSocketClient />
+      <ShowDate />
       <div className="flex p-[8px_20px] hover:bg-[#f8f8f8]">
         <div className="relative">
           <button
@@ -45,8 +51,8 @@ export function ChatPage() {
         </div>
         <div className="w-[100%] m-[-12px -8px -16px -16px] p-[8px 8px 8px 16px]">
           <div className="flex items-baseline space-x-1.5">
-            <button className="text-m-bold cursor-pointer hover:underline">Dongseok Lee (이동석)</button>
-            <div className="text-xs chat-time-stamp">2025-06-19 10:00:00</div>
+            <button className="text-m-bold cursor-pointer hover:underline">{profile.nickname}</button>
+            <div className="text-xs chat-time-stamp">{new Date(profile.timestamp).toLocaleString()}</div>
           </div>
           <div className="text-m h-170 overflow-y-auto pr-2">
             {messages.map((msg, i) =>
