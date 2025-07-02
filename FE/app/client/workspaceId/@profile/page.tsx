@@ -10,7 +10,7 @@ import { SquarePen } from "lucide-react";
 import { CardModal } from "@/components/modal/CardModal";
 import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
-import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
+import { getMyProfile, patchMyProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 
 type ProfileProps = { width: number };
@@ -46,7 +46,7 @@ export default function ProfilePage({ width }: ProfileProps) {
   useEffect(() => {
     (async () => {
       try {
-        const data = await getProfile("9C27B022568A11F097058C554A43DA90");
+       const data = await getMyProfile();
         setProfile(data);
         setForm({
           nickname: data.nickname,
@@ -66,8 +66,8 @@ export default function ProfilePage({ width }: ProfileProps) {
   const saveChange = async () => {
     if (!profile) return;
     setSaving(true);
-    try {
-      const updated = await patchProfile("9C27B022568A11F097058C554A43DA90", form);
+      try {
+        const updated = await patchMyProfile(form);
       setProfile(updated);
       close();
     } catch (error) {

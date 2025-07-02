@@ -74,7 +74,18 @@ export async function getProfile(targetId: string): Promise<Profile> {
   return res.json();
 }
 
-export async function patchProfile(targetId: string, payload: Partial<EditableProfile>): Promise<Profile> {
+export async function getMyProfile(): Promise<Profile> {
+  const res = await fetch(`${BASE}/workspace_members/me`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  if (!res.ok) throw new Error("프로필 조회에 실패했습니다.");
+  return res.json();
+}
+
+export async function patchMyProfile(payload: Partial<EditableProfile>): Promise<Profile> {
   const res = await fetch(`${BASE}/workspace_members/me`, {
     method: "PATCH",
     headers: {
