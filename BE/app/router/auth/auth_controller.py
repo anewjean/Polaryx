@@ -1,5 +1,5 @@
 from fastapi.responses import HTMLResponse
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response, Depends
 from typing import Union
 from enum import Enum
 import os
@@ -12,8 +12,8 @@ from uuid6 import uuid7
 from jose import jwt, JWTError
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
-from BE.app.schema.auth.auth import AccessTokenOnly
-    
+from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
+from BE.app.core.security import verify_token_and_get_token_data
 
 router = APIRouter(prefix="/auth")
 
@@ -63,7 +63,7 @@ def social_login(provider: Provider):
 
     return RedirectResponse(url)
 
-@router.get("/{provider}/callback", response_model=AccessTokenOnly)
+@router.get("/{provider}/callback", response_model=AccessToken_and_WorkspaceID)
 async def auth_callback(provider: Provider, code: str, response:Response):
     
     user = None
@@ -116,18 +116,15 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             else:
                 # 토큰 발급
                 data = {"user_id": str(user_INdb[0][0]), "email": user_INdb[0][2]}
-                print(1)
                 jwt_access_token = TokenSerive.create_access_token(data)
-                print(2)
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
-                print(3)
                 data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
                 TokenSerive.save_refresh_token_to_db(data)
-                print(4)
+                print(user_INdb[0][5])
 
                 response.set_cookie(
                     key="refresh_token",
@@ -138,7 +135,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     max_age= 5*60
                 )
 
-                result = AccessTokenOnly(access_token=jwt_access_token)
+                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5])
                 
                 return result
     # github 구현 부분. 미완.
@@ -180,12 +177,14 @@ async def auth_callback(provider: Provider, code: str, response:Response):
 
 # 로그아웃도 하기
 @router.delete("/logout")
-async def logout(request:Request, response:Response):
+async def logout(request:Request, 
+                 response:Response, 
+                 token_user_id_and_email=Depends(verify_token_and_get_token_data),
+                 ):
     
     # 로그아웃할 때도 refresh token 넣어서 보내줌.
     refresh_token = request.cookies.get("refresh_token")
     data = {"user_refresh_token": refresh_token}
-    token_user_id_and_email = TokenSerive.verify_token_get_user_id_and_email(refresh_token)
 
     data.update({"user_id": token_user_id_and_email["user_id"], "email": token_user_id_and_email["email"]})
 
@@ -202,23 +201,21 @@ async def logout(request:Request, response:Response):
 
 
 # 로그인 유지(access token 만료)
-@router.get("/refresh", response_model=AccessTokenOnly)
-async def reaccess(request: Request):
-    # 요청으로 refresh_token 받아오겠지?
+@router.post("/refresh", response_model=AccessTokenOnly)
+async def reaccess(request: Request, 
+                   token_user_id_and_email = Depends(verify_token_and_get_token_data),
+                   ):
     # 그럼 요청에서 refresh_token 찾아서
     refresh_token = request.cookies.get("refresh_token")
 
     if not refresh_token:
-        raise HTTPException(status_code=400, detail="Refresh token 없음")
+        raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
 
     data = {"user_refresh_token": refresh_token}
-
-    # 그리고 validation 검사를 위해 payload 받아오고,
-    token_user_id_and_email = TokenSerive.verify_token_get_user_id_and_email(data)
     
     # 그 refresh_token으로 db에서 refresh_token 찾아오기
     db_refresh_token = TokenSerive.find_and_get_refresh_token(data)
-    db_token_user_id_and_email = TokenSerive.verify_token_get_user_id_and_email({"user_refresh_token": db_refresh_token})
+    db_token_user_id_and_email = verify_token_and_get_token_data({"user_refresh_token": db_refresh_token})
 
     # ㅇㅋ 하면 새로 액세스 토큰 발급
     if token_user_id_and_email["user_id"] == db_token_user_id_and_email["user_id"]:
@@ -227,4 +224,4 @@ async def reaccess(request: Request):
             access_token=new_access_token
         )
     else:
-        raise HTTPException(status_code=401, detail="refresh token 불일치")
+        raise HTTPException(status_code=401, detail="NOT CORRECT REFRESH TOKEN")

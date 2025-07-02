@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, UTC
 import os
-from fastapi import HTTPException
 from BE.app.util.database.db_factory import DBFactory
 from BE.app.repository.auth.mysql_query_repo import QueryRepo
-from jose import jwt, JWTError, ExpiredSignatureError
+from jose import jwt
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -101,31 +101,3 @@ class TokenSerive:
         sql = query_repo.get_sql("remove_refresh_token_by_user_id_and_token")
         params = {"user_id": data["user_id"], "user_refresh_token": data["token"]}
         db.execute(sql, params)
-
-    # 토큰 유효성 검사
-    def verify_token_get_user_id_and_email(data: dict) -> dict:
-
-        if not TokenSerive.is_token_expired(data["user_refresh_token"]):
-            raise HTTPException(status_code=401, detail="expire refresh token")            
-
-        if not TokenSerive.is_token_bad(data["user_refresh_token"]):
-            raise HTTPException(status_code=401, detail="Invalid refresh token")
-                
-        payload = jwt.decode(data["user_refresh_token"], SECRET_KEY, algorithms=[ALGORITHM])
-        result = {"user_id": payload.get("user_id"), "email": payload.get("email")}
-        return result
-
-    def is_token_expired(token: str) -> bool:
-        try:
-            jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-            return False
-        except ExpiredSignatureError:
-            return True
-        
-
-    def is_token_bad(token: str) -> bool:
-        try:
-            jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-            return False
-        except JWTError:
-            return True
