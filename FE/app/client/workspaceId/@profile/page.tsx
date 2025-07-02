@@ -10,17 +10,20 @@ import { SquarePen } from "lucide-react";
 import { CardModal } from "@/components/modal/CardModal";
 import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
-import { getMyProfile, patchMyProfile, Profile } from "@/apis/profileApi";
+import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 
-type ProfileProps = { width: number };
+type ProfileProps = {
+  width: number;
+  targetId?: string;
+};
 
-export default function ProfilePage({ width }: ProfileProps) {
-  // const accessToken = localStorage.getItem("accessToken");
-  // if (!accessToken) throw new Error("로그인이 필요합니다.");
+export default function ProfilePage({ width, targetId }: ProfileProps) {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   // accessToken의 sub 클레임에 있는 userId 추출
-  // const { sub: userId } = jwtDecode<{ sub: string }>(accessToken);
+  const { user_id: userId } = jwtDecode<{ user_id: string }>(accessToken);
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -46,29 +49,38 @@ export default function ProfilePage({ width }: ProfileProps) {
   useEffect(() => {
     (async () => {
       try {
-       const data = await getMyProfile();
-        setProfile(data);
+        setLoading(true);
+        let profileData: Profile;
+        if (targetId) {
+          profileData = await getProfile(targetId);
+
+          // targetId가 없으면 본인 프로필 조회
+        } else {
+          profileData = await getProfile(userId);
+        }
+        setProfile(profileData);
         setForm({
-          nickname: data.nickname,
-          phone: data.phone ?? "",
-          github: data.github ?? "",
-          blog: data.blog ?? "",
+          nickname: profileData.nickname,
+          phone: profileData.phone ?? "",
+          github: profileData.github ?? "",
+          blog: profileData.blog ?? "",
         });
       } catch (error) {
-        console.error(error);
+        console.error("프로필 조회 실패:", error);
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [targetId]);
 
   // 프로필 수정
   const saveChange = async () => {
     if (!profile) return;
     setSaving(true);
-      try {
-        const updated = await patchMyProfile(form);
-      setProfile(updated);
+    try {
+      let updatedProfile: Profile;
+      updatedProfile = await patchProfile(userId, form);
+      setProfile(updatedProfile);
       close();
     } catch (error) {
       console.error(error);
@@ -105,105 +117,113 @@ export default function ProfilePage({ width }: ProfileProps) {
       </div>
       {/* 버튼 (메시지, 편집) */}
       <div className="flex w-full min-w-0 items-center justify-center">
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
-        >
-          <Mail size={24} />
-          <span className="truncate">Direct Message</span>
-        </Button>
-        <CardModal
-          trigger={
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
-            >
-              <SquarePen size={24} />
-              <span className="truncate">ProfileEdit</span>
-            </Button>
-          }
-          title="Edit your profile"
-        >
-          {/* CardModal 내용: 프로필 편집 폼 */}
-          <form className="flex flex-col gap-5">
-            <div className="flex flex-row gap-5">
-              {/* 프로필 이미지 */}
-              <div className="flex flex-col justify-between h-full w-[238px] gap-2">
-                <img
-                  src={profile?.image || "/user_default.png"}
-                  alt="profile_image"
-                  className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
-                />
-                <Button variant="outline" size="sm">
-                  Change
-                </Button>
-              </div>
-              {/* 프로필 정보 */}
-              <div className="flex flex-col w-full gap-2">
-                <div className="flex flex-col gap-4">
-                  {/* 필수 필드1: 역할 */}
-                  <div className="flex flex-col">
-                    <label className="font-semibold">Role*</label>
-                    <span className="w-full font-normal">{profile?.role}</span>
-                  </div>
-                  {/* 필수 필드2: 이메일 */}
-                  <div className="flex flex-col">
-                    <label className="font-semibold">Email*</label>
-                    <span className="w-full font-normal">{profile?.email}</span>
-                  </div>
-                  {/* 필수 필드3: 닉네임 */}
-                  <div>
-                    <label className="font-semibold">Nickname*</label>
-                    <Input
-                      type="text"
-                     value={form.nickname}
-                     onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-                     className="w-full border rounded px-2 py-1 font-normal"
-                    />
+        {/* DM 버튼 표시 케이스: 타인 프로필 */}
+        if (targetId){" "}
+        {
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+          >
+            <Mail size={24} />
+            <span className="truncate">Direct Message</span>
+          </Button>
+        }
+        {/* 편집 버튼 표시 케이스: 본인 프로필 */}
+        else{" "}
+        {
+          <CardModal
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+              >
+                <SquarePen size={24} />
+                <span className="truncate">ProfileEdit</span>
+              </Button>
+            }
+            title="Edit your profile"
+          >
+            {/* CardModal 내용: 프로필 편집 폼 */}
+            <form className="flex flex-col gap-5">
+              <div className="flex flex-row gap-5">
+                {/* 프로필 이미지 */}
+                <div className="flex flex-col justify-between h-full w-[238px] gap-2">
+                  <img
+                    src={profile?.image || "/user_default.png"}
+                    alt="profile_image"
+                    className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+                  />
+                  <Button variant="outline" size="sm">
+                    Change
+                  </Button>
+                </div>
+                {/* 프로필 정보 */}
+                <div className="flex flex-col w-full gap-2">
+                  <div className="flex flex-col gap-4">
+                    {/* 필수 필드1: 역할 */}
+                    <div className="flex flex-col">
+                      <label className="font-semibold">Role*</label>
+                      <span className="w-full font-normal">{profile?.role}</span>
+                    </div>
+                    {/* 필수 필드2: 이메일 */}
+                    <div className="flex flex-col">
+                      <label className="font-semibold">Email*</label>
+                      <span className="w-full font-normal">{profile?.email}</span>
+                    </div>
+                    {/* 필수 필드3: 닉네임 */}
+                    <div>
+                      <label className="font-semibold">Nickname*</label>
+                      <Input
+                        type="text"
+                        value={form.nickname}
+                        onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+                        className="w-full border rounded px-2 py-1 font-normal"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            {/* 추가 필드1: 연락처 */}
-            <label className="font-semibold">
-              Phone
-              <Input
-                type="text"
-                placeholder=""
-                defaultValue={profile?.phone ?? ""}
-                className="w-full border rounded px-2 py-1 font-normal"
-              />
-            </label>
-            {/* 추가 필드2: github */}
-            <label className="font-semibold">
-              Github
-              <Input
+              {/* 추가 필드1: 연락처 */}
+              <label className="font-semibold">
+                Phone
+                <Input
+                  type="text"
+                  placeholder=""
+                  defaultValue={profile?.phone ?? ""}
+                  className="w-full border rounded px-2 py-1 font-normal"
+                />
+              </label>
+              {/* 추가 필드2: github */}
+              <label className="font-semibold">
+                Github
+                <Input
                   type="text"
                   value={form.github}
                   onChange={(e) => setForm({ ...form, github: e.target.value })}
                   className="w-full border rounded px-2 py-1 font-normal"
-              />
-            </label>
-            {/* 추가 필드3: blog */}
-            <label className="font-semibold">
-              Blog
-              <Input
-                 type="text"
-                value={form.blog}
-                onChange={(e) => setForm({ ...form, blog: e.target.value })}
-                className="w-full border rounded px-2 py-1 font-normal"
-              />
-            </label>
-            <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
-              <Button variant="secondary">Cancel</Button>
-             <Button variant="default" onClick={saveChange} disabled={saving}>
-              {saving ? "Saving..." : "Save Changes"}
-            </Button>
-            </CardFooter>
-          </form>
-        </CardModal>
+                />
+              </label>
+              {/* 추가 필드3: blog */}
+              <label className="font-semibold">
+                Blog
+                <Input
+                  type="text"
+                  value={form.blog}
+                  onChange={(e) => setForm({ ...form, blog: e.target.value })}
+                  className="w-full border rounded px-2 py-1 font-normal"
+                />
+              </label>
+              <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
+                <Button variant="secondary">Cancel</Button>
+                <Button variant="default" onClick={saveChange} disabled={saving}>
+                  {saving ? "Saving..." : "Save Changes"}
+                </Button>
+              </CardFooter>
+            </form>
+          </CardModal>
+        }
       </div>
       {/* 구분선 */}
       <Separator />
