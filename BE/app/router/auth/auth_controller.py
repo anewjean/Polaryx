@@ -63,7 +63,7 @@ def social_login(provider: Provider):
 
     return RedirectResponse(url)
 
-@router.post("/{provider}/callback", response_model=AccessToken_and_RefreshToken)
+@router.get("/{provider}/callback", response_model=AccessToken_and_RefreshToken)
 async def auth_callback(provider: Provider, code: str):
     
     user = None
@@ -114,20 +114,20 @@ async def auth_callback(provider: Provider, code: str):
             ########################################
             
             else:
-                ########### #############################
                 # 토큰 발급
-                data = {"user_id": user_INdb[0][0], "email": user_INdb[0][2]}
-
+                data = {"user_id": str(user_INdb[0][0]), "email": user_INdb[0][2]}
+                print(1)
                 jwt_access_token = TokenSerive.create_access_token(data)
+                print(2)
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
-
+                print(3)
                 data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
                 TokenSerive.save_refresh_token_to_db(data)
-
+                print(4)
                 result = AccessToken_and_RefreshToken(access_token=jwt_access_token, refresh_token=jwt_refresh_token)
                 
                 return result

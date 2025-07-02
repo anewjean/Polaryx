@@ -32,7 +32,7 @@ class AuthService:
         # email을 통해 데이터를 찾아오긴 했지만,
         # provider_id 가 존재하지 않는 경우, 즉 처음으로 로그인 했을 때,
         # provider_id와 id 업데이트
-        if result[0][4] is "0":
+        if not result[0][4]:
             sql = query_repo.get_sql("update_provider_id_and_id")
             db.execute(sql, params)
 
