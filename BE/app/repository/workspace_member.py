@@ -22,11 +22,16 @@ WHERE;
 """
 
 find_member_by_id = """
-SELECT * FROM workspace_members WHERE id = %(id)s;
+SELECT * 
+FROM workspace_members 
+WHERE id = %(id)s
+AND deleted_at IS NULL;
 """
 
 find_member_by_email = """
-SELECT * FROM workspace_members WHERE email = %(email)s;
+SELECT * 
+FROM workspace_members 
+WHERE email = %(email)s;
 """
 
 find_all_workspace_members = """
@@ -51,3 +56,9 @@ class QueryRepo(AbstractQueryRepo):
             "email": email
         }
         return self.db.execute(find_member_by_email, param)
+    
+    def find_all(self, workspace_id: int) -> List[WorkspaceMember]:
+        param = {
+            "workspace_id": int
+        }
+        return self.db.execute(find_all_workspace_members, param)

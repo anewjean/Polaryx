@@ -20,6 +20,7 @@ class WorkspaceMembersService:
             with connection.cursor(dictionary=True) as cursor:
                 cursor.execute(query, (workspace_member_id,))
                 result = cursor.fetchone()
+                print(result["image"])
                 if result is None:
                     raise ValueError("해당 맴버를 찾을 수 없습니다.")
                 
@@ -47,8 +48,8 @@ class WorkspaceMembersService:
             update_data.github,
             update_data.blog,
             update_data.image,
-            workspace_member_id,
-            update_data.phone
+            update_data.phone,
+            workspace_member_id
         )
 
         with get_connection() as connection:

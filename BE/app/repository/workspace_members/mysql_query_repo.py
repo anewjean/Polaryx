@@ -16,6 +16,7 @@ class QueryRepo(AbstractQueryRepo):
         self.db = DBFactory.get_db("mysql")
         self.queries["find_all_workspace_members"] = find_all_workspace_members
         self.queries["find_workspace_member_by_id"] = find_workspace_members_by_id
+        
     
     def find_workspace_members(self, id: bytes):
         query = find_workspace_members_by_id
