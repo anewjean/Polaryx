@@ -36,7 +36,6 @@ class MySQL(DBImpl):
                 result = self.cursor.fetchall()
             
             elif query_type in ("insert", "update", "delete"):
-                
                 self.connection.commit()
 
                 result = {
@@ -52,7 +51,8 @@ class MySQL(DBImpl):
     def execute_many(self, query, bind_value, fields=None):
         try:
             self.cursor = self.connection.cursor()
-            self.cursor.executeMany(query, bind_value)
+            self.cursor.executemany(query, bind_value)
+            self.connection.commit()
             result = self.cursor.fetchall()
             self.cursor.close()
         except Exception as e:
