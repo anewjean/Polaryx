@@ -114,11 +114,18 @@ async def auth_callback(provider: Provider, code: str):
             ########################################
             
             else:
-                # DB에 존재하는 회원이라면 토큰 발급. 액세스, 리프레시 모두
-                # by email, provider_id
-                data = {"email": user_INdb[0][2], 
-                        "provider_id": user_INdb[0][4]
-                        }
+                print(user_INdb)
+                ########### #############################
+                # 토큰 발급
+                data = {"email": user_INdb[0][2]}
+                print(data)
+                
+                jwt_token = TokenSerive.create_access_token(data)
+                ########################################
+                
+                # return user
+                redirect_to = f"http://localhost:3000/auth/callback?token={jwt_token}"
+                return RedirectResponse(redirect_to)
 
                 jwt_access_token = TokenSerive.create_access_token(data)
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
