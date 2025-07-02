@@ -3,6 +3,7 @@ import { MiniProfile } from "./MiniProfile";
 import { useMessageStore } from "@/store/messageStore";
 import { ChatEditButton } from "./chatEditButton";
 import { EditInput } from "./EditInput";
+import { updateMessage } from "@/apis/messages";
 
 // 채팅방 내 채팅
 export function ChatPage() {
@@ -12,7 +13,8 @@ export function ChatPage() {
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [editValue, setEditValue] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState<string>("");
+  const [hiddenIdxs, setHiddenIdxs] = useState<number[]>([]);
 
   return (
     <div className="flex p-[8px_20px] hover:bg-[#f8f8f8]">
@@ -44,39 +46,42 @@ export function ChatPage() {
           <div className="text-xs chat-time-stamp">2025-06-19 10:00:00</div>
         </div>
         <div className="text-m">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              onMouseEnter={() => setHoverIdx(i)}
-              onMouseLeave={() => setHoverIdx(null)}
-              style={{ display: "flex", alignItems: "center" }}
-            >
-              {editIdx === i ? (
-                <EditInput
-                  value={editValue || ""}
-                  onChange={setEditValue}
-                  onSave={() => {
-                    updateMessage(i, editValue || "");
-                    setEditIdx(null);
-                  }}
-                  onCancel={() => setEditIdx(null)}
-                />
-              ) : (
-                <>
-                  <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
-                    {msg}
-                  </p>
-                  <ChatEditButton
-                    visible={hoverIdx === i}
-                    onClick={() => {
-                      setEditIdx(i);
-                      setEditValue(msg);
+          {messages.map((msg, i) =>
+            hiddenIdxs.includes(i) ? null : (
+              <div
+                key={i}
+                onMouseEnter={() => setHoverIdx(i)}
+                onMouseLeave={() => setHoverIdx(null)}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                {editIdx === i ? (
+                  <EditInput
+                    value={editValue}
+                    onChange={setEditValue}
+                    onSave={() => {
+                      updateMessage(i, editValue);
+                      setEditIdx(null);
                     }}
+                    onCancel={() => setEditIdx(null)}
                   />
-                </>
-              )}
-            </div>
-          ))}
+                ) : (
+                  <>
+                    <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
+                      {msg}
+                    </p>
+                    <ChatEditButton
+                      visible={hoverIdx === i}
+                      onClick={() => {
+                        setEditIdx(i);
+                        setEditValue(msg);
+                      }}
+                      onDelete={() => setHiddenIdxs((prev) => [...prev, i])}
+                    />
+                  </>
+                )}
+              </div>
+            ),
+          )}
         </div>
       </div>
     </div>
