@@ -1,34 +1,29 @@
 "use client";
 
+import { reissueAccessToken } from "@/apis/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type JWTPayload = { email: string; exp: number };
-type Workspace = {
-  id: string;
-  name: string;
-};
+// type JWTPayload = { email: string; exp: number };
+// type Workspace = {
+//   id: string;
+//   name: string;
+// };
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const params = useSearchParams();
-  const code = params.get('code');
-  const scope = params.get('scope');
-  const prompt = params.get('prompt');
-  const errorParam = params.get('error');
+  const code = params.get("code");
+  const scope = params.get("scope");
+  const prompt = params.get("prompt");
+  const errorParam = params.get("error");
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!code) {
-      setError('Google 로그인 code가 없습니다.');
-      setIsLoading(false);
-      return;
-    }
-
-    if (errorParam) {
-      setError(errorParam === 'not_found' ? '등록된 사용자가 아닙니다.' : '알 수 없는 오류입니다.');
+      setError("Google 로그인 code가 없습니다.");
       setIsLoading(false);
       return;
     }
@@ -38,31 +33,34 @@ export default function AuthCallbackPage() {
         const res = await fetch(
           `http://localhost:8000/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
-            credentials: 'include', // refresh_token 받을 때 필요
-          }
+            credentials: "include", // refresh_token 받을 때 필요
+          },
         );
 
-        // 디버깅용
-        console.log(res.status);
+        if (errorParam) { // 추후 수정
+          setError(errorParam === "not_found" ? "등록된 사용자가 아닙니다." : "알 수 없는 오류입니다.");
+          setIsLoading(false);
+          return;
+        }
 
-        if (!res.ok) throw new Error('백엔드 요청 실패');
+        if (!res.ok) throw new Error("백엔드 요청 실패");
 
         const data = await res.json();
         const accessToken = data.access_token;
 
         if (!accessToken) {
-          setError('access_token이 없습니다.');
+          setError("access_token이 없습니다.");
           setIsLoading(false);
           return;
         }
 
-        localStorage.setItem('access_token', accessToken);
+        localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
-          router.replace('/client/workspaceId');
+          router.replace("/client/workspaceId");
         }, 1500);
       } catch (err: any) {
-        setError('인증 처리 중 오류: ' + err.message);
+        setError("인증 처리 중 오류: " + err.message);
         setIsLoading(false);
       }
     };
@@ -76,10 +74,7 @@ export default function AuthCallbackPage() {
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <h1 className="text-2xl font-bold mb-2">로그인 실패</h1>
         <p className="mb-6 text-red-600">{error}</p>
-        <button
-          onClick={() => router.push('/')}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button onClick={() => router.push("/")} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           홈으로 가기
         </button>
       </div>

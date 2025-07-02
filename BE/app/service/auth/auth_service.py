@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, UTC
 import os
 from BE.app.util.database.db_factory import DBFactory
 from BE.app.repository.auth.mysql_query_repo import QueryRepo
-from jose import jwt
+from jose import jwt, ExpiredSignatureError
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -101,3 +101,11 @@ class TokenSerive:
         sql = query_repo.get_sql("remove_refresh_token_by_user_id_and_token")
         params = {"user_id": data["user_id"], "user_refresh_token": data["token"]}
         db.execute(sql, params)
+
+
+    def verify_access_token(token:str):
+        try:
+            res = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+        except ExpiredSignatureError:
+            res = None
+        return res
