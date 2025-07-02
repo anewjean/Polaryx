@@ -30,6 +30,8 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // 메시지 전송 trigger
   sendFlag: false,
   setSendFlag: (flag) => set({ sendFlag: flag }),
+
+  // List에 메시지 추가
   messages: [],
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
 }));
