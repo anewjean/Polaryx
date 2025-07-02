@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request, Response, Depends
+from fastapi import APIRouter, HTTPException, Request, Response, Depends, Header
 from typing import Union
 from enum import Enum
 import os
@@ -45,6 +45,48 @@ GITHUBS_params = {
     "redirect_uri": GITHUBS_REDIRECT_URI,
     "scope": "user",
 }
+
+#############################################
+@router.get("/check")
+async def find_user_in_db(request: Request):
+    token = request.headers["authorization"]
+    target = token.split()[1]
+    result = TokenSerive.verify_access_token(target)
+    
+    if result == None:
+        raise HTTPException(status_code=401, detail="EXPIRED TOKEN")
+    return
+#############################################
+
+# 로그인 유지(access token 만료)
+@router.post("/refresh", response_model=AccessTokenOnly)
+async def reaccess(request: Request, 
+                #    token_user_id_and_email = Depends(verify_token_and_get_token_data),
+                   ):
+    # 그럼 요청에서 refresh_token 찾아서
+
+    refresh_token = request.cookies.get("refresh_token")
+    print(refresh_token)
+    token_user_id_and_email = TokenSerive.verify_access_token(refresh_token)
+
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
+
+    data = {"user_refresh_token": refresh_token}
+    
+    # 그 refresh_token으로 db에서 refresh_token 찾아오기
+    db_refresh_token = TokenSerive.find_and_get_refresh_token(data)
+    db_token_user_id_and_email = verify_token_and_get_token_data({"user_refresh_token": db_refresh_token})
+
+    # ㅇㅋ 하면 새로 액세스 토큰 발급
+    if token_user_id_and_email["user_id"] == db_token_user_id_and_email["user_id"]:
+        new_access_token = TokenSerive.create_access_token(token_user_id_and_email)
+        return AccessTokenOnly(
+            access_token=new_access_token
+        )
+    else:
+        raise HTTPException(status_code=401, detail="NOT CORRECT REFRESH TOKEN")
+    
 
 @router.get("/{provider}")
 def social_login(provider: Provider):
@@ -194,30 +236,3 @@ async def logout(request:Request,
 
     return
 
-
-
-# 로그인 유지(access token 만료)
-@router.post("/refresh", response_model=AccessTokenOnly)
-async def reaccess(request: Request, 
-                   token_user_id_and_email = Depends(verify_token_and_get_token_data),
-                   ):
-    # 그럼 요청에서 refresh_token 찾아서
-    refresh_token = request.cookies.get("refresh_token")
-
-    if not refresh_token:
-        raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
-
-    data = {"user_refresh_token": refresh_token}
-    
-    # 그 refresh_token으로 db에서 refresh_token 찾아오기
-    db_refresh_token = TokenSerive.find_and_get_refresh_token(data)
-    db_token_user_id_and_email = verify_token_and_get_token_data({"user_refresh_token": db_refresh_token})
-
-    # ㅇㅋ 하면 새로 액세스 토큰 발급
-    if token_user_id_and_email["user_id"] == db_token_user_id_and_email["user_id"]:
-        new_access_token = TokenSerive.create_access_token(token_user_id_and_email)
-        return AccessTokenOnly(
-            access_token=new_access_token
-        )
-    else:
-        raise HTTPException(status_code=401, detail="NOT CORRECT REFRESH TOKEN")
