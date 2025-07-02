@@ -1,4 +1,5 @@
 from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
+from BE.app.util.database.db_factory import DBFactory
 
 find_all_user = """
 SELECT * FROM user;
@@ -34,7 +35,8 @@ DELETE FROM refresh_tokens WHERE user_id = %(user_id)s AND token = %(user_refres
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
-        super().__init__()
+        db = DBFactory.get_db("MySQL")
+        super().__init__(db)
         self.queries["find_all_user"] = find_all_user
         self.queries["find_user_by_email"] = find_user_by_email
         self.queries["find_user_by_provider_id_and_email"] = find_user_by_provider_id_and_email
