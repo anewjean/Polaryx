@@ -12,7 +12,7 @@ from uuid6 import uuid7
 from jose import jwt, JWTError
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
-from BE.app.schema.auth.auth import AccessToken_and_RefreshToken, AccessTokenOnly
+from BE.app.schema.auth.auth import AccessTokenOnly
     
 
 router = APIRouter(prefix="/auth")
@@ -63,11 +63,11 @@ def social_login(provider: Provider):
 
     return RedirectResponse(url)
 
-@router.get("/{provider}/callback", response_model=AccessToken_and_RefreshToken)
-async def auth_callback(provider: Provider, code: str):
+@router.get("/{provider}/callback", response_model=AccessTokenOnly)
+async def auth_callback(provider: Provider, code: str, response:Response):
     
     user = None
-
+    print(1)
     if provider.value == "google":
         async with httpx.AsyncClient() as client:
             # Step 1: 토큰 요청
@@ -128,7 +128,17 @@ async def auth_callback(provider: Provider, code: str):
                 
                 TokenSerive.save_refresh_token_to_db(data)
                 print(4)
-                result = AccessToken_and_RefreshToken(access_token=jwt_access_token, refresh_token=jwt_refresh_token)
+
+                response.set_cookie(
+                    key="refresh_token",
+                    value=jwt_refresh_token,
+                    httponly=True,
+                    secure=True,
+                    samesite="lax",
+                    max_age= 5*60
+                )
+
+                result = AccessTokenOnly(access_token=jwt_access_token)
                 
                 return result
     # github 구현 부분. 미완.

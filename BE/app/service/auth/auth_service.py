@@ -8,7 +8,7 @@ from jose import jwt, JWTError, ExpiredSignatureError
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
-REFRESH_TOKEN_EXPIRE_MINUTES = 12960
+REFRESH_TOKEN_EXPIRE_MINUTES = 5
 
 db = DBFactory.get_db("MYSQL")
 query_repo = QueryRepo()
