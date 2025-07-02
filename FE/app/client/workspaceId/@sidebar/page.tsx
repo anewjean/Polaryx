@@ -4,6 +4,9 @@ import "@/app/globals.css";
 import React from "react";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useProfileStore } from "@/store/profileStore";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from "@/components/ui/popover";
 import {
   SidebarProvider,
   Sidebar,
@@ -20,7 +23,17 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Megaphone, Landmark, Users, Mail, ShieldUser, ChevronRight, ChevronDown } from "lucide-react";
+import {
+  Megaphone,
+  Landmark,
+  Users,
+  UserRoundCog,
+  LogOut,
+  Mail,
+  ShieldUser,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
 import { School } from "lucide-react";
 import { ChevronsUpDown } from "lucide-react";
 
@@ -30,8 +43,7 @@ type SidebarProps = {
 
 export default function AppSidebar({ width }: SidebarProps) {
   const { workspaceId } = useParams();
-  const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const open = useProfileStore((s) => s.setOpen);
 
   const sections = [
     { label: "Announcements", icon: Megaphone, href: `/${workspaceId}` },
@@ -107,7 +119,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                 {tabs.map((item) => (
                   <div key={item.label}>
                     <div className="flex items-center px-2 py-1 space-x-2 rounded">
-                      <ChevronRight onClick={() => setMenuOpen((v) => !v)} size={20} className="text-gray-400" />
+                      <ChevronRight size={20} className="text-gray-400" />
                       <span className="flex-1 min-w-0 truncate">{item.label}</span>
                       {/* <SidebarGroup className="flex flex-row flex-none">                        
                           <SidebarGroupContent>
@@ -173,27 +185,52 @@ export default function AppSidebar({ width }: SidebarProps) {
         </SidebarContent>
         {/* 사이드바 푸터 */}
         <SidebarFooter>
-          <SidebarMenuButton
-            isActive={isProfileMenuOpen}
-            disableActive={true}
-            onClick={() => setProfileMenuOpen((v) => !v)}
-            className="h-13 p-2 data-[active=true]:bg-[rgba(255,255,255,0.1)]"
-          >
-            <div className="flex flex-row items-center w-full gap-2">
-              {/* 프로필 이미지 */}
-              <div className="bg-gray-600 rounded-lg p-2 size-9 flex items-center justify-center" />
+          {/* 프로필 메뉴 호출 */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <SidebarMenuButton className="h-13 p-2">
+                <div className="flex flex-row items-center w-full gap-2">
+                  {/* 프로필 이미지 */}
+                  <div className="bg-gray-600 rounded-lg p-2 size-9 flex items-center justify-center" />
 
-              {/* 사용자 정보 */}
-              <div className="flex flex-col overflow-hidden" style={{ width }}>
-                <span className="text-md font-bold text-gray-200 truncate">사용자 이름</span>
-                <span className="text-xs text-gray-400 truncate">user@email.com</span>
+                  {/* 사용자 정보 */}
+                  <div className="flex flex-col overflow-hidden" style={{ width }}>
+                    <span className="text-md font-bold text-gray-200 truncate">사용자 이름</span>
+                    <span className="text-xs text-gray-400 truncate">user@email.com</span>
+                  </div>
+                </div>
+                {/* 사용자 메뉴 */}
+                <div className="flex justify-center">
+                  <ChevronsUpDown className="text-gray-400" size={16} />
+                </div>
+              </SidebarMenuButton>
+            </PopoverTrigger>
+            {/* 프로필 메뉴 구성 */}
+            <PopoverContent side="right" sideOffset={12} className="flex overflow-hidden bg-gray-700 rounded-md w-48">
+              <div className="flex flex-1 flex-col">
+                <PopoverClose>
+                  <Button
+                    onClick={open}
+                    variant="ghost"
+                    className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
+                  >
+                    <UserRoundCog />
+                    프로필
+                  </Button>
+                </PopoverClose>
+                <hr className="border-gray-500" />
+                <PopoverClose>
+                  <Button
+                    variant="ghost"
+                    className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
+                  >
+                    <LogOut />
+                    로그아웃
+                  </Button>
+                </PopoverClose>
               </div>
-            </div>
-            {/* 사용자 메뉴 */}
-            <div className="flex justify-center">
-              <ChevronsUpDown className="text-gray-400" size={16} />
-            </div>
-          </SidebarMenuButton>
+            </PopoverContent>
+          </Popover>
         </SidebarFooter>
       </Sidebar>
     </SidebarProvider>

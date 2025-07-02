@@ -27,7 +27,7 @@ class MySQL(DBImpl):
             self.cursor = self.connection.cursor()
 
             if bind_value is None:
-                self.cursor.execute(query, self.bind_value)
+                self.cursor.execute(query)
             else:
                 self.cursor.execute(query, bind_value)
             
