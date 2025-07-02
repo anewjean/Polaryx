@@ -21,7 +21,6 @@ export default function ChannelDefault() {
       >
         {/* 채팅 입력 컴포넌트 */}
         <TipTap />
-        <WebSocketClient />
       </div>
     </div>
   );
