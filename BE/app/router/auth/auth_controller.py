@@ -1,17 +1,15 @@
-from fastapi.responses import HTMLResponse
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request, Response, Depends
 from typing import Union
 from enum import Enum
 import os
 import httpx
 from urllib.parse import urlencode
-from pathlib import Path
 from fastapi.responses import RedirectResponse
-from datetime import datetime, UTC
 import uuid
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
-
+from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
+from BE.app.core.security import verify_token_and_get_token_data
 
 router = APIRouter(prefix="/auth")
 
@@ -61,11 +59,11 @@ def social_login(provider: Provider):
 
     return RedirectResponse(url)
 
-@router.get("/{provider}/callback")
-async def auth_callback(provider: Provider, code: str):
+@router.get("/{provider}/callback", response_model=AccessToken_and_WorkspaceID)
+async def auth_callback(provider: Provider, code: str, response:Response):
     
     user = None
-
+    print(1)
     if provider.value == "google":
         async with httpx.AsyncClient() as client:
             # Step 1: 토큰 요청
@@ -108,33 +106,34 @@ async def auth_callback(provider: Provider, code: str):
             # 회원 목록에 없다면, 관리자 문의 페이지로 이동시켜야 함.
             if not user_INdb:
                 print("Failed")
-                return
+                raise HTTPException(status_code=400, detail="User is not in DB")
             ########################################
             
             else:
-                # DB에 존재하는 회원이라면 토큰 발급. 액세스, 리프레시 모두
-                # by email, provider_id
-                data = {"email": user_INdb[0][2], 
-                        "provider_id": user_INdb[0][4]
-                        }
-
+                # 토큰 발급
+                data = {"user_id": str(user_INdb[0][0]), "email": user_INdb[0][2]}
                 jwt_access_token = TokenSerive.create_access_token(data)
-
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
-
                 data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
-                print("\n\n")
-                print(data)
-                print("\n\n")
                 TokenSerive.save_refresh_token_to_db(data)
+                print(user_INdb[0][5])
 
-                redirect_to = f"http://localhost:3000/auth/callback?token={jwt_access_token}"
-                return RedirectResponse(redirect_to)
+                response.set_cookie(
+                    key="refresh_token",
+                    value=jwt_refresh_token,
+                    httponly=True,
+                    secure=True,
+                    samesite="lax",
+                    max_age= 5*60
+                )
 
+                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5])
+                
+                return result
     # github 구현 부분. 미완.
 
     # elif provider.value == "github":
@@ -171,19 +170,54 @@ async def auth_callback(provider: Provider, code: str):
     #         return {"user": user}
         
 
-# JWT 발급
-
 
 # 로그아웃도 하기
-@router.get("/logout")
-async def logout(refresh_token):
-    refresh_token
+@router.delete("/logout")
+async def logout(request:Request, 
+                 response:Response, 
+                 token_user_id_and_email=Depends(verify_token_and_get_token_data),
+                 ):
+    
+    # 로그아웃할 때도 refresh token 넣어서 보내줌.
+    refresh_token = request.cookies.get("refresh_token")
+    data = {"user_refresh_token": refresh_token}
+
+    data.update({"user_id": token_user_id_and_email["user_id"], "email": token_user_id_and_email["email"]})
+
+    # 그럼 그거 받아서 db에 있는 refresh_token 찾아서 삭제해주고
+    # (삭제하려면 user_id 있어야됨. 한번 받아오기.)
+    TokenSerive.delete_refresh_token_from_db(data)
+
+    # 클라이언트에서 쿠키에 저장해놨냐?
+    # 아님 스토리지에 저장해놨냐에 따라 다르게
+    response.delete_cookie("refresh_token")
+
     return
 
 
 
-# 로그인 유지도 하기
-@router.get("/refresh")
-async def reaccess(refresh_token):
-    refresh_token
-    return
+# 로그인 유지(access token 만료)
+@router.post("/refresh", response_model=AccessTokenOnly)
+async def reaccess(request: Request, 
+                   token_user_id_and_email = Depends(verify_token_and_get_token_data),
+                   ):
+    # 그럼 요청에서 refresh_token 찾아서
+    refresh_token = request.cookies.get("refresh_token")
+
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
+
+    data = {"user_refresh_token": refresh_token}
+    
+    # 그 refresh_token으로 db에서 refresh_token 찾아오기
+    db_refresh_token = TokenSerive.find_and_get_refresh_token(data)
+    db_token_user_id_and_email = verify_token_and_get_token_data({"user_refresh_token": db_refresh_token})
+
+    # ㅇㅋ 하면 새로 액세스 토큰 발급
+    if token_user_id_and_email["user_id"] == db_token_user_id_and_email["user_id"]:
+        new_access_token = TokenSerive.create_access_token(token_user_id_and_email)
+        return AccessTokenOnly(
+            access_token=new_access_token
+        )
+    else:
+        raise HTTPException(status_code=401, detail="NOT CORRECT REFRESH TOKEN")

@@ -202,5 +202,54 @@
   scrollbar-color: rgba(100, 100, 100, 0.2) transparent;
 }
 
+/* 1. twinkle 애니메이션 키프레임 정의 */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
+/* 2. 별(span)에 공통으로 들어갈 클래스 */
+.twinkle {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  /* animation 속성은 inline-style 로 duration / delay 주입 */
+  animation-name: twinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
 
+/* 이미 정의된 @keyframes spin 은 Tailwind에 있으니 반복 정의할 필요 없지만,
+   혹시 없다면 아래처럼 간단히 추가해도 됩니다. */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes coloredGlow {
+  /* 시작/끝: 아주 미미한 빛 */
+  0%,
+  100% {
+    filter: drop-shadow(0 0 4px rgba(85, 235, 255, 0.1)) /* 블루빛 미세 글로우 */
+      drop-shadow(0 0 6px rgba(139, 220, 0, 0.1)); /* 그린빛 미세 글로우 */
+  }
+
+  /* 중간(50%): 최대 밝기 */
+  50% {
+    filter: drop-shadow(0 0 18px rgba(85, 235, 255, 0.5)) /* 블루빛 중간 글로우 */
+      drop-shadow(0 0 25px rgba(139, 220, 0, 0.4)); /* 그린빛 중간 글로우 */
+  }
+}
+
+/* spin + coloredGlow 둘 다 적용 */
+.spin-glow {
+  animation:
+    spin 10s linear infinite,
+    coloredGlow 4s ease-in-out infinite;
+}
