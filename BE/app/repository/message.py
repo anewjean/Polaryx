@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+from uuid import UUID
 
 from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
 from BE.app.util.database.db_factory import DBFactory
@@ -75,7 +76,7 @@ class QueryRepo(AbstractQueryRepo):
     def insert(self, message: Message):
         params = {
             "tab_id": message.tab_id,
-            "sender_id": message.sender_id,
+            "sender_id": UUID(message.sender_id).bytes,
             "content": message.content
         }
         return self.db.execute(insert_message, params)

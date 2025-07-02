@@ -48,7 +48,7 @@ html = """
             function sendMessage(event) {
                 var input = document.getElementById("messageText")
                 const payload = {
-                    email: "anewjean00@gmail.com",
+                    sender_id: "4e7e765b-5688-11f0-bb98-0242ac110002",
                     content: input.value
                 }
                 ws.send(JSON.stringify(payload))

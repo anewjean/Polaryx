@@ -1,4 +1,5 @@
 from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
+from BE.app.util.database.db_factory import DBFactory
 
 find_all_user = """
 SELECT * FROM user;
@@ -30,7 +31,8 @@ SELECT * FROM refresh_tokens WHERE token = %(user_refresh_token)s;
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
-        super().__init__()
+        db = DBFactory.get_db("MySQL")
+        super().__init__(db)
         self.queries["find_all_user"] = find_all_user
         self.queries["find_user_by_email"] = find_user_by_email
         self.queries["find_user_by_provider_id_and_email"] = find_user_by_provider_id_and_email
