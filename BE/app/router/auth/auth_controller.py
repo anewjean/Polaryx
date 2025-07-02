@@ -114,18 +114,9 @@ async def auth_callback(provider: Provider, code: str):
             ########################################
             
             else:
-                print(user_INdb)
                 ########### #############################
                 # 토큰 발급
-                data = {"email": user_INdb[0][2]}
-                print(data)
-                
-                jwt_token = TokenSerive.create_access_token(data)
-                ########################################
-                
-                # return user
-                redirect_to = f"http://localhost:3000/auth/callback?token={jwt_token}"
-                return RedirectResponse(redirect_to)
+                data = {"user_id": user_INdb[0][0], "email": user_INdb[0][2]}
 
                 jwt_access_token = TokenSerive.create_access_token(data)
                 jwt_refresh_token = TokenSerive.create_refresh_token(data)
