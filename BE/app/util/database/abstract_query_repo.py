@@ -9,6 +9,5 @@ class AbstractQueryRepo(metaclass=ABCMeta):
     def get_sql(self, sql_name):
         return self.queries[sql_name]
 
-    @abstractmethod
     def save(self, domain_object):
         pass
