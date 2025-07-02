@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -8,18 +10,73 @@ import { SquarePen } from "lucide-react";
 import { CardModal } from "@/components/modal/CardModal";
 import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
+import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
+import { CardFooter } from "@/components/ui/card";
 
 type ProfileProps = { width: number };
 
 export default function ProfilePage({ width }: ProfileProps) {
-  const userName = "이정민이정민이정민이정민";
-  const userRole = "Admin";
-  const userEmail = "test@gmail.com";
-  const userPhone = "010-1234-5678";
-  const userGithub = "https://github.com/";
-  const userBlog = "https://blog.naver.com/";
-  const userGroup = ["정글8기", "307호", "나만무3팀"];
-  const close = useProfileStore(s => s.setClose);
+  // const accessToken = localStorage.getItem("accessToken");
+  // if (!accessToken) throw new Error("로그인이 필요합니다.");
+
+  // accessToken의 sub 클레임에 있는 userId 추출
+  // const { sub: userId } = jwtDecode<{ sub: string }>(accessToken);
+
+  // 프로필 닫기 시 실행할 함수형 변수 선언
+  const close = useProfileStore((s) => s.setClose);
+
+  // 프로필 데이터 상태 관리
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  // 프로필 편집 폼 데이터 상태 관리
+  const [form, setForm] = useState<{
+    nickname: string;
+    phone?: string;
+    github?: string;
+    blog?: string;
+  }>({ nickname: "" });
+
+  // 프로필 조회 중 상태 관리
+  const [loading, setLoading] = useState(true);
+
+  // 프로필 저장 중 상태 관리
+  const [saving, setSaving] = useState(false);
+
+  // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getProfile("9C27B022568A11F097058C554A43DA90");
+        setProfile(data);
+        setForm({
+          nickname: data.nickname,
+          phone: data.phone ?? "",
+          github: data.github ?? "",
+          blog: data.blog ?? "",
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  // 프로필 수정
+  const saveChange = async () => {
+    if (!profile) return;
+    setSaving(true);
+    try {
+      const updated = await patchProfile("9C27B022568A11F097058C554A43DA90", form);
+      setProfile(updated);
+      close();
+    } catch (error) {
+      console.error(error);
+      alert("프로필 수정에 실패했습니다.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div
@@ -30,17 +87,21 @@ export default function ProfilePage({ width }: ProfileProps) {
       <div className="flex flex-row w-full">
         <h1 className="flex flex-1 items-center justify-start text-xl font-bold">Profile</h1>
         <button className="flex flex-1 items-center justify-end text-sm">
-          <X size={20} onClick={close}/>
+          <X size={20} onClick={close} />
         </button>
       </div>
       {/* 프로필 이미지 */}
-      <div className="flex w-full min-w-0 items-center justify-center">        
-        <img src="/user_default.png" alt="profile_image" className="w-1/2 aspect-square bg-gray-200 rounded-2xl overflow-hidden" />        
+      <div className="flex w-full min-w-0 items-center justify-center">
+        <img
+          src={profile?.image || "/user_default.png"}
+          alt="profile_image"
+          className="w-1/2 aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+        />
       </div>
       {/* 사용자 이름과 역할 */}
       <div className="flex w-full items-end justify-between gap-2">
-        <h1 className="flex-1 min-w-0 justify-start text-xl font-bold truncate">{userName}</h1>
-        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">{userRole}</h1>
+        <h1 className="flex-1 min-w-0 justify-start text-xl font-bold truncate">{profile?.nickname}</h1>
+        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">{profile?.role}</h1>
       </div>
       {/* 버튼 (메시지, 편집) */}
       <div className="flex w-full min-w-0 items-center justify-center">
@@ -70,82 +131,106 @@ export default function ProfilePage({ width }: ProfileProps) {
             <div className="flex flex-row gap-5">
               {/* 프로필 이미지 */}
               <div className="flex flex-col justify-between h-full w-[238px] gap-2">
-                <img src="/user_default.png" alt="profile_image" className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden" />
-                <Button variant="outline" size="sm">Change</Button>
-              </div>  
+                <img
+                  src={profile?.image || "/user_default.png"}
+                  alt="profile_image"
+                  className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+                />
+                <Button variant="outline" size="sm">
+                  Change
+                </Button>
+              </div>
               {/* 프로필 정보 */}
               <div className="flex flex-col w-full gap-2">
-                <div className="flex flex-col gap-4">                  
+                <div className="flex flex-col gap-4">
                   {/* 필수 필드1: 역할 */}
                   <div className="flex flex-col">
-                    <label className="font-semibold">
-                      Role*
-                    </label>
-                    <span className="w-full font-normal">{userRole}</span>                
+                    <label className="font-semibold">Role*</label>
+                    <span className="w-full font-normal">{profile?.role}</span>
                   </div>
                   {/* 필수 필드2: 이메일 */}
                   <div className="flex flex-col">
-                    <label className="font-semibold">
-                      Email*                  
-                    </label>
-                    <span className="w-full font-normal">{userEmail}</span>                                  
+                    <label className="font-semibold">Email*</label>
+                    <span className="w-full font-normal">{profile?.email}</span>
                   </div>
                   {/* 필수 필드3: 닉네임 */}
                   <div>
-                    <label className="font-semibold">
-                      Nickname*
-                    </label>
-                    <Input type="text" placeholder="" defaultValue={userName} className="w-full border rounded px-2 py-1 font-normal" />
-                  </div>                
+                    <label className="font-semibold">Nickname*</label>
+                    <Input
+                      type="text"
+                      placeholder=""
+                      defaultValue={profile?.nickname}
+                      className="w-full border rounded px-2 py-1 font-normal"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
             {/* 추가 필드1: 연락처 */}
             <label className="font-semibold">
               Phone
-              <Input type="text" placeholder="" defaultValue={userPhone} className="w-full border rounded px-2 py-1 font-normal" />
-            </label>            
+              <Input
+                type="text"
+                placeholder=""
+                defaultValue={profile?.phone ?? ""}
+                className="w-full border rounded px-2 py-1 font-normal"
+              />
+            </label>
             {/* 추가 필드2: github */}
             <label className="font-semibold">
               Github
-              <Input type="text" placeholder="" defaultValue={userGithub} className="w-full border rounded px-2 py-1 font-normal" />
-            </label>            
+              <Input
+                type="text"
+                placeholder=""
+                defaultValue={profile?.github ?? ""}
+                className="w-full border rounded px-2 py-1 font-normal"
+              />
+            </label>
             {/* 추가 필드3: blog */}
             <label className="font-semibold">
               Blog
-              <Input type="text" placeholder="" defaultValue={userBlog} className="w-full border rounded px-2 py-1 font-normal" />
-            </label>                        
+              <Input
+                type="text"
+                placeholder=""
+                defaultValue={profile?.blog ?? ""}
+                className="w-full border rounded px-2 py-1 font-normal"
+              />
+            </label>
+            <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
+              <Button variant="secondary">Cancel</Button>
+              <Button variant="default">Save Changes</Button>
+            </CardFooter>
           </form>
         </CardModal>
-      </div>      
+      </div>
       {/* 구분선 */}
       <Separator />
       {/* 이메일 */}
       <div className="flex flex-col w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Email address*</span>
-        <span className="flex-1 min-w-0 text-md truncate">{userEmail}</span>
+        <span className="flex-1 min-w-0 text-md truncate">{profile?.email}</span>
       </div>
       {/* 전화번호 */}
       <div className="flex flex-col w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Phone</span>
-        <span className="flex-1 min-w-0 text-md truncate">{userPhone}</span>
+        <span className="flex-1 min-w-0 text-md truncate">{profile?.phone ?? ""}</span>
       </div>
       {/* github */}
       <div className="flex flex-col w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Github</span>
-        <span className="flex-1 min-w-0 text-md truncate">{userGithub}</span>
+        <span className="flex-1 min-w-0 text-md truncate">{profile?.github ?? ""}</span>
       </div>
       {/* blog */}
       <div className="flex flex-col w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Blog</span>
-        <span className="flex-1 min-w-0 text-md truncate">{userBlog}</span>
+        <span className="flex-1 min-w-0 text-md truncate">{profile?.blog ?? ""}</span>
       </div>
       {/* 소속 그룹 */}
       <div className="flex flex-col w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Groups</span>
         <div className="flex-1 min-w-0 text-md">
           <ul className="list-disc list-inside pl-1">
-            {userGroup.map((group) => (
+            {(profile?.groups || []).map((group) => (
               <li key={group} className="truncate">
                 {group}
               </li>

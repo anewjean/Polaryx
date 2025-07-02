@@ -45,19 +45,11 @@ export default function AppSidebar({ width }: SidebarProps) {
   const { workspaceId } = useParams();
   const open = useProfileStore((s) => s.setOpen);
 
-  const sections = [
-    { label: "Announcements", icon: Megaphone, href: `/${workspaceId}` },
-    { label: "Courses", icon: Landmark, href: `/${workspaceId}/channels` },
-    { label: "Channels", icon: Users, href: `/${workspaceId}/members` },
-    { label: "Direct Messages", icon: Mail, href: `/${workspaceId}/settings` },
-    { label: "Admin", icon: ShieldUser, href: `/${workspaceId}/settings` },
-  ];
-
   const tabs = [
-    { label: "너비 조절 테스트", href: `/${workspaceId}` },
-    { label: "너비 조절 테스트", href: `/${workspaceId}/channels` },
-    { label: "너비 조절 테스트", href: `/${workspaceId}/members` },
-    { label: "너비 조절 테스트", href: `/${workspaceId}/settings` },
+    { label: "너비 조절 테스트1", href: `/${workspaceId}` },
+    { label: "너비 조절 테스트2", href: `/${workspaceId}/channels` },
+    { label: "너비 조절 테스트3", href: `/${workspaceId}/members` },
+    { label: "너비 조절 테스트4", href: `/${workspaceId}/settings` },
   ];
 
   const subTabs = [
@@ -134,8 +126,8 @@ export default function AppSidebar({ width }: SidebarProps) {
                                 </SidebarMenuItem>
                               ))}
                             </SidebarMenu>
-                          </SidebarGroupContent>
-                        </SidebarGroup>                                                                                         */}
+                          </SidebarGroupContent> 
+                        </SidebarGroup> */}                                                                                         
                     </div>
                   </div>
                 ))}

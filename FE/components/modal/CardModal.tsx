@@ -27,10 +27,10 @@ export function CardModal({ trigger, title, children, defaultOpen = false }: Car
           </ModalClose>
         </CardHeader>
         <CardContent className="flex-1 min-h-0 overflow-auto scrollbar-thin">{children}</CardContent>
-        <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
+        {/* <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
           <Button variant="secondary">Cancel</Button>
           <Button variant="default">Save Changes</Button>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
     </ModalTrigger>
   );
