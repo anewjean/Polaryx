@@ -158,9 +158,9 @@ export default function ProfilePage({ width }: ProfileProps) {
                     <label className="font-semibold">Nickname*</label>
                     <Input
                       type="text"
-                      placeholder=""
-                      defaultValue={profile?.nickname}
-                      className="w-full border rounded px-2 py-1 font-normal"
+                     value={form.nickname}
+                     onChange={(e) => setForm({ ...form, nickname: e.target.value })}
+                     className="w-full border rounded px-2 py-1 font-normal"
                     />
                   </div>
                 </div>
@@ -180,25 +180,27 @@ export default function ProfilePage({ width }: ProfileProps) {
             <label className="font-semibold">
               Github
               <Input
-                type="text"
-                placeholder=""
-                defaultValue={profile?.github ?? ""}
-                className="w-full border rounded px-2 py-1 font-normal"
+                  type="text"
+                  value={form.github}
+                  onChange={(e) => setForm({ ...form, github: e.target.value })}
+                  className="w-full border rounded px-2 py-1 font-normal"
               />
             </label>
             {/* 추가 필드3: blog */}
             <label className="font-semibold">
               Blog
               <Input
-                type="text"
-                placeholder=""
-                defaultValue={profile?.blog ?? ""}
+                 type="text"
+                value={form.blog}
+                onChange={(e) => setForm({ ...form, blog: e.target.value })}
                 className="w-full border rounded px-2 py-1 font-normal"
               />
             </label>
             <CardFooter className="flex flex-row items-center justify-end flex-none gap-4">
               <Button variant="secondary">Cancel</Button>
-              <Button variant="default">Save Changes</Button>
+             <Button variant="default" onClick={saveChange} disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
             </CardFooter>
           </form>
         </CardModal>
