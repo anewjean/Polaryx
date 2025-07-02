@@ -1,15 +1,11 @@
-from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, HTTPException, Request, Response, Depends
 from typing import Union
 from enum import Enum
 import os
 import httpx
 from urllib.parse import urlencode
-from pathlib import Path
 from fastapi.responses import RedirectResponse
-from datetime import datetime, UTC
-from uuid6 import uuid7
-from jose import jwt, JWTError
+import uuid
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
 from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
@@ -94,8 +90,8 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             user = userinfo_res.json()
 
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid7()
-            uuid_obj2 = uuid7()
+            uuid_obj1 = uuid.uuid4()
+            uuid_obj2 = uuid.uuid4()
             # 16바이트 바이너리로 변환
             user_uuid = uuid_obj1.bytes
             refresh_token_uuid = uuid_obj2.bytes
