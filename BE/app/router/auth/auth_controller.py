@@ -63,7 +63,6 @@ def social_login(provider: Provider):
 async def auth_callback(provider: Provider, code: str, response:Response):
     
     user = None
-    print(1)
     if provider.value == "google":
         async with httpx.AsyncClient() as client:
             # Step 1: 토큰 요청
@@ -120,7 +119,6 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                       }
                 
                 TokenSerive.save_refresh_token_to_db(data)
-                print(user_INdb[0][5])
 
                 response.set_cookie(
                     key="refresh_token",
