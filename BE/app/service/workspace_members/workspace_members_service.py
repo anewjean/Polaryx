@@ -26,8 +26,9 @@ class WorkspaceMembersService:
                 result['id'] = result['id'].hex()
                 result["user_id"] = result["user_id"].hex()
                 
+                
                 return WorkspaceMemberResponse(**result)
-
+        
     
     def update_profile(self, workspace_member_id: bytes, update_data: UpdateWorkspaceMemberRequest):
         query = """

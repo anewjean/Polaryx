@@ -25,3 +25,4 @@ class Settings(BaseSettings):
     NOSQL_URL: str = f""
 
 settings = Settings()
+

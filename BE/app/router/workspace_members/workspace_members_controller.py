@@ -12,7 +12,14 @@ def get_my_profile():
     workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
     return service.get_profile(workspace_member_id)
 
+@router.get("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
+def get_workspace_member_profile(workspace_members_id: str):
+    workspace_member_id = bytes.fromhex(workspace_members_id)
+    return service.get_profile(workspace_member_id)
+
 @router.patch("/workspace_members/me", response_model=WorkspaceMemberResponse)
 def update_my_profile(payload: UpdateWorkspaceMemberRequest):
     workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
     return service.update_profile(workspace_member_id, payload)
+
+

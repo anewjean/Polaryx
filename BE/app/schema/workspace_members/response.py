@@ -3,6 +3,7 @@ from typing import Optional
 
 class WorkspaceMemberResponse(BaseModel):
     id: str
+    user_id: str
     nickname: str
     email: EmailStr
     github: Optional[str]
