@@ -31,3 +31,10 @@ export const getMessages = async (workspaceId: string, tabId: string) => {
     method: "GET",
   });
 };
+
+export const systemMessage = async (workspaceId: string, tabId: string, timestamp: string, message: string) => {
+  return request(`/messages/${workspaceId}/${tabId}`, {
+    method: "POST",
+    body: JSON.stringify({ timestamp, message }),
+  });
+};
