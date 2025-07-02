@@ -6,7 +6,7 @@ SELECT * FROM workspace_members;
 """
 
 find_workspace_members_by_id = """
-SELECT id, user_id, nickname, email, github, blog, image
+SELECT id, user_id, nickname, email, image, phone, github, blog
 FROM workspace_members
 WHERE id = %s AND deleted_at IS NULL;"""
 

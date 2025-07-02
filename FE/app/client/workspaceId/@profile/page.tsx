@@ -171,8 +171,8 @@ export default function ProfilePage({ width }: ProfileProps) {
               Phone
               <Input
                 type="text"
-                placeholder=""
-                defaultValue={profile?.phone ?? ""}
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 className="w-full border rounded px-2 py-1 font-normal"
               />
             </label>

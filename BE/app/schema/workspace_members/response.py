@@ -9,5 +9,6 @@ class WorkspaceMemberResponse(BaseModel):
     github: Optional[str]
     blog: Optional[str]
     image: Optional[str]
+    phone: Optional[str] | None = None
     
     

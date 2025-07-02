@@ -38,15 +38,17 @@ class WorkspaceMembersService:
                 github = IFNULL(%s, github),
                 blog = IFNULL(%s, blog),
                 image = IFNULL(%s, image),
+                phone = IFNULL(%s, phone),
                 updated_at = CURRENT_TIMESTAMP
-            WHERE HEX(id) = %s
+            WHERE id = %s
         """
         values = (
             update_data.nickname,
             update_data.github,
             update_data.blog,
             update_data.image,
-            workspace_member_id
+            workspace_member_id,
+            update_data.phone
         )
 
         with get_connection() as connection:
