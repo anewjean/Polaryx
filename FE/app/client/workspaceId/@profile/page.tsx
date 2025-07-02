@@ -90,6 +90,7 @@ export default function ProfilePage({ width, targetId }: ProfileProps) {
     }
   };
 
+  
   return (
     <div
       className="flex flex-col h-full w-full gap-4 overflow-auto p-4 bg-background text-foreground scrollbar-thin"
@@ -192,6 +193,7 @@ export default function ProfilePage({ width, targetId }: ProfileProps) {
                   type="text"
                   placeholder=""
                   defaultValue={profile?.phone ?? ""}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   className="w-full border rounded px-2 py-1 font-normal"
                 />
               </label>

@@ -8,6 +8,7 @@ class WorkspaceMemberResponse(BaseModel):
     email: EmailStr
     github: Optional[str]
     blog: Optional[str]
-    image: Optional[str]
+    image: Optional[str] = None
+    phone: Optional[str] = None
     
     
