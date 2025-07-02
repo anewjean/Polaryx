@@ -4,3 +4,4 @@
 .env
 .cursor/
 .vscode/
+node_modules/

@@ -78,6 +78,7 @@ export default function ProfilePage({ width }: ProfileProps) {
     }
   };
 
+  
   return (
     <div
       className="flex flex-col h-full w-full gap-4 overflow-auto p-4 bg-background text-foreground scrollbar-thin"
