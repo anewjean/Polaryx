@@ -48,7 +48,7 @@ export function ChatPage() {
             <button className="text-m-bold cursor-pointer hover:underline">Dongseok Lee (이동석)</button>
             <div className="text-xs chat-time-stamp">2025-06-19 10:00:00</div>
           </div>
-          <div className="text-m">
+          <div className="text-m h-170 overflow-y-auto pr-2">
             {messages.map((msg, i) =>
               hiddenIdxs.includes(i) ? null : (
                 <div
