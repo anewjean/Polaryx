@@ -5,7 +5,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { useState, useEffect } from "react";
 import { useChannelStore } from "@/store/channelStore";
 import { useProfileStore } from "@/store/profileStore";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function WorkspaceLayout({
   children,
@@ -36,11 +36,11 @@ export default function WorkspaceLayout({
   /////////////////////// 추가 ///////////////////////////
   useEffect(() => {
     // 로컬 스토리지에서 액세스 토큰 꺼내서 확인하고,
-    const accessToken = localStorage.getItem('access_token');
-    
+    const accessToken = localStorage.getItem("access_token");
+
     // 없으면 로그인 페이지로 ㄱㄱ해야지.
     if (!accessToken) {
-      router.replace('/')
+      router.replace("/");
     }
   }, [router]);
   /////////////////////// 추가 ///////////////////////////

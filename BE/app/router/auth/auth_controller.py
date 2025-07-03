@@ -232,4 +232,3 @@ async def logout(request:Request,
     response.delete_cookie("refresh_token")
 
     return
-
