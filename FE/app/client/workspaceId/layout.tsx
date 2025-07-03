@@ -5,6 +5,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import { useState, useEffect } from "react";
 import { useChannelStore } from "@/store/channelStore";
 import { useProfileStore } from "@/store/profileStore";
+import { useRouter } from "next/navigation";
 
 export default function WorkspaceLayout({
   children,
@@ -17,6 +18,10 @@ export default function WorkspaceLayout({
   sidebar: React.ReactElement<{ width: number }>;
   profile: React.ReactElement<{ width: number }>;
 }) {
+  /////////////////////// 추가 ///////////////////////////
+  const router = useRouter();
+  /////////////////////// 추가 ///////////////////////////
+
   const [sidebarWidth, setSidebarWidth] = useState(20);
   const [currentSidebarWidth, setCurrentSidebarWidth] = useState(20);
   const [profileWidth, setProfileWidth] = useState(15);
@@ -28,6 +33,18 @@ export default function WorkspaceLayout({
   const { isOpen } = useProfileStore();
 
   // 채널 너비 갱신 (사이드바 너비는 유지)
+  /////////////////////// 추가 ///////////////////////////
+  useEffect(() => {
+    // 로컬 스토리지에서 액세스 토큰 꺼내서 확인하고,
+    const accessToken = localStorage.getItem("access_token");
+
+    // 없으면 로그인 페이지로 ㄱㄱ해야지.
+    if (!accessToken) {
+      router.replace("/");
+    }
+  }, [router]);
+  /////////////////////// 추가 ///////////////////////////
+
   useEffect(() => {
     if (isOpen) {
       setChannelWidth(100 - currentSidebarWidth - profileWidth);

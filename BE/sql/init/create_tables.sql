@@ -1,3 +1,24 @@
+CREATE TABLE `user`(
+    id BINARY(16) NOT NULL PRIMARY KEY, 
+    name VARCHAR(32) NOT NULL, 
+    email VARCHAR(128) NOT NULL, 
+    provider VARCHAR(16) NOT NULL, 
+    provider_id VARCHAR(64) NULL, 
+    workspace_id INTEGER NULL, 
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP NULL, 
+    deleted_at TIMESTAMP NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE refresh_tokens(
+    id BINARY(16) NOT NULL PRIMARY KEY, 
+    user_id BINARY(16) NOT NULL, 
+    token VARCHAR(255) NOT NULL, 
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+    updated_at TIMESTAMP, 
+    deleted_at TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tab_id INT NOT NULL,
