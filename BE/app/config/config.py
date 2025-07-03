@@ -23,5 +23,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
     NOSQL_URL: str = f""
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
 
 settings = Settings()
