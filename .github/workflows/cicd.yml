@@ -81,7 +81,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: |
             docker-compose.yml
-            ./BE/.env.prod
+            BE/.env.prod
           target: "/home/ec2-user"
 
       - name: Deploy to EC2
