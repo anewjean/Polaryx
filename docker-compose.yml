@@ -14,9 +14,11 @@ services:
   backend:
     build:
       context: ./BE
+    env_file:
+      - ./BE/.env
     image: 897729099078.dkr.ecr.ap-northeast-2.amazonaws.com/slam-server:latest
     ports:
       - "8000:8000"
     restart: always
     environment:
-      - ENV=production
+      - ENVIRONMENT: PROD

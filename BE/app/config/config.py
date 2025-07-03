@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 
     SECRET_KEY: str
-    SECRET_KEY_AUTH: str
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
     CONNECTION_TIMEOUT: int
     RDB_HOST: str
     RDB_PORT: int
@@ -23,7 +24,5 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
     NOSQL_URL: str = f""
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
 
 settings = Settings()
