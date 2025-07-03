@@ -26,7 +26,7 @@ export function ChatPage() {
 
   return (
     <>
-      {/* <WebSocketClient /> */}
+      <WebSocketClient />
       <ShowDate timestamp={profile.timestamp} />
       <div className="flex p-[8px_20px] hover:bg-[#f8f8f8]">
         <div className="relative">
@@ -98,6 +98,7 @@ export function ChatPage() {
                         }}
                         onDelete={() => {
                           handleDelete("1", "1", msg.id ?? 0);
+                          window.location.reload();
                         }}
                       />
                     </>
