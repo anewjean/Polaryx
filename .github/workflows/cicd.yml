@@ -58,14 +58,14 @@ jobs:
           FE_ECR_REPOSITORY: ${{ env.FE_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build \
+          docker build --no-cache \
             --build-arg NEXT_PUBLIC_API_URL=http://${{ secrets.EC2_HOST }}:8000 \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest
 
-          docker build \
+          docker build --no-cache \
           --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
           --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
           -t $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG \
