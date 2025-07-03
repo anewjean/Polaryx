@@ -5,6 +5,7 @@ import React from "react";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
+import { getTabList, createTab } from "@/apis/tabApi";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from "@/components/ui/popover";
 import {
@@ -47,6 +48,14 @@ export default function AppSidebar({ width }: SidebarProps) {
   const { workspaceId } = useParams();
   const open = useProfileStore((s) => s.setOpen);
   const router = useRouter();
+
+  const [tabs, setTabs] = useState<Tab[]>([]);
+
+  // 진입 시 탭 리스트 조회
+  useEffect(() => {
+    getTabList().then((tabs) => setTabs(tabs));
+  }, [workspaceId]);
+
   const sections = [
     { label: "Announcements", icon: Megaphone, href: `/${workspaceId}` },
     { label: "Courses", icon: Landmark, href: `/${workspaceId}/channels` },
@@ -56,10 +65,10 @@ export default function AppSidebar({ width }: SidebarProps) {
   ];
 
   const tabs = [
-    { label: "너비 조절 테스트 1", href: `/${workspaceId}` },
-    { label: "너비 조절 테스트 2", href: `/${workspaceId}/channels` },
-    { label: "너비 조절 테스트 3", href: `/${workspaceId}/members` },
-    { label: "너비 조절 테스트 4", href: `/${workspaceId}/settings` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/channels` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/members` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/settings` },
   ];
 
   const subTabs = [
@@ -137,7 +146,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                               ))}
                             </SidebarMenu>
                           </SidebarGroupContent>
-                        </SidebarGroup>                                                                                         */}
+                        </SidebarGroup> */}
                     </div>
                   </div>
                 ))}
@@ -214,7 +223,6 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <Button
                     variant="ghost"
                     className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-                    onClick={open}
                   >
                     <UserRoundCog />
                     프로필
@@ -224,7 +232,13 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <PopoverClose>
                   <Button
                     onClick={() => {
+                      console.log(
+                        localStorage.getItem("access_token")
+                          ? "삭제전 : access_token 존재"
+                          : "뭐야 내 access token 어디갔어요",
+                      );
                       logout();
+                      console.log(localStorage.getItem("access_token") ? "제대로 삭제 완료" : "삭제 안 됨");
                       window.alert("로그아웃 되었습니다.");
                       router.push("/");
                     }}

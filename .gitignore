@@ -4,8 +4,4 @@
 .env
 .cursor/
 .vscode/
-<<<<<<< HEAD
 node_modules/
-=======
-node_modules/
->>>>>>> 20884946d6aeb1153f26862c914a8b6d559d5d6c

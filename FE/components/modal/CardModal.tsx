@@ -12,11 +12,13 @@ interface CardModalProps {
   title: string;
   children: ReactNode;
   defaultOpen?: boolean;
+  open?: boolean; // open prop 추가
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function CardModal({ trigger, title, children, defaultOpen = false }: CardModalProps) {
+export function CardModal({ trigger, title, children, defaultOpen = false, open, onOpenChange }: CardModalProps) {
   return (
-    <ModalTrigger trigger={trigger} defaultOpen={defaultOpen}>
+    <ModalTrigger trigger={trigger} defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
       <Card className="flex flex-col h-full overflow-hidden">
         <CardHeader className="flex items-center justify-between flex-none">
           <h3 className="text-xl font-semibold">{title}</h3>

@@ -23,14 +23,14 @@ SET
     blog    = COALESCE(%(blog)s, blog),
     image   = COALESCE(%(image)s, image),
     phone   = COALESCE(%(phone)s, phone)
-WHERE id = %(id)s
+WHERE id = %(user_id)s
   AND deleted_at IS NULL;
 """
 
 find_member_by_id = """
 SELECT * 
 FROM workspace_members 
-WHERE id = %(id)s
+WHERE id = %(user_id)s
 AND deleted_at IS NULL;
 """
 
