@@ -1,15 +1,11 @@
-# import os
-# import httpx
-
-# from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
-from BE.app.router.message import websocket_controller as message
-from BE.app.router.auth import auth_controller as auth
+from app.router.message import websocket_controller as message
+from app.router.auth import auth_controller as auth
 
 load_dotenv()
 

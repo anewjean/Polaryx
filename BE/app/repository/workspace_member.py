@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.workspace_member import WorkspaceMember
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
@@ -34,6 +34,7 @@ SELECT * FROM workspace_members
 WHERE workspace_id = %(workspace_id)s
 AND deleted_at IS NULL;
 """
+
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):

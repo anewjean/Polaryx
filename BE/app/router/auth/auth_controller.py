@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse
 from datetime import datetime, UTC
 from uuid6 import uuid7
 
-from BE.app.service.auth.auth_service import AuthService, TokenSerive
+from app.service.auth.auth_service import AuthService, TokenSerive
 
 
 router = APIRouter(prefix="/auth")

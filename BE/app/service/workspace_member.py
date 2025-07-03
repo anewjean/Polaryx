@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from BE.app.domain.workspace_member import WorkspaceMember
-from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
+from app.domain.workspace_member import WorkspaceMember
+from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
 
 
 class WorkspaceMemberService:
