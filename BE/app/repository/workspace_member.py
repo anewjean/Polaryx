@@ -35,9 +35,28 @@ AND deleted_at IS NULL;
 """
 
 find_member_by_email = """
-SELECT * 
-FROM workspace_members 
+SELECT *
+FROM workspace_members
 WHERE email = %(email)s;
+"""
+
+find_member_by_user_id = """
+SELECT *
+FROM workspace_members
+WHERE user_id = %(user_id)s
+AND deleted_at IS NULL;
+"""
+
+update_workspace_member_by_user_id = """
+UPDATE workspace_members
+SET
+    nickname = COALESCE(%(nickname)s, nickname),
+    github  = COALESCE(%(github)s, github),
+    blog    = COALESCE(%(blog)s, blog),
+    image   = COALESCE(%(image)s, image),
+    phone   = COALESCE(%(phone)s, phone)
+WHERE user_id = %(user_id)s
+  AND deleted_at IS NULL;
 """
 
 find_all_workspace_members = """
@@ -68,9 +87,20 @@ class QueryRepo(AbstractQueryRepo):
             "workspace_id": workspace_id
         }
         return self.db.execute(find_all_workspace_members, param)
-    
+
     def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
         """Update a workspace member's profile fields."""
         params = {**update_data}
         params["id"] = UUID(id).bytes
         return self.db.execute(update_workspace_member, params)
+
+    def find_by_user_id(self, user_id: UUID) -> WorkspaceMember:
+        param = {
+            "user_id": UUID(user_id).bytes
+        }
+        return self.db.execute(find_member_by_user_id, param)
+
+    def update_by_user_id(self, user_id: UUID, update_data: dict) -> WorkspaceMember:
+        params = {**update_data}
+        params["user_id"] = UUID(user_id).bytes
+        return self.db.execute(update_workspace_member_by_user_id, params)

@@ -16,7 +16,7 @@ class WorkspaceMemberSchema(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
-    phone: Optional[str] = None
+    #phone: Optional[str] = None
 
     @classmethod 
     def from_row(cls, row: tuple) -> "WorkspaceMemberSchema":
@@ -34,7 +34,7 @@ class WorkspaceMemberSchema(BaseModel):
             created_at=row[10],
             updated_at=row[11],
             deleted_at=row[12],
-            phone=row[13]
+            #phone=row[13]
         )
 
 
