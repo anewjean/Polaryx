@@ -17,15 +17,14 @@ VALUES (
 
 update_workspace_member = """
 UPDATE workspace_members
-SET 
-    nickname = %(nickname)s,
-    email = %(email)s,
-    github = %(github)s,
-    blog = %(blog)s,
-    image = %(image)s,
-    phone = %(phone)s
+SET
+    nickname = COALESCE(%(nickname)s, nickname),
+    github  = COALESCE(%(github)s, github),
+    blog    = COALESCE(%(blog)s, blog),
+    image   = COALESCE(%(image)s, image),
+    phone   = COALESCE(%(phone)s, phone)
 WHERE id = %(id)s
-AND deleted_at IS NULL;
+  AND deleted_at IS NULL;
 """
 
 find_member_by_id = """
@@ -70,6 +69,8 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_workspace_members, param)
     
-    def update(self, id: UUID) -> WorkspaceMember:
-        update_data["id"] = bytes.fromhex(id)  # 문자열 hex → binary UUID   
-        return self.db.execute(update_workspace_member, update_data)
+    def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
+        """Update a workspace member's profile fields."""
+        params = {**update_data}
+        params["id"] = UUID(id).bytes
+        return self.db.execute(update_workspace_member, params)

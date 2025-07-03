@@ -22,11 +22,16 @@ def get_workspace_member_profile(workspace_members_id: str):
     workspace_member = WorkspaceMemberSchema.from_row(row)
     return WorkspaceMemberResponse(workspace_member=workspace_member)
 
+# @router.patch("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
+# def update_profile(workspace_members_id: str, payload: UpdateWorkspaceMemberRequest):
+#     updated_row = service.update_profile(workspace_members_id, payload)
+#     workspace_member = WorkspaceMemberSchema.from_row(updated_row)
+#     return WorkspaceMemberResponse(workspace_member=workspace_member)
+
 @router.patch("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
 def update_profile(workspace_members_id: str, payload: UpdateWorkspaceMemberRequest):
-    updated_row = service.update_profile(workspace_members_id, payload)
-    workspace_member = WorkspaceMemberSchema.from_row(updated_row)
-    return WorkspaceMemberResponse(workspace_member=workspace_member)
+    return service.update_profile(workspace_members_id, payload)
+
 
 
 

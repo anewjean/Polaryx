@@ -25,7 +25,8 @@ class WorkspaceMemberService:
         return self.workspace_member_repo.find_all(workspace_id)
         
     def update_profile(self, id: UUID, update_data: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
-        self.workspace_member_repo.update(id, update_data)
+        params = update_data.model_dump(exclude_unset=True)
+        self.workspace_member_repo.update(id, params)
         rows = self.workspace_member_repo.find_by_id(id)
         if not rows:
             raise ValueError("Updated member not found")
