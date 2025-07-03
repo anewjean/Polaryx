@@ -24,11 +24,11 @@ type EditableProfile = Omit<
 >;
 
 /* 프로필 조회 */
-export async function getProfile(targetId: string): Promise<Profile> {
+export async function getProfile(workspace_members_id: string): Promise<Profile> {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/workspace_members/${targetId}`, {
+  const res = await fetch(`${BASE}/workspace_members/${workspace_members_id}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${accessToken}`,
@@ -47,7 +47,7 @@ export async function patchProfile(userId: string, payload: Partial<EditableProf
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/workspace_members/me`, {
+  const res = await fetch(`${BASE}/workspace_members/{userId}`, {
     method: "PATCH",
     headers: {
       "Authorization": `Bearer ${accessToken}`,

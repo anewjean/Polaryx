@@ -2,20 +2,20 @@ from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
 from BE.app.util.database.db_factory import DBFactory
 
 find_all_user = """
-SELECT * FROM user;
+SELECT * FROM users;
 """
 
 find_user_by_email = """
-SELECT * FROM user WHERE email = %(user_email)s;
+SELECT * FROM users WHERE email = %(user_email)s;
 """
 
 find_user_by_provider_id_and_email = """
-SELECT * FROM user WHERE provider_id = %(user_provider_id)s
+SELECT * FROM users WHERE provider_id = %(user_provider_id)s
                      AND email = %(user_email)s;
 """
 
 update_provider_id_and_id = """
-UPDATE user SET provider_id = %(user_provider_id)s,
+UPDATE users SET provider_id = %(user_provider_id)s,
                 id = %(user_id)s
             WHERE email = %(user_email)s;
 """
