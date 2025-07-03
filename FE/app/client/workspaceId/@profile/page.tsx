@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
 import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
-import { convertFileToBase64 } from "@/utils/fileUtils";
 
 type ProfileProps = { targetId?: string };
 
@@ -36,7 +35,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
     phone?: string;
     github?: string;
     blog?: string;
-    image?: string;
   }>({ nickname: "" });
 
   // 프로필 조회 중 상태 관리
@@ -44,17 +42,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
 
   // 프로필 저장 중 상태 관리
   const [saving, setSaving] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태 추가
-  const fileInputRef = useRef<HTMLInputElement>(null); // 파일 입력 참조
-
-  // 이미지 변경 핸들러
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const base64Image = await convertFileToBase64(file);
-      setForm((prevForm) => ({ ...prevForm, image: base64Image }));
-    }
-  };
 
   // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
   useEffect(() => {
@@ -76,7 +63,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
           phone: profileData.phone ?? "",
           github: profileData.github ?? "",
           blog: profileData.blog ?? "",
-          image: profileData.image,
         });
       } catch (error) {
         console.error("프로필 조회 실패:", error);
@@ -94,7 +80,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
       let updatedProfile: Profile;
       updatedProfile = await patchProfile("23964D5F57E211F0A26D80325399A209", form);
       setProfile(updatedProfile);
-      setIsModalOpen(false); // 저장 후 모달 닫기
+      close();
     } catch (error) {
       console.error(error);
       alert("프로필 수정에 실패했습니다.");
@@ -153,8 +139,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
               </Button>
             }
             title="Edit your profile"
-            open={isModalOpen} // isModalOpen 상태로 모달 열림/닫힘 제어
-            onOpenChange={setIsModalOpen} // 모달 상태 변경 핸들러
           >
             {/* CardModal 내용: 프로필 편집 폼 */}
             <form className="flex flex-col gap-5">
@@ -162,20 +146,13 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                 {/* 프로필 이미지 */}
                 <div className="flex flex-col justify-between h-full w-[238px] gap-2">
                   <img
-                    src={form.image || "/user_default.png"}
+                    src={profile?.image || "/user_default.png"}
                     alt="profile_image"
                     className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
                   />
-                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}> {/* Change 버튼 클릭 시 파일 입력 트리거 */} 
+                  <Button variant="outline" size="sm">
                     Change
                   </Button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
                 </div>
                 {/* 프로필 정보 */}
                 <div className="flex flex-col w-full gap-2">
@@ -235,9 +212,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                 />
               </label>
               <CardFooter className="flex flex-row items-center justify-end flex-none p-0">
-                <Button variant="secondary" onClick={() => setIsModalOpen(false)}>
-                  Cancel
-                </Button>
                 <Button variant="default" onClick={saveChange} disabled={saving}>
                   {saving ? "Saving..." : "Save Changes"}
                 </Button>

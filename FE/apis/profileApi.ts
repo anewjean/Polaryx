@@ -6,7 +6,7 @@ export interface Profile {
   workspaceId: number;
   nickname: string;
   email: string;
-  phone?: string | null;
+  phone?: string;
   image?: string;
   role: string;
   groups?: string[];
