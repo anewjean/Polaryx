@@ -3,8 +3,8 @@
 import "@/app/globals.css";
 import React from "react";
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
-import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from "@/components/ui/popover";
 import {
@@ -33,9 +33,11 @@ import {
   ShieldUser,
   ChevronRight,
   ChevronDown,
+  Router,
 } from "lucide-react";
 import { School } from "lucide-react";
 import { ChevronsUpDown } from "lucide-react";
+import { logout } from "@/apis/logout";
 
 type SidebarProps = {
   width: number;
@@ -44,12 +46,20 @@ type SidebarProps = {
 export default function AppSidebar({ width }: SidebarProps) {
   const { workspaceId } = useParams();
   const open = useProfileStore((s) => s.setOpen);
+  const router = useRouter();
+  const sections = [
+    { label: "Announcements", icon: Megaphone, href: `/${workspaceId}` },
+    { label: "Courses", icon: Landmark, href: `/${workspaceId}/channels` },
+    { label: "Channels", icon: Users, href: `/${workspaceId}/members` },
+    { label: "Direct Messages", icon: Mail, href: `/${workspaceId}/settings` },
+    { label: "Admin", icon: ShieldUser, href: `/${workspaceId}/settings` },
+  ];
 
   const tabs = [
-    { label: "너비 조절 테스트1", href: `/${workspaceId}` },
-    { label: "너비 조절 테스트2", href: `/${workspaceId}/channels` },
-    { label: "너비 조절 테스트3", href: `/${workspaceId}/members` },
-    { label: "너비 조절 테스트4", href: `/${workspaceId}/settings` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/channels` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/members` },
+    { label: "너비 조절 테스트", href: `/${workspaceId}/settings` },
   ];
 
   const subTabs = [
@@ -126,8 +136,8 @@ export default function AppSidebar({ width }: SidebarProps) {
                                 </SidebarMenuItem>
                               ))}
                             </SidebarMenu>
-                          </SidebarGroupContent> 
-                        </SidebarGroup> */}                                                                                         
+                          </SidebarGroupContent>
+                        </SidebarGroup>                                                                                         */}
                     </div>
                   </div>
                 ))}
@@ -202,7 +212,6 @@ export default function AppSidebar({ width }: SidebarProps) {
               <div className="flex flex-1 flex-col">
                 <PopoverClose>
                   <Button
-                    onClick={open}
                     variant="ghost"
                     className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
                   >
@@ -213,6 +222,17 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <hr className="border-gray-500" />
                 <PopoverClose>
                   <Button
+                    onClick={() => {
+                      console.log(
+                        localStorage.getItem("access_token")
+                          ? "삭제전 : access_token 존재"
+                          : "뭐야 내 access token 어디갔어요",
+                      );
+                      logout();
+                      console.log(localStorage.getItem("access_token") ? "제대로 삭제 완료" : "삭제 안 됨");
+                      window.alert("로그아웃 되었습니다.");
+                      router.push("/");
+                    }}
                     variant="ghost"
                     className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
                   >

@@ -50,7 +50,7 @@ AND deleted_at IS NULL;
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
-        super().__init__(db) 
+        super().__init__(db)
 
     def find_by_id(self, id: UUID) -> WorkspaceMember:
         param = {

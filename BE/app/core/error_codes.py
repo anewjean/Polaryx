@@ -1,0 +1,7 @@
+from enum import Enum
+
+class ErrorCode(str, Enum):
+    ACCESS_TOKEN_EXPIRED = "ACCESS_TOKEN_EXPIRED"
+    INVALID_TOKEN = "INVALID_TOKEN"
+    UNAUTHORIZED = "UNAUTHORIZED"
+    FORBIDDEN = "FORBIDDEN"

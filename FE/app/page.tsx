@@ -2,6 +2,12 @@
 
 import React, { useMemo } from "react";
 import { LoginButton } from "../components/login/LoginButton";
+<<<<<<< HEAD
+=======
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { reissueAccessToken } from "@/apis/authApi";
+>>>>>>> 20884946d6aeb1153f26862c914a8b6d559d5d6c
 
 type Star = {
   id: number;
@@ -24,6 +30,7 @@ const Stars: React.FC<{ count?: number }> = ({ count = 100 }) => {
     }));
   }, [count]);
 
+<<<<<<< HEAD
   return (
     <>
       {stars.map((s) => (
@@ -46,6 +53,58 @@ const Stars: React.FC<{ count?: number }> = ({ count = 100 }) => {
 
 export default function Page() {
   return (
+=======
+  return (
+    <>
+      {stars.map((s) => (
+        <span
+          key={s.id}
+          className="twinkle"
+          style={{
+            width: `${s.size}px`,
+            height: `${s.size}px`,
+            top: `${s.top}%`,
+            left: `${s.left}%`,
+            animationDelay: `${s.delay}s`,
+            animationDuration: `${s.duration}s`,
+          }}
+        />
+      ))}
+    </>
+  );
+};
+
+export default function Page() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        console.log(token);
+
+        const res = await fetch(`http://localhost:8000/auth/check`, {
+          headers: { authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            const errbody: { detail?: string } = await res.clone().json();
+
+            console.log(errbody.detail);
+            if (errbody.detail == "EXPIRED TOKEN") {
+              console.log(1);
+              await reissueAccessToken("EXPIRED TOKEN");
+            }
+          }
+        }
+      } catch (err: any) {}
+    };
+
+    getToken();
+  }, [router]);
+  return (
+>>>>>>> 20884946d6aeb1153f26862c914a8b6d559d5d6c
     <div className="relative flex justify-center items-center h-screen overflow-hidden bg-black">
       {/* 별만 있는 레이어 */}
       <Stars count={150} />
