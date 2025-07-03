@@ -9,7 +9,7 @@ from BE.app.domain.workspace_member import WorkspaceMember
 insert_workspace_member = """
 INSERT INTO workspace_members (
 
-)
+) 
 VALUES (
 
 );

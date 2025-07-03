@@ -25,7 +25,6 @@ class WorkspaceMemberSchema(BaseModel):
             phone=row[7]
         )
         
-
 class WorkspaceMemberResponse(BaseModel):
     workspace_member: WorkspaceMemberSchema 
 
