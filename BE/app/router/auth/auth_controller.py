@@ -65,12 +65,12 @@ async def reaccess(request: Request,
     print("step in refresh\n")
     # 그럼 요청에서 refresh_token 찾아서
     refresh_token = request.cookies.get("refresh_token")
-    refresh_token_user_id_and_email = TokenSerive.verify_access_token(refresh_token)
 
     if not refresh_token:
         print("NO REFRESH TOKEN IN COOKIES\n")
         raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
 
+    refresh_token_user_id_and_email = TokenSerive.verify_access_token(refresh_token)
     data = {"user_refresh_token": refresh_token}
     
     # 그 refresh_token으로 db에서 refresh_token 찾아오기
