@@ -77,7 +77,7 @@ export default function ProfilePage({ width, targetId }: ProfileProps) {
   const saveChange = async () => {
     if (!profile) return;
     setSaving(true);
-    try {
+    try { 
       let updatedProfile: Profile;
       updatedProfile = await patchProfile(userId, form);
       setProfile(updatedProfile);

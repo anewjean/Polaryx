@@ -28,7 +28,7 @@ export async function getProfile(targetId: string): Promise<Profile> {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/profile/${targetId}`, {
+  const res = await fetch(`${BASE}/workspace_members/${targetId}`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${accessToken}`,
@@ -47,7 +47,7 @@ export async function patchProfile(userId: string, payload: Partial<EditableProf
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/profile/${userId}`, {
+  const res = await fetch(`${BASE}/workspace_members/me`, {
     method: "PATCH",
     headers: {
       "Authorization": `Bearer ${accessToken}`,
