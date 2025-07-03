@@ -15,7 +15,7 @@ services:
     build:
       context: ./BE
     env_file:
-      - ./BE/.env
+      - ./BE/.env/prod
     image: 897729099078.dkr.ecr.ap-northeast-2.amazonaws.com/slam-server:latest
     ports:
       - "8000:8000"
