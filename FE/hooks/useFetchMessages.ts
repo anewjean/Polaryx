@@ -33,7 +33,6 @@ export function useDeleteMessage() {
       setLoading(true);
       setError(null);
       try {
-        console.log("삭제 시도");
         await deleteMessage(workspaceId, tabId, messageId);
         setMessages(messages.filter((msg) => msg.id !== messageId));
       } catch (e: any) {
