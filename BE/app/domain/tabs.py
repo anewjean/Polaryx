@@ -9,10 +9,10 @@ class Tabs:
     workspace_id: int
     section_id: int
     name: str = ""
-    is_pinned: bool
     created_at: datetime = datetime.now()
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
+    is_pinned: bool = field(default_factory=False)
 
 @dataclass
 class SubTabs:
@@ -21,7 +21,7 @@ class SubTabs:
     section_id: int
     tab_id: int
     name: str = ""
-    is_pinned: bool
     created_at: datetime = datetime.now()
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
+    is_pinned: bool = field(default_factory=False)
