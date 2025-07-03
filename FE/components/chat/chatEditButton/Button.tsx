@@ -1,8 +1,8 @@
 export function EditButton(props: { text: string; subtext: string }) {
   return (
-    <button className="w-[270px] h-[28px] text-sm text-gray-900 hover:bg-[#1264a3] hover:text-white leading-none block text-left">
+    <button className="flex flex-1 flex-row justify-between hover:bg-blue-500 gap-2 p-4 text-sm overflow-hidden text-gray-900">
       <span>{props.text}</span>
-      <span className="absolute right-8">{props.subtext}</span>
+      <span>{props.subtext}</span>
     </button>
   );
 }

@@ -11,12 +11,11 @@ export function ChatEditButton() {
           <EllipsisVertical />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 bg-white">
-        <div className="grid gap-4">
-          <div className="space-y-2 ms-8">
-            <EditButton text="메시지 편집" subtext="Edit" />
-            <EditButton text="메시지 삭제" subtext="Delete" />
-          </div>
+      <PopoverContent className="flex w-[200px] bg-white overflow-hidden">
+        <div className="flex w-[200px] flex-col">
+          <EditButton text="메시지 편집" subtext="Edit" />
+          <hr />
+          <EditButton text="메시지 삭제" subtext="Delete" />
         </div>
       </PopoverContent>
     </Popover>
