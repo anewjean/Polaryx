@@ -1,14 +1,7 @@
 "use client";
 
-import { reissueAccessToken } from "@/apis/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-// type JWTPayload = { email: string; exp: number };
-// type Workspace = {
-//   id: string;
-//   name: string;
-// };
 
 export default function AuthCallbackPage() {
   const router = useRouter();

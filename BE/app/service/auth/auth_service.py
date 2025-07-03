@@ -8,7 +8,7 @@ from jose import jwt, ExpiredSignatureError
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
-REFRESH_TOKEN_EXPIRE_MINUTES = 5
+REFRESH_TOKEN_EXPIRE_MINUTES = 60
 
 db = DBFactory.get_db("MYSQL")
 query_repo = QueryRepo()
@@ -93,8 +93,8 @@ class TokenSerive:
     def find_and_get_refresh_token(data: dict) -> str:
         sql = query_repo.get_sql("find_refresh_token_by_refresh_token")
         result = db.execute(sql, data)
-
-        return result["token"]
+        
+        return result[0][2]
 
     # 저장해둔 refresh_token이 유효하지 않다면 db에서 제거하기.
     def delete_refresh_token_from_db(data: dict):
