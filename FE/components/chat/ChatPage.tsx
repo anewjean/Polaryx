@@ -7,6 +7,7 @@ import { updateMessage } from "@/apis/messages";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
+import { useDeleteMessage } from "@/hooks/useFetchMessages";
 
 // 채팅방 내 채팅
 export function ChatPage() {
@@ -19,12 +20,13 @@ export function ChatPage() {
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [hiddenIdxs, setHiddenIdxs] = useState<number[]>([]);
+  const { handleDelete, loading, error } = useDeleteMessage();
 
   if (!profile) return null; // 프로필이 없을 때
 
   return (
     <>
-      <WebSocketClient />
+      {/* <WebSocketClient /> */}
       <ShowDate timestamp={profile.timestamp} />
       <div className="flex p-[8px_20px] hover:bg-[#f8f8f8]">
         <div className="relative">
@@ -86,7 +88,7 @@ export function ChatPage() {
                     <>
                       {/* <div dangerouslySetInnerHTML={{ __html: msg }} /> */}
                       <p className={msg.nickname.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
-                        {msg.content}
+                        {msg.id}: {msg.content}
                       </p>
                       <ChatEditButton
                         visible={hoverIdx === msg.id}
@@ -94,7 +96,9 @@ export function ChatPage() {
                           setEditIdx(msg.id ?? 0);
                           setEditValue(msg.content);
                         }}
-                        onDelete={() => setHiddenIdxs((prev) => [...prev, msg.id ?? 0])}
+                        onDelete={() => {
+                          handleDelete("1", "1", msg.id ?? 0);
+                        }}
                       />
                     </>
                   )}

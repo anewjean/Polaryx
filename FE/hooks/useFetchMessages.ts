@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { getMessages } from "@/apis/messages";
+import { useCallback, useEffect, useState } from "react";
+import { deleteMessage, getMessages } from "@/apis/messages";
 import { useMessageStore } from "@/store/messageStore";
 
 export function useFetchMessages(workspaceId: string, tabId: string) {
@@ -20,4 +20,30 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
     }
     fetch();
   }, [workspaceId, tabId, setMessages]);
+}
+
+export function useDeleteMessage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const messages = useMessageStore((state) => state.messages);
+  const setMessages = useMessageStore((state) => state.setMessages);
+
+  const handleDelete = useCallback(
+    async (workspaceId: string, tabId: string, messageId: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        console.log("삭제 시도");
+        await deleteMessage(workspaceId, tabId, messageId);
+        setMessages(messages.filter((msg) => msg.id !== messageId));
+      } catch (e: any) {
+        setError("삭제에 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [messages, setMessages],
+  );
+
+  return { handleDelete, loading, error };
 }

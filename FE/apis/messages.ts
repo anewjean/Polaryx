@@ -19,10 +19,9 @@ export const updateMessage = async (id: number, message: string) => {
   });
 };
 
-export const deleteMessage = async (id: number) => {
-  return request(`/messages/${id}`, {
+export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number) => {
+  return request(`http://localhost:8000/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
     method: "POST",
-    body: JSON.stringify({ id }),
   });
 };
 
