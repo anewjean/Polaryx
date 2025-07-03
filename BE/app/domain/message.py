@@ -23,7 +23,7 @@ class Message:
     update_type: MessageUpdateType = MessageUpdateType.MODIFY
 
     @staticmethod
-    def of(tab_id: int, sender_id: UUID, content: str) -> Message:
+    def of(tab_id: int, sender_id: uuid.UUID, content: str) -> Message:
         return Message(
             tab_id=tab_id,
             sender_id=sender_id,

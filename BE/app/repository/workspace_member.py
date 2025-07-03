@@ -29,6 +29,10 @@ find_member_by_email = """
 SELECT * FROM workspace_members WHERE email = %(email)s;
 """
 
+find_members_by_group_id = """
+SELECT * FROM workspace_members WHERE group_id = %(group_id)s;
+"""
+
 find_all_workspace_members = """
 SELECT * FROM workspace_members
 WHERE workspace_id = %(workspace_id)s
@@ -51,3 +55,9 @@ class QueryRepo(AbstractQueryRepo):
             "email": email
         }
         return self.db.execute(find_member_by_email, param)
+    
+    def find_members_by_group_id(self, group_id: int):
+        param = {
+            "group_id": group_id
+        }
+        return self.db.execute(find_members_by_group_id, param)
