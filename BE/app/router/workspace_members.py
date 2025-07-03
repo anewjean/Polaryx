@@ -13,12 +13,10 @@ service = WorkspaceMemberService()
 #     workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
 #     return service.get_member_by_id(workspace_member_id)
 
-@router.get("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
-def get_workspace_member_profile(workspace_members_id: str):
-    # workspace_member_id = bytes.fromhex(workspace_members_id)
-    workspace_member_id = workspace_members_id
-    # workspace_member_id = UUID(workspace_members_id)
-    row = service.get_member_by_id(workspace_member_id)
+@router.get("/workspace_members/{user_id}", response_model=WorkspaceMemberResponse)
+def get_workspace_member_profile(user_id: str):
+    row = service.get_member_by_user_id(user_id)
+
     workspace_member = WorkspaceMemberSchema.from_row(row)
     return WorkspaceMemberResponse(workspace_member=workspace_member)
 
@@ -28,9 +26,10 @@ def get_workspace_member_profile(workspace_members_id: str):
 #     workspace_member = WorkspaceMemberSchema.from_row(updated_row)
 #     return WorkspaceMemberResponse(workspace_member=workspace_member)
 
-@router.patch("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
-def update_profile(workspace_members_id: str, payload: UpdateWorkspaceMemberRequest):
-    return service.update_profile(workspace_members_id, payload)
+@router.patch("/workspace_members/{user_id}", response_model=WorkspaceMemberResponse)
+def update_profile(user_id: str, payload: UpdateWorkspaceMemberRequest):
+    return service.update_profile_by_user_id(user_id, payload)
+
 
 
 

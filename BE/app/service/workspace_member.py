@@ -10,24 +10,24 @@ from BE.app.schema.workspace_members.response import (
 
 class WorkspaceMemberService:
     def __init__(self):
-        self.workspace_member_repo = WorkspaceMemberRepo()
-    
-    def get_member_by_id(self, id: UUID):
-        """Return the first row matching the given member ID or None."""
-        rows = self.workspace_member_repo.find_by_id(id)
+        self.workspace_member_repo = WorkspaceMemberRepo() # Repository 인스턴스 생성, DB 연결
+
+    def get_member_by_user_id(self, user_id: UUID):
+        rows = self.workspace_member_repo.find_by_user_id(user_id)
         return rows[0] if rows else None
     
     def get_member_by_email(self, email: str):
         rows = self.workspace_member_repo.find_by_email(email)
         return rows[0] if rows else None
-    
+
     def get_all_members(self, workspace_id: int):
         return self.workspace_member_repo.find_all(workspace_id)
-        
-    def update_profile(self, id: UUID, update_data: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
+    
+
+    def update_profile_by_user_id(self, user_id: UUID, update_data: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
         params = update_data.model_dump(exclude_unset=True)
-        self.workspace_member_repo.update(id, params)
-        rows = self.workspace_member_repo.find_by_id(id)
+        self.workspace_member_repo.update_by_user_id(user_id, params)
+        rows = self.workspace_member_repo.find_by_user_id(user_id)
         if not rows:
             raise ValueError("Updated member not found")
         workspace_member = WorkspaceMemberSchema.from_row(rows[0])
