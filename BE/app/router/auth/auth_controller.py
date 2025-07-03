@@ -7,9 +7,9 @@ from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import uuid
 
-from BE.app.service.auth.auth_service import AuthService, TokenSerive
-from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
-from BE.app.core.security import verify_token_and_get_token_data
+from app.service.auth.auth_service import AuthService, TokenSerive
+from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
+from app.core.security import verify_token_and_get_token_data
 
 router = APIRouter(prefix="/auth")
 

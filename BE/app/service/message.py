@@ -1,8 +1,8 @@
 from typing import List
 
-from BE.app.domain.message import Message
-from BE.app.repository.message import QueryRepo as MessageRepo
-from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
+from app.domain.message import Message
+from app.repository.message import QueryRepo as MessageRepo
+from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
 import uuid
 
 class MessageService:
