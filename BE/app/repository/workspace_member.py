@@ -18,7 +18,14 @@ VALUES (
 update_workspace_member = """
 UPDATE workspace_members
 SET 
-WHERE;
+    nickname = %(nickname)s,
+    email = %(email)s,
+    github = %(github)s,
+    blog = %(blog)s,
+    image = %(image)s,
+    phone = %(phone)s
+WHERE id = %(id)s
+AND deleted_at IS NULL;
 """
 
 find_member_by_id = """
@@ -62,3 +69,7 @@ class QueryRepo(AbstractQueryRepo):
             "workspace_id": workspace_id
         }
         return self.db.execute(find_all_workspace_members, param)
+    
+    def update(self, id: UUID) -> WorkspaceMember:
+        update_data["id"] = bytes.fromhex(id)  # 문자열 hex → binary UUID   
+        return self.db.execute(update_workspace_member, update_data)
