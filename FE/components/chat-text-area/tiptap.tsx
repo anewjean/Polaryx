@@ -211,7 +211,7 @@ const TipTap = () => {
       image: "/profileTest.png",
     });
 
-    appendMessage(content);
+    // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();

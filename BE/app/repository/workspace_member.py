@@ -35,6 +35,10 @@ WHERE workspace_id = %(workspace_id)s
 AND deleted_at IS NULL;
 """
 
+find_member_by_nickname = """
+SELECT * FROM workspace_members WHERE nickname = %(nickname)s;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -51,3 +55,9 @@ class QueryRepo(AbstractQueryRepo):
             "email": email
         }
         return self.db.execute(find_member_by_email, param)
+    
+    def find_by_nickname(self, nickname: str) -> WorkspaceMember:
+        param = {
+            "nickname": nickname
+        }
+        return self.db.execute(find_member_by_nickname, param)

@@ -51,7 +51,7 @@ export function ChatPage() {
         </div>
         <div className="w-[100%] m-[-12px -8px -16px -16px] p-[8px 8px 8px 16px]">
           <div className="flex items-baseline space-x-1.5">
-            <button className="text-m-bold cursor-pointer hover:underline">{profile.nickname}</button>
+            <button className="text-m-bold cursor-pointer hover:underline">{messages[0].nickname}</button>
             <div className="text-xs chat-time-stamp">
               {profile
                 ? new Date(profile.timestamp).toLocaleTimeString("ko-KR", {
@@ -77,7 +77,7 @@ export function ChatPage() {
                       value={editValue}
                       onChange={setEditValue}
                       onSave={() => {
-                        updateMessage(i, editValue);
+                        updateMessage(i, { nickname: msg.nickname, content: editValue });
                         setEditIdx(null);
                       }}
                       onCancel={() => setEditIdx(null)}
@@ -85,14 +85,14 @@ export function ChatPage() {
                   ) : (
                     <>
                       {/* <div dangerouslySetInnerHTML={{ __html: msg }} /> */}
-                      <p className={msg.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
-                        {msg}
+                      <p className={msg.nickname.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
+                        {msg.nickname}: {msg.content}
                       </p>
                       <ChatEditButton
                         visible={hoverIdx === i}
                         onClick={() => {
                           setEditIdx(i);
-                          setEditValue(msg);
+                          setEditValue(msg.content);
                         }}
                         onDelete={() => setHiddenIdxs((prev) => [...prev, i])}
                       />

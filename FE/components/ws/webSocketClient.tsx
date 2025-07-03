@@ -8,7 +8,7 @@ export const WebSocketClient = () => {
   const { message, sendFlag, setSendFlag } = useMessageStore();
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8000/ws/1751338353730?channel_id=test1`);
+    const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
     socketRef.current = socket;
 
     socket.onopen = () => {
@@ -16,7 +16,9 @@ export const WebSocketClient = () => {
     };
 
     socket.onmessage = (event) => {
-      console.log("Received message:", event.data);
+      const [nickname, ...contentArr] = event.data.split(":");
+      const content = contentArr.join(":");
+      useMessageStore.getState().appendMessage({ nickname, content });
     };
 
     socket.onerror = (error) => {
@@ -36,7 +38,12 @@ export const WebSocketClient = () => {
   // 메시지 전송 감지
   useEffect(() => {
     if (sendFlag && message && socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(message);
+      const data = {
+        sender_id: "4e7e765b-5688-11f0-bb98-0242ac110002",
+        content: message,
+      };
+      console.log(data.sender_id, data.content); //note: 나중에 지울 것
+      socketRef.current.send(JSON.stringify(data));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, setSendFlag, message]);
