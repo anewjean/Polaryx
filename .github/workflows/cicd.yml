@@ -82,7 +82,7 @@ jobs:
           source: |
             docker-compose.yml
             BE/.env.prod
-          target: "/home/ec2-user"
+          target: /home/ec2-user
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
