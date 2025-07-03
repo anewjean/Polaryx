@@ -56,7 +56,7 @@ CREATE TABLE workspace_members (
     workspace_id INT NOT NULL,
     nickname VARCHAR(32) NOT NULL,
     email VARCHAR(128) NOT NULL,
-    image VARCHAR(255) NOT NULL,
+    image VARCHAR(255) NULL,
     role_id INT NOT NULL,
     group_id INT DEFAULT NULL,
     github VARCHAR(255) DEFAULT NULL,
@@ -65,6 +65,15 @@ CREATE TABLE workspace_members (
     updated_at TIMESTAMP DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
     UNIQUE KEY uq_user_provider (user_id, workspace_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE groups (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(32),
+    description VARCHAR(255) NULL,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP NULL,
+    deleted_at TIMESTAMP NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE roles (

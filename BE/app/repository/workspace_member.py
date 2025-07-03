@@ -43,7 +43,7 @@ class QueryRepo(AbstractQueryRepo):
 
     def find_by_id(self, id: UUID) -> WorkspaceMember:
         param = {
-            "id": id.bytes
+            "id": UUID(id).bytes
         }
         return self.db.execute(find_member_by_id, param)
 
