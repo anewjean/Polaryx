@@ -27,7 +27,7 @@ export const deleteMessage = async (id: number) => {
 };
 
 export const getMessages = async (workspaceId: string, tabId: string) => {
-  return request(`/messages/${workspaceId}/${tabId}`, {
+  return request(`http://localhost:8000/workspaces/${workspaceId}/tabs/${tabId}/messages`, {
     method: "GET",
   });
 };

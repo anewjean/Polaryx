@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
 interface Message {
+  id: number | undefined;
   nickname: string;
   content: string;
+  created_at: string | undefined;
 }
 
 interface MessageStore {
@@ -19,6 +21,7 @@ interface MessageStore {
 
   // 메시지 저장
   messages: Message[];
+  setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
 }
 
@@ -38,5 +41,6 @@ export const useMessageStore = create<MessageStore>((set) => ({
 
   // List에 메시지 추가
   messages: [],
+  setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
 }));

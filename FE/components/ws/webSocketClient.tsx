@@ -18,7 +18,7 @@ export const WebSocketClient = () => {
     socket.onmessage = (event) => {
       const [nickname, ...contentArr] = event.data.split(":");
       const content = contentArr.join(":");
-      useMessageStore.getState().appendMessage({ nickname, content });
+      useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
     };
 
     socket.onerror = (error) => {

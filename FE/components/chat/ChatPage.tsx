@@ -64,20 +64,20 @@ export function ChatPage() {
             </div>
           </div>
           <div className="text-m h-170 overflow-y-auto pr-2">
-            {messages.map((msg, i) =>
-              hiddenIdxs.includes(i) ? null : (
+            {messages.map((msg) =>
+              hiddenIdxs.includes(msg.id ?? 0) ? null : (
                 <div
-                  key={i}
-                  onMouseEnter={() => setHoverIdx(i)}
+                  key={msg.id}
+                  onMouseEnter={() => setHoverIdx(msg.id ?? 0)}
                   onMouseLeave={() => setHoverIdx(null)}
                   style={{ display: "flex", alignItems: "center" }}
                 >
-                  {editIdx === i ? (
+                  {editIdx === msg.id ? (
                     <EditInput
                       value={editValue}
                       onChange={setEditValue}
                       onSave={() => {
-                        updateMessage(i, { nickname: msg.nickname, content: editValue });
+                        // updateMessage(i, { nickname: msg.nickname, content: editValue });
                         setEditIdx(null);
                       }}
                       onCancel={() => setEditIdx(null)}
@@ -86,15 +86,15 @@ export function ChatPage() {
                     <>
                       {/* <div dangerouslySetInnerHTML={{ __html: msg }} /> */}
                       <p className={msg.nickname.startsWith("@") ? "text-m-bold chat-alarm" : ""} style={{ margin: 0 }}>
-                        {msg.nickname}: {msg.content}
+                        {msg.content}
                       </p>
                       <ChatEditButton
-                        visible={hoverIdx === i}
+                        visible={hoverIdx === msg.id}
                         onClick={() => {
-                          setEditIdx(i);
+                          setEditIdx(msg.id ?? 0);
                           setEditValue(msg.content);
                         }}
-                        onDelete={() => setHiddenIdxs((prev) => [...prev, i])}
+                        onDelete={() => setHiddenIdxs((prev) => [...prev, msg.id ?? 0])}
                       />
                     </>
                   )}
