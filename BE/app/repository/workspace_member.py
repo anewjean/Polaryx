@@ -21,8 +21,8 @@ SET
 WHERE;
 """
 
-find_member_by_id = """
-SELECT * FROM workspace_members WHERE user_id = %(id)s;
+find_member_by_user_id = """
+SELECT * FROM workspace_members WHERE user_id = %(user_id)s;
 """
 
 find_member_by_email = """
@@ -48,11 +48,11 @@ class QueryRepo(AbstractQueryRepo):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
 
-    def find_by_id(self, id: str) -> WorkspaceMember:
+    def find_by_user_id(self, user_id: bytes) -> WorkspaceMember:
         param = {
-            "id": id
+            "user_id": user_id
         }
-        return self.db.execute(find_member_by_id, param)
+        return self.db.execute(find_member_by_user_id, param)
 
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {
