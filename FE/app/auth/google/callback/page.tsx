@@ -39,6 +39,7 @@ export default function AuthCallbackPage() {
         if (!res.ok) throw new Error("백엔드 요청 실패");
 
         const data = await res.json();
+        // const workspaceId = data.workspace_id;
         const accessToken = data.access_token;
 
         if (!accessToken) {
@@ -50,6 +51,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
+          // router.replace("/client/"+workspaceId);
           router.replace("/client/workspaceId");
         }, 1500);
       } catch (err: any) {

@@ -6,16 +6,19 @@ import httpx
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import uuid
+# from dotenv import load_dotenv
 
 from BE.app.service.auth.auth_service import AuthService, TokenSerive
 from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
 from BE.app.core.security import verify_token_and_get_token_data
+from BE.app.config.config import settings
+# load_dotenv()
 
 router = APIRouter(prefix="/auth")
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -151,15 +154,16 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             
             else:
                 # 토큰 발급
-                data = {"user_id": str(user_INdb[0][0]), "email": user_INdb[0][2]}
-                jwt_access_token = TokenSerive.create_access_token(data)
-                jwt_refresh_token = TokenSerive.create_refresh_token(data)
-                data={"id": refresh_token_uuid,
+                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
+                jwt_access_token = TokenSerive.create_access_token(user_data)
+
+                jwt_refresh_token = TokenSerive.create_refresh_token(user_data)
+                res_data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
-                TokenSerive.save_refresh_token_to_db(data)
+                TokenSerive.save_refresh_token_to_db(res_data)
 
                 response.set_cookie(
                     key="refresh_token",
@@ -173,6 +177,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                 result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5])
                 
                 return result
+            
     # github 구현 부분. 미완.
 
     # elif provider.value == "github":

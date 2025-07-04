@@ -1,13 +1,13 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
-import uuid
 
 @dataclass
-class User:
-    id: uuid.UUID = field(default_factory=uuid.uuid4)
-    is_updated: bool = False
+class Groups:
+    id: int
+    name: str
+    description: str
     created_at: datetime = datetime.now()
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None

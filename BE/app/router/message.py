@@ -3,6 +3,7 @@ import json
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter
+import uuid
 
 from BE.app.service.websocket_manager import ConnectionManager
 from BE.app.service.message import MessageService

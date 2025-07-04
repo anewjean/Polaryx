@@ -8,8 +8,8 @@ class WorkspaceMemberService:
     def __init__(self):
         self.workspace_member_repo = WorkspaceMemberRepo()
     
-    def get_member_by_id(self, id: UUID) -> WorkspaceMember:
-        workspace_member = self.workspace_member_repo.find_by_id(id)
+    def get_member_by_user_id(self, id: UUID) -> WorkspaceMember:
+        workspace_member = self.workspace_member_repo.find_by_user_id(id)
         return workspace_member
     
     def get_member_by_email(self, email: str) -> WorkspaceMember:
