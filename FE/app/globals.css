@@ -182,6 +182,11 @@
   font-size: 13px;
 }
 
+.text-s-bold {
+  font-size: 13px;
+  font-weight: bold;
+}
+
 /* 12px
  * 예) 이모지 공감 숫자, 채팅을 보낸 시간
  */

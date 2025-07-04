@@ -1,11 +1,9 @@
 "use client";
 
 import TipTap from "@/components/chat-text-area/tiptap";
-import { WebSocketClient } from "@/components/ws/webSocketClient";
 import { useChannelStore } from "@/store/channelStore";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { ChatPage } from "@/components/chat/ChatPage";
-import { useParams } from "next/navigation";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 
 export default function ChannelDefault() {
@@ -14,16 +12,12 @@ export default function ChannelDefault() {
   useFetchMessages("1", "1");
 
   return (
-    <div className="relative text-gray-800">
+    <div className="flex flex-col h-screen w-full h-full text-gray-800">
       <ChatHeader />
-      <ChatPage />
-      <div
-        className={`fixed bottom-0 p-4`}
-        style={{
-          width: `${channelWidth}%`,
-        }}
-      >
-        {/* 채팅 입력 컴포넌트 */}
+      <div className="flex-1 overflow-y-auto">
+        <ChatPage />
+      </div>
+      <div className="m-6">
         <TipTap />
       </div>
     </div>

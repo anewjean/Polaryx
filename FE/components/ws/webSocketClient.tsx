@@ -2,6 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
+import { jwtDecode } from "jwt-decode";
+
+interface JWTPayload {
+  user_id: string;
+}
 
 export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
@@ -38,8 +43,18 @@ export const WebSocketClient = () => {
   // 메시지 전송 감지
   useEffect(() => {
     if (sendFlag && message && socketRef.current?.readyState === WebSocket.OPEN) {
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        console.log("토큰없당"); // 추후 수정
+        return;
+      }
+
+      const myPayload = jwtDecode<JWTPayload>(token);
+      const userId = myPayload.user_id;
+
       const data = {
-        sender_id: "4e7e765b-5688-11f0-bb98-0242ac110002",
+        sender_id: userId,
         content: message,
       };
       console.log(data.sender_id, data.content); //note: 나중에 지울 것
