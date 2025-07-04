@@ -13,22 +13,17 @@ service = WorkspaceMemberService()
 #     workspace_member_id = bytes.fromhex("9C27B022568A11F097058C554A43DA90")
 #     return service.get_member_by_id(workspace_member_id)
 
-@router.get("/workspace_members/{user_id}", response_model=WorkspaceMemberResponse)
+@router.get("/workspace_members/{user_id}", response_model=WorkspaceMemberSchema)
 def get_workspace_member_profile(user_id: str):
-    row = service.get_member_by_user_id(user_id)
+    uuid_obj = UUID(user_id)  # str → UUID 변환
+    row = service.get_member_by_user_id(uuid_obj)
+    return WorkspaceMemberSchema.from_row(row)
 
-    workspace_member = WorkspaceMemberSchema.from_row(row)
-    return WorkspaceMemberResponse(workspace_member=workspace_member)
 
-# @router.patch("/workspace_members/{workspace_members_id}", response_model=WorkspaceMemberResponse)
-# def update_profile(workspace_members_id: str, payload: UpdateWorkspaceMemberRequest):
-#     updated_row = service.update_profile(workspace_members_id, payload)
-#     workspace_member = WorkspaceMemberSchema.from_row(updated_row)
-#     return WorkspaceMemberResponse(workspace_member=workspace_member)
-
-@router.patch("/workspace_members/{user_id}", response_model=WorkspaceMemberResponse)
+@router.patch("/workspace_members/{user_id}", response_model=WorkspaceMemberSchema)
 def update_profile(user_id: str, payload: UpdateWorkspaceMemberRequest):
-    return service.update_profile_by_user_id(user_id, payload)
+    response = service.update_profile_by_user_id(UUID(user_id), payload)
+    return response.workspace_member
 
 
 

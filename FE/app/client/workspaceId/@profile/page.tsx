@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
 import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
+import { convertFileToBase64 } from "@/utils/fileUtils";
 
 type ProfileProps = { targetId?: string };
 
@@ -32,7 +33,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   // 프로필 편집 폼 데이터 상태 관리
   const [form, setForm] = useState<{
     nickname: string;
-    phone?: string;
+    // phone?: string;
     github?: string;
     blog?: string;
   }>({ nickname: "" });
@@ -43,26 +44,24 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   // 프로필 저장 중 상태 관리
   const [saving, setSaving] = useState(false);
 
+  // 프로필 이미지 상태 관리
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
-        let profileData: Profile;
-        if (targetId) {
-          profileData = await getProfile(targetId);
-
-          // targetId가 없으면 본인 프로필 조회
-        } else {
-          console.log(`유저 아이디: ${userId}`);
-          profileData = await getProfile("23964D5F57E211F0A26D80325399A209");
-        }
-        setProfile(profileData);
+        console.log(`테스트: ${userId}`);
+        const profile = await getProfile(targetId ?? userId);
+        setProfile(profile);
         setForm({
-          nickname: profileData.nickname,
-          phone: profileData.phone ?? "",
-          github: profileData.github ?? "",
-          blog: profileData.blog ?? "",
+          nickname: profile.nickname,
+          // phone: profile.phone ?? "",
+          github: profile.github ?? "",
+          blog: profile.blog ?? "",
         });
       } catch (error) {
         console.error("프로필 조회 실패:", error);
@@ -77,8 +76,22 @@ export default function ProfilePage({ targetId }: ProfileProps) {
     if (!profile) return;
     setSaving(true);
     try {
-      let updatedProfile: Profile;
-      updatedProfile = await patchProfile("23964D5F57E211F0A26D80325399A209", form);
+      const payload: Partial<
+        Omit<
+          Profile,
+          "id" | "userId" | "email" | "workspaceId" | "role" | "groups" | "createdAt" | "updatedAt" | "deletedAt"
+        >
+      > = {
+        nickname: form.nickname,
+        // phone: form.phone ?? null,
+        github: form.github ?? null,
+        blog: form.blog ?? null,
+        image: preview ?? null,
+      };
+      if (selectedFile && preview) {
+        payload.image = preview;
+      }
+      const updatedProfile = await patchProfile(profile.id, payload);
       setProfile(updatedProfile);
       close();
     } catch (error) {
@@ -87,6 +100,19 @@ export default function ProfilePage({ targetId }: ProfileProps) {
     } finally {
       setSaving(false);
     }
+  };
+
+  // 프로필 이미지 변경
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 256 * 1024) {
+      alert("이미지 크기는 256KB 이하만 가능합니다.");
+      return;
+    }
+    setSelectedFile(file);
+    const base64 = await convertFileToBase64(file);
+    setPreview(base64);
   };
 
   return (
@@ -141,16 +167,36 @@ export default function ProfilePage({ targetId }: ProfileProps) {
             title="Edit your profile"
           >
             {/* CardModal 내용: 프로필 편집 폼 */}
-            <form className="flex flex-col gap-5">
+            <form
+              className="flex flex-col gap-5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveChange();
+              }}
+            >
               <div className="flex flex-row gap-5">
                 {/* 프로필 이미지 */}
                 <div className="flex flex-col justify-between h-full w-[238px] gap-2">
                   <img
-                    src={profile?.image || "/user_default.png"}
+                    src={preview || profile?.image || "/user_default.png"}
                     alt="profile_image"
                     className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
                   />
-                  <Button variant="outline" size="sm">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                  >
                     Change
                   </Button>
                 </div>
@@ -181,7 +227,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                 </div>
               </div>
               {/* 추가 필드1: 연락처 */}
-              <label className="font-semibold">
+              {/* <label className="font-semibold">
                 Phone
                 <Input
                   type="text"
@@ -190,7 +236,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   className="w-full border rounded px-2 py-1 font-normal"
                 />
-              </label>
+              </label> */}
               {/* 추가 필드2: github */}
               <label className="font-semibold">
                 Github
@@ -211,8 +257,17 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                   className="w-full border rounded px-2 py-1 font-normal"
                 />
               </label>
-              <CardFooter className="flex flex-row items-center justify-end flex-none p-0">
-                <Button variant="default" onClick={saveChange} disabled={saving}>
+              <CardFooter className="flex justify-end p-0">
+                <Button
+                  type="submit"
+                  variant="default"
+                  disabled={saving || !form.nickname}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    saveChange();
+                  }}
+                >
                   {saving ? "Saving..." : "Save Changes"}
                 </Button>
               </CardFooter>
@@ -228,10 +283,10 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         <span className="flex-1 min-w-0 text-md truncate">{profile?.email}</span>
       </div>
       {/* 전화번호 */}
-      <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
+      {/* <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Phone</span>
         <span className="flex-1 min-w-0 text-md truncate">{profile?.phone ?? ""}</span>
-      </div>
+      </div> */}
       {/* github */}
       <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Github</span>

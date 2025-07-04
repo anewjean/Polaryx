@@ -11,8 +11,8 @@ class WorkspaceMemberSchema(BaseModel):
     image: Optional[str] = None
     role_id: Optional[int] = None
     group_id: Optional[int] = None
-    github: Optional[str]
-    blog: Optional[str]
+    github: Optional[str] = None
+    blog: Optional[str] = None
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
