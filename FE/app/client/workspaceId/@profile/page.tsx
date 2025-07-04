@@ -27,6 +27,9 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
 
+  // 프로필 편집 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // 프로필 데이터 상태 관리
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -37,9 +40,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
     github?: string;
     blog?: string;
   }>({ nickname: "" });
-
-  // 프로필 조회 중 상태 관리
-  const [loading, setLoading] = useState(true);
 
   // 프로필 저장 중 상태 관리
   const [saving, setSaving] = useState(false);
@@ -53,8 +53,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
-        console.log(`테스트: ${userId}`);
         const profile = await getProfile(targetId ?? userId);
         setProfile(profile);
         setForm({
@@ -65,8 +63,6 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         });
       } catch (error) {
         console.error("프로필 조회 실패:", error);
-      } finally {
-        setLoading(false);
       }
     })();
   }, [targetId]);
@@ -91,9 +87,9 @@ export default function ProfilePage({ targetId }: ProfileProps) {
       if (selectedFile && preview) {
         payload.image = preview;
       }
-      const updatedProfile = await patchProfile(profile.id, payload);
+      const updatedProfile = await patchProfile(userId, payload);
       setProfile(updatedProfile);
-      close();
+      setIsModalOpen(false);
     } catch (error) {
       console.error(error);
       alert("프로필 수정에 실패했습니다.");
@@ -165,18 +161,21 @@ export default function ProfilePage({ targetId }: ProfileProps) {
               </Button>
             }
             title="Edit your profile"
+            open={isModalOpen}
+            onOpenChange={setIsModalOpen}
           >
             {/* CardModal 내용: 프로필 편집 폼 */}
             <form
               className="flex flex-col gap-5"
               onSubmit={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 saveChange();
               }}
             >
               <div className="flex flex-row gap-5">
                 {/* 프로필 이미지 */}
-                <div className="flex flex-col justify-between h-full w-[238px] gap-2">
+                <div className="flex flex-col justify-between h-full w-[185px] gap-2">
                   <img
                     src={preview || profile?.image || "/user_default.png"}
                     alt="profile_image"
@@ -193,6 +192,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                     variant="outline"
                     size="sm"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       fileInputRef.current?.click();
                     }}
@@ -226,48 +226,41 @@ export default function ProfilePage({ targetId }: ProfileProps) {
                   </div>
                 </div>
               </div>
-              {/* 추가 필드1: 연락처 */}
-              {/* <label className="font-semibold">
-                Phone
-                <Input
-                  type="text"
-                  placeholder=""
-                  defaultValue={profile?.phone ?? ""}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full border rounded px-2 py-1 font-normal"
-                />
-              </label> */}
-              {/* 추가 필드2: github */}
-              <label className="font-semibold">
-                Github
-                <Input
-                  type="text"
-                  value={form.github}
-                  onChange={(e) => setForm({ ...form, github: e.target.value })}
-                  className="w-full border rounded px-2 py-1 font-normal"
-                />
-              </label>
-              {/* 추가 필드3: blog */}
-              <label className="font-semibold">
-                Blog
-                <Input
-                  type="text"
-                  value={form.blog}
-                  onChange={(e) => setForm({ ...form, blog: e.target.value })}
-                  className="w-full border rounded px-2 py-1 font-normal"
-                />
-              </label>
-              <CardFooter className="flex justify-end p-0">
-                <Button
-                  type="submit"
-                  variant="default"
-                  disabled={saving || !form.nickname}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    saveChange();
-                  }}
-                >
+              <div className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar-thin">
+                {/* 추가 필드1: 연락처 */}
+                {/* <label className="font-semibold">
+                  Phone
+                  <Input
+                    type="text"
+                    placeholder=""
+                    defaultValue={profile?.phone ?? ""}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    className="w-full border rounded px-2 py-1 font-normal"
+                  />
+                </label> */}
+                {/* 추가 필드2: github */}
+                <label className="font-semibold">
+                  Github
+                  <Input
+                    type="text"
+                    value={form.github}
+                    onChange={(e) => setForm({ ...form, github: e.target.value })}
+                    className="w-full border rounded px-2 py-1 font-normal"
+                  />
+                </label>
+                {/* 추가 필드3: blog */}
+                <label className="font-semibold">
+                  Blog
+                  <Input
+                    type="text"
+                    value={form.blog}
+                    onChange={(e) => setForm({ ...form, blog: e.target.value })}
+                    className="w-full border rounded px-2 py-1 font-normal"
+                  />
+                </label>
+              </div>
+              <CardFooter className="flex sticky bottom-0 justify-end p-0">
+                <Button type="submit" variant="default" disabled={saving || !form.nickname} className="w-full">
                   {saving ? "Saving..." : "Save Changes"}
                 </Button>
               </CardFooter>
