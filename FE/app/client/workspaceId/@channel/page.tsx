@@ -1,13 +1,22 @@
 "use client";
 
 import TipTap from "@/components/chat-text-area/tiptap";
+import { WebSocketClient } from "@/components/ws/webSocketClient";
 import { useChannelStore } from "@/store/channelStore";
+import { ChatHeader } from "@/components/chat/ChatHeader";
+import { ChatPage } from "@/components/chat/ChatPage";
+import { useParams } from "next/navigation";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
 
 export default function ChannelDefault() {
   const { channelWidth } = useChannelStore();
+  // const { workspaceId, tabId } = useParams(); // note: 동적 라우팅 처리 필요
+  useFetchMessages("1", "1");
 
   return (
     <div className="relative text-gray-800">
+      <ChatHeader />
+      <ChatPage />
       <div
         className={`fixed bottom-0 p-4`}
         style={{
