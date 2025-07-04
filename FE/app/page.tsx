@@ -71,7 +71,11 @@ export default function Page() {
             }
           }
         }
-      } catch (err: any) {}
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error(err.message);
+        }
+      }
     };
 
     getToken();

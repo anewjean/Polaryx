@@ -1,6 +1,6 @@
 import mysql.connector
-from BE.app.util.database.db_impl import DBImpl, ExecuteError
-from BE.app.config.config import settings 
+from app.util.database.db_impl import DBImpl, ExecuteError
+from app.config.config import settings 
 
 class MongoDB(DBImpl):
     def __init__(self):
