@@ -94,9 +94,6 @@ jobs:
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
 
-            sed -i "s|\${FRONT_TAG}|${{ github.sha }}|g" docker-compose.yml
-            sed -i "s|\${BACK_TAG}|${{ github.sha }}|g" docker-compose.yml
-
             docker-compose pull
             docker-compose down
             docker-compose up -d
