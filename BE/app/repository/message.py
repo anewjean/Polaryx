@@ -1,6 +1,4 @@
-from datetime import datetime
 from typing import List
-from uuid import UUID
 
 from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
 from BE.app.util.database.db_factory import DBFactory
@@ -51,7 +49,7 @@ SELECT
     m.deleted_at
 FROM messages m
 JOIN workspace_members wm
-ON m.sender_id = wm.id
+ON m.sender_id = wm.user_id
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL;
 """
@@ -76,7 +74,7 @@ class QueryRepo(AbstractQueryRepo):
     def insert(self, message: Message):
         params = {
             "tab_id": message.tab_id,
-            "sender_id": UUID(message.sender_id).bytes,
+            "sender_id": message.sender_id,
             "content": message.content
         }
         return self.db.execute(insert_message, params)
