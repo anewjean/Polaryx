@@ -34,7 +34,7 @@ VALUES (
     %(name)s
 );
 SELECT * FROM tabs WHERE workspace_id = %(workspace_id)s
-                     AND section_id = %(workspace_id)s
+                     AND section_id = %(section_id)s
                      AND name = %(name)s;
 """
 
@@ -82,7 +82,7 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_tabs_by_id, param)
     
-    def find_tabs_by_all_properties(self, workspace_id_and_section_id_and_name: str) -> Tabs:
+    def find_tabs_by_all_properties(self, workspace_id_and_section_id_and_name: dict) -> Tabs:
         return self.db.execute(find_tabs_by_all_properties, workspace_id_and_section_id_and_name)
 
     def find_tabs_by_workspace_id(self, id: UUID):
