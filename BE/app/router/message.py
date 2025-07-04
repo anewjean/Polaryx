@@ -57,9 +57,9 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
         while True:
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
-            sender_id = ast.literal_eval(data.get("sender_id"))
+            sender_id = (data.get("sender_id"))
             content = data.get("content")
-            workspace_member = workspace_member_service.get_member_by_id(sender_id)
+            workspace_member = workspace_member_service.get_member_by_user_id(sender_id)
             nickname = workspace_member[0][3]
             await connection.broadcast(workspace_id, tab_id, f"{nickname}:{content}")
             await message_service.save_message(tab_id, sender_id, content)

@@ -154,7 +154,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             
             else:
                 # 토큰 발급
-                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
+                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex, "email": user_INdb[0][2]}
                 jwt_access_token = TokenSerive.create_access_token(user_data)
 
                 jwt_refresh_token = TokenSerive.create_refresh_token(user_data)

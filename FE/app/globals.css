@@ -257,4 +257,22 @@
   animation:
     spin 10s linear infinite,
     coloredGlow 4s ease-in-out infinite;
+}/* 색 관련 설정 */
+.chat-time-stamp {
+  color: rgba(97, 96, 97, 1);
+}
+
+.chat-alarm {
+  display: inline-block;
+  background-color: #ffc6002e;
+}
+
+/* 분리선 등의 회색 */
+.divider-gray {
+  color: rgba(221, 221, 221);
+}
+
+.border-divider-gray {
+  border: 1px rgba(221, 221, 221) solid;
+  background-color: white;
 }

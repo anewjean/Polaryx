@@ -13,6 +13,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
         id: msg.id,
         nickname: msg.nickname,
         content: msg.content,
+        image: msg.image,
         created_at: msg.created_at,
       }));
       console.log(messages);

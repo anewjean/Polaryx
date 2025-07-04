@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
 from BE.app.util.database.db_factory import DBFactory
@@ -42,6 +43,7 @@ SELECT
     m.tab_id,
     m.sender_id,
     wm.nickname,
+    wm.image,
     m.content,
     m.is_updated,
     m.created_at,
@@ -74,7 +76,7 @@ class QueryRepo(AbstractQueryRepo):
     def insert(self, message: Message):
         params = {
             "tab_id": message.tab_id,
-            "sender_id": message.sender_id,
+            "sender_id": UUID(message.sender_id).bytes,
             "content": message.content
         }
         return self.db.execute(insert_message, params)

@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface Message {
   id: number | undefined;
   nickname: string;
+  image: string;
   content: string;
   created_at: string | undefined;
 }

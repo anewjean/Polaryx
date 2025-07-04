@@ -12,9 +12,9 @@ export default function ChannelDefault() {
   useFetchMessages("1", "1");
 
   return (
-    <div className="flex flex-col h-screen w-full h-full text-gray-800">
+    <div className="flex flex-col w-full h-full text-gray-800">
       <ChatHeader />
-      <div className="flex-1 overflow-y-auto">
+      <div className="mx-3 flex-1 overflow-y-auto">
         <ChatPage />
       </div>
       <div className="m-6">
