@@ -25,6 +25,7 @@ import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
+// import { Send } from "lucide-react";
 
 // 실험용
 import { jwtDecode } from "jwt-decode";
@@ -36,7 +37,7 @@ const TipTap = () => {
   const editor = useEditor({
     editable: true,
     extensions: [
-      StarterKit,
+      StarterKit, // 핵심 확장 모음
       Placeholder.configure({
         // placeholder가 뭐임?
         placeholder: "나만무 team3",
@@ -215,6 +216,7 @@ const TipTap = () => {
     // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
+    
     editor?.commands.clearContent();
   };
 
@@ -234,9 +236,10 @@ const TipTap = () => {
       <div className="toolbar-container">
         <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
       </div>
-      <div className="editor-container">
+      <div className="editor-container flex">
         <EditorContent
           editor={editor}
+          className="w-full"
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
               event.preventDefault(); // 줄바꿈 방지
@@ -244,6 +247,9 @@ const TipTap = () => {
             }
           }}
         />
+        {/* <div className="flex flex-1 justify-end items-end">
+          <Send size={20} />
+        </div> */}
       </div>
     </div>
   );

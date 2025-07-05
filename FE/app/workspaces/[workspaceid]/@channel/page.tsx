@@ -21,14 +21,10 @@ export default function ChannelDefault() {
   return (
     <div className="relative text-gray-800">
       <ChatHeader />
-      <ChatPage />
-      <div
-        className={`fixed bottom-0 p-4`}
-        style={{
-          width: `${channelWidth}%`,
-        }}
-      >
-        {/* 채팅 입력 컴포넌트 */}
+      <div className="flex-1 overflow-y-auto">
+        <ChatPage />
+      </div>
+      <div className="mb-5 mx-5">
         <TipTap />
       </div>
     </div>
