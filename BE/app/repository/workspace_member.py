@@ -83,5 +83,5 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_member_by_nickname, param)
 
-    def find_by_workspace_columns(self) -> List[str]:
+    def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
