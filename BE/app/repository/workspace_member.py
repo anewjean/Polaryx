@@ -8,10 +8,10 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-
+    id, user_id, workspace_id, nickname, email, role_id
 )
 VALUES (
-
+    %(id)s, %(user_id)s, %(workspace_id)s, %(user_name)s, %(user_email)s, %(role_id)s
 );
 """
 
@@ -55,6 +55,9 @@ class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
+
+    def insert_workspace_member(self, data: dict):
+        return self.db.execute(insert_workspace_member, data)
 
     def find_by_user_id(self, id: str) -> WorkspaceMember:
         param = {

@@ -1,6 +1,11 @@
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 
+insert_user = """
+INSERT INTO users (id, name, email, provider, workspace_id)
+                      VALUE(%(id)s, %(user_name)s, %(user_email)s, %(provider)s, %(workspace_id)s);
+"""
+
 find_all_user = """
 SELECT * FROM users;
 """
@@ -50,3 +55,4 @@ class QueryRepo(AbstractQueryRepo):
         self.queries["find_refresh_token_by_refresh_token"] = find_refresh_token_by_refresh_token
         self.queries["remove_refresh_token_by_user_id_and_token"] = remove_refresh_token_by_user_id_and_token
         self.queries["update_user_id_in_workspace_members"] = update_user_id_in_workspace_members
+        self.queries["insert_user"] = insert_user
