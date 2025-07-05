@@ -7,7 +7,7 @@ import { useChannelStore } from "@/store/channelStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useRouter } from "next/navigation";
 
-export default function WorkspaceLayout({
+export default function WorkspaceIdLayout({
   children,
   sidebar,
   profile,

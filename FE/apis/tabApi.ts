@@ -25,9 +25,9 @@ export async function checkTabName(tabName: string): Promise<boolean> {
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
+  const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/tab/check_name`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/check_name`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -42,14 +42,13 @@ export async function checkTabName(tabName: string): Promise<boolean> {
 
 /* 탭 정보(이름, 인원 수) 조회 */
 export async function getTabInfo(): Promise<Tab> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
-  const tabId = pathname.split("/")[2];
+  const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/${tabId}/`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -62,13 +61,13 @@ export async function getTabInfo(): Promise<Tab> {
 
 /* 탭 리스트 조회 */
 export async function getTabList(): Promise<Tab[]> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
+  const [, , workspaceId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/tab`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -81,13 +80,13 @@ export async function getTabList(): Promise<Tab[]> {
 
 /* 탭 추가 (섹션 타입, 탭 이름, 참여자 id 필요) */
 export async function postTab(sectionId: number, tabName: string, userIds: string[]): Promise<Tab> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
+  const [, , workspaceId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/tabs`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -102,14 +101,13 @@ export async function postTab(sectionId: number, tabName: string, userIds: strin
 
 /* 탭 참여 인원 조회 */
 export async function getMemberList(): Promise<Member[]> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
-  const tabId = pathname.split("/")[2];
+  const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/${tabId}/members`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -122,14 +120,13 @@ export async function getMemberList(): Promise<Member[]> {
 
 /* 탭 참여 가능 인원 조회 */
 export async function getPossibleMemberList(): Promise<Member[]> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
-  const tabId = pathname.split("/")[2];
+  const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/${tabId}/possible_members`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/possible_members`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -142,14 +139,13 @@ export async function getPossibleMemberList(): Promise<Member[]> {
 
 /* 탭 인원 초대 */
 export async function postMemberList(userIds: string[]): Promise<Member[]> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
-  const workspaceId = pathname.split("/")[1];
-  const tabId = pathname.split("/")[2];
+  const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/${workspaceId}/${tabId}/members`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
