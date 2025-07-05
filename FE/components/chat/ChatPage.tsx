@@ -1,9 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
+// import { ChatEditButton } from "./chatEditButton";
+import { EditInput } from "./EditInput";
+import { updateMessage } from "@/apis/messages";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
+import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
 // 채팅방 내 채팅
 export function ChatPage() {

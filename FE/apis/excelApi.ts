@@ -12,6 +12,14 @@ export async function createUsers(users: any[]) {
   return res.json();
 }
 
+export async function getWorkspaceColumns() {
+  const res = await fetch("http://localhost:8000/workspace-members/columns", {
+    method: "GET",
+  });
+  if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
+  return res.json();
+}
+
 // {
 //     "users": [
 //       { "name": "홍길동", "email": "hong@test.com", "workspace_id": 1 },
