@@ -3,6 +3,7 @@ import json
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter
+from datetime import datetime
 import uuid
 
 from BE.app.service.websocket_manager import ConnectionManager
@@ -59,9 +60,19 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             data = json.loads(raw_data)
             sender_id = (data.get("sender_id"))
             content = data.get("content")
+
             workspace_member = workspace_member_service.get_member_by_user_id(sender_id)
             nickname = workspace_member[0][3]
-            await connection.broadcast(workspace_id, tab_id, f"{nickname}:{content}")
+            image = workspace_member[0][5]
+
+            payload = {
+                "content": content,
+                "nickname": nickname,
+                "image": image,
+                "created_at": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
+            }
+            
+            await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             await message_service.save_message(tab_id, sender_id, content)
     except WebSocketDisconnect:
         connection.disconnect(workspace_id, tab_id, websocket)

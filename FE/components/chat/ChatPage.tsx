@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
@@ -8,7 +8,6 @@ import { ChatProfile } from "./ChatProfile";
 // 채팅방 내 채팅
 export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
-  const profile = useMessageProfileStore((state) => state.profiles[0]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,10 +17,17 @@ export function ChatPage() {
     }
   }, [messages]);
 
+  const dayStart = (iso: string) => {
+    const d = new Date(iso);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+
+  const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
+
   return (
     <div className="flex-1 flex flex-col h-full">
       <WebSocketClient />
-      {profile && <ShowDate timestamp={profile.timestamp} />}
 
       <div
         ref={containerRef}
@@ -29,6 +35,10 @@ export function ChatPage() {
       >
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
+          const todayKey = dayStart(msg.created_at!);
+          const prevKey = prev ? dayStart(prev.created_at!) : null;
+          const showDateHeader = prevKey === null || todayKey !== prevKey;
+
           let showProfile = true;
 
           if (prev && prev.nickname === msg.nickname && prev.created_at && msg.created_at) {
@@ -42,22 +52,34 @@ export function ChatPage() {
           }
 
           return (
-            <ChatProfile
-              key={msg.id}
-              imgSrc={msg.image ? msg.image : "/profileDefault.png"}
-              nickname={msg.nickname}
-              time={
-                msg.created_at
-                  ? new Date(msg.created_at).toLocaleTimeString("ko-KR", {
-                      hour: "numeric",
-                      minute: "2-digit",
-                      hour12: true,
-                    })
-                  : "just now"
-              }
-              content={msg.content}
-              showProfile={showProfile}
-            />
+            <React.Fragment key={msg.id}>
+              {showDateHeader &&
+                (idx === 0 ? (
+                  <div className="sticky top-0 date-header">
+                    <ShowDate timestamp={initialDateKey} />
+                  </div>
+                ) : (
+                  <ShowDate timestamp={initialDateKey} />
+                ))}
+
+              <ChatProfile
+                imgSrc={msg.image ? msg.image : "/profileDefault.png"}
+                nickname={msg.nickname}
+                time={
+                  msg.created_at
+                    ? new Date(msg.created_at)
+                        .toLocaleTimeString("ko-KR", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                        .split(" ")[1]
+                    : "now"
+                }
+                content={msg.content}
+                showProfile={showProfile}
+              />
+            </React.Fragment>
           );
         })}
       </div>

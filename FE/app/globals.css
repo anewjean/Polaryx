@@ -305,3 +305,7 @@
     transform: translateY(0);
   }
 }
+
+.date-header hr.divider-gray {
+  display: none;
+}

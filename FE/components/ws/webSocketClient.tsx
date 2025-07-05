@@ -21,10 +21,18 @@ export const WebSocketClient = () => {
     };
 
     socket.onmessage = (event) => {
-      const [nickname, ...contentArr] = event.data.split(":");
-      const content = contentArr.join(":");
-      useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
+      try {
+        const msg = JSON.parse(event.data);
+        useMessageStore.getState().appendMessage(msg);
+      } catch {
+        console.warn("Invalid message format: ", event.data);
+      }
     };
+
+    //   const [nickname, ...contentArr] = event.data.split(":");
+    //   const content = contentArr.join(":");
+    //   useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
+    // };
 
     socket.onerror = (error) => {
       console.error("❗ WebSocket 에러 발생", error);
@@ -44,21 +52,19 @@ export const WebSocketClient = () => {
   useEffect(() => {
     if (sendFlag && message && socketRef.current?.readyState === WebSocket.OPEN) {
       const token = localStorage.getItem("access_token");
-
       if (!token) {
         console.log("토큰없당"); // 추후 수정
         return;
       }
 
-      const myPayload = jwtDecode<JWTPayload>(token);
-      const userId = myPayload.user_id;
+      const { user_id } = jwtDecode<JWTPayload>(token);
 
-      const data = {
-        sender_id: userId,
+      const payload = {
+        sender_id: user_id,
         content: message,
       };
-      console.log(data.sender_id, data.content); //note: 나중에 지울 것
-      socketRef.current.send(JSON.stringify(data));
+
+      socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, setSendFlag, message]);
