@@ -1,4 +1,11 @@
 // FE/apis/excelApi.ts
+export async function getWorkspaceColumns() {
+  const res = await fetch("http://localhost:8000/api/workspaces/1/users", {
+    method: "GET",
+  });
+  if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
+  return res.json();
+}
 
 // users 테이블에 user 생성
 export async function createUsers(users: any[]) {
@@ -9,14 +16,6 @@ export async function createUsers(users: any[]) {
     body: JSON.stringify({ users }),
   });
   if (!res.ok) throw new Error("유저 생성 실패");
-  return res.json();
-}
-
-export async function getWorkspaceColumns() {
-  const res = await fetch("http://localhost:8000/api/workspaces/1/users", {
-    method: "GET",
-  });
-  if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
   return res.json();
 }
 
