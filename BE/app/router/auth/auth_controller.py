@@ -163,42 +163,6 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                 
                 return result
             
-    # github 구현 부분. 미완.
-
-    # elif provider.value == "github":
-    #     async with httpx.AsyncClient() as client:
-    #         # Step 1: access_token 요청
-    #         token_res = await client.post(
-    #             GITHUBS_TOKEN_URL,
-    #             headers={"Accept": "application/json"},
-    #             data={
-    #                 "code": code,
-    #                 "client_id": GITHUBS_CLIENT_ID,
-    #                 "client_secret": GITHUBS_CLIENT_SECRET,
-    #                 "redirect_uri": GITHUBS_REDIRECT_URI,
-    #             },
-    #         )
-    #         token_json = token_res.json()
-    #         access_token = token_json.get("access_token")
-
-    #         if not access_token:
-    #             return {"error": "Access token not received"}
-
-    #         # Step 2: 유저 정보 요청
-    #         user_res = await client.get(
-    #             GITHUBS_USERINFO_URL,
-    #             headers={"Authorization": f"Bearer {access_token}"}
-    #         )
-
-    #         user = user_res.json()
-
-    #         ########################################
-    #         # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-    #         ########################################
-
-    #         return {"user": user}
-        
-
 
 # 로그아웃도 하기
 @router.delete("/logout")
