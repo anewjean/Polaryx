@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.workspace_member import WorkspaceMember
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
@@ -44,6 +44,13 @@ find_member_by_nickname = """
 SELECT * FROM workspace_members WHERE nickname = %(nickname)s;
 """
 
+# note: 명훈 추가
+find_member_by_workspace_columns = """
+SELECT COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'workspace_members';
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -72,3 +79,6 @@ class QueryRepo(AbstractQueryRepo):
             "nickname": nickname
         }
         return self.db.execute(find_member_by_nickname, param)
+
+    def find_by_workspace_columns(self) -> List[str]:
+        return self.db.execute(find_member_by_workspace_columns)

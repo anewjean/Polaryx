@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from BE.app.util.database.db_impl import DBImpl
+from app.util.database.db_impl import DBImpl
 
 class AbstractQueryRepo(metaclass=ABCMeta):
     def __init__(self, db: DBImpl):

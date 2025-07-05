@@ -6,13 +6,13 @@ import httpx
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import uuid
-# from dotenv import load_dotenv
+from app.config.config import settings
 
-from BE.app.service.auth.auth_service import AuthService, TokenSerive
-from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
-from BE.app.core.security import verify_token_and_get_token_data
-from BE.app.config.config import settings
-# load_dotenv()
+from app.service.auth.auth_service import AuthService, TokenSerive
+from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
+from app.core.security import verify_token_and_get_token_data
+from app.config.config import settings 
+
 
 router = APIRouter(prefix="/auth")
 
@@ -23,12 +23,6 @@ GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
-GITHUBS_CLIENT_ID = os.getenv("GITHUBS_CLIENT_ID")
-GITHUBS_CLIENT_SECRET = os.getenv("GITHUBS_CLIENT_SECRET")
-GITHUBS_REDIRECT_URI = os.getenv("GITHUBS_REDIRECT_URI")
-GITHUBS_AUTH_URL = "https://github.com/login/oauth/authorize"
-GITHUBS_TOKEN_URL = "https://github.com/login/oauth/access_token"
-GITHUBS_USERINFO_URL = "https://api.github.com/user"
 
 class Provider(str, Enum):
     google = "google"
@@ -41,12 +35,6 @@ google_params = {
     "scope": "openid email profile",
     "access_type": "offline",
     "prompt": "consent",
-}
-
-GITHUBS_params = {
-    "client_id": GITHUBS_CLIENT_ID,
-    "redirect_uri": GITHUBS_REDIRECT_URI,
-    "scope": "user",
 }
 
 #############################################
@@ -96,10 +84,6 @@ def social_login(provider: Provider):
     if provider.value == "google":
         params = google_params
         url = f"{GOOGLE_AUTH_URL}?{urlencode(params)}"
-
-    elif provider.value == "github":
-        params = GITHUBS_params
-        url = f"{GITHUBS_AUTH_URL}?{urlencode(params)}"
 
     return RedirectResponse(url)
 
@@ -154,7 +138,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             
             else:
                 # 토큰 발급
-                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex, "email": user_INdb[0][2]}
+                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
                 jwt_access_token = TokenSerive.create_access_token(user_data)
 
                 jwt_refresh_token = TokenSerive.create_refresh_token(user_data)

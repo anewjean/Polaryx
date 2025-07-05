@@ -1,5 +1,5 @@
-from BE.app.util.database.mysql import MySQL
-from BE.app.util.database.mongodb import MongoDB
+from app.util.database.mysql import MySQL
+from app.util.database.mongodb import MongoDB
 
 class DBFactory():
     @staticmethod
