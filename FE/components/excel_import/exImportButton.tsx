@@ -3,11 +3,14 @@ import { useRef } from "react";
 import * as XLSX from "xlsx";
 import { filterUsers } from "./validation";
 import { usePathname } from "next/navigation";
-import { createUsers, getWorkspaceColumns } from "@/apis/excelApi";
+import { createUsers } from "@/apis/excelApi";
+import { detectTyposJaccard } from "./detectTyposJaccard";
+import { useMemberStore } from "@/store/memberStore";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
   const inputRef = useRef<HTMLInputElement>(null);
+  const { setMemberList } = useMemberStore();
 
   const handleClick = () => {
     inputRef.current?.click();
@@ -29,45 +32,38 @@ export function ExUpload() {
     const sheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-    const columns: string[] = [];
-    const res = await getWorkspaceColumns();
-    res.map((item: any) => {
-      columns.push(item[0]);
-    });
+    // 엑셀 헤더 file 검사
+    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    const uploadedHeaders = json[0];
 
-    const rows: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    // 맨 위의 필드명(헤더)만 추출
-    const columnsHeader = rows[0]; // 예: ['email', 'name', 'role', ...]
-    // 공통 컬럼 찾기
-    const commonColumns = columnsHeader.filter((header: string) => columns.includes(header));
-
-    console.log("columns", columns);
-    console.log("columnsHeader", columnsHeader);
-    console.log("공통 컬럼:", commonColumns);
+    const typos = detectTyposJaccard(uploadedHeaders as string[]);
+    if (typos.length > 0) {
+      alert(`오타가 있습니다. ${typos.map((t) => t.wrong).join(", ")}`);
+      return;
+    }
 
     // 형식에 맞지 않은 user를 제거
-    const { users, errors, total } = filterUsers(jsonData);
+    const { users, errors } = filterUsers(jsonData);
 
-    // const memberList = users.map((user) => ({
-    //   email: user.email,
-    //   name: user.name,
-    //   workspace_id: workspaceId,
-    // }));
+    const memberList = users.map((user) => ({
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      group: user.group,
+      blog: user.blog,
+      github: user.github,
+      workspace_id: workspaceId,
+    }));
 
-    const memberList = users.map((user) => {
-      const obj: any = {};
-      commonColumns.forEach((col: string) => {
-        obj[col] = user[col];
-      });
-      obj.name = user.name;
-      obj.email = user.email;
-      obj.workspace_id = workspaceId;
-      return obj;
-    });
+    // memberList를 store에 저장
+    setMemberList(memberList);
 
-    createUsers(memberList);
-    console.log("memberList", memberList); // note : 삭제 필요
+    try {
+      const result = await createUsers(memberList);
+      alert(`성공적으로 등록된 유저 수: ${result.success_count}`);
+    } catch (err) {
+      alert("유저 등록에 실패했습니다.");
+    }
   };
 
   return (
