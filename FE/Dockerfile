@@ -4,8 +4,8 @@ ARG NEXT_PUBLIC_API_URL
 
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
 
-# 수정 (/app -> /FE)
-WORKDIR /FE
+WORKDIR /app
+
 COPY ./package*.json .
 RUN npm install
 
