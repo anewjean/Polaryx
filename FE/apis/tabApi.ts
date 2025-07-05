@@ -79,7 +79,7 @@ export async function getTabList(): Promise<Tab[]> {
 }
 
 /* 탭 추가 (섹션 타입, 탭 이름, 참여자 id 필요) */
-export async function postTab(sectionId: number, tabName: string, userIds: string[]): Promise<Tab> {
+export async function createTab(sectionId: number, tabName: string, userIds: string[]): Promise<Tab> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 

@@ -2,12 +2,11 @@
 
 import "@/app/globals.css";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger, PopoverClose } from "@/components/ui/popover";
-import { SidebarProfilePopover } from "@/components/sidebar/SidebarProfilePopover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ProfileMenu } from "@/components/sidebar/ProfileMenu";
 import {
   SidebarProvider,
   Sidebar,
@@ -23,22 +22,55 @@ import {
 } from "@/components/ui/sidebar";
 import { Megaphone, Landmark, Users, UserRoundCog, LogOut, Mail, School, ChevronsUpDown } from "lucide-react";
 import { logout } from "@/apis/logout";
-import { getTabList, Tab } from "@/apis/tabApi";
-import { getWorkspaceName } from "@/apis/workspaceApi";
+import { createTab, getTabList, Tab } from "@/apis/tabApi";
+import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 
 type SidebarProps = {
   width: number;
 };
 
-export default async function AppSidebar({ width }: SidebarProps) {
+export default function AppSidebar({ width }: SidebarProps) {
   const open = useProfileStore((s) => s.setOpen);
   const router = useRouter();
 
-  // 워크스페이스 이름 조회
-  const workspaceInfo = await getWorkspaceName();
+  // 워크스페이스 이름 상태 관리
+  const [workspaceInfo, setWorkspaceInfo] = useState<workspace | null>(null);
 
-  // 참여중인 탭 리스트 조회
-  const tabs: Tab[] = await getTabList();
+  // 참여중인 탭 리스트 상태 관리
+  const [tabList, setTabList] = useState<Tab[]>([]);
+
+  // 탭 리스트 상태 최신화
+  async function fetchTabList() {
+    try {
+      const tabList = await getTabList();
+      setTabList(tabList);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // 워크스페이스 이름과 참여중인 탭 리스트 렌더링
+  useEffect(() => {
+    (async () => {
+      try {
+        const workspaceInfo = await getWorkspaceName();
+        setWorkspaceInfo(workspaceInfo);
+        fetchTabList();
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
+  // 탭 추가 시 재 렌더링
+  async function handleAddTab(sectionId: number, tabName: string, userIds: string[]) {
+    try {
+      const newTab = await createTab(sectionId, tabName, userIds);
+      setTabList([...tabList, newTab]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const sectionType = [
     { id: "announcements", label: "Announcements", icon: Megaphone },
@@ -60,8 +92,8 @@ export default async function AppSidebar({ width }: SidebarProps) {
               </div>
               {/* 워크스페이스 정보 */}
               <div className="flex flex-col overflow-hidden" style={{ width }}>
-                <span className="text-md font-bold text-gray-200 truncate">{workspaceInfo.name}</span>
-                <span className="text-xs text-gray-400 truncate">Welcome to {workspaceInfo.name}</span>
+                <span className="text-md font-bold text-gray-200 truncate">{workspaceInfo?.name}</span>
+                <span className="text-xs text-gray-400 truncate">Welcome to {workspaceInfo?.name}</span>
               </div>
             </div>
           </div>
@@ -76,13 +108,13 @@ export default async function AppSidebar({ width }: SidebarProps) {
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu className="flex flex-col gap-0">
-                  {tabs
+                  {tabList
                     .filter((tab) => tab.sectionId === section.id)
-                    .map((item) => (
-                      <SidebarMenuItem key={item.id}>
+                    .map((tab) => (
+                      <SidebarMenuItem key={tab.id}>
                         <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
-                          <a href={`/${workspaceInfo.id}/${item.id}`} className="truncate">
-                            {item.name}
+                          <a href={`/${workspaceInfo?.id}/${tab.id}`} className="truncate">
+                            {tab.name}
                           </a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -105,7 +137,7 @@ export default async function AppSidebar({ width }: SidebarProps) {
               </SidebarMenuButton>
             </PopoverTrigger>
             <PopoverContent side="right" sideOffset={12} className="flex overflow-hidden bg-gray-700 rounded-md w-48">
-              <SidebarProfilePopover logout={logout} router={router} />
+              <ProfileMenu logout={logout} router={router} />
             </PopoverContent>
           </Popover>
         </SidebarFooter>

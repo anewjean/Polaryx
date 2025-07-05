@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { UserRoundCog, LogOut } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-interface SidebarProfilePopoverProps {
+interface ProfileMenuProps {
   logout: () => void;
   router: AppRouterInstance;
 }
 
-export function SidebarProfilePopover({ logout, router }: SidebarProfilePopoverProps) {
+export function ProfileMenu({ logout, router }: ProfileMenuProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
