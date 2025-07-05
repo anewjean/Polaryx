@@ -6,7 +6,7 @@ import httpx
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import uuid
-# from dotenv import load_dotenv
+from app.config.config import settings
 
 from app.service.auth.auth_service import AuthService, TokenSerive
 from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
@@ -117,13 +117,11 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             user = userinfo_res.json()
 
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
             uuid_obj2 = uuid.uuid4()
             # 16바이트 바이너리로 변환
-            user_uuid = uuid_obj1.bytes
             refresh_token_uuid = uuid_obj2.bytes
 
-            data = {"user_email": user["email"], "user_provider_id": user["id"], "user_id": user_uuid}
+            data = {"user_email": user["email"], "user_provider_id": user["id"]}
 
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
             user_INdb = AuthService.find_db(data)
@@ -138,7 +136,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             
             else:
                 # 토큰 발급
-                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex, "email": user_INdb[0][2]}
+                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
                 jwt_access_token = TokenSerive.create_access_token(user_data)
 
                 jwt_refresh_token = TokenSerive.create_refresh_token(user_data)

@@ -31,5 +31,4 @@ class Settings(BaseSettings):
     GITHUBS_CLIENT_SECRET: str
     GITHUBS_REDIRECT_URI: str
 
-
 settings = Settings()

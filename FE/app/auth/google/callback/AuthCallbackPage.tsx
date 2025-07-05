@@ -26,7 +26,7 @@ export default function AuthCallbackPage() {
     const getToken = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
+          `http://localhost:8000/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
             credentials: "include",
           },
@@ -44,6 +44,7 @@ export default function AuthCallbackPage() {
 
         const data = await res.json();
         const accessToken = data.access_token;
+        const tabID = data.tab_id;
 
         if (!accessToken) {
           setError("access_token이 없습니다.");
@@ -54,7 +55,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
-          router.replace("/client/workspaceId");
+          router.replace("/workspaces/1/");
         }, 1500);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);
