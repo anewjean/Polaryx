@@ -22,7 +22,12 @@ export function ExUpload() {
       return;
     }
 
-    getWorkspaceColumns();
+    const columns: string[] = [];
+    const res = await getWorkspaceColumns();
+    res.map((item: any) => {
+      columns.push(item[0]);
+    });
+    console.log("columns", columns);
 
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();

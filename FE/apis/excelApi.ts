@@ -17,7 +17,6 @@ export async function getWorkspaceColumns() {
     method: "GET",
   });
   if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
-  console.log(res.json());
   return res.json();
 }
 
