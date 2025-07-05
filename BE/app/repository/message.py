@@ -1,9 +1,9 @@
 from typing import List
 from uuid import UUID
 
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.message import Message, MessageUpdateType
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.message import Message, MessageUpdateType
 
 insert_message = """
 INSERT INTO messages (

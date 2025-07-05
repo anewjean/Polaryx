@@ -8,9 +8,9 @@ from urllib.parse import urlencode
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
-from BE.app.router import message
-from BE.app.router.auth import auth_controller as auth
-from BE.app.router import workspaceid
+from app.router import message
+from app.router.auth import auth_controller as auth
+from app.router import workspaceid
 
 load_dotenv()
 

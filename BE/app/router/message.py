@@ -6,11 +6,11 @@ from fastapi import APIRouter
 from datetime import datetime
 import uuid
 
-from BE.app.service.websocket_manager import ConnectionManager
-from BE.app.service.message import MessageService
-from BE.app.service.workspace_member import WorkspaceMemberService
-from BE.app.schema.message.message_update_request import MessageUpdateRequest
-from BE.app.schema.message.messages_response import MessageSchema, MessagesResponse
+from app.service.websocket_manager import ConnectionManager
+from app.service.message import MessageService
+from app.service.workspace_member import WorkspaceMemberService
+from app.schema.message.message_update_request import MessageUpdateRequest
+from app.schema.message.messages_response import MessageSchema, MessagesResponse
 
 router = APIRouter()
 connection = ConnectionManager()

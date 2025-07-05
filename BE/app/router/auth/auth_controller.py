@@ -8,10 +8,10 @@ from fastapi.responses import RedirectResponse
 import uuid
 # from dotenv import load_dotenv
 
-from BE.app.service.auth.auth_service import AuthService, TokenSerive
-from BE.app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
-from BE.app.core.security import verify_token_and_get_token_data
-from BE.app.config.config import settings
+from app.service.auth.auth_service import AuthService, TokenSerive
+from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
+from app.core.security import verify_token_and_get_token_data
+from app.config.config import settings
 # load_dotenv()
 
 router = APIRouter(prefix="/auth")
