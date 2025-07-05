@@ -8,7 +8,6 @@ import { ChatPage } from "@/components/chat/ChatPage";
 import { useParams } from "next/navigation";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { useEffect } from "react";
-import { ExUpload } from "@/components/excel_import/exImportButton";
 
 export default function ChannelDefault() {
   const { channelWidth } = useChannelStore();
@@ -25,7 +24,6 @@ export default function ChannelDefault() {
     <div className="relative text-gray-800">
       <ChatHeader />
       <ChatPage />
-      <ExUpload />
       <div
         className={`fixed bottom-0 p-4`}
         style={{
