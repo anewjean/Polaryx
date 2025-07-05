@@ -18,7 +18,7 @@ class AuthService:
     def find_db(data):        
         params = {"user_email": data["user_email"], 
                   "user_provider_id": data["user_provider_id"], 
-                  "user_id": data["user_id"]}
+                  }
 
         # 일단 email로 먼저 찾아내기.
         sql = query_repo.get_sql("find_user_by_email")
@@ -31,12 +31,9 @@ class AuthService:
         
         # email을 통해 데이터를 찾아오긴 했지만,
         # provider_id 가 존재하지 않는 경우, 즉 처음으로 로그인 했을 때,
-        # provider_id와 id 업데이트
         if not result[0][4]:
             print("\n\n 회원의 provider_id가 없다? id 다시 세팅")
-            sql = query_repo.get_sql("update_provider_id_and_id")
-            db.execute(sql, params)
-            sql = query_repo.get_sql("update_user_id_in_workspace_members")
+            sql = query_repo.get_sql("update_provider_id")
             db.execute(sql, params)
 
         # 만약 provider_id도 존재하지만, 접근 시도하는 데이터의
