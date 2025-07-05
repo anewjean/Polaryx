@@ -6,7 +6,7 @@ import httpx
 from urllib.parse import urlencode
 from fastapi.responses import RedirectResponse
 import uuid
-from BE.app.config.config import settings
+from app.config.config import settings
 
 from app.service.auth.auth_service import AuthService, TokenSerive
 from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
