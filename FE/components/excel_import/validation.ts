@@ -12,13 +12,6 @@ export function filterUsers(data: any[]): { users: any[]; errors: string[]; tota
       continue;
     }
 
-    if (row.github) {
-      const githubPattern = /^https:\/\/github\.com\/[A-Za-z0-9_-]+$/;
-      if (!githubPattern.test(row.github)) {
-        continue;
-      }
-    }
-
     let roles: string[] = [];
     if (typeof row.role === "string") {
       roles = row.role.split(",").map((r: string) => r.trim());

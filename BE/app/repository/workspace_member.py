@@ -39,6 +39,13 @@ find_member_by_nickname = """
 SELECT * FROM workspace_members WHERE nickname = %(nickname)s;
 """
 
+# note: 명훈 추가
+find_member_by_workspace_columns = """
+SELECT COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'workspace_members';
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -61,3 +68,6 @@ class QueryRepo(AbstractQueryRepo):
             "nickname": nickname
         }
         return self.db.execute(find_member_by_nickname, param)
+
+    def find_by_workspace_columns(self) -> List[str]:
+        return self.db.execute(find_member_by_workspace_columns)
