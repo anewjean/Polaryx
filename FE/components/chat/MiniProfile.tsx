@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { OpenProfile } from "../../app/client/workspaceId/OpenProfile";
+import { OpenProfile } from "../../app/workspaces/[workspaceid]/OpenProfile";
 
 export function MiniProfile() {
   return (

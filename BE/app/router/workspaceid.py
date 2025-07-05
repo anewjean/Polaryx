@@ -11,6 +11,8 @@ from BE.app.repository.tabs import QueryRepo as TabRepo
 from BE.app.repository.sub_tabs import QueryRepo as SubTabRepo
 from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
 
+import uuid
+
 router = APIRouter(prefix="/workspaceid")
 
 workspace_mem_repo = WorkspaceMemRepo()
@@ -25,12 +27,17 @@ sub_tab_repo = SubTabRepo()
 @router.get("/{workspace_id}")
 async def get_workspace_tab(workspace_id: str,  # 아직 workspace_id는 필요없는 듯.
                             token_user_id_and_email = Depends(verify_token_and_get_token_data),
-                            ):
+                            ) -> list:
     # user_id를 통해서 tab_members에 먼저 접근한 뒤에,
     # user가 member로 속해있는 여러 tab_id를 다 받아옴.
     # tab_members : tab_id, user_id, id
     # 반환 값은 list임.
-    tab_member_datas = TabMembersRepo.find_by_user_id(tab_members_repo, token_user_id_and_email["user_id"])
+    
+    print(uuid.UUID(token_user_id_and_email["user_id"]).bytes)
+
+    tab_member_datas = TabMembersRepo.find_by_user_id(tab_members_repo, uuid.UUID(token_user_id_and_email["user_id"]).bytes)
+
+    print(tab_member_datas)
 
     result = []
     # 그럼 tab_id로 tabs, sub_tabs 테이블에 접근해서 name(tabs), name(sub_tabs), section_id(tabs) 얻어내기.
@@ -41,13 +48,11 @@ async def get_workspace_tab(workspace_id: str,  # 아직 workspace_id는 필요�
         sub_tab_data = SubTabRepo.find_sub_tabs_by_tab_id(sub_tab_repo, data["tab_id"])
 
         result.append({
-            "tab_data":{
-                "id": data["tab_id"],
-                "name": tab_data["name"],
-                "section_id": tab_data["section_id"],
-                "sub_tab_data":{
-                    "name":sub_tab_data["name"],
-                }
+            "id": data["tab_id"],
+            "name": tab_data["name"],
+            "section_id": tab_data["section_id"],
+            "sub_tab_data":{
+                "name":sub_tab_data["name"],
             }
         })
 

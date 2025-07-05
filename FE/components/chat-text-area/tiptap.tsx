@@ -26,6 +26,9 @@ import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
 
+// 실험용
+import { jwtDecode } from "jwt-decode";
+
 const TipTap = () => {
   const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
@@ -35,16 +38,8 @@ const TipTap = () => {
     extensions: [
       StarterKit,
       Placeholder.configure({
-        // Use a placeholder:
+        // placeholder가 뭐임?
         placeholder: "나만무 team3",
-        // Use different placeholders depending on the node type:
-        // placeholder: ({ node }) => {
-        //   if (node.type.name === 'heading') {
-        //     return 'What's the title?'
-        //   }
-
-        //   return 'Can you add some further context?'
-        // },
       }),
       Document,
       Paragraph,
@@ -201,6 +196,12 @@ const TipTap = () => {
 
   const handleSend = async () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
+
+    ////////////////////////////////////////////////
+    const token = localStorage.getItem("access_token")
+    console.log(jwtDecode<{ user_id: string }>(token!).user_id);
+    ////////////////////////////////////////////////
+
     const content = editor?.getText() || "";
     if (!content.trim()) return;
 

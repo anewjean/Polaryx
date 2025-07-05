@@ -39,8 +39,9 @@ export default function AuthCallbackPage() {
         if (!res.ok) throw new Error("백엔드 요청 실패");
 
         const data = await res.json();
-        // const workspaceId = data.workspace_id;
+        const workspaceId = data.workspace_id;
         const accessToken = data.access_token;
+        const tabId = data.tab_id;
 
         if (!accessToken) {
           setError("access_token이 없습니다.");
@@ -51,8 +52,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
-          // router.replace("/client/"+workspaceId);
-          router.replace("/client/workspaceId");
+          router.replace("/workspaces/"+workspaceId+"/tabs/"+tabId);
         }, 1500);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);

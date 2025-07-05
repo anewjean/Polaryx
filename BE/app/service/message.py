@@ -27,3 +27,4 @@ class MessageService:
         message = Message.from_row(row)
         message.delete()
         self.message_repo.update(message)
+        

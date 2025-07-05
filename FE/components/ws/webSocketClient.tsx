@@ -12,6 +12,10 @@ export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag } = useMessageStore();
 
+  useEffect(()=>{
+    {console.log("websocket_client")}
+  })
+
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
     socketRef.current = socket;

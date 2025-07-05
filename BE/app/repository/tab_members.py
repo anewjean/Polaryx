@@ -52,9 +52,9 @@ class QueryRepo(AbstractQueryRepo):
     def insert_tab_members(self, tab_id_and_user_id: dict):
         return self.db.execute(insert_tab_members, tab_id_and_user_id)
 
-    def find_by_user_id(self, user_id: UUID):
+    def find_by_user_id(self, user_id: UUID.bytes):
         param = {
-            "user_id": UUID(user_id).bytes
+            "user_id": user_id
         }
         return self.db.execute(find_tab_member_by_user_id, param)
 
