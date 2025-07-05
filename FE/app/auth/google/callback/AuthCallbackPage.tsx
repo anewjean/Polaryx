@@ -26,7 +26,7 @@ export default function AuthCallbackPage() {
     const getToken = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
+          `http://localhost:8000/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
             credentials: "include",
           },

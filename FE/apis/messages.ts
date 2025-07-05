@@ -20,13 +20,13 @@ export const updateMessage = async (id: number, message: string) => {
 };
 
 export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number) => {
-  return request(`http://localhost:8000/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
+  return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
     method: "POST",
   });
 };
 
 export const getMessages = async (workspaceId: string, tabId: string) => {
-  return request(`http://localhost:8000/workspaces/${workspaceId}/tabs/${tabId}/messages`, {
+  return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`, {
     method: "GET",
   });
 };
