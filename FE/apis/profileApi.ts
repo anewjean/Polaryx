@@ -2,19 +2,16 @@ const BASE = "http://127.0.0.1:8000";
 
 export interface Profile {
   id: string;
-  userId: string;
-  workspaceId: number;
+  user_id: string;
+  workspace_id: number;
   nickname: string;
   email: string;
   // phone?: string | null;
   image?: string | null;
-  role: string;
-  groups?: string[] | null;
+  role: string | null;
+  groups: string[] | null;
   github?: string | null;
   blog?: string | null;
-  createdAt: string;
-  updatedAt?: string;
-  deletedAt?: string | null;
 }
 
 /* 프로필 조회 */

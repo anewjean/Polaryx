@@ -71,7 +71,7 @@ export default function WorkspaceIdLayout({
         >
           <ResizablePanel defaultSize={currentSidebarWidth} minSize={10} maxSize={30}>
             {/* 사이드바 영역: 너비값을 함께 전달 */}
-            <aside>
+            <aside className="h-full">
               {React.isValidElement(sidebar)
                 ? React.cloneElement(sidebar as React.ReactElement<any>, { width: sidebarWidth })
                 : sidebar}
@@ -80,7 +80,7 @@ export default function WorkspaceIdLayout({
           <ResizableHandle />
           <ResizablePanel defaultSize={channelWidth} minSize={30} maxSize={90}>
             {/* 탭 영역*/}
-            <main>{children}</main>
+            <main className="h-full">{children}</main>
           </ResizablePanel>
           {/* 프로필이 열렸을 때만 렌더링 */}
           {isOpen && (
@@ -92,7 +92,7 @@ export default function WorkspaceIdLayout({
                 maxSize={30}
                 style={{ boxShadow: "-8px 0 16px rgba(0, 0, 0, 0.1)" }}
               >
-                <aside>
+                <aside className="h-full">
                   {/* 프로필 영역 */}
                   {React.isValidElement(profile) ? React.cloneElement(profile, { width: profileWidth }) : profile}
                 </aside>

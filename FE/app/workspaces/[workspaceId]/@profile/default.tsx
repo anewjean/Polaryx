@@ -134,7 +134,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
       {/* 사용자 이름과 역할 */}
       <div className="flex w-full items-end justify-between gap-2">
         <h1 className="flex-1 min-w-0 justify-start text-xl font-bold truncate">{profile?.nickname}</h1>
-        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">{profile?.role}</h1>
+        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">{profile?.role_id}</h1>
       </div>
       {/* 버튼 (메시지, 편집) */}
       <div className="flex w-full min-w-0 items-center justify-center">

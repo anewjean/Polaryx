@@ -27,9 +27,7 @@ import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 
 type SidebarProps = { width: number };
 
-export default function AppSidebar({ width }: SidebarProps) {
-  console.log("👉 AppSidebar 렌더");
-  const open = useProfileStore((s) => s.setOpen);
+export default function AppSidebar({ width }: SidebarProps) {    
   const router = useRouter();
 
   // 워크스페이스 이름 상태 관리
@@ -84,7 +82,7 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="none" className="flex flex-1 min-h-0 min-w-0 flex-col p-1 bg-gray-800 text-gray-400">
+      <Sidebar collapsible="none" className="flex flex-col h-full w-full p-1 bg-gray-800 text-gray-400">
         {/* 사이드바 헤더 (mvp에서는 단순 정보 표시) */}
         <SidebarHeader>
           <div className="h-13 p-2">
@@ -102,7 +100,7 @@ export default function AppSidebar({ width }: SidebarProps) {
           </div>
         </SidebarHeader>
         {/* 사이드바 컨텐츠 */}
-        <SidebarContent className="flex flex-1 min-h-0 flex-col overflow-y-auto scrollbar-thin">
+        <SidebarContent className="flex flex-1 flex-col overflow-y-auto scrollbar-thin">
           {sectionType.map((section) => (
             <SidebarGroup key={section.id} className="flex flex-col flex-none">
               <SidebarGroupLabel className="flex items-center gap-2">
@@ -136,6 +134,11 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <div className="flex flex-row items-center w-full gap-2">
                   {/* 프로필 이미지 */}
                   <div className="bg-gray-600 rounded-lg p-2 size-9 flex items-center justify-center" />
+                   {/* 사용자 정보 */}
+                   <div className="flex flex-col overflow-hidden" style={{ width }}>
+                    <span className="text-md font-bold text-gray-200 truncate">사용자 이름</span>
+                    <span className="text-xs text-gray-400 truncate">user@email.com</span>
+                  </div>
                 </div>
               </SidebarMenuButton>
             </PopoverTrigger>
