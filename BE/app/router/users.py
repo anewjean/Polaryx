@@ -1,13 +1,20 @@
 from fastapi import APIRouter, Request
+from app.service.users import UserService
 
 router = APIRouter(prefix="/users")
 
-@router.patch("/")
+@router.post("/")
 async def create_users(request: Request):
     data = await request.json()
 
     # step 1.일단 이름이랑 email 받아와서,
     # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
+    for i in data:
+        target = UserService.find_user_by_email(i["email"])
+
+        if not target:
+            return 
+
 
     # step 2-1. 
     # 만약 email이 겹치는 애들이 있다?
