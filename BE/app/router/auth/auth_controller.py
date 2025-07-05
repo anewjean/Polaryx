@@ -19,6 +19,9 @@ router = APIRouter(prefix="/auth")
 GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback"
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -117,13 +120,11 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             user = userinfo_res.json()
 
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
             uuid_obj2 = uuid.uuid4()
             # 16바이트 바이너리로 변환
-            user_uuid = uuid_obj1.bytes
             refresh_token_uuid = uuid_obj2.bytes
 
-            data = {"user_email": user["email"], "user_provider_id": user["id"], "user_id": user_uuid}
+            data = {"user_email": user["email"], "user_provider_id": user["id"]}
 
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
             user_INdb = AuthService.find_db(data)

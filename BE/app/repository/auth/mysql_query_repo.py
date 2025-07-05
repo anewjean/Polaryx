@@ -19,10 +19,9 @@ SELECT * FROM users WHERE provider_id = %(user_provider_id)s
                      AND email = %(user_email)s;
 """
 
-update_provider_id_and_id = """
+update_provider_id = """
 UPDATE users SET provider_id = %(user_provider_id)s,
-                id = %(user_id)s
-            WHERE email = %(user_email)s;
+           WHERE email = %(user_email)s;
 """
 
 update_user_id_in_workspace_members = """
@@ -50,7 +49,7 @@ class QueryRepo(AbstractQueryRepo):
         self.queries["find_all_user"] = find_all_user
         self.queries["find_user_by_email"] = find_user_by_email
         self.queries["find_user_by_provider_id_and_email"] = find_user_by_provider_id_and_email
-        self.queries["update_provider_id_and_id"] = update_provider_id_and_id
+        self.queries["update_provider_id"] = update_provider_id
         self.queries["save_refresh_token"] = save_refresh_token
         self.queries["find_refresh_token_by_refresh_token"] = find_refresh_token_by_refresh_token
         self.queries["remove_refresh_token_by_user_id_and_token"] = remove_refresh_token_by_user_id_and_token
