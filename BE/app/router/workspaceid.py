@@ -179,19 +179,21 @@ async def invite_member_to_tab(
 
 
 @router.post("/{workspace_id}/users")
-async def create_users(request: Request):
-    data: list = await request.json()
+async def create_users(request: Request, workspace_id):
+    data: dict = await request.json()
     fail_count: int = 0
-    fail_list = [str]
+    fail_list = []
 
     # step 1.일단 이름이랑 email 받아와서,
     # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
-    for i in data:
+    for i in data["users"]:
+        print("************************")
+        print(i["email"])
         target = UserService.find_user_by_email(i["email"])
-
         # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
         # 생성 하면서 user id 만들어주기.
         if not target:
+            print("in not target\n")
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
             uuid_obj1 = uuid.uuid4()
             user_uuid = uuid_obj1.bytes
@@ -204,38 +206,64 @@ async def create_users(request: Request):
                 "workspace_id": 1
             }
             # usertable에 넣어주기.
+            print("create_user_in_usertable\n")
             UserService.create_user_in_usertable(target_data)
 
             # 잘 들어갔는지 확인.
-            target = UserService.find_user_by_email(target_data)
+            print("find_user_by_email\n")
+            target = UserService.find_user_by_email(target_data["user_email"])
             # user가 안만들어졌다? -> error
             if not target:
                 print("\nerror\n")
+                print("no target\n")
                 fail_count += 1
                 fail_list.append(i["name"])
                 continue
 
         target_user_id = target[0][0]
-        target_in_wm = WorkspaceMemberService.get_member_by_user_id(target_user_id)
+        print("get_member_by_user_id\n")
+        target_in_wm = WorkspaceMemberService.get_member_by_user_id(WorkspaceMemberService(), target_user_id)
             
         if not target_in_wm:
             # 잘 만들어졋따? workspaces_member에 추가해주기.
             # ----- 아마 target 리스트일텐데 일단 고.
-            WorkspaceMemberService.insert_workspace_member(target)
+            print("not target_in_wm\n")
+            print("insert_workspace_member\n")
+            
+            uuid_obj2 = uuid.uuid4()
+            wm_id = uuid_obj2.bytes
+            
+            target_data = {
+                "user_id": target[0][0],
+                "user_name": target[0][1],
+                "user_email": target[0][2],
+                "workspace_id": workspace_id,
+                "role_id": 1,
+                "id": wm_id,                
+            }
+
+            print(target_data)
+            print("\n")
+            
+            WorkspaceMemberService.insert_workspace_member(WorkspaceMemberService(), target_data)
             
             # 잘 들어갔는지 확인.
-            target_in_wm = WorkspaceMemberService.get_member_by_user_id(target_user_id)
+            print("get_member_by_user_id\n")
+            target_in_wm = WorkspaceMemberService.get_member_by_user_id(WorkspaceMemberService(), target_user_id)
+            print(target_in_wm)
+            print("\n")
             if not target_in_wm:
                 print("\nerror\n")
                 fail_count += 1
                 fail_list.append(i["name"])
 
     result = {
-        "success_count": data.count() - fail_count,
-        "fail_user_name": list
+        "success_count": len(data["users"]) - fail_count,
+        "fail_user_name": fail_list
     }
-    result["fail_user_name"].append(fail_list)
-
+    print(result)
+    print("\n")
+    
     return result 
         # 만약 email이 겹치는 애들이 있다?
             # -> 그럼 id+workspace_id를 통해서 workspace_member 조회.
