@@ -3,8 +3,9 @@ const BASE = "http://127.0.0.1:8000";
 import { usePathname } from "next/navigation";
 
 export interface Tab {
-  id: bigint;
-  sectionId: number;
+  id: string;
+  sectionId: string;
+  subSectionId: string;
   name: string;
   tabMembersCount?: number | null;
   tabMembers?: Member[] | null;
@@ -20,7 +21,7 @@ export interface Member {
 
 /* 탭 이름 중복 확인 */
 export async function checkTabName(tabName: string): Promise<boolean> {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();

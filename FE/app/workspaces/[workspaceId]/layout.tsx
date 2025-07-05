@@ -9,13 +9,11 @@ import { useRouter } from "next/navigation";
 
 export default function WorkspaceLayout({
   children,
-  channel,
   sidebar,
   profile,
 }: {
   children: React.ReactNode;
-  channel: React.ReactNode;
-  sidebar: React.ReactElement<{ width: number }>;
+  sidebar: React.ReactNode;
   profile: React.ReactElement<{ width: number }>;
 }) {
   /////////////////////// 추가 ///////////////////////////
@@ -78,12 +76,14 @@ export default function WorkspaceLayout({
         >
           <ResizablePanel defaultSize={currentSidebarWidth} minSize={10} maxSize={30}>
             {/* 사이드바 영역: 너비값을 함께 전달 */}
-            {React.cloneElement(sidebar, { width: sidebarWidth })}
+            {React.isValidElement(sidebar)
+              ? React.cloneElement(sidebar as React.ReactElement<any>, { width: sidebarWidth })
+              : sidebar}
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={channelWidth} minSize={30} maxSize={90}>
-            {/* 채널 영역*/}
-            {channel}
+            {/* 탭 영역*/}
+            {children}
           </ResizablePanel>
           {/* 프로필이 열렸을 때만 렌더링 */}
           {isOpen && (

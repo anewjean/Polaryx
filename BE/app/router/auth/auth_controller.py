@@ -171,7 +171,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     max_age= 5*60
                 )
 
-                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5])
+                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5], tab_id=0)
                 
                 return result    # github 구현 부분. 미완.
 

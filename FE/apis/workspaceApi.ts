@@ -8,7 +8,7 @@ export interface workspace {
 }
 
 /* 워크스페이스 정보 조회 */
-export async function getWorkspace(): Promise<workspace> {
+export async function getWorkspaceName(): Promise<workspace> {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) throw new Error("로그인이 필요합니다.");
 

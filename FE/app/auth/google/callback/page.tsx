@@ -30,7 +30,8 @@ export default function AuthCallbackPage() {
           },
         );
 
-        if (errorParam) { // 추후 수정
+        if (errorParam) {
+          // 추후 수정
           setError(errorParam === "not_found" ? "등록된 사용자가 아닙니다." : "알 수 없는 오류입니다.");
           setIsLoading(false);
           return;
@@ -39,6 +40,8 @@ export default function AuthCallbackPage() {
         if (!res.ok) throw new Error("백엔드 요청 실패");
 
         const data = await res.json();
+        const workspaceId = data.workspace_id;
+        const tabId = data.tab_id;
         const accessToken = data.access_token;
 
         if (!accessToken) {
@@ -50,7 +53,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
-          router.replace("/client/workspaceId");
+          router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
         }, 1500);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);
