@@ -11,3 +11,5 @@ class AbstractQueryRepo(metaclass=ABCMeta):
 
     def save(self, domain_object):
         pass
+    def execute(self, query: str, bind_value: dict = None):
+        return self.db.execute(query, bind_value)
