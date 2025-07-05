@@ -1,4 +1,5 @@
 "use client";
+
 import "../globals.css";
 
 export default function WorkspacesLayout({ children }: { children: React.ReactNode }) {

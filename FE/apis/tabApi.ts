@@ -3,12 +3,14 @@ const BASE = "http://127.0.0.1:8000";
 import { usePathname } from "next/navigation";
 
 export interface Tab {
-  id: string;
+  tabId: string;
+  tabName: string;
   sectionId: string;
-  subSectionId: string;
-  name: string;
+  sectionName?: string;
+  subSectionId?: string | null;
+  subSectionName?: string | null;
   tabMembersCount?: number | null;
-  tabMembers?: Member[] | null;
+  members: Member[] | null;
 }
 
 export interface Member {
@@ -16,7 +18,7 @@ export interface Member {
   nickname: string;
   image?: string | null;
   role: string;
-  groups?: string | null;
+  groups?: string[] | [];
 }
 
 /* 탭 이름 중복 확인 */
@@ -27,14 +29,12 @@ export async function checkTabName(tabName: string): Promise<boolean> {
   const pathname = usePathname();
   const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/check_name`, {
-    method: "POST",
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs?name=${tabName}`, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ tabName }),
   });
   if (!res.ok) throw new Error("탭 이름 중복 확인 실패");
   return res.json();
@@ -42,58 +42,134 @@ export async function checkTabName(tabName: string): Promise<boolean> {
 
 /* 탭 정보(이름, 인원 수) 조회 */
 export async function getTabInfo(): Promise<Tab> {
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
+  try {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const pathname = usePathname();
-  const [, , workspaceId, , tabId] = pathname.split("/");
+    const pathname = usePathname();
+    // URL 파라미터 추출 - 정규식 사용
+    const workspaceIdMatch = pathname.match(/\/workspaces\/([^\/]+)/);
+    const workspaceId = workspaceIdMatch ? workspaceIdMatch[1] : null;
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
-    },
-  });
-  if (!res.ok) throw new Error("탭 정보 조회 실패");
-  return res.json();
+    const tabIdMatch = pathname.match(/\/tabs\/([^\/]+)/);
+    const tabId = tabIdMatch ? tabIdMatch[1] : null;
+
+    const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      console.error(`탭 정보 조회 실패: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    // 에러 발생 시 기본값 반환 (테스트)
+    console.error("탭 정보 조회 중 오류:", error);
+    return {
+      tabId: "0",
+      tabName: "API 호출 실패",
+      sectionId: "0",
+      subSectionId: null,
+      subSectionName: null,
+      tabMembersCount: null,
+      members: null,
+    };
+  }
 }
 
 /* 탭 리스트 조회 */
 export async function getTabList(): Promise<Tab[]> {
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
+  try {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const pathname = usePathname();
-  const [, , workspaceId] = pathname.split("/");
+    const pathname = usePathname();
+    // URL 파라미터 추출 방식 개선 - 정규식 사용
+    const workspaceIdMatch = pathname.match(/\/workspaces\/([^\/]+)/);
+    const workspaceId = workspaceIdMatch ? workspaceIdMatch[1] : null;
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
-    },
-  });
-  if (!res.ok) throw new Error("탭 리스트 조회 실패");
-  return res.json();
+    if (!workspaceId) {
+      console.warn("워크스페이스 ID를 찾을 수 없어 기본값을 사용합니다.");
+    }
+
+    const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      console.error(`탭 리스트 조회 실패: ${res.status}`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("탭 리스트 조회 중 오류:", error);
+    // 에러 발생 시 기본값 반환 (테스트)
+    return [
+      {
+        tabId: "1",
+        tabName: "API 호출 실패",
+        sectionId: "0",
+        subSectionId: null,
+        subSectionName: null,
+        tabMembersCount: null,
+        members: null,
+      },
+      {
+        tabId: "2",
+        tabName: "API 호출 실패",
+        sectionId: "1",
+        subSectionId: null,
+        subSectionName: null,
+        tabMembersCount: null,
+        members: null,
+      },
+      {
+        tabId: "3",
+        tabName: "API 호출 실패",
+        sectionId: "2",
+        subSectionId: null,
+        subSectionName: null,
+        tabMembersCount: null,
+        members: null,
+      },
+      {
+        tabId: "4",
+        tabName: "API 호출 실패",
+        sectionId: "3",
+        subSectionId: null,
+        subSectionName: null,
+        tabMembersCount: null,
+        members: null,
+      },
+    ];
+  }
 }
 
 /* 탭 추가 (섹션 타입, 탭 이름, 참여자 id 필요) */
-export async function createTab(sectionId: number, tabName: string, userIds: string[]): Promise<Tab> {
+export async function createTab(sectionId: string, tabName: string): Promise<Tab> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const pathname = usePathname();
   const [, , workspaceId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ sectionId, tabName, userIds }),
+    body: JSON.stringify({ sectionId, tabName }),
   });
   if (!res.ok) throw new Error("탭 추가 실패");
   return res.json();
@@ -126,7 +202,7 @@ export async function getPossibleMemberList(): Promise<Member[]> {
   const pathname = usePathname();
   const [, , workspaceId, , tabId] = pathname.split("/");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/possible_members`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/non-members`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,

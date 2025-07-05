@@ -25,11 +25,10 @@ import { logout } from "@/apis/logout";
 import { createTab, getTabList, Tab } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 
-type SidebarProps = {
-  width: number;
-};
+type SidebarProps = { width: number };
 
 export default function AppSidebar({ width }: SidebarProps) {
+  console.log("👉 AppSidebar 렌더");
   const open = useProfileStore((s) => s.setOpen);
   const router = useRouter();
 
@@ -51,21 +50,25 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 워크스페이스 이름과 참여중인 탭 리스트 렌더링
   useEffect(() => {
-    (async () => {
-      try {
-        const workspaceInfo = await getWorkspaceName();
-        setWorkspaceInfo(workspaceInfo);
-        fetchTabList();
-      } catch (error) {
-        console.error(error);
-      }
-    })();
+    // 브라우저 환경에서만 실행
+    if (typeof window !== "undefined") {
+      (async () => {
+        try {
+          const workspaceInfo = await getWorkspaceName();
+          setWorkspaceInfo(workspaceInfo);
+          fetchTabList();
+        } catch (error) {
+          console.error("워크스페이스 정보 로딩 실패:", error);
+          // 에러가 발생해도 UI는 표시
+        }
+      })();
+    }
   }, []);
 
   // 탭 추가 시 재 렌더링
-  async function handleAddTab(sectionId: number, tabName: string, userIds: string[]) {
+  async function handleAddTab(sectionId: string, tabName: string) {
     try {
-      const newTab = await createTab(sectionId, tabName, userIds);
+      const newTab = await createTab(sectionId, tabName);
       setTabList([...tabList, newTab]);
     } catch (error) {
       console.error(error);
@@ -111,10 +114,10 @@ export default function AppSidebar({ width }: SidebarProps) {
                   {tabList
                     .filter((tab) => tab.sectionId === section.id)
                     .map((tab) => (
-                      <SidebarMenuItem key={tab.id}>
+                      <SidebarMenuItem key={tab.tabId}>
                         <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
-                          <a href={`/${workspaceInfo?.id}/${tab.id}`} className="truncate">
-                            {tab.name}
+                          <a href={`/workspaces/${workspaceInfo?.id}/tabs/${tab.tabId}`} className="truncate">
+                            {tab.tabName}
                           </a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>

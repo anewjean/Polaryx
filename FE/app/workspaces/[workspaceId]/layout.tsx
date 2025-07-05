@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { use } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useState, useEffect } from "react";
 import { useChannelStore } from "@/store/channelStore";
@@ -16,10 +17,7 @@ export default function WorkspaceIdLayout({
   sidebar: React.ReactNode;
   profile: React.ReactElement<{ width: number }>;
 }) {
-  /////////////////////// 추가 ///////////////////////////
   const router = useRouter();
-  /////////////////////// 추가 ///////////////////////////
-
   const [sidebarWidth, setSidebarWidth] = useState(20);
   const [currentSidebarWidth, setCurrentSidebarWidth] = useState(20);
   const [profileWidth, setProfileWidth] = useState(15);
@@ -30,19 +28,16 @@ export default function WorkspaceIdLayout({
   // 프로필 표시를 위한 state 구독
   const { isOpen } = useProfileStore();
 
-  // 채널 너비 갱신 (사이드바 너비는 유지)
-  /////////////////////// 추가 ///////////////////////////
+  // 진입 시 Access 토큰 확인
   useEffect(() => {
-    // 로컬 스토리지에서 액세스 토큰 꺼내서 확인하고,
     const accessToken = localStorage.getItem("access_token");
 
-    // 없으면 로그인 페이지로 ㄱㄱ해야지.
     if (!accessToken) {
       router.replace("/");
     }
   }, [router]);
-  /////////////////////// 추가 ///////////////////////////
 
+  // 채널 너비 갱신 (사이드바 너비는 유지)
   useEffect(() => {
     if (isOpen) {
       setChannelWidth(100 - currentSidebarWidth - profileWidth);
@@ -76,14 +71,16 @@ export default function WorkspaceIdLayout({
         >
           <ResizablePanel defaultSize={currentSidebarWidth} minSize={10} maxSize={30}>
             {/* 사이드바 영역: 너비값을 함께 전달 */}
-            {React.isValidElement(sidebar)
-              ? React.cloneElement(sidebar as React.ReactElement<any>, { width: sidebarWidth })
-              : sidebar}
+            <aside>
+              {React.isValidElement(sidebar)
+                ? React.cloneElement(sidebar as React.ReactElement<any>, { width: sidebarWidth })
+                : sidebar}
+            </aside>
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel defaultSize={channelWidth} minSize={30} maxSize={90}>
             {/* 탭 영역*/}
-            {children}
+            <main>{children}</main>
           </ResizablePanel>
           {/* 프로필이 열렸을 때만 렌더링 */}
           {isOpen && (
@@ -95,9 +92,10 @@ export default function WorkspaceIdLayout({
                 maxSize={30}
                 style={{ boxShadow: "-8px 0 16px rgba(0, 0, 0, 0.1)" }}
               >
-                {/* 프로필 영역 */}
-                {/* 사이드바 영역: 너비값을 함께 전달 */}
-                {React.isValidElement(profile) ? React.cloneElement(profile, { width: profileWidth }) : profile}
+                <aside>
+                  {/* 프로필 영역 */}
+                  {React.isValidElement(profile) ? React.cloneElement(profile, { width: profileWidth }) : profile}
+                </aside>
               </ResizablePanel>
             </>
           )}
