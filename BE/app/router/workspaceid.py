@@ -11,10 +11,12 @@ from BE.app.repository.tabs import QueryRepo as TabRepo
 from BE.app.repository.sub_tabs import QueryRepo as SubTabRepo
 from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
 
+from app.router import user
+
 import uuid
 
-router = APIRouter(prefix="/workspaceid")
-
+router = APIRouter(prefix="/workspaces")
+router.include_router(user.router)
 workspace_mem_repo = WorkspaceMemRepo()
 tab_members_repo = TabMembersRepo()
 tab_repo = TabRepo()

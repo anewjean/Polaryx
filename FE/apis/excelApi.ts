@@ -3,7 +3,7 @@
 // users 테이블에 user 생성
 export async function createUsers(users: any[]) {
   // 예시: 여러 명을 한 번에 생성하는 API가 있다면
-  const res = await fetch("http://localhost:8000/users/create", {
+  const res = await fetch("http://localhost:8000/workspaces/1/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ users }),
