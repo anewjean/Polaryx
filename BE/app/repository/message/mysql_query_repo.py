@@ -1,4 +1,4 @@
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.abstract_query_repo import AbstractQueryRepo
 
 find_all_messages = """
 SELECT * FROM messages;

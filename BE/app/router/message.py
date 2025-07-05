@@ -9,6 +9,7 @@ import uuid
 from app.service.websocket_manager import ConnectionManager
 from app.service.message import MessageService
 from app.service.workspace_member import WorkspaceMemberService
+from app.domain.message import Message
 from app.schema.message.message_update_request import MessageUpdateRequest
 from app.schema.message.messages_response import MessageSchema, MessagesResponse
 

@@ -39,10 +39,10 @@ SELECT * FROM workspace_members
 WHERE workspace_id = %(workspace_id)s
 AND deleted_at IS NULL;
 """
-
 find_member_by_nickname = """
 SELECT * FROM workspace_members WHERE nickname = %(nickname)s;
 """
+
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):

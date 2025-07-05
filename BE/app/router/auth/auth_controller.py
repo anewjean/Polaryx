@@ -11,24 +11,18 @@ import uuid
 from app.service.auth.auth_service import AuthService, TokenSerive
 from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
 from app.core.security import verify_token_and_get_token_data
-from app.config.config import settings
-# load_dotenv()
+from app.config.config import settings 
+
 
 router = APIRouter(prefix="/auth")
 
-GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
-GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
-GITHUBS_CLIENT_ID = os.getenv("GITHUBS_CLIENT_ID")
-GITHUBS_CLIENT_SECRET = os.getenv("GITHUBS_CLIENT_SECRET")
-GITHUBS_REDIRECT_URI = os.getenv("GITHUBS_REDIRECT_URI")
-GITHUBS_AUTH_URL = "https://github.com/login/oauth/authorize"
-GITHUBS_TOKEN_URL = "https://github.com/login/oauth/access_token"
-GITHUBS_USERINFO_URL = "https://api.github.com/user"
 
 class Provider(str, Enum):
     google = "google"
@@ -41,12 +35,6 @@ google_params = {
     "scope": "openid email profile",
     "access_type": "offline",
     "prompt": "consent",
-}
-
-GITHUBS_params = {
-    "client_id": GITHUBS_CLIENT_ID,
-    "redirect_uri": GITHUBS_REDIRECT_URI,
-    "scope": "user",
 }
 
 #############################################
@@ -96,10 +84,6 @@ def social_login(provider: Provider):
     if provider.value == "google":
         params = google_params
         url = f"{GOOGLE_AUTH_URL}?{urlencode(params)}"
-
-    elif provider.value == "github":
-        params = GITHUBS_params
-        url = f"{GITHUBS_AUTH_URL}?{urlencode(params)}"
 
     return RedirectResponse(url)
 
