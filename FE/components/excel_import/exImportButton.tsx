@@ -3,7 +3,7 @@ import { useRef } from "react";
 import * as XLSX from "xlsx";
 import { filterUsers } from "./validation";
 import { usePathname } from "next/navigation";
-import { createUsers } from "@/apis/excelApi";
+import { createUsers, getWorkspaceColumns } from "@/apis/excelApi";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
@@ -22,6 +22,8 @@ export function ExUpload() {
       return;
     }
 
+    getWorkspaceColumns();
+
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
@@ -32,9 +34,19 @@ export function ExUpload() {
     // 형식에 맞지 않은 user를 제거
     const { users, errors, total } = filterUsers(jsonData);
 
+    // const memberList = users.map((user) => ({
+    //   name: user.name,
+    //   email: user.email,
+    //   workspace_id: workspaceId,
+    // }));
+
     const memberList = users.map((user) => ({
-      name: user.name,
       email: user.email,
+      name: user.name,
+      role: user.role,
+      group: user.group,
+      blog: user.blog,
+      github: user.github,
       workspace_id: workspaceId,
     }));
 
