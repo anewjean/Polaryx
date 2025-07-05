@@ -22,5 +22,4 @@ class WorkspaceMemberService:
 
     def get_member_by_workspace_columns(self) -> list[str]:
         workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
-        print("workspace_columns", workspace_columns)
         return workspace_columns

@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.router import message
 from app.router.auth import auth_controller as auth
+from app.router import workspace_members
 
 load_dotenv()
 
@@ -21,6 +22,7 @@ app.add_middleware(
 
 app.include_router(router=message.router)
 app.include_router(router=auth.router)
+app.include_router(workspace_members.router)
 
 @app.get("/ping")
 async def pong():

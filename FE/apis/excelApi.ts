@@ -3,7 +3,7 @@
 // users 테이블에 user 생성
 export async function createUsers(users: any[]) {
   // 예시: 여러 명을 한 번에 생성하는 API가 있다면
-  const res = await fetch("http://localhost:8000/workspaces/1/users", {
+  const res = await fetch("http://localhost:8000/api/workspaces/1/users", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ users }),
@@ -13,10 +13,11 @@ export async function createUsers(users: any[]) {
 }
 
 export async function getWorkspaceColumns() {
-  const res = await fetch("http://localhost:8000/workspace-members/columns", {
+  const res = await fetch("http://localhost:8000/api/workspaces/1/users", {
     method: "GET",
   });
   if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
+  console.log(res.json());
   return res.json();
 }
 
