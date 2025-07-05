@@ -2,21 +2,22 @@ from typing import List, Annotated
 from fastapi import WebSocket, WebSocketDisconnect, Path
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Depends, Request
-from BE.app.core.security import verify_token_and_get_token_data
 
-from BE.app.domain.tab_members import TabMembers
-from BE.app.domain.tabs import Tabs, SubTabs
-from BE.app.repository.tab_members import QueryRepo as TabMembersRepo
-from BE.app.repository.tabs import QueryRepo as TabRepo
-from BE.app.repository.sub_tabs import QueryRepo as SubTabRepo
-from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
+from app.core.security import verify_token_and_get_token_data
+from app.domain.tab_members import TabMembers
+from app.domain.tabs import Tabs, SubTabs
+from app.repository.tab_members import QueryRepo as TabMembersRepo
+from app.repository.tabs import QueryRepo as TabRepo
+from app.repository.sub_tabs import QueryRepo as SubTabRepo
+from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
 
-from app.router import user
+from app.service.users import UserService
+from app.service.workspace_member import WorkspaceMemberService
+
 
 import uuid
 
 router = APIRouter(prefix="/workspaces")
-router.include_router(user.router)
 workspace_mem_repo = WorkspaceMemRepo()
 tab_members_repo = TabMembersRepo()
 tab_repo = TabRepo()
@@ -25,7 +26,6 @@ sub_tab_repo = SubTabRepo()
 
 # 먼저 워크스페이스 접근하려고 하면,
 # tab_id, 
-# 
 @router.get("/{workspace_id}")
 async def get_workspace_tab(workspace_id: str,  # 아직 workspace_id는 필요없는 듯.
                             token_user_id_and_email = Depends(verify_token_and_get_token_data),
@@ -121,7 +121,7 @@ async def create_workspace_tab(
 
 
 # 탭에 멤버 초대
-@router.post("/workspaces/{workspace_id}/tabs/{tab_id}/members")
+@router.post("{workspace_id}/tabs/{tab_id}/members")
 async def invite_member_to_tab(
             workspace_id: Annotated[str, Path()],
             tab_id: Annotated[int, Path()],
@@ -146,7 +146,7 @@ async def invite_member_to_tab(
     return
 
 # 탭에 그룹 초대
-@router.post("/workspaces/{workspace_id}/tabs/{tab_id}/groups")
+@router.post("{workspace_id}/tabs/{tab_id}/groups")
 async def invite_member_to_tab(
             workspace_id: Annotated[str, Path()],
             tab_id: Annotated[int, Path()],
@@ -172,3 +172,92 @@ async def invite_member_to_tab(
 
 
     return
+
+
+
+
+
+
+@router.post("/{workspace_id}/users")
+async def create_users(request: Request):
+    data: list = await request.json()
+    fail_count: int = 0
+    fail_list = [str]
+
+    # step 1.일단 이름이랑 email 받아와서,
+    # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
+    for i in data:
+        target = UserService.find_user_by_email(i["email"])
+
+        # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
+        # 생성 하면서 user id 만들어주기.
+        if not target:
+            # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
+            uuid_obj1 = uuid.uuid4()
+            user_uuid = uuid_obj1.bytes
+
+            target_data = {
+                "id": user_uuid,
+                "user_name": i["name"],
+                "user_email": i["email"],
+                "provider": "google",
+                "workspace_id": 1
+            }
+            # usertable에 넣어주기.
+            UserService.create_user_in_usertable(target_data)
+
+            # 잘 들어갔는지 확인.
+            target = UserService.find_user_by_email(target_data)
+            # user가 안만들어졌다? -> error
+            if not target:
+                print("\nerror\n")
+                fail_count += 1
+                fail_list.append(i["name"])
+                continue
+
+        target_user_id = target[0][0]
+        target_in_wm = WorkspaceMemberService.get_member_by_user_id(target_user_id)
+            
+        if not target_in_wm:
+            # 잘 만들어졋따? workspaces_member에 추가해주기.
+            # ----- 아마 target 리스트일텐데 일단 고.
+            WorkspaceMemberService.insert_workspace_member(target)
+            
+            # 잘 들어갔는지 확인.
+            target_in_wm = WorkspaceMemberService.get_member_by_user_id(target_user_id)
+            if not target_in_wm:
+                print("\nerror\n")
+                fail_count += 1
+                fail_list.append(i["name"])
+
+    result = {
+        "success_count": data.count() - fail_count,
+        "fail_user_name": list
+    }
+    result["fail_user_name"].append(fail_list)
+
+    return result 
+        # 만약 email이 겹치는 애들이 있다?
+            # -> 그럼 id+workspace_id를 통해서 workspace_member 조회.
+
+
+    #       이미 있다? -> go final (로직은 하면서 생각)
+    #       없다? -> go step 3
+
+
+    # step 3.
+    # workspaces_member에 추가해주기.
+    # 체크 - 만약 추가 중 실패했다? -> 실패한 사람꺼는 user테이블에서 삭제하진마(다른 워크스페이스랑 연결된게 있을 수도 있으니)
+    #                            + 실패한 횟수 카운트 저장, 실패한 사람 이름 저장.
+    # 나중에 총 실행횟수 - 실패 횟수 + 실패 횟수 + 실패한 사람 이름 반환.
+
+    # data[0]
+    # print("받은 데이터:", data)  # 콘솔에 출력
+    # return {"received": True, "count": len(data.get("users", [])), "users": data.get("users", [])}
+
+
+@router.get("/{workspace_id}/users")
+async def create_users(request: Request):
+    print(1)
+    columns = WorkspaceMemberService.get_member_by_workspace_columns()
+    return {"columns": columns}

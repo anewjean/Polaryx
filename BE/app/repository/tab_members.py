@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.tab_members import TabMembers
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.tab_members import TabMembers
 
 # tab_members -> created_at col 넣으면 좋을듯.
 # 초대된 시점 이후 메시지 부터 보여줄지,
