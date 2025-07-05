@@ -14,10 +14,10 @@ export default function ChannelDefault() {
   return (
     <div className="flex flex-col w-full h-full text-gray-800">
       <ChatHeader />
-      <div className="mx-3 flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         <ChatPage />
       </div>
-      <div className="m-6">
+      <div className="mb-5 mx-5">
         <TipTap />
       </div>
     </div>
