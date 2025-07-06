@@ -135,15 +135,10 @@ export default function AppSidebar({ width }: SidebarProps) {
                       .map((tab) => (
                         <SidebarMenuItem key={tab.tabId}>
                           <SidebarMenuButton
-                            asChild
                             className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0"
+                            onClick={() => router.push(`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tabId}`)}
                           >
-                            <Link
-                              href={`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tabId}`}
-                              className="truncate"
-                            >
-                              {tab.tabName}
-                            </Link>
+                            <span className="truncate">{tab.tabName}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
