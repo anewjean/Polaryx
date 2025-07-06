@@ -25,6 +25,7 @@ import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
+import { getPresignedUrl, uploadFile } from "@/apis/fileImport";
 
 // 실험용
 import { jwtDecode } from "jwt-decode";
@@ -155,6 +156,12 @@ const TipTap = () => {
   const handleFileSelect = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
+
+      // 파일 업로드 전 presignedUrl 발급
+      const { presignedUrl, fileKey } = await getPresignedUrl(file as File);
+      // 파일 업로드
+      const fileUrl = await uploadFile(file as File, presignedUrl);
+
       if (file && editor) {
         // 파일 크기 제한 (5MB)
         if (file.size > 5 * 1024 * 1024) {
@@ -198,7 +205,7 @@ const TipTap = () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
 
     ////////////////////////////////////////////////
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
     console.log(jwtDecode<{ user_id: string }>(token!).user_id);
     ////////////////////////////////////////////////
 
