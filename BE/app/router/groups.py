@@ -2,10 +2,10 @@ from typing import List, Annotated
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Depends, Path
 
-from app.core.security import verify_token_and_get_token_data
-from app.domain.message import Message
-from app.schema.message.message_update_request import MessageUpdateRequest
-from app.schema.message.messages_response import MessageSchema, MessagesResponse
+from BE.app.core.security import verify_token_and_get_token_data
+from BE.app.domain.message import Message
+from BE.app.schema.message.message_update_request import MessageUpdateRequest
+from BE.app.schema.message.messages_response import MessageSchema, MessagesResponse
 
 router = APIRouter(prefix="/groups")
 

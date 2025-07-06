@@ -2,14 +2,14 @@ from typing import List, Annotated
 from fastapi import WebSocket, WebSocketDisconnect, Path
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Depends, Request
-from app.core.security import verify_token_and_get_token_data
+from BE.app.core.security import verify_token_and_get_token_data
 
-from app.domain.tab_members import TabMembers
-from app.domain.tabs import Tabs, SubTabs
-from app.repository.tab_members import QueryRepo as TabMembersRepo
-from app.repository.tabs import QueryRepo as TabRepo
-from app.repository.sub_tabs import QueryRepo as SubTabRepo
-from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
+from BE.app.domain.tab_members import TabMembers
+from BE.app.domain.tabs import Tabs, SubTabs
+from BE.app.repository.tab_members import QueryRepo as TabMembersRepo
+from BE.app.repository.tabs import QueryRepo as TabRepo
+from BE.app.repository.sub_tabs import QueryRepo as SubTabRepo
+from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
 
 router = APIRouter(prefix="/workspaceid")
 
