@@ -56,6 +56,13 @@ WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL;
 """
 
+# 디버깅용
+delete_all_message = """
+DELETE FROM messages
+WHERE content LIKE "%";
+"""
+
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -96,3 +103,6 @@ class QueryRepo(AbstractQueryRepo):
             }
             return self.db.execute(delete_message, params)
     
+
+    def delete_all(self):
+        return self.db.execute(delete_all_message)

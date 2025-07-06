@@ -2,8 +2,8 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 
 insert_user = """
-INSERT INTO users (id, name, email, provider, workspace_id)
-                      VALUE(%(id)s, %(user_name)s, %(user_email)s, %(provider)s, %(workspace_id)s);
+INSERT INTO users (id, name, email, image, provider, workspace_id)
+                      VALUE(%(id)s, %(user_name)s, %(user_email)s, DEFAULT, %(provider)s, %(workspace_id)s);
 """
 
 find_all_user = """

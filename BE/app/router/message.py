@@ -20,8 +20,17 @@ workspace_member_service = WorkspaceMemberService()
 
 @router.get("/workspaces/{workspace_id}/tabs/{tab_id}/messages", response_model=MessagesResponse)
 async def find_all_messages(workspace_id: int, tab_id: int) -> MessagesResponse:
+    
+    # 디버깅용. 한번 싹 지우고 다시 하고 싶을때 쓰면 됨.
+    # MessageService.delete_all_message(message_service)
+    print("************ in find all messages **************")
+    print(tab_id)
+
     rows = await message_service.find_all_messages(tab_id)
+    print(rows)
     messages = [MessageSchema.from_row(row) for row in rows]
+    print("*********** messages ************")
+    print(messages)
     return MessagesResponse(messages=messages)
 
 @router.patch("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
@@ -51,30 +60,3 @@ async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> Non
     await message_service.delete_message(message_id)
     await connection.broadcast(workspace_id, tab_id, data)
 
-@router.websocket("/ws/{workspace_id}/{tab_id}")
-async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: int):
-    workspace_member = None
-    await connection.connect(workspace_id, tab_id, websocket)
-    try:
-        while True:
-            raw_data = await websocket.receive_text()
-            data = json.loads(raw_data)
-            sender_id = (data.get("sender_id"))
-            content = data.get("content")
-
-            workspace_member = workspace_member_service.get_member_by_user_id(sender_id)
-            nickname = workspace_member[0][3]
-            image = workspace_member[0][5]
-
-            payload = {
-                "content": content,
-                "nickname": nickname,
-                "image": image,
-                "created_at": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
-            }
-            
-            await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
-            await message_service.save_message(tab_id, sender_id, content)
-    except WebSocketDisconnect:
-        connection.disconnect(workspace_id, tab_id, websocket)
-        await connection.broadcast(workspace_id, tab_id, f"#{nickname}님이 나갔습니다.")
