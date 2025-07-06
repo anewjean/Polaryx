@@ -59,7 +59,7 @@ AND m.deleted_at IS NULL;
 # 디버깅용
 delete_all_message = """
 DELETE FROM messages
-WHERE content LIKE "%";
+WHERE id > 0;
 """
 
 
@@ -72,7 +72,7 @@ class QueryRepo(AbstractQueryRepo):
         param = {
             "id": id
         }
-        return self.db.execute(find_message, param)
+        return self.db.excute(find_message, param)
 
     def find_all(self, tab_id: int) -> List[Message]:
         param = {
@@ -105,4 +105,5 @@ class QueryRepo(AbstractQueryRepo):
     
 
     def delete_all(self):
+        print("delete_all_message")
         return self.db.execute(delete_all_message)

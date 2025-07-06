@@ -2,8 +2,8 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 
 insert_user = """
-INSERT INTO users (id, name, email, image, provider, workspace_id)
-                      VALUE(%(id)s, %(user_name)s, %(user_email)s, DEFAULT, %(provider)s, %(workspace_id)s);
+INSERT INTO users (id, name, email, provider, workspace_id)
+                      VALUE(%(id)s, %(user_name)s, %(user_email)s, %(provider)s, %(workspace_id)s);
 """
 
 find_all_user = """
@@ -20,7 +20,7 @@ SELECT * FROM users WHERE provider_id = %(user_provider_id)s
 """
 
 update_provider_id = """
-UPDATE users SET provider_id = %(user_provider_id)s,
+UPDATE users SET provider_id = %(user_provider_id)s
            WHERE email = %(user_email)s;
 """
 
