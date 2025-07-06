@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from BE.app.domain.workspace_member import WorkspaceMember
-from BE.app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
-from BE.app.schema.workspace_members.request import UpdateWorkspaceMemberRequest
-from BE.app.schema.workspace_members.response import (
+from app.domain.workspace_member import WorkspaceMember
+from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
+from app.schema.workspace_members.request import UpdateWorkspaceMemberRequest
+from app.schema.workspace_members.response import (
     WorkspaceMemberResponse,
     WorkspaceMemberSchema,
 )
