@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Path
 from typing import List
-from BE.app.schema.tab.request import CreateTabRequest
-from BE.app.schema.tab.response import TabResponse
-from BE.app.service.tab import TabService
+from app.schema.tab.request import CreateTabRequest
+from app.schema.tab.response import TabResponse
+from app.service.tab import TabService
 
 router = APIRouter()
 service = TabService()
