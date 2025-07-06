@@ -1,9 +1,8 @@
 const BASE = "http://127.0.0.1:8000";
 
 export interface Profile {
-  id: string;
   user_id: string;
-  workspace_id: number;
+  workspace_id: number | null;
   nickname: string;
   email: string;
   // phone?: string | null;
@@ -15,11 +14,11 @@ export interface Profile {
 }
 
 /* 프로필 조회 */
-export async function getProfile(targetId: string): Promise<Profile> {
+export async function getProfile(workspaceId: string, targetId: string): Promise<Profile> {  
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspace_members/${targetId}`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/${targetId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -32,11 +31,12 @@ export async function getProfile(targetId: string): Promise<Profile> {
 }
 
 /* 프로필 부분 수정 (PATCH) */
-export async function patchProfile(userId: string, payload: Partial<Profile>): Promise<Profile> {
+export async function patchProfile(workspaceId: string, userId: string, payload: Partial<Profile>): Promise<Profile> {
+  console.log("API 테스트");
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspace_members/${userId}`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/${userId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,
