@@ -12,7 +12,7 @@ interface CardModalProps {
   title: string;
   children: ReactNode;
   defaultOpen?: boolean;
-  open?: boolean; // open prop 추가
+  open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 

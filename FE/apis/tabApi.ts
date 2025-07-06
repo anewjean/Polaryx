@@ -20,7 +20,7 @@ export interface Member {
 }
 
 /* 탭 이름 중복 확인 */
-export async function checkTabName(workspaceId: string, tabName: string): Promise<boolean> {
+export async function checkTabName(workspaceId: string, sectionId: string, tabName: string): Promise<boolean> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
