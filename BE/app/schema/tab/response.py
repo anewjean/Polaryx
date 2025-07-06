@@ -25,22 +25,3 @@ class TabResponse(BaseModel):
             updated_at=row[6],
             deleted_at=row[7],
         )
-
-class TabListItemResponse(BaseModel):
-    tab_id: int
-    tab_name: str
-    section_id: int
-    section_name: str
-    subsection_id: Optional[int] = None
-    subsection_name: Optional[str] = None
-
-    @classmethod
-    def from_row(cls, row: tuple) -> "TabListItemResponse":
-        return cls(
-            tab_id=row[0],
-            tab_name=row[1],
-            section_id=row[2],
-            section_name=row[3],
-            subsection_id=row[4],
-            subsection_name=row[5],
-        )

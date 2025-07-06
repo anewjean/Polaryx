@@ -13,7 +13,7 @@ class TabService:
      if not is_valid:
         raise HTTPException(status_code=400, detail="섹션이 이 워크스페이스에 속하지 않습니다.")
 
-     self.repo.create_tab(tab_data.dict())
+     self.repo.create_tab(tab_data.model_dump())
 
 
     def get_tabs(self, workspace_id: int) -> List[TabResponse]:

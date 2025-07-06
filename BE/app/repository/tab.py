@@ -28,9 +28,10 @@ class TabRepository(AbstractQueryRepo):
     #section_id와 workspace_id가 일치하는지 검증하는 메소드 
     def validate_section_in_workspace(self, section_id: int, workspace_id: int) -> bool:
         query = """
-        SELECT 1 FROM sections
+        SELECT * FROM sections
         WHERE id = %(section_id)s AND workspace_id = %(workspace_id)s
         """
         result = self.execute(query, {"section_id": section_id, "workspace_id": workspace_id})
+        print(result)
         return bool(result)
     
