@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { use } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useState, useEffect } from "react";
 import { useChannelStore } from "@/store/channelStore";

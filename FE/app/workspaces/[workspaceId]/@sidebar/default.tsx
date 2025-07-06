@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React from "react";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
@@ -133,13 +134,16 @@ export default function AppSidebar({ width }: SidebarProps) {
                       .filter((tab) => tab.sectionId === section.id)
                       .map((tab) => (
                         <SidebarMenuItem key={tab.tabId}>
-                          <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0">
-                            <a
+                          <SidebarMenuButton
+                            asChild
+                            className="flex items-center px-2 py-1 space-x-2 rounded flex-1 min-w-0"
+                          >
+                            <Link
                               href={`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tabId}`}
                               className="truncate"
                             >
                               {tab.tabName}
-                            </a>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
