@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,12 +18,14 @@ import { convertFileToBase64 } from "@/utils/fileUtils";
 type ProfileProps = { targetId?: string };
 
 export default function ProfilePage({ targetId }: ProfileProps) {
-  const accessToken = localStorage.getItem("access_token");
-  console.log(accessToken);
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
+  // URL에서 workspaceId 추출
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
 
-  // accessToken의 sub 클레임에 있는 userId 추출
-  const { user_id: userId } = jwtDecode<{ user_id: string }>(accessToken);
+  // accessToken에 있는 userId 추출
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) throw new Error("로그인이 필요합니다.");
+  const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -52,8 +55,11 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
   useEffect(() => {
     (async () => {
+      if (userId === null) {
+        return;
+      }
       try {
-        const profile = await getProfile(targetId ?? userId);
+        const profile = await getProfile(workspaceId, targetId ?? userId);
         setProfile(profile);
         setForm({
           nickname: profile.nickname,
@@ -65,19 +71,14 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         console.error("프로필 조회 실패:", error);
       }
     })();
-  }, [targetId]);
+  }, [userId, targetId]);
 
   // 프로필 수정
   const saveChange = async () => {
     if (!profile) return;
     setSaving(true);
     try {
-      const payload: Partial<
-        Omit<
-          Profile,
-          "id" | "userId" | "email" | "workspaceId" | "role" | "groups" | "createdAt" | "updatedAt" | "deletedAt"
-        >
-      > = {
+      const payload: Partial<Omit<Profile, "user_id" | "email" | "workspace_id" | "role" | "groups">> = {
         nickname: form.nickname,
         // phone: form.phone ?? null,
         github: form.github ?? null,
@@ -87,7 +88,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
       if (selectedFile && preview) {
         payload.image = preview;
       }
-      const updatedProfile = await patchProfile(userId, payload);
+      const updatedProfile = await patchProfile(workspaceId, userId, payload);
       setProfile(updatedProfile);
       setIsModalOpen(false);
     } catch (error) {

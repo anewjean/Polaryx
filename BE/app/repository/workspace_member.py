@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.workspace_member import WorkspaceMember
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
@@ -41,10 +41,25 @@ WHERE email = %(email)s;
 """
 
 find_member_by_user_id = """
-SELECT *
-FROM workspace_members
-WHERE user_id = %(user_id)s
-AND deleted_at IS NULL;
+SELECT 
+    wm.user_id,
+    wm.workspace_id,
+    wm.nickname,
+    wm.email,
+    wm.image,
+    r.name AS role,
+    GROUP_CONCAT(DISTINCT g.name),
+    wm.github,
+    wm.blog
+FROM workspace_members wm
+LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
+LEFT JOIN roles r ON mr.role_id = r.id
+LEFT JOIN group_members gm ON wm.user_id = gm.user_id
+LEFT JOIN `groups` g ON gm.group_id = g.id
+WHERE wm.user_id = %(user_id)s
+  AND wm.deleted_at IS NULL
+  AND gm.deleted_at IS NULL
+GROUP BY wm.user_id, wm.workspace_id, wm.nickname, wm.email, wm.image, r.name, wm.github, wm.blog;
 """
 
 update_workspace_member_by_user_id = """

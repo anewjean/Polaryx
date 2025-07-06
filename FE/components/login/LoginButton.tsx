@@ -8,9 +8,9 @@ export function LoginButton() {
   return (
     <div>
       <Button variant="outline" className="flex max-w-min py-7 px-10 cursor-pointer hover:bg-gray-300">
-        <a href="http://localhost:8000/auth/google">
-          <img src="./googleLogo.png" className="w-7" />
-          <p className="text-xl">Google 계정으로 로그인하기</p>
+        <a className="flex flex-row justify-center items-center gap-2 p-2" href="http://localhost:8000/auth/google">
+          <img src="./googleLogo.png" className="flex w-10" />
+          Google 로그인
         </a>
       </Button>
     </div>

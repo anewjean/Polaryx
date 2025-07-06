@@ -1,7 +1,8 @@
 "use client";
+
 import "../globals.css";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function WorkspacesLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-full flex-col w-full overflow-hidden">
       {/* 상단 바 */}
