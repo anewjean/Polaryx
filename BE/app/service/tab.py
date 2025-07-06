@@ -1,7 +1,7 @@
 from typing import List
-from BE.app.schema.tab.request import CreateTabRequest
-from BE.app.schema.tab.response import TabResponse
-from BE.app.repository.tab import TabRepository
+from app.schema.tab.request import CreateTabRequest
+from app.schema.tab.response import TabResponse
+from app.repository.tab import TabRepository
 from fastapi import HTTPException
 
 class TabService:

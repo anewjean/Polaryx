@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
-from BE.app.schema.section.response import SectionResponse
-from BE.app.service.section import SectionService
+from app.schema.section.response import SectionResponse
+from app.service.section import SectionService
 
 router = APIRouter(prefix="/sections", tags=["Section"])
 service = SectionService()

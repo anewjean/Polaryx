@@ -1,6 +1,6 @@
 from typing import List
-from BE.app.domain.section import Section
-from BE.app.repository.section import SectionQueryRepo
+from app.domain.section import Section
+from app.repository.section import SectionQueryRepo
 
 class SectionService:
     def __init__(self):

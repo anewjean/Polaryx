@@ -1,7 +1,7 @@
 from typing import List, Optional
-from BE.app.util.database.abstract_query_repo import AbstractQueryRepo
-from BE.app.util.database.db_factory import DBFactory
-from BE.app.domain.section import Section
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
+from app.domain.section import Section
 
 insert_section = """
 INSERT INTO sections (
