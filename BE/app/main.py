@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.router import message
 from app.router.auth import auth_controller as auth
 from app.router import workspaceid as workspaces
+from app.router import s3
+
 load_dotenv()
 
 app = FastAPI()
@@ -22,6 +24,7 @@ app.add_middleware(
 app.include_router(router=message.router, prefix="/api")
 app.include_router(router=auth.router, prefix="/api")
 app.include_router(router=workspaces.router, prefix="/api")
+app.include_router(router=s3.router, prefix="/api")
 
 @app.get("/ping")
 async def pong():
