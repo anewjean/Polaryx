@@ -19,33 +19,38 @@ def validate_tab_name(workspace_id: str, section_id: str, name: str = Query(None
 
 # 탭 추가
 @router.post("/{workspace_id}/tabs", response_model=CreateTabResponse)
-def create_tab(workspace_id: int, tab_data: CreateTabRequest):
+def create_tab(workspace_id: int, tab_data: CreateTabRequest, user_info: Dict = Depends(verify_token_and_get_token_data)):
+    user_id = user_info.get("user_id")
     tab_name = tab_data.tab_name
     section_id = tab_data.section_id
     subsection_id = tab_data.subsection_id
-    rows = service.create_tab(workspace_id, tab_name, section_id, subsection_id)
+    rows = service.create_tab(user_id, workspace_id, tab_name, section_id, subsection_id)
     return CreateTabResponse.from_row(rows[0])
 
 # 참여중인 탭 리스트 조회
 @router.get("/{workspace_id}/tabs", response_model=List[TabInfo])
-def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_token_data)):    
+def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_token_data)):
     user_id = user_info.get("user_id")
-    return service.find_tabs(workspace_id, user_id)
+    rows = service.find_tabs(workspace_id, user_id)
+    return [TabInfo.from_row(row) for row in rows]
 
 # 특정 탭 정보 상세 조회
 @router.get("/{workspace_id}/tabs/{tab_id}/info", response_model=TabDetailInfo)
 def get_tab(workspace_id: int, tab_id: int):
-    return service.find_tab(workspace_id, tab_id)
+    rows = service.find_tab(workspace_id, tab_id)
+    return TabDetailInfo.from_rows(rows)
 
 # 탭 참여 인원 조회
 @router.get("/{workspace_id}/tabs/{tab_id}/members", response_model=List[TabMember])
 def get_tab_members(workspace_id: int, tab_id: int):
-    return service.get_tab_members(workspace_id, tab_id)
+    rows = service.get_tab_members(workspace_id, tab_id)
+    return [TabMember.from_row(row) for row in rows]
 
 # 탭 참여 가능 인원 조회
 @router.get("/{workspace_id}/tabs/{tab_id}/non-members", response_model=List[TabMember])
 def get_available_tab_members(workspace_id: int, tab_id: int):
-    return service.get_available_tab_members(workspace_id, tab_id)
+    rows = service.get_available_tab_members(workspace_id, tab_id)
+    return [TabMember.from_row(row) for row in rows]
 
 # 탭 인원 초대
 @router.post("/{workspace_id}/tabs/{tab_id}/members", response_model=TabInvitation)

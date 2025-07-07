@@ -61,8 +61,9 @@ class TabMember(BaseModel):
             nickname=row[1],
             image=row[2],
             role=row[3],
-            groups=[row[4]] if row[4] is not None else []
+            groups=row[4].split(",") if row[4] is not None else []
         )
+
 
 class TabInvitation(BaseModel):
     members_count: int
