@@ -10,17 +10,19 @@ interface JWTPayload {
 
 export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
-  const { message, sendFlag, setSendFlag } = useMessageStore();
+  const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
 
-  useEffect(()=>{
-    {console.log("websocket_client")}
-  })
+  useEffect(() => {
+    {
+      console.log("websocket_client");
+    }
+  });
 
   useEffect(() => {
     // 디버깅용
     console.log("new web sokcet");
     const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
-  
+
     socketRef.current = socket;
 
     socket.onopen = () => {
@@ -61,22 +63,24 @@ export const WebSocketClient = () => {
   useEffect(() => {
     if (sendFlag && message && socketRef.current?.readyState === WebSocket.OPEN) {
       const token = localStorage.getItem("access_token");
-      
-      
+
       if (!token) {
         console.log("토큰없당"); // 추후 수정
         return;
       }
-      
+
       const { user_id } = jwtDecode<JWTPayload>(token);
-      console.log("user_id");
-      console.log(user_id);
+      console.log("user_id", user_id);
 
       const payload = {
         sender_id: user_id,
         content: message,
+        file_url: fileUrl,
       };
-
+      console.log("sender_id", payload.sender_id);
+      console.log("content", payload.content);
+      console.log("file_url", payload.file_url); //note: 나중에 지울 것
+      useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }

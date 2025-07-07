@@ -14,11 +14,8 @@ import { getMessages } from "@/apis/messages";
 export function ChatPage(workspaceId: string, tabId: string) {
   const messages = useMessageStore((state) => state.messages);
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  //////////////////// 추가 ////////////////////
-  const prependMessages = useMessageStore((state) => state.prependMessages);
-  
-  
+
+  // 맨 아래 채팅에 고정
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -31,7 +28,6 @@ export function ChatPage(workspaceId: string, tabId: string) {
         const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
       
         if (res.length > 0) {
-          prependMessages(res);
           // 스크롤 위치를 현재 위치만큼 유지
           requestAnimationFrame(() => {
             el.scrollTop = el.scrollHeight - previousHeight;
@@ -59,10 +55,10 @@ export function ChatPage(workspaceId: string, tabId: string) {
   const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
 
   return (
-    <div className="flex-1 flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       <WebSocketClient />
 
-      <div ref={containerRef} className="text-m min-h-0 px-5 w-full">
+      <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
@@ -105,6 +101,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
                     : // .split(" ")[1]
                       "now"
                 }
+                
                 content={msg.content}
                 showProfile={showProfile}
               />

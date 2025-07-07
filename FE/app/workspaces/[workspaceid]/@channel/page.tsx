@@ -8,7 +8,6 @@ import { ChatPage } from "@/components/chat/ChatPage";
 import { useParams } from "next/navigation";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { useEffect } from "react";
-import { ExUpload } from "@/components/excel_import/exImportButton";
 
 export default function ChannelDefault() {
   const { channelWidth } = useChannelStore();
@@ -33,10 +32,8 @@ export default function ChannelDefault() {
 
       {/* 3. 채팅 리스트 + 입력창 */}
       <div className="flex-1 flex flex-col min-h-0">
-        {/* 3-1. 채팅 리스트 : 남은 공간 사용, 스크롤 가능하게 */}
-        <div className="flex-1 overflow-y-auto min-h-0">
-          <ChatPage />
-        </div>
+        {/* 3-1. 채팅 리스트 */}
+        <ChatPage />
 
         {/* 3-2. 입력창 */}
         <div className="flex-none mb-5 mx-5">
