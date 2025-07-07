@@ -16,12 +16,9 @@ from app.config.config import settings
 
 router = APIRouter(prefix="/auth")
 
-GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
-GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
-GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
-GOOGLE_REDIRECT_URI = "http://localhost:3000/auth/google/callback"
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -164,42 +161,6 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                 
                 return result
             
-    # github 구현 부분. 미완.
-
-    # elif provider.value == "github":
-    #     async with httpx.AsyncClient() as client:
-    #         # Step 1: access_token 요청
-    #         token_res = await client.post(
-    #             GITHUBS_TOKEN_URL,
-    #             headers={"Accept": "application/json"},
-    #             data={
-    #                 "code": code,
-    #                 "client_id": GITHUBS_CLIENT_ID,
-    #                 "client_secret": GITHUBS_CLIENT_SECRET,
-    #                 "redirect_uri": GITHUBS_REDIRECT_URI,
-    #             },
-    #         )
-    #         token_json = token_res.json()
-    #         access_token = token_json.get("access_token")
-
-    #         if not access_token:
-    #             return {"error": "Access token not received"}
-
-    #         # Step 2: 유저 정보 요청
-    #         user_res = await client.get(
-    #             GITHUBS_USERINFO_URL,
-    #             headers={"Authorization": f"Bearer {access_token}"}
-    #         )
-
-    #         user = user_res.json()
-
-    #         ########################################
-    #         # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-    #         ########################################
-
-    #         return {"user": user}
-        
-
 
 # 로그아웃도 하기
 @router.delete("/logout")

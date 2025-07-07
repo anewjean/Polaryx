@@ -21,17 +21,24 @@ export default function ChannelDefault() {
   });
 
   return (
-    <div className="relative text-gray-800">
+    <div className="flex flex-col h-full">
+      {/* 1. 상단 헤더 */}
       <ChatHeader />
-      <ChatPage />
-      <div
-        className={`fixed bottom-0 p-4`}
-        style={{
-          width: `${channelWidth}%`,
-        }}
-      >
-        {/* 채팅 입력 컴포넌트 */}
-        <TipTap />
+
+      {/* 2. 엑셀 업로드 버튼 : 추후 위치 수정 */}
+      {/* <div className="flex-none">
+        <ExUpload />
+      </div> */}
+
+      {/* 3. 채팅 리스트 + 입력창 */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {/* 3-1. 채팅 리스트 */}
+        <ChatPage />
+
+        {/* 3-2. 입력창 */}
+        <div className="flex-none mb-5 mx-5">
+          <TipTap />
+        </div>
       </div>
     </div>
   );

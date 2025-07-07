@@ -257,7 +257,7 @@
   animation:
     spin 10s linear infinite,
     coloredGlow 4s ease-in-out infinite;
-}/* 색 관련 설정 */
+} /* 색 관련 설정 */
 .chat-time-stamp {
   color: rgba(97, 96, 97, 1);
 }
@@ -275,4 +275,37 @@
 .border-divider-gray {
   border: 1px rgba(221, 221, 221) solid;
   background-color: white;
+}
+
+.HoverCardContent[data-side="top"] {
+  animation-name: slideUp;
+}
+.HoverCardContent[data-side="bottom"] {
+  animation-name: slideDown;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.date-header hr.divider-gray {
+  display: none;
 }

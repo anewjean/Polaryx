@@ -28,3 +28,6 @@ class MessageService:
         message.delete()
         self.message_repo.update(message)
         
+    # 디버깅용 다지우기 함수
+    async def delete_all_message(self):
+        self.message_repo.delete_all()

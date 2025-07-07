@@ -20,7 +20,7 @@ SELECT * FROM users WHERE provider_id = %(user_provider_id)s
 """
 
 update_provider_id = """
-UPDATE users SET provider_id = %(user_provider_id)s,
+UPDATE users SET provider_id = %(user_provider_id)s
            WHERE email = %(user_email)s;
 """
 
