@@ -68,15 +68,16 @@ export const WebSocketClient = () => {
       }
 
       const { user_id } = jwtDecode<JWTPayload>(token);
-      console.log("user_id");
-      console.log(user_id);
+      console.log("user_id", user_id);
 
       const payload = {
         sender_id: user_id,
         content: message,
         file_url: fileUrl,
       };
-      console.log(payload.sender_id, payload.content, payload.file_url); //note: 나중에 지울 것
+      console.log("sender_id", payload.sender_id);
+      console.log("content", payload.content);
+      console.log("file_url", payload.file_url); //note: 나중에 지울 것
       useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
