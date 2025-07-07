@@ -1,18 +1,28 @@
 "use client";
 
-import { TabMembers } from "@/components/tab/TabMembers";
-import { useEffect, useState } from "react";
+import TipTap from "@/components/chat-text-area/tiptap";
+import { WebSocketClient } from "@/components/ws/webSocketClient";
+import { useChannelStore } from "@/store/channelStore";
+import { ChatHeader } from "@/components/chat/ChatHeader";
+import { ChatPage } from "@/components/chat/ChatPage";
 import { useParams } from "next/navigation";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
+import { useEffect, useState } from "react";
+import { ExUpload } from "@/components/excel_import/exImportButton";
+import { TabMembers } from "@/components/tab/TabMembers";
 import { getMemberList, getPossibleMemberList } from "@/apis/tabApi";
 import { Member } from "@/apis/tabApi";
 
-export default function TabPage() {
+export default function ChannelDefault() {
+  const { channelWidth } = useChannelStore();
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
   const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
+
+  useFetchMessages("1", "1");
 
   useEffect(() => {
     if (workspaceId && tabId) {
@@ -33,31 +43,25 @@ export default function TabPage() {
   }, [workspaceId, tabId]);
 
   return (
-    <div className="flex flex-col p-10 gap-5">
-      <h1>탭영역</h1>
-      <TabMembers />
-      <h2>참여 인원</h2>
-      <ul>
-        {tabMembers.map((member) => (
-          <li key={member.user_id}>
-            {member?.image}
-            {member?.nickname}
-            {member?.role}
-            {member?.groups}
-          </li>
-        ))}
-      </ul>
-      <h2>참여 가능 인원</h2>
-      <ul>
-        {possibleMembers.map((member) => (
-          <li key={member.user_id}>
-            {member?.image}
-            {member?.nickname}
-            {member?.role}
-            {member?.groups}
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col h-full">
+      {/* 1. 상단 헤더 */}
+      <ChatHeader />
+
+      {/* 2. 엑셀 업로드 버튼 : 추후 위치 수정 */}
+      {/* <div className="flex-none">
+        <ExUpload />
+      </div> */}
+
+      {/* 3. 채팅 리스트 + 입력창 */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {/* 3-1. 채팅 리스트 */}
+        <ChatPage />
+
+        {/* 3-2. 입력창 */}
+        <div className="flex-none mb-5 mx-5">
+          <TipTap />
+        </div>
+      </div>
     </div>
   );
 }

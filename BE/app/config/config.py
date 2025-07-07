@@ -30,12 +30,9 @@ class Settings(BaseSettings):
     GITHUBS_CLIENT_ID: str
     GITHUBS_CLIENT_SECRET: str
     GITHUBS_REDIRECT_URI: str
-    GOOGLE_CLIENT_ID: str
-    GOOGLE_CLIENT_SECRET: str
-    GOOGLE_REDIRECT_URI: str
-    GITHUBS_CLIENT_ID: str
-    GITHUBS_CLIENT_SECRET: str
-    GITHUBS_REDIRECT_URI: str
+    AWS_REGION: str
+    AWS_BUCKET_NAME: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
 
 settings = Settings()
-
