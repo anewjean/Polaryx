@@ -1,18 +1,18 @@
 const BASE = "http://127.0.0.1:8000";
 
 export interface Tab {
-  tabId: string;
-  tabName: string;
-  sectionId: string;
-  sectionName?: string;
-  subSectionId?: string | null;
-  subSectionName?: string | null;
-  tabMembersCount?: number | null;
+  tab_id: string;
+  tab_name: string;
+  section_id: string;
+  section_name?: string;
+  subsection_id?: string | null;
+  subsection_name?: string | null;
+  members_count?: number | null;
   members: Member[] | null;
 }
 
 export interface Member {
-  userId: string;
+  user_id: string;
   nickname: string;
   image?: string | null;
   role: string;
@@ -51,6 +51,15 @@ export async function getTabInfo(workspaceId: string, tabId: string): Promise<Ta
 
     if (!res.ok) {
       console.error(`탭 정보 조회 실패: ${res.status}`);
+      return {
+        tab_id: "0",
+        tab_name: "API 호출 실패",
+        section_id: "0",
+        subsection_id: null,
+        subsection_name: null,
+        members_count: 25,
+        members: null,
+      };
     }
 
     return res.json();
@@ -58,12 +67,12 @@ export async function getTabInfo(workspaceId: string, tabId: string): Promise<Ta
     // 에러 발생 시 기본값 반환 (테스트)
     console.error("탭 정보 조회 중 오류:", error);
     return {
-      tabId: "0",
-      tabName: "API 호출 실패",
-      sectionId: "0",
-      subSectionId: null,
-      subSectionName: null,
-      tabMembersCount: null,
+      tab_id: "0",
+      tab_name: "API 호출 실패",
+      section_id: "0",
+      subsection_id: null,
+      subsection_name: null,
+      members_count: 25,
       members: null,
     };
   }
@@ -87,39 +96,39 @@ export async function getTabList(workspaceId: string): Promise<Tab[]> {
       console.error(`탭 리스트 조회 실패: ${res.status}`);
       return [
         {
-          tabId: "1",
-          tabName: "API 호출 실패",
-          sectionId: "0",
-          subSectionId: null,
-          subSectionName: null,
-          tabMembersCount: null,
+          tab_id: "1",
+          tab_name: "API 호출 실패",
+          section_id: "0",
+          subsection_id: null,
+          subsection_name: null,
+          members_count: null,
           members: null,
         },
         {
-          tabId: "2",
-          tabName: "API 호출 실패",
-          sectionId: "1",
-          subSectionId: null,
-          subSectionName: null,
-          tabMembersCount: null,
+          tab_id: "2",
+          tab_name: "API 호출 실패",
+          section_id: "1",
+          subsection_id: null,
+          subsection_name: null,
+          members_count: null,
           members: null,
         },
         {
-          tabId: "3",
-          tabName: "API 호출 실패",
-          sectionId: "2",
-          subSectionId: null,
-          subSectionName: null,
-          tabMembersCount: null,
+          tab_id: "3",
+          tab_name: "API 호출 실패",
+          section_id: "2",
+          subsection_id: null,
+          subsection_name: null,
+          members_count: null,
           members: null,
         },
         {
-          tabId: "4",
-          tabName: "API 호출 실패",
-          sectionId: "3",
-          subSectionId: null,
-          subSectionName: null,
-          tabMembersCount: null,
+          tab_id: "4",
+          tab_name: "API 호출 실패",
+          section_id: "3",
+          subsection_id: null,
+          subsection_name: null,
+          members_count: null,
           members: null,
         },
       ];
@@ -131,39 +140,39 @@ export async function getTabList(workspaceId: string): Promise<Tab[]> {
     // 에러 발생 시 기본값 반환 (테스트)
     return [
       {
-        tabId: "1",
-        tabName: "API 호출 실패",
-        sectionId: "0",
-        subSectionId: null,
-        subSectionName: null,
-        tabMembersCount: null,
+        tab_id: "1",
+        tab_name: "API 호출 실패",
+        section_id: "0",
+        subsection_id: null,
+        subsection_name: null,
+        members_count: null,
         members: null,
       },
       {
-        tabId: "2",
-        tabName: "API 호출 실패",
-        sectionId: "1",
-        subSectionId: null,
-        subSectionName: null,
-        tabMembersCount: null,
+        tab_id: "2",
+        tab_name: "API 호출 실패",
+        section_id: "1",
+        subsection_id: null,
+        subsection_name: null,
+        members_count: null,
         members: null,
       },
       {
-        tabId: "3",
-        tabName: "API 호출 실패",
-        sectionId: "2",
-        subSectionId: null,
-        subSectionName: null,
-        tabMembersCount: null,
+        tab_id: "3",
+        tab_name: "API 호출 실패",
+        section_id: "2",
+        subsection_id: null,
+        subsection_name: null,
+        members_count: null,
         members: null,
       },
       {
-        tabId: "4",
-        tabName: "API 호출 실패",
-        sectionId: "3",
-        subSectionId: null,
-        subSectionName: null,
-        tabMembersCount: null,
+        tab_id: "4",
+        tab_name: "API 호출 실패",
+        section_id: "3",
+        subsection_id: null,
+        subsection_name: null,
+        members_count: null,
         members: null,
       },
     ];

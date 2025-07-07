@@ -50,6 +50,7 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 탭 생성 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
   const handleModalOpenChange = (open: boolean) => {
     setIsModalOpen(open);
     if (!open) {
@@ -99,7 +100,7 @@ export default function AppSidebar({ width }: SidebarProps) {
       setTabList([...tabList, newTab]);
       setIsModalOpen(false);
       setTabName("");
-      router.push(`/workspaces/${workspaceId}/tabs/${newTab.tabId}`);
+      router.push(`/workspaces/${workspaceId}/tabs/${newTab.tab_id}`);
     } catch (error) {
       console.error(error);
       alert("탭 생성에 실패했습니다.");
@@ -111,10 +112,10 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 섹션 id별 섹션명과 아이콘
   const sectionType = [
-    { id: "0", label: "Announcements", icon: Megaphone },
-    { id: "1", label: "Courses", icon: Landmark },
-    { id: "2", label: "Channels", icon: Users },
-    { id: "3", label: "Direct Messages", icon: Mail },
+    { id: "1", label: "Announcements", icon: Megaphone },
+    { id: "2", label: "Courses", icon: Landmark },
+    { id: "3", label: "Channels", icon: Users },
+    { id: "4", label: "Direct Messages", icon: Mail },
   ];
 
   return (
@@ -156,14 +157,14 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <SidebarGroupContent>
                   <SidebarMenu className="flex flex-col pl-5 gap-0">
                     {tabList
-                      .filter((tab) => tab.sectionId === section.id)
+                      .filter((tab) => tab.section_id === section.id)
                       .map((tab) => (
-                        <SidebarMenuItem key={tab.tabId}>
+                        <SidebarMenuItem key={tab.tab_id}>
                           <SidebarMenuButton
                             className="flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0"
-                            onClick={() => router.push(`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tabId}`)}
+                            onClick={() => router.push(`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`)}
                           >
-                            <span className="truncate">{tab.tabName}</span>
+                            <span className="truncate">{tab.tab_name}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
@@ -194,17 +195,19 @@ export default function AppSidebar({ width }: SidebarProps) {
                           onChange={(e) => setTabName(e.target.value)}
                         />
                         <div className="flex flex-1 flex-row mt-6 gap-3">
-                          <Button 
+                          <Button
                             variant="secondary"
                             onClick={() => handleModalOpenChange(false)}
-                            className="flex flex-1">
+                            className="flex flex-1"
+                          >
                             Cancel
                           </Button>
                           <Button
                             variant="default"
                             onClick={() => handleAddTab(section.id, tabName)}
                             disabled={tabName.trim() === ""}
-                            className="flex flex-1">
+                            className="flex flex-1"
+                          >
                             Create
                           </Button>
                         </div>

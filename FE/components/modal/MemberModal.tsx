@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { ModalTrigger } from "./ModalTrigger";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-interface DialogModalProps {
+interface MemberModalProps {
   trigger: ReactNode;
   title: string;
   children: ReactNode;
@@ -13,7 +13,7 @@ interface DialogModalProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export function DialogModal({ trigger, title, children, defaultOpen = false, open, onOpenChange }: DialogModalProps) {
+export function MemberModal({ trigger, title, children, defaultOpen = false, open, onOpenChange }: MemberModalProps) {
   return (
     <ModalTrigger trigger={trigger} defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
       <Dialog open={open} onOpenChange={onOpenChange}>
