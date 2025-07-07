@@ -1,6 +1,4 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse
-from urllib.parse import urlencode
+from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,8 +23,9 @@ app.add_middleware(
 app.include_router(router=message.router)
 app.include_router(router=auth.router)
 app.include_router(router=workspace_members.router)
-app.include_router(router=tab.router)
 app.include_router(router=workspace.router)
+app.include_router(router=tab.router)
+
 
 @app.get("/ping")
 async def pong():

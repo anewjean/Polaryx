@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -13,8 +14,12 @@ class Tab:
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
 
+    @staticmethod
+    def of():
+        pass
+
     @classmethod
-    def from_row(cls, row: tuple) -> "Tab":
+    def from_row(cls, row: tuple) -> Tab:
         return cls(
             id=row[0],
             name=row[1],
