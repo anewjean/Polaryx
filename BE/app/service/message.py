@@ -3,18 +3,25 @@ from typing import List
 from app.domain.message import Message
 from app.repository.message import QueryRepo as MessageRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
+from app.repository.files import QueryRepo as FilesRepo
+
 import uuid
 
 class MessageService:
     def __init__(self):
         self.message_repo = MessageRepo()
+        self.files_repo = FilesRepo()
     
     async def save_message(self, tab_id: int, sender_id: uuid.UUID, content: str) -> None:
         message = Message.of(tab_id, sender_id, content)
-        self.message_repo.insert(message)
+        res = self.message_repo.insert(message)
+        return res["lastrowid"]
 
     async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
         return self.message_repo.find_recent_30(tab_id, before_id)
+
+    async def find_message_by_(self, tab_id: int) -> List[Message]:
+        return self.message_repo.find_all(tab_id)
 
     async def find_all_messages(self, tab_id: int) -> List[Message]:
         return self.message_repo.find_all(tab_id)
@@ -31,6 +38,9 @@ class MessageService:
         message.delete()
         self.message_repo.update(message)
         
+    async def save_file_to_db(self, data: dict):
+        self.files_repo.save_file_to_db(data)
+
     # 디버깅용 다지우기 함수
     async def delete_all_message(self):
         self.message_repo.delete_all()

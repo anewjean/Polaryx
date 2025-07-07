@@ -8,7 +8,11 @@ from app.router import message
 from app.router.auth import auth_controller as auth
 from app.router import workspace_members
 from app.router import workspace
+from app.router import s3
 from app.router import tab
+from app.router import ws_message
+from app.router import workspaceid as workspaces
+
 load_dotenv()
 
 app = FastAPI()
@@ -20,13 +24,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(router=ws_message.router, prefix="/ws")
+app.include_router(router=message.router, prefix="/api")
+app.include_router(router=auth.router, prefix="/api")
+app.include_router(router=workspaces.router, prefix="/api")
+app.include_router(router=s3.router, prefix="/api")
 
 app.include_router(router=message.router)
 app.include_router(router=auth.router)
 app.include_router(router=workspace_members.router)
 app.include_router(router=workspace.router)
 app.include_router(router=tab.router)
-
 
 @app.get("/ping")
 async def pong():

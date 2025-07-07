@@ -34,6 +34,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             print(sender_id)
             content = data.get("content")
             print(content)
+            # 추가
+            file_data = data.get("file_url")
+            print(file_data)
+
 
             workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
             print(workspace_member)
@@ -43,7 +47,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             print(image)
 
             payload = {
-                # "message_id": , # message id 보내주기.
+                "file_url": file_data, # file_url 보내주기.
                 "content": content,
                 "nickname": nickname,
                 "image": image,
@@ -51,8 +55,16 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             }
             print(payload)
 
+            message_id = await message_service.save_message(tab_id, sender_id, content)
+            
+            file_data_with_msg_id = {
+                "message_id": message_id,
+                "file_url": file_data
+            }
+
+            await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
-            await message_service.save_message(tab_id, sender_id, content)
+    
     except WebSocketDisconnect:
         print("********* except *********")
         connection.disconnect(workspace_id, tab_id, websocket)

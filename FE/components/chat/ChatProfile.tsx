@@ -1,5 +1,6 @@
 import { MiniProfile } from "./MiniProfile";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ImageWithModal } from "./imageWithModal";
 
 interface ChatProfileProps {
   imgSrc: string;
@@ -7,9 +8,16 @@ interface ChatProfileProps {
   time: string;
   content: string;
   showProfile: boolean;
+  fileUrl: string | null;
 }
 
-export function ChatProfile({ imgSrc, nickname, time, content, showProfile }: ChatProfileProps) {
+function isImageFile(url: string) {
+  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
+}
+
+export function ChatProfile({ imgSrc, nickname, time, content, showProfile, fileUrl  }: ChatProfileProps) {
+  const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
+
   return (
     <div className="flex px-[8px] py-[4.5px] hover:bg-[#F4F4F4] group">
       {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
@@ -43,7 +51,20 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile }: Ch
             <span className="text-xs chat-time-stamp">{time}</span>
           </div>
         )}
-        <div className="text-m">{content}</div>
+        <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
+        {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
+        {fileUrl && !isImageFile(fileUrl) && (
+          <div className="mt-2">
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+            >
+              📎 첨부파일 다운로드
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
