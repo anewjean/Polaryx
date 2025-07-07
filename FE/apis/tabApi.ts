@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:8000";
+const BASE = "http://127.0.0.1:8001";
 
 export interface Tab {
   tab_id: string;
@@ -8,7 +8,7 @@ export interface Tab {
   subsection_id?: string | null;
   subsection_name?: string | null;
   members_count?: number | null;
-  members: Member[] | null;
+  members?: Member[] | null;
 }
 
 export interface Member {
@@ -191,7 +191,7 @@ export async function createTab(workspaceId: string, sectionId: string, tabName:
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ sectionId, tabName }),
+    body: JSON.stringify({ workspace_id: workspaceId, section_id: sectionId, tab_name: tabName, subsection_id: null }),
   });
   if (!res.ok) throw new Error("탭 추가 실패");
   return res.json();

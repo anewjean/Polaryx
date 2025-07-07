@@ -9,7 +9,7 @@ load_dotenv(ENV_PATH)
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = os.environ.get("ENV", "DEV")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 
     SECRET_KEY: str
     SECRET_KEY_AUTH: str

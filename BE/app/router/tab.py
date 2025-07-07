@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter, Path, Depends, Query
 from typing import List, Dict
 from app.schema.tab.request import CreateTabRequest, InviteRequest
@@ -26,8 +27,9 @@ def create_tab(workspace_id: int, tab_data: CreateTabRequest):
 
 # 참여중인 탭 리스트 조회
 @router.get("/{workspace_id}/tabs", response_model=List[TabInfo])
-def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_token_data)):
+def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_token_data)):    
     user_id = user_info.get("user_id")
+    logging.info(f"[get_tabs] Extracted user_id: {user_id}")
     return service.find_tabs(workspace_id, user_id)
 
 # 특정 탭 정보 상세 조회

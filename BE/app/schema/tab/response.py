@@ -5,11 +5,11 @@ from datetime import datetime
 from uuid import UUID
 
 class TabInfo(BaseModel):
-    tab_id: int
+    tab_id: str
     tab_name: str
-    section_id: int
+    section_id: str
     section_name: str
-    sub_section_id: Optional[int]
+    subsection_id: Optional[str]
     sub_section_name: Optional[str]
 
     @classmethod
@@ -25,11 +25,11 @@ class TabInfo(BaseModel):
 
 
 class TabDetailInfo(BaseModel):
-    tab_id: int
+    tab_id: str
     tab_name: str
-    section_id: int
+    section_id: str
     section_name: str
-    sub_section_id: Optional[int]
+    subsection_id: Optional[str]
     sub_section_name: Optional[str]
     members_count: int
 
@@ -51,7 +51,7 @@ class TabDetailInfo(BaseModel):
 class TabMember(BaseModel):
     user_id: UUID
     nickname: str
-    image: str
+    image: Optional[str]
     role: str
     groups: List[str]
 
