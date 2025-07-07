@@ -11,7 +11,7 @@ export default function WorkspacesLayout({ children }: { children: React.ReactNo
       <header className="flex h-11 items-center justify-between p-4 bg-black shadow-xl">
         <span className="font-bold text-xl text-white">SLAM</span>
         <div>
-          <ExUpload buttonName="회원등록" />
+          <ExUpload />
         </div>
       </header>
       <main className="flex flex-1 min-h-0 overflow-hidden flex-row">{children}</main>
