@@ -1,5 +1,6 @@
 import { MiniProfile } from "./MiniProfile";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ImageWithModal } from "./imageWithModal";
 
 interface ChatProfileProps {
   imgSrc: string;
@@ -45,7 +46,7 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile, file
           </div>
         )}
         <div className="text-m">{content}</div>
-        {fileUrl && <img src={fileUrl} alt="file" className="w-[100px] h-[100px]" />}
+        {fileUrl && <ImageWithModal fileUrl={fileUrl} />}
       </div>
     </div>
   );
