@@ -10,7 +10,7 @@ if env == "DEV":
 
 
 class Settings(BaseSettings):
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 
     SECRET_KEY: str
     GOOGLE_CLIENT_ID: str
@@ -24,5 +24,15 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
     NOSQL_URL: str = f""
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str
+    GITHUBS_CLIENT_ID: str
+    GITHUBS_CLIENT_SECRET: str
+    GITHUBS_REDIRECT_URI: str
+    AWS_REGION: str
+    AWS_BUCKET_NAME: str
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
 
 settings = Settings()

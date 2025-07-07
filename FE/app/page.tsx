@@ -48,7 +48,7 @@ const Stars: React.FC<{ count?: number }> = ({ count = 100 }) => {
 };
 
 export default function Page() {
-  const router = useRouter();
+  const router = useRouter(); 
 
   useEffect(() => {
     const getToken = async () => {
@@ -56,7 +56,7 @@ export default function Page() {
         const token = localStorage.getItem("access_token");
         console.log(token);
 
-        const res = await fetch(`http://localhost:8000/auth/check`, {
+        const res = await fetch(`http://localhost:8000/api/auth/check`, {
           headers: { authorization: `Bearer ${token}` },
         });
 

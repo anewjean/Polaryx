@@ -6,7 +6,7 @@ export async function logout() {
   }
 
   // api 호출
-  const res = await fetch("http://localhost:8000/auth/logout", {
+  const res = await fetch("http://localhost:8000/api/auth/logout", {
     method: "DELETE",
     credentials: "include",
     headers: {

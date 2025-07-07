@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 from uuid import UUID
 
@@ -44,6 +43,7 @@ SELECT
     m.tab_id,
     m.sender_id,
     wm.nickname,
+    wm.image,
     m.content,
     m.is_updated,
     m.created_at,
@@ -51,10 +51,61 @@ SELECT
     m.deleted_at
 FROM messages m
 JOIN workspace_members wm
-ON m.sender_id = wm.id
+ON m.sender_id = wm.user_id
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL;
 """
+
+# 페이징
+find_recent_30_latest = """
+SELECT 
+    m.id,
+    m.tab_id,
+    m.sender_id,
+    wm.nickname,
+    wm.image,
+    m.content,
+    m.is_updated,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at
+FROM messages m
+JOIN workspace_members wm
+ON m.sender_id = wm.user_id
+WHERE m.tab_id = %(tab_id)s
+AND m.deleted_at IS NULL
+ORDER BY m.id DESC
+LIMIT 30;
+"""
+
+find_recent_30_before = """
+SELECT 
+    m.id,
+    m.tab_id,
+    m.sender_id,
+    wm.nickname,
+    wm.image,
+    m.content,
+    m.is_updated,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at
+FROM messages m
+JOIN workspace_members wm
+ON m.sender_id = wm.user_id
+WHERE m.tab_id = %(tab_id)s
+AND m.id < %(message_id)s
+AND m.deleted_at IS NULL
+ORDER BY m.id DESC
+LIMIT 30;
+"""
+
+# 디버깅용
+delete_all_message = """
+DELETE FROM messages
+WHERE id > 0;
+"""
+
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
@@ -65,13 +116,26 @@ class QueryRepo(AbstractQueryRepo):
         param = {
             "id": id
         }
-        return self.db.execute(find_message, param)
+        return self.db.excute(find_message, param)
 
     def find_all(self, tab_id: int) -> List[Message]:
         param = {
             "tab_id": tab_id
         }
         return self.db.execute(find_all_messages, param)
+
+    def find_recent_30(self, tab_id: int, before_id: int | None) -> List[Message]:
+        if before_id == None:
+            param = {
+                "tab_id": tab_id, 
+            }
+            return self.db.execute(find_recent_30_latest, param)
+        else:
+            param = {
+                "tab_id": tab_id, 
+                "message_id": before_id
+            }
+            return self.db.execute(find_recent_30_before, param)
 
     def insert(self, message: Message):
         params = {
@@ -96,3 +160,7 @@ class QueryRepo(AbstractQueryRepo):
             }
             return self.db.execute(delete_message, params)
     
+
+    def delete_all(self):
+        print("delete_all_message")
+        return self.db.execute(delete_all_message)
