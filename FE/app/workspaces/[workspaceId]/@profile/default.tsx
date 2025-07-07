@@ -129,7 +129,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         <img
           src={profile?.image || "/user_default.png"}
           alt="profile_image"
-          className="w-1/2 aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+          className="w-1/2 aspect-square bg-gray-400 rounded-2xl overflow-hidden"
         />
       </div>
       {/* 사용자 이름과 역할 */}

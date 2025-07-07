@@ -29,6 +29,7 @@ def create_tab(workspace_id: int, tab_data: CreateTabRequest):
 @router.get("/{workspace_id}/tabs", response_model=List[TabInfo])
 def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_token_data)):    
     user_id = user_info.get("user_id")
+    print(user_id)
     logging.info(f"[get_tabs] Extracted user_id: {user_id}")
     return service.find_tabs(workspace_id, user_id)
 

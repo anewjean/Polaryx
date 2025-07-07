@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import React from "react";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
@@ -29,11 +30,16 @@ import { Megaphone, Landmark, Users, Mail, School, ChevronRightIcon, ChevronDown
 import { logout } from "@/apis/logout";
 import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
-import { set } from "date-fns";
+import { getProfile, Profile } from "@/apis/profileApi";
 
 type SidebarProps = { width: number };
 
 export default function AppSidebar({ width }: SidebarProps) {
+  // accessToken에 있는 userId 추출
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) throw new Error("로그인이 필요합니다.");
+  const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;
+
   // URL에서 workspaceId, tabId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
@@ -46,6 +52,9 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 참여중인 탭 리스트 상태 관리
   const [tabList, setTabList] = useState<Tab[]>([]);
+
+  // 프로필 상태 관리
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   // 탭 생성 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,28 +70,21 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 탭 생성 시 탭명 상태 관리
   const [tabName, setTabName] = useState("");
 
-  // 탭 리스트 상태 최신화
-  async function fetchTabList() {
-    try {
-      const tabList = await getTabList(workspaceId);
-      setTabList(tabList);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  // 워크스페이스 이름과 참여중인 탭 리스트 렌더링
+  // 진입 시 워크스페이스, 참여중인 탭, 프로필 정보 표시
   useEffect(() => {
     // 브라우저 환경에서만 실행
     if (typeof window !== "undefined") {
       (async () => {
         try {
           const workspaceInfo = await getWorkspaceName(workspaceId);
+          const tabList = await getTabList(workspaceId);
+          const profile = await getProfile(workspaceId, userId);
           setWorkspaceInfo(workspaceInfo);
-          fetchTabList();
+          setTabList(tabList);
+          setProfile(profile);
+          // 에러가 발생해도 UI는 표시
         } catch (error) {
           console.error("워크스페이스 정보 로딩 실패:", error);
-          // 에러가 발생해도 UI는 표시
         }
       })();
     }
@@ -227,11 +229,15 @@ export default function AppSidebar({ width }: SidebarProps) {
               <SidebarMenuButton className="h-13 p-2">
                 <div className="flex flex-row items-center w-full gap-2">
                   {/* 프로필 이미지 */}
-                  <div className="bg-gray-600 rounded-lg p-2 size-9 flex items-center justify-center" />
+                  <img
+                    src={profile?.image || "/user_default.png"}
+                    alt="profile_image"
+                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
+                  />
                   {/* 사용자 정보 */}
                   <div className="flex flex-col overflow-hidden" style={{ width }}>
-                    <span className="text-md font-bold text-gray-200 truncate">사용자</span>
-                    <span className="text-xs text-gray-400 truncate">편지 주세요</span>
+                    <span className="text-md font-bold text-gray-200 truncate">{profile?.nickname}</span>
+                    <span className="text-xs text-gray-400 truncate">{profile?.email}</span>
                   </div>
                 </div>
               </SidebarMenuButton>
