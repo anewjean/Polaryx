@@ -55,7 +55,7 @@ class TabMember(BaseModel):
     groups: Optional[List[str]]
 
     @classmethod
-    def from_row(cls, row: tuple) -> TabMember:
+    def from_row(cls, row: tuple) -> Optional[TabMember]:
         return cls(
             user_id=row[0],
             nickname=row[1],
@@ -63,6 +63,7 @@ class TabMember(BaseModel):
             role=row[3],
             groups=[row[4]] if row[4] is not None else []
         )
+
 
 class TabInvitation(BaseModel):
     members_count: int

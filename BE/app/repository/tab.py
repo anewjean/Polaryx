@@ -85,8 +85,8 @@ SELECT
     wm.user_id,
     wm.nickname,
     wm.image, 
-    r.name,
-    GROUP_CONCAT(DISTINCT g.name)   
+    r.name as role,
+    GROUP_CONCAT(DISTINCT g.name) as groups
 FROM workspace_members wm
 LEFT JOIN tab_members tm ON wm.user_id = tm.user_id
 LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
@@ -96,8 +96,7 @@ LEFT JOIN groups g ON gm.group_id = g.id
 WHERE wm.workspace_id = %(workspace_id)s
   AND tm.tab_id = %(tab_id)s
   AND wm.deleted_at IS NULL
-  AND (gm.deleted_at IS NULL OR gm.deleted_at IS NULL)
-GROUP BY wm.user_id, wm.nickname, r.name;
+GROUP BY wm.user_id, wm.nickname, wm.image, r.name;
 """
 
 find_non_members = """
@@ -105,8 +104,8 @@ SELECT
     wm.user_id,
     wm.nickname,
     wm.image, 
-    r.name,
-    GROUP_CONCAT(DISTINCT g.name)   
+    r.name as role,
+    GROUP_CONCAT(DISTINCT g.name) as groups
 FROM workspace_members wm
 LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
 LEFT JOIN roles r ON mr.role_id = r.id
@@ -119,8 +118,7 @@ WHERE wm.workspace_id = %(workspace_id)s
       WHERE tab_id = %(tab_id)s
   )
   AND wm.deleted_at IS NULL
-  AND (gm.deleted_at IS NULL OR gm.deleted_at IS NULL)
-GROUP BY wm.user_id, wm.nickname, r.name;
+GROUP BY wm.user_id, wm.nickname, wm.image, r.name;
 """
 
 insert_tab_members = """
@@ -212,6 +210,7 @@ class TabRepository(AbstractQueryRepo):
                 "tab_id": tab_id,
                 "user_id": UUID(user_id).bytes
             }
+            
             self.execute(insert_tab_members, param)
 
         return self.execute(find_nicknames, {"tab_id": tab_id})

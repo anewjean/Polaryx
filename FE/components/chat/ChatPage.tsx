@@ -96,7 +96,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
         handleScroll(event);
       }}
     >
-      <WebSocketClient />
+      <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">

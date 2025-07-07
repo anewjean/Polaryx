@@ -2,16 +2,22 @@
 
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
-import { getTabInfo, Tab } from "@/apis/tabApi";
+import { Users, UserRoundPlus } from "lucide-react";
+import { getTabInfo, getMemberList, getPossibleMemberList, Tab, Member } from "@/apis/tabApi";
 import { useEffect, useState } from "react";
 import { MemberModal } from "@/components/modal/MemberModal";
+import { Separator } from "@/components/ui/separator";
+import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 
 export function TabMembers() {
   // 파라미터에서 workspaceId와 tabId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
+
+  // 멤버 리스트 상태 관리
+  const [tabMembers, setTabMembers] = useState<Member[]>([]);
+  const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
 
   // 멤버 확인 및 초대 모달 열림 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,31 +27,32 @@ export function TabMembers() {
 
   // 멤버 확인 및 초대 모달 종료 핸들러
   const handleModalOpenChange = (open: boolean) => {
-    setIsModalOpen(false);
+    setIsModalOpen(open);
   };
 
-  // 탭 정보 조회
+  // 탭 정보 및 멤버 조회
   useEffect(() => {
     if (workspaceId && tabId) {
-      const fetchTabInfo = async () => {
-        try {
-          const info = await getTabInfo(workspaceId, tabId);
-          setTabInfo(info);
-        } catch (error) {
-          console.error("Failed to fetch tab info:", error);
-        }
-      };
-      fetchTabInfo();
+      // 탭 정보 조회
+      getTabInfo(workspaceId, tabId)
+        .then(setTabInfo)
+        .catch((error) => console.error("Failed to fetch tab info:", error));
+
+      // 탭 멤버 목록 조회
+      getMemberList(workspaceId, tabId)
+        .then(setTabMembers)
+        .catch((error) => console.error("Failed to fetch tab members:", error));
+
+      // 참여 가능 멤버 목록 조회
+      getPossibleMemberList(workspaceId, tabId)
+        .then(setPossibleMembers)
+        .catch((error) => console.error("Failed to fetch possible members:", error));
     }
   }, [workspaceId, tabId]);
 
-  if (!tabInfo) {
-    return <div>Loading...</div>; // 또는 스켈레톤 UI
-  }
-
   return (
     <MemberModal
-      title={tabInfo.tab_name}
+      title={tabInfo?.tab_name}
       defaultOpen={false}
       open={isModalOpen}
       onOpenChange={handleModalOpenChange}
@@ -56,12 +63,65 @@ export function TabMembers() {
           className="flex w-max items-center justify-center px-3 rounded-md hover:bg-gray-200"
         >
           <Users size={28} />
-          <span>{tabInfo.members_count}</span>
+          <span>{tabInfo?.members_count}</span>
         </Button>
       }
     >
-      {/* MemberModal 내용: 멤버 리스트 */}
-      <h1>Name</h1>
+      {/* MemberModal 내용: 멤버 리스트 */}      
+      <div className="flex flex-col gap-5">
+        <Separator />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <div className="flex flex-row justify-start items-center p-4 gap-3">                
+                <UserRoundPlus 
+                  size={28}
+                  className="w-[28px] aspect-square bg-gray-400 rounded-lg"
+                />
+                <span className="text-lg font-bold text-gray-800 truncate">Add Member</span>                
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+         {tabMembers.map((member) => (
+          <SidebarMenuItem key={member.user_id}>
+            <SidebarMenuButton>
+              <div className="flex flex-row justify-start items-center p-4 gap-3">
+                <img 
+                  src={member?.image || "/user_default.png"}
+                  alt="profile_image"
+                  className="w-[28px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
+                />
+                <span className="text-lg font-bold text-gray-800 truncate">{member?.nickname}</span>
+                <span className="text-sm font-normal text-gray-500 truncate">{member?.role}</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+         ))}
+        </SidebarMenu>
+
+        <h2>참여 인원</h2>
+        <ul>
+          {tabMembers.map((member) => (
+            <li key={member.user_id}>
+              {member?.image}
+              {member?.nickname}
+              {member?.role}
+              {member?.groups}
+            </li>
+          ))}
+        </ul>
+        <h2>참여 가능 인원</h2>
+        <ul>
+          {possibleMembers.map((member) => (
+            <li key={member.user_id}>
+              {member?.image}
+              {member?.nickname}
+              {member?.role}
+              {member?.groups}
+            </li>
+          ))}
+        </ul>
+      </div>
     </MemberModal>
   );
 }
