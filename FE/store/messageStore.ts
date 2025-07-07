@@ -48,6 +48,6 @@ export const useMessageStore = create<MessageStore>((set) => ({
   appendMessage: (msg) => set((state) => ({ messages: [msg, ...state.messages] })),
   // 추가. 메시지 페이징 기능.
   prependMessages: (msgs) => set((state) => ({
-      messages: [...state.messages, ...msgs],
+      messages: [...msgs, ...state.messages],
     })),
 }));
