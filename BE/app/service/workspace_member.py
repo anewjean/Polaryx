@@ -2,7 +2,11 @@ from uuid import UUID
 
 from app.domain.workspace_member import WorkspaceMember
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
-
+from app.schema.workspace_members.request import UpdateWorkspaceMemberRequest
+from app.schema.workspace_members.response import (
+    WorkspaceMemberResponse,
+    WorkspaceMemberSchema,
+)
 
 class WorkspaceMemberService:
     def __init__(self):
