@@ -24,7 +24,7 @@ export async function checkTabName(workspaceId: string, sectionId: string, tabNa
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs?name=${tabName}`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/sections/${sectionId}/tabs?name=${tabName}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,

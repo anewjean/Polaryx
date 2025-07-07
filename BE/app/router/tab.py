@@ -31,7 +31,7 @@ def get_tabs(workspace_id: int, user_info: Dict = Depends(verify_token_and_get_t
     return service.find_tabs(workspace_id, user_id)
 
 # 특정 탭 정보 상세 조회
-@router.get("/{workspace_id}/tabs/{tab_id}", response_model=TabDetailInfo)
+@router.get("/{workspace_id}/tabs/{tab_id}/info", response_model=TabDetailInfo)
 def get_tab(workspace_id: int, tab_id: int):
     return service.find_tab(workspace_id, tab_id)
 

@@ -3,8 +3,9 @@
 from fastapi import HTTPException, Request
 from jose import JWTError, jwt, ExpiredSignatureError
 import os
+from app.config.config import settings
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
 
 def is_token_expired(token: str) -> bool:

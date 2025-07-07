@@ -17,8 +17,16 @@ export default function TabPage() {
   useEffect(() => {
     if (workspaceId && tabId) {
       const fetchData = async () => {
-        setTabMembers(await getMemberList(workspaceId, tabId));
-        setPossibleMembers(await getPossibleMemberList(workspaceId, tabId));
+        try {
+          const [tabMembersData, possibleMembersData] = await Promise.all([
+            getMemberList(workspaceId, tabId),
+            getPossibleMemberList(workspaceId, tabId),
+          ]);
+          setTabMembers(tabMembersData);
+          setPossibleMembers(possibleMembersData);
+        } catch (error) {
+          console.error("Failed to fetch members:", error);
+        }
       };
       fetchData();
     }
