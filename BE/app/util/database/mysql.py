@@ -1,6 +1,37 @@
+# app/util/database/mysql.py
+
+from mysql.connector import pooling
+from app.config.config import settings 
 import mysql.connector
 from app.util.database.db_impl import DBImpl, ExecuteError
-from app.config.config import settings 
+
+pool = pooling.MySQLConnectionPool(
+    pool_name           = "mypool",
+    pool_size           = 10,
+    host                = settings.RDB_HOST,
+    port                = int(settings.RDB_PORT),
+    user                = settings.DB_USER,
+    password            = settings.DB_PASSWORD,
+    database            = settings.DB_NAME,
+    connection_timeout  = int(settings.CONNECTION_TIMEOUT),
+    autocommit          = True
+)
+
+class MySQLDatabase:
+    def execute(self, query, params):
+        cnx = pool.get_connection()
+        try:
+            cursor = cnx.cursor()
+            cursor.execute(query, params)
+            return cursor.fetchall()
+        finally:
+            cursor.close()
+            cnx.close()
+
+# #####################################################################
+# import mysql.connector
+# from app.util.database.db_impl import DBImpl, ExecuteError
+# from app.config.config import settings 
 
 class MySQL(DBImpl):
     def __init__(self):
@@ -18,44 +49,47 @@ class MySQL(DBImpl):
             user=settings.DB_USER,
             password=settings.DB_PASSWORD,
             database=settings.DB_NAME,
-            connect_timeout=settings.CONNECTION_TIMEOUT,
-            autocommit=True
+            connect_timeout=settings.CONNECTION_TIMEOUT
         )
         self.connection = connection
 
     def execute(self, query, bind_value=None):
         try:
-            self.cursor = self.connection.cursor()
+            cnx = pool.get_connection()
+            cursor = cnx.cursor()
 
             if bind_value is None:
-                self.cursor.execute(query)
+                cursor.execute(query)
             else:
-                self.cursor.execute(query, bind_value)
+                cursor.execute(query, bind_value)
             
             query_type = query.strip().split()[0].lower()
             if query_type == "select":
-                result = self.cursor.fetchall()
+                result = cursor.fetchall()
             
             elif query_type in ("insert", "update", "delete"):
-                # self.connection.commit()
+                cnx.commit()
 
                 result = {
-                    "rowcount": self.cursor.rowcount,
-                    "lastrowid": getattr(self.cursor, "lastrowid", None)  # insert일 경우
+                    "rowcount": cursor.rowcount,
+                    "lastrowid": getattr(cursor, "lastrowid", None)  # insert일 경우
                 }
 
-            self.cursor.close()
+            cursor.close()
+            cnx.close()
             return result 
         except Exception as e:
             raise ExecuteError(f"쿼리 실행에 실패했습니다 :: {e}")
 
     def execute_many(self, query, bind_value, fields=None):
         try:
-            self.cursor = self.connection.cursor()
-            self.cursor.executemany(query, bind_value)
-            self.connection.commit()
-            result = self.cursor.fetchall()
-            self.cursor.close()
+            cnx = pool.get_connection()
+            cursor = cnx.cursor()
+            cursor.executemany(query, bind_value)
+            cnx.commit()
+            result = cursor.fetchall()
+            cursor.close()
+            cnx.close()
         except Exception as e:
             raise ExecuteError(f"쿼리 실행에 실패했습니다 :: {e}")
 
@@ -66,7 +100,7 @@ class MySQL(DBImpl):
         self.bind_value.clear()
     
     def commit(self):
-        self.connection.commit()
+        cnx.commit()
     
     def rollback(self):
-        self.connection.rollback()
+        cnx.rollback()

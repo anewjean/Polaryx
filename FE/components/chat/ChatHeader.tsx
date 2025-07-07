@@ -1,4 +1,5 @@
 import { MessageCircle, StickyNote } from "lucide-react";
+import { TabMembers } from "@/components/tab/TabMembers";
 
 export function ChatHeader() {
   return (
@@ -18,6 +19,9 @@ export function ChatHeader() {
           <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
             <StickyNote className="w-[16px] mr-[4px]" />
             <p className="text-center text-s-bold">캔버스</p>
+          </div>
+          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
+            <TabMembers />
           </div>
         </div>
       </div>

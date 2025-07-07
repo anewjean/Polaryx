@@ -17,21 +17,59 @@ VALUES (
 
 update_workspace_member = """
 UPDATE workspace_members
-SET 
-WHERE;
+SET
+    nickname = COALESCE(%(nickname)s, nickname),
+    github  = COALESCE(%(github)s, github),
+    blog    = COALESCE(%(blog)s, blog),
+    image   = COALESCE(%(image)s, image),
+    phone   = COALESCE(%(phone)s, phone)
+WHERE id = %(user_id)s
+  AND deleted_at IS NULL;
 """
 
-find_member_by_user_id = """
-SELECT * FROM workspace_members 
-WHERE user_id = %(id)s;
+find_member_by_id = """
+SELECT * 
+FROM workspace_members 
+WHERE id = %(user_id)s
+AND deleted_at IS NULL;
 """
 
 find_member_by_email = """
-SELECT * FROM workspace_members WHERE email = %(email)s;
+SELECT *
+FROM workspace_members
+WHERE email = %(email)s;
 """
 
-find_members_by_group_id = """
-SELECT * FROM workspace_members WHERE group_id = %(group_id)s;
+find_member_by_user_id = """
+SELECT 
+    wm.user_id,
+    wm.workspace_id,
+    wm.nickname,
+    wm.email,
+    wm.image,
+    r.name AS role,
+    GROUP_CONCAT(DISTINCT g.name),
+    wm.github,
+    wm.blog
+FROM workspace_members wm
+LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
+LEFT JOIN roles r ON mr.role_id = r.id
+LEFT JOIN group_members gm ON wm.user_id = gm.user_id
+LEFT JOIN `groups` g ON gm.group_id = g.id
+WHERE wm.user_id = %(user_id)s
+  AND wm.deleted_at IS NULL
+  AND gm.deleted_at IS NULL
+GROUP BY wm.user_id, wm.workspace_id, wm.nickname, wm.email, wm.image, r.name, wm.github, wm.blog;
+"""
+
+update_workspace_member_by_user_id = """
+UPDATE workspace_members
+SET
+    nickname = COALESCE(%(nickname)s, nickname),
+    github  = COALESCE(%(github)s, github),
+    blog    = COALESCE(%(blog)s, blog)    
+WHERE user_id = %(user_id)s
+  AND deleted_at IS NULL;
 """
 
 find_all_workspace_members = """
@@ -71,17 +109,23 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_member_by_email, param)
     
-    def find_members_by_group_id(self, group_id: int):
+    def find_all(self, workspace_id: int) -> List[WorkspaceMember]:
         param = {
-            "group_id": group_id
+            "workspace_id": workspace_id
         }
-        return self.db.execute(find_members_by_group_id, param)
-    
-    def find_by_nickname(self, nickname: str) -> WorkspaceMember:
+        return self.db.execute(find_all_workspace_members, param)
+
+    def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
+        """Update a workspace member's profile fields."""
+        params = {**update_data}
+        params["id"] = UUID(id).bytes
+        return self.db.execute(update_workspace_member, params)
+
+    def find_by_user_id(self, user_id: UUID) -> WorkspaceMember:
         param = {
-            "nickname": nickname
+            "user_id": user_id.bytes
         }
-        return self.db.execute(find_member_by_nickname, param)
+        return self.db.execute(find_member_by_user_id, param)
 
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)

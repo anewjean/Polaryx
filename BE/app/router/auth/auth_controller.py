@@ -11,14 +11,15 @@ from app.config.config import settings
 from app.service.auth.auth_service import AuthService, TokenSerive
 from app.schema.auth.auth import AccessTokenOnly, AccessToken_and_WorkspaceID
 from app.core.security import verify_token_and_get_token_data
-from app.config.config import settings 
-
 
 router = APIRouter(prefix="/auth")
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
@@ -80,6 +81,7 @@ async def reaccess(request: Request,
 
 @router.get("/{provider}")
 def social_login(provider: Provider):
+    print(f"social_login function called with provider: {provider}")
 
     if provider.value == "google":
         params = google_params
@@ -156,8 +158,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     max_age= 5*60
                 )
 
-                # 탭 아이디 넘겨주기.
-                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5], tab_id=0)
+                result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5], tab_id=1)
                 
                 return result
             

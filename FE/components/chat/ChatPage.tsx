@@ -12,7 +12,7 @@ import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { getMessages } from "@/apis/messages";
 
 // 채팅방 내 채팅
-export function ChatPage() {
+export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
   const messages = useMessageStore((state) => state.messages);
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
@@ -61,7 +61,7 @@ export function ChatPage() {
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
-      const res = await getMessages("1", "1", oldestId); // 과거 메시지 요청
+      const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
       console.log(res["messages"]);
 

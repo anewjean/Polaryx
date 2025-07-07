@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta, UTC
-import os
 from app.util.database.db_factory import DBFactory
 from app.repository.auth.mysql_query_repo import QueryRepo
 from jose import jwt, ExpiredSignatureError
+from app.config.config import settings
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
-REFRESH_TOKEN_EXPIRE_MINUTES = 600
+ACCESS_TOKEN_EXPIRE_MINUTES = 15
+REFRESH_TOKEN_EXPIRE_MINUTES = 60
 
 db = DBFactory.get_db("MYSQL")
 query_repo = QueryRepo()

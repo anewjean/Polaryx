@@ -15,11 +15,9 @@ export function ExUpload() {
   const handleClick = () => {
     inputRef.current?.click();
   };
-
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (!/\.(xlsx|xls)$/i.test(file.name)) {
       alert("엑셀 파일만 업로드 가능합니다 (.xlsx, .xls)");
       return;
@@ -44,7 +42,6 @@ export function ExUpload() {
 
     // 형식에 맞지 않은 user를 제거
     const { users, errors } = filterUsers(jsonData);
-
     const memberList = users.map((user) => ({
       email: user.email,
       name: user.name,

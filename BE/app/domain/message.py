@@ -45,6 +45,7 @@ class Message:
 
     def modify(self, new_content: str):
         self.content = new_content
+        self.updated_at = datetime.now()
         self.is_updated = True
     
     def delete(self):
