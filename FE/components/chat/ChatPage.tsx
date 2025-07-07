@@ -12,7 +12,7 @@ import { is } from "date-fns/locale";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
 // 채팅방 내 채팅
-export function ChatPage(workspaceId: string, tabId: string) {
+export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
   const messages = useMessageStore((state) => state.messages);
 
   //////////////////// 추가 ////////////////////
@@ -39,7 +39,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
-      const res = await getMessages("1", "1", oldestId); // 과거 메시지 요청
+      const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
       console.log(res["messages"]);
 
