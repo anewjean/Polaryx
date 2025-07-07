@@ -15,7 +15,7 @@ function isImageFile(url: string) {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
 }
 
-export function ChatProfile({ imgSrc, nickname, time, content, showProfile, fileUrl  }: ChatProfileProps) {
+export function ChatProfile({ imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
   const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
 
   return (
@@ -51,7 +51,6 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile, file
             <span className="text-xs chat-time-stamp">{time}</span>
           </div>
         )}
-        <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
         {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
         {fileUrl && !isImageFile(fileUrl) && (
           <div className="mt-2">
@@ -65,6 +64,7 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile, file
             </a>
           </div>
         )}
+        <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
       </div>
     </div>
   );
