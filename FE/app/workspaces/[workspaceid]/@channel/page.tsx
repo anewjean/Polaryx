@@ -22,14 +22,26 @@ export default function ChannelDefault() {
   });
 
   return (
-    <div className="relative text-gray-800">
+    <div className="flex flex-col h-full">
+      {/* 1. 상단 헤더 */}
       <ChatHeader />
-      <ExUpload />
-      <div className="flex-1 overflow-y-auto">
-        <ChatPage />
-      </div>
-      <div className="mb-5 mx-5">
-        <TipTap />
+
+      {/* 2. 엑셀 업로드 버튼 : 추후 위치 수정 */}
+      {/* <div className="flex-none">
+        <ExUpload />
+      </div> */}
+
+      {/* 3. 채팅 리스트 + 입력창 */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {/* 3-1. 채팅 리스트 : 남은 공간 사용, 스크롤 가능하게 */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <ChatPage />
+        </div>
+
+        {/* 3-2. 입력창 */}
+        <div className="flex-none mb-5 mx-5">
+          <TipTap />
+        </div>
       </div>
     </div>
   );

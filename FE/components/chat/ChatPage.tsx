@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 // import { ChatEditButton } from "./chatEditButton";
-import { EditInput } from "./EditInput";
-import { updateMessage } from "@/apis/messages";
+// import { EditInput } from "./EditInput";
+// import { updateMessage } from "@/apis/messages";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
-import { useMessageProfileStore } from "@/store/messageProfileStore";
+// import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
-import { ChatEditButton } from "./chatEditButton/chatEditButton";
+// import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
 // 채팅방 내 채팅
 export function ChatPage() {
@@ -30,13 +30,10 @@ export function ChatPage() {
   const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex-col">
       <WebSocketClient />
 
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-y-auto text-m h-170 overflow-y-auto pr-2 p-[8px_20px] w-[100%] m-[-12px -8px -16px -16px] p-[8px 8px 8px 16px]"
-      >
+      <div ref={containerRef} className="text-m min-h-0 px-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
@@ -71,14 +68,13 @@ export function ChatPage() {
                 nickname={msg.nickname}
                 time={
                   msg.created_at
-                    ? new Date(msg.created_at)
-                        .toLocaleTimeString("ko-KR", {
-                          hour: "numeric",
-                          minute: "2-digit",
-                          hour12: true,
-                        })
-                        .split(" ")[1]
-                    : "now"
+                    ? new Date(msg.created_at).toLocaleTimeString("ko-KR", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })
+                    : // .split(" ")[1]
+                      "now"
                 }
                 content={msg.content}
                 showProfile={showProfile}

@@ -12,6 +12,7 @@ interface ChatProfileProps {
 export function ChatProfile({ imgSrc, nickname, time, content, showProfile }: ChatProfileProps) {
   return (
     <div className="flex px-[8px] py-[4.5px] hover:bg-[#F4F4F4] group">
+      {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
       {showProfile ? (
         <div className="relative">
           <HoverCard>
