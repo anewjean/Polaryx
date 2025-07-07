@@ -1,4 +1,4 @@
-export function filterUsers(data: any[]): { users: any[]; errors: string[]; total: number } {
+export function filterUsers(data: any[]): { users: any[]; errors: string[] } {
   const errors: string[] = [];
   const users: any[] = [];
   const allowedRoles = ["staff", "coach junior", "admin", "student", "alamni", "coach senior"];
@@ -20,11 +20,9 @@ export function filterUsers(data: any[]): { users: any[]; errors: string[]; tota
       if (!allValid) continue;
     }
     users.push(row);
-    console.log("users", users);
   }
   return {
     users,
     errors,
-    total: data.length - users.length,
   };
 }

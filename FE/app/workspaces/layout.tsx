@@ -2,6 +2,7 @@
 
 import "../globals.css";
 import { Button } from "@/components/ui/button";
+import { ExUpload } from "@/components/excel_import/exImportButton";
 
 export default function WorkspacesLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,9 +11,7 @@ export default function WorkspacesLayout({ children }: { children: React.ReactNo
       <header className="flex h-11 items-center justify-between p-4 bg-black shadow-xl">
         <span className="font-bold text-xl text-white">SLAM</span>
         <div>
-          <Button variant="link" size="sm" className="text-white">
-            회원등록
-          </Button>
+          <ExUpload buttonName="회원등록" />
         </div>
       </header>
       <main className="flex flex-1 min-h-0 overflow-hidden flex-row">{children}</main>
