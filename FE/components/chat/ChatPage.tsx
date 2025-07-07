@@ -18,8 +18,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isFetching = useMessageStore((s) => s.isFetching);
-  const setIsFetching = useMessageStore((s) => s.setIsFetching);
+  const isFetching = useRef(false);
 
   // useEffect(() => {
   //   const el = containerRef.current;
@@ -31,7 +30,9 @@ export function ChatPage(workspaceId: string, tabId: string) {
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget; 
     console.log("in handle scroll")
-    if (el.scrollTop < 30) {
+    if (el.scrollTop < 30 && !isFetching.current) {
+      isFetching.current = true;
+
       const oldestId = messages[0]?.id;
       const previousHeight = el.scrollHeight/2;
 
@@ -47,7 +48,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
         console.log("messages + res");
         console.log(messages);
 
-        setIsFetching(false); // 요청 완료 후 플래그 초기화
+        isFetching.current = false; // 요청 완료 후 플래그 초기화
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
         });
@@ -73,7 +74,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
-        {[...messages].reverse().map((msg, idx) => {
+        {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;
