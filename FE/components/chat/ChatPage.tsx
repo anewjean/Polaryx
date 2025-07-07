@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-import { WebSocketClient } from "../ws/webSocketClient";
-import { ShowDate } from "./ShowDate";
-import { ChatProfile } from "./ChatProfile";
 // import { useMessageProfileStore } from "@/store/messageProfileStore";
 // import { ChatEditButton } from "./chatEditButton";
-// import { EditInput } from "./EditInput";
-// import { updateMessage } from "@/apis/messages";
+import { EditInput } from "./EditInput";
+import { updateMessage } from "@/apis/messages";
+import { WebSocketClient } from "../ws/webSocketClient";
+import { ShowDate } from "./ShowDate";
+import { useMessageProfileStore } from "@/store/messageProfileStore";
+import { ChatProfile } from "./ChatProfile";
+import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { getMessages } from "@/apis/messages";
-import { is } from "date-fns/locale";
-// import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
 // 채팅방 내 채팅
-export function ChatPage(workspaceId: string, tabId: string) {
+export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
@@ -126,6 +126,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
               {/* 각각의 채팅 */}
               <ChatProfile
+                key={msg.id}
                 imgSrc={msg.image != "none_image" ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
                 time={
@@ -139,6 +140,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
                       "now"
                 }
                 content={msg.content}
+                fileUrl={msg.file_url}
                 showProfile={showProfile}
               />
             </React.Fragment>

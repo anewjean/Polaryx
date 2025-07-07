@@ -10,7 +10,7 @@ interface JWTPayload {
 
 export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
-  const { message, sendFlag, setSendFlag } = useMessageStore();
+  const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
 
   useEffect(() => {
     {
@@ -33,7 +33,7 @@ export const WebSocketClient = () => {
       try {
         const msg = JSON.parse(event.data);
         console.log("get append message");
-        console.log(msg);
+        console.log(msg.file_url);
         useMessageStore.getState().appendMessage(msg);
       } catch {
         console.warn("Invalid message format: ", event.data);
@@ -70,14 +70,18 @@ export const WebSocketClient = () => {
       }
 
       const { user_id } = jwtDecode<JWTPayload>(token);
-      console.log("user_id");
-      console.log(user_id);
+      console.log("user_id", user_id);
 
       const payload = {
         sender_id: user_id,
+        // sender_id: "10CE9BCC5B0211F0A3ABE1F31FC066BF",
         content: message,
+        file_url: fileUrl,
       };
-
+      console.log("sender_id", payload.sender_id);
+      console.log("content", payload.content);
+      console.log("file_url", payload.file_url); //note: 나중에 지울 것
+      useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }

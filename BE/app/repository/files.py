@@ -6,12 +6,20 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.workspace_member import WorkspaceMember
 
-insert_workspace_member = """
-INSERT INTO workspace_members (
-    id, user_id, workspace_id, nickname, email, image, role_id
+
+    # id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    # message_id BIGINT NOT NULL,
+    # url VARCHAR(255) NOT NULL,
+    # created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    # updated_at TIMESTAMP NULL DEFAULT NULL,
+    # deleted_at TIMESTAMP NULL DEFAULT NULL
+
+insert_file = """
+INSERT INTO files (
+    message_id, url
 )
 VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(user_name)s, %(user_email)s, default, %(role_id)s
+    %(message_id)s, %(file_url)s
 );
 """
 
@@ -56,8 +64,8 @@ class QueryRepo(AbstractQueryRepo):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
 
-    def insert_workspace_member(self, data: dict):
-        return self.db.execute(insert_workspace_member, data)
+    def save_file_to_db(self, data: dict):
+        return self.db.execute(insert_file, data)
 
     def find_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
         param = {

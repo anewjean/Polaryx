@@ -7,6 +7,7 @@ interface Message {
   image: string;
   content: string;
   created_at: string | undefined;
+  file_url: string | null;
 }
 
 interface MessageStore {
@@ -25,11 +26,11 @@ interface MessageStore {
   messages: Message[];
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
-  // 추가. 메세지 페이징 기능.
   prependMessages: (msg: Message[]) => void;
-
-  isFetching: boolean;
-  setIsFetching: (flag: boolean) => void;
+  
+  // file url 저장
+  fileUrl: string | null;
+  setFileUrl: (url: string | null) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -50,11 +51,11 @@ export const useMessageStore = create<MessageStore>((set) => ({
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
-  // 추가. 메시지 페이징 기능.
   prependMessages: (msgs) => set((state) => ({
-      messages: [...msgs, ...state.messages],
-    })),
+    messages: [...msgs, ...state.messages],
+  })),
 
-  isFetching: false,
-  setIsFetching: (flag) => set({ isFetching: flag }),
+  // file url 저장
+  fileUrl: null,
+  setFileUrl: (url) => set({ fileUrl: url }),
 }));
