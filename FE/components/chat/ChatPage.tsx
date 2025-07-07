@@ -83,7 +83,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                imgSrc={msg.image ? msg.image : "/profileDefault.png"}
+                imgSrc={msg.image != 'none_image' ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
                 time={
                   msg.created_at
