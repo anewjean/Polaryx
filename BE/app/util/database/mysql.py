@@ -1,43 +1,12 @@
-# app/util/database/mysql.py
-
 from mysql.connector import pooling
 from app.config.config import settings 
 import mysql.connector
 from app.util.database.db_impl import DBImpl, ExecuteError
 
-pool = pooling.MySQLConnectionPool(
-    pool_name           = "mypool",
-    pool_size           = 10,
-    host                = settings.RDB_HOST,
-    port                = int(settings.RDB_PORT),
-    user                = settings.DB_USER,
-    password            = settings.DB_PASSWORD,
-    database            = settings.DB_NAME,
-    connection_timeout  = int(settings.CONNECTION_TIMEOUT),
-    autocommit          = True
-)
-
-class MySQLDatabase:
-    def execute(self, query, params):
-        cnx = pool.get_connection()
-        try:
-            cursor = cnx.cursor()
-            cursor.execute(query, params)
-            return cursor.fetchall()
-        finally:
-            cursor.close()
-            cnx.close()
-
-# #####################################################################
-# import mysql.connector
-# from app.util.database.db_impl import DBImpl, ExecuteError
-# from app.config.config import settings 
 
 class MySQL(DBImpl):
     def __init__(self):
         super().__init__()
-        self.cursor = None
-        self.bind_value = {}
     
     def __del__(self):
         pass
@@ -54,10 +23,9 @@ class MySQL(DBImpl):
         self.connection = connection
 
     def execute(self, query, bind_value=None):
+        cnx = self.pool.get_connection()
+        cursor = cnx.cursor()
         try:
-            cnx = pool.get_connection()
-            cursor = cnx.cursor()
-
             if bind_value is None:
                 cursor.execute(query)
             else:
@@ -83,7 +51,7 @@ class MySQL(DBImpl):
 
     def execute_many(self, query, bind_value, fields=None):
         try:
-            cnx = pool.get_connection()
+            cnx = self.pool.get_connection()
             cursor = cnx.cursor()
             cursor.executemany(query, bind_value)
             cnx.commit()
