@@ -25,9 +25,27 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
   });
 };
 
-export const getMessages = async (workspaceId: string, tabId: string) => {
-  return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`, {
+// export const getMessages = async (workspaceId: string, tabId: string) => {
+//   return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`, {
+//     method: "GET",
+//   });
+// };
+
+export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
+  
+  const url = new URL(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
+
+  // beforeId가 있을 경우 쿼리로 추가
+  if (beforeId !== undefined) {
+    url.searchParams.append("before_id", beforeId.toString());
+  }
+
+  return request(url.toString(), {
     method: "GET",
+    credentials: "include", // 필요 시 쿠키 전송
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 };
 

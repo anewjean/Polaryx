@@ -24,6 +24,8 @@ interface MessageStore {
   messages: Message[];
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
+  // 추가. 메세지 페이징 기능.
+  prependMessages: (msg: Message[]) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -44,4 +46,8 @@ export const useMessageStore = create<MessageStore>((set) => ({
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  // 추가. 메시지 페이징 기능.
+  prependMessages: (msgs) => set((state) => ({
+      messages: [...msgs, ...state.messages],
+    })),
 }));

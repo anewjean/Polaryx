@@ -2,7 +2,7 @@ import ast
 import json
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from datetime import datetime
 import uuid
 
@@ -19,14 +19,17 @@ message_service = MessageService()
 workspace_member_service = WorkspaceMemberService()
 
 @router.get("/workspaces/{workspace_id}/tabs/{tab_id}/messages", response_model=MessagesResponse)
-async def find_all_messages(workspace_id: int, tab_id: int) -> MessagesResponse:
+async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Query(None)) -> MessagesResponse:
     
     # 디버깅용. 한번 싹 지우고 다시 하고 싶을때 쓰면 됨.
     # MessageService.delete_all_message(message_service)
     print("************ in find all messages **************")
     print(tab_id)
+    # 페이징 위해 교체 로직
+    rows = await message_service.find_recent_messages(tab_id, before_id)
 
-    rows = await message_service.find_all_messages(tab_id)
+    # 원래 로직
+    # rows = await message_service.find_all_messages(tab_id)
     print(rows)
     messages = [MessageSchema.from_row(row) for row in rows]
     print("*********** messages ************")

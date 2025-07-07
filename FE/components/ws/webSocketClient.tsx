@@ -30,6 +30,8 @@ export const WebSocketClient = () => {
     socket.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
+        console.log("get append message");
+        console.log(msg);
         useMessageStore.getState().appendMessage(msg);
       } catch {
         console.warn("Invalid message format: ", event.data);

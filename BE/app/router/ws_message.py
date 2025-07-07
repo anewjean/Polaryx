@@ -43,6 +43,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             print(image)
 
             payload = {
+                # "message_id": , # message id 보내주기.
                 "content": content,
                 "nickname": nickname,
                 "image": image,
