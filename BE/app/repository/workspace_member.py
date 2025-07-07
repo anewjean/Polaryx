@@ -8,10 +8,10 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-    id, user_id, workspace_id, nickname, email, image, role_id
+    id, user_id, workspace_id, nickname, email, image
 )
 VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(user_name)s, %(user_email)s, default, %(role_id)s
+    %(id)s, %(user_id)s, %(workspace_id)s, %(user_name)s, %(user_email)s, default
 );
 """
 
@@ -89,6 +89,17 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'workspace_members';
 """
 
+def to_bytes_user_id(user_id):
+    if isinstance(user_id, UUID):
+        return user_id.bytes
+    elif isinstance(user_id, bytes):
+        return user_id
+    elif isinstance(user_id, str):
+        # UUID 문자열이면 변환
+        return UUID(user_id).bytes
+    else:
+        raise ValueError("user_id 타입이 올바르지 않습니다.")
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -122,8 +133,10 @@ class QueryRepo(AbstractQueryRepo):
         return self.db.execute(update_workspace_member, params)
 
     def find_by_user_id(self, user_id: UUID) -> WorkspaceMember:
+        print("user_id", user_id)
         param = {
-            "user_id": user_id.bytes
+            # "user_id": user_id.bytes
+            "user_id": to_bytes_user_id(user_id)
         }
         return self.db.execute(find_member_by_user_id, param)
 
