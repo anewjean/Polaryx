@@ -4,7 +4,6 @@ import { useMessageStore } from "@/store/messageStore";
 
 export function useFetchMessages(workspaceId: string, tabId: string) {
   const setMessages = useMessageStore((state) => state.setMessages);
-  // const messages = useMessageStore((state) => state.messages);
   
   useEffect(() => {
     async function fetch() {
@@ -22,7 +21,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
       setMessages(messages);
     }
     fetch();
-  }, [ workspaceId, tabId, setMessages]);
+  }, [workspaceId, tabId, setMessages]);
 }
 
 export function useDeleteMessage() {

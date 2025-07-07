@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
@@ -14,11 +14,11 @@ import { is } from "date-fns/locale";
 // 채팅방 내 채팅
 export function ChatPage(workspaceId: string, tabId: string) {
   const messages = useMessageStore((state) => state.messages);
-
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
+  const prevMessageLengthRef = useRef(0);
 
   // useEffect(() => {
   //   const el = containerRef.current;
@@ -27,14 +27,37 @@ export function ChatPage(workspaceId: string, tabId: string) {
   //   }
   // }, [messages]);
 
+  // 새로운 메세지가 추가되었을 때, 
+  useEffect(() => {
+    console.log("메세지 추가됐음.")
+    const el = containerRef.current;
+    if (!el) return;
+
+    // 새로운 메시지가 추가되었는지 확인
+    if (messages.length > prevMessageLengthRef.current) {
+      // 가장 최근 메시지가 추가된 상황으로 판단
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    }
+
+    // 길이 업데이트
+    prevMessageLengthRef.current = messages.length;
+  }, [messages]);
+  
+
+    
+  // 스크롤을 올려서 과거 메세지들을 불러와
+  // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget; 
     console.log("in handle scroll")
     if (el.scrollTop < 30 && !isFetching.current) {
+    // if (!isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.id;
-      const previousHeight = el.scrollHeight/2;
+      const previousHeight = el.scrollHeight;
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
@@ -48,10 +71,13 @@ export function ChatPage(workspaceId: string, tabId: string) {
         console.log("messages + res");
         console.log(messages);
 
-        isFetching.current = false; // 요청 완료 후 플래그 초기화
+        isFetching.current = false;
+        // isFetching.current = false; // 요청 완료 후 플래그 초기화
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
-        });
+          // el.scrollTop = el.scrollHeight;
+        }
+      );
       }
     }
   };
@@ -74,7 +100,8 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
-        {messages.map((msg, idx) => {
+        {
+        messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;
