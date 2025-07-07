@@ -1,7 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import Optional, List
-from datetime import datetime
 from uuid import UUID
 
 class TabInfo(BaseModel):
@@ -75,4 +74,20 @@ class TabInvitation(BaseModel):
         return cls(
             members_count=members_count,
             nicknames=[row[0] for row in rows]
+        )
+    
+
+class CreateTabResponse(BaseModel):
+    tab_id: int
+    tab_name: str
+    section_id: int
+    subsection_id: Optional[int] = None
+
+    @classmethod
+    def from_row(cls, row: tuple) -> CreateTabResponse:
+        return cls(
+            tab_id=row[0],
+            tab_name=row[1],
+            section_id=row[2],
+            subsection_id=row[3]
         )

@@ -11,11 +11,12 @@ class TabService:
     def is_tab_name_duplicate(self, workspace_id: int, section_id:int, name: str):
         return self.repo.is_duplicate(workspace_id, section_id, name)
 
-    def create_tab(self, tab_data: CreateTabRequest):
-        is_valid = self.repo.validate_section_in_workspace(tab_data.section_id, tab_data.workspace_id)
+    def create_tab(self, workspace_id: int, tab_name: str, section_id: int, subsection_id: int):
+        is_valid = self.repo.validate_section_in_workspace(section_id, workspace_id)
         if not is_valid:
             raise HTTPException(status_code=400, detail="섹션이 이 워크스페이스에 속하지 않습니다.")
-        self.repo.insert(tab_data.model_dump())
+        self.repo.insert(workspace_id, tab_name, section_id, subsection_id)
+        return self.repo.find_by_uq(workspace_id, tab_name, section_id, subsection_id)
 
     def find_tabs(self, workspace_id: int, user_id) -> List[TabInfo]:
         rows = self.repo.find_all(workspace_id, user_id)
