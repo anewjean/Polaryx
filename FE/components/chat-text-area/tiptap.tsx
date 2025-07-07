@@ -38,8 +38,6 @@ const TipTap = () => {
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
-  const isFetching = useMessageStore((s) => s.isFetching);
-  const setIsFetching = useMessageStore((s) => s.setIsFetching);
 
   const editor = useEditor({
     editable: true,
@@ -269,9 +267,7 @@ const TipTap = () => {
               if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
 
               event.preventDefault(); // 줄바꿈 방지
-              setIsFetching(true);
               handleSend();
-              setIsFetching(false); // 메시지 전송 후 플래그 초기화
             }
           }}
         />

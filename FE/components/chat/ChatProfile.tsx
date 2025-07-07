@@ -51,8 +51,7 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile, file
             <span className="text-xs chat-time-stamp">{time}</span>
           </div>
         )}
-        <p className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</p>
-        <div className="text-m">{content}</div>
+        <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
         {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
         {fileUrl && !isImageFile(fileUrl) && (
           <div className="mt-2">

@@ -140,9 +140,9 @@ export function ChatPage() {
                       "now"
                 }
                 content={msg.content}
-                fileUrl={msg.file_url}
                 showProfile={showProfile}
-              />
+                fileUrl={msg.file_url}
+                />
             </React.Fragment>
           );
         })}
