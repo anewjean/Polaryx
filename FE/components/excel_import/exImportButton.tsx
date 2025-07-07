@@ -25,6 +25,8 @@ export function ExUpload({ buttonName }: { buttonName: string }) {
       return;
     }
 
+    getWorkspaceColumns();
+
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
@@ -43,7 +45,13 @@ export function ExUpload({ buttonName }: { buttonName: string }) {
     }
 
     // 형식에 맞지 않은 user를 제거
-    const { users, errors } = filterUsers(jsonData);
+    const { users, errors, total } = filterUsers(jsonData);
+
+    // const memberList = users.map((user) => ({
+    //   name: user.name,
+    //   email: user.email,
+    //   workspace_id: workspaceId,
+    // }));
 
     const memberList = users.map((user) => ({
       email: user.email,

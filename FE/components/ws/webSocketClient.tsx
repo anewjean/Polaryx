@@ -12,12 +12,17 @@ export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag } = useMessageStore();
 
-  useEffect(()=>{
-    {console.log("websocket_client")}
-  })
+  useEffect(() => {
+    {
+      console.log("websocket_client");
+    }
+  });
 
   useEffect(() => {
+    // 디버깅용
+    console.log("new web sokcet");
     const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
+
     socketRef.current = socket;
 
     socket.onopen = () => {
@@ -25,10 +30,20 @@ export const WebSocketClient = () => {
     };
 
     socket.onmessage = (event) => {
-      const [nickname, ...contentArr] = event.data.split(":");
-      const content = contentArr.join(":");
-      useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
+      try {
+        const msg = JSON.parse(event.data);
+        console.log("get append message");
+        console.log(msg);
+        useMessageStore.getState().appendMessage(msg);
+      } catch {
+        console.warn("Invalid message format: ", event.data);
+      }
     };
+
+    //   const [nickname, ...contentArr] = event.data.split(":");
+    //   const content = contentArr.join(":");
+    //   useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
+    // };
 
     socket.onerror = (error) => {
       console.error("❗ WebSocket 에러 발생", error);
@@ -54,15 +69,16 @@ export const WebSocketClient = () => {
         return;
       }
 
-      const myPayload = jwtDecode<JWTPayload>(token);
-      const userId = myPayload.user_id;
+      const { user_id } = jwtDecode<JWTPayload>(token);
+      console.log("user_id");
+      console.log(user_id);
 
-      const data = {
-        sender_id: userId,
+      const payload = {
+        sender_id: user_id,
         content: message,
       };
-      console.log(data.sender_id, data.content); //note: 나중에 지울 것
-      socketRef.current.send(JSON.stringify(data));
+
+      socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, setSendFlag, message]);

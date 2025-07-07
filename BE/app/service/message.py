@@ -13,6 +13,9 @@ class MessageService:
         message = Message.of(tab_id, sender_id, content)
         self.message_repo.insert(message)
 
+    async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
+        return self.message_repo.find_recent_30(tab_id, before_id)
+
     async def find_all_messages(self, tab_id: int) -> List[Message]:
         return self.message_repo.find_all(tab_id)
 
@@ -28,3 +31,6 @@ class MessageService:
         message.delete()
         self.message_repo.update(message)
         
+    # 디버깅용 다지우기 함수
+    async def delete_all_message(self):
+        self.message_repo.delete_all()

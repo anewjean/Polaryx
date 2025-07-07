@@ -10,8 +10,7 @@ if env == "DEV":
 
 
 class Settings(BaseSettings):
-    ENVIRONMENT: str = os.environ.get("ENV", "DEV")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 
     SECRET_KEY: str
     GOOGLE_CLIENT_ID: str

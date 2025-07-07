@@ -10,33 +10,24 @@ from app.schema.workspace_members.response import (
 
 class WorkspaceMemberService:
     def __init__(self):
-        self.workspace_member_repo = WorkspaceMemberRepo() # Repository 인스턴스 생성, DB 연결
-
-    def get_member_by_user_id(self, user_id: UUID):
-        rows = self.workspace_member_repo.find_by_user_id(user_id)
-        return rows[0] if rows else None
+        self.workspace_member_repo = WorkspaceMemberRepo()
     
-    def get_member_by_email(self, email: str):
-        rows = self.workspace_member_repo.find_by_email(email)
-        return rows[0] if rows else None
+    def insert_workspace_member(self, data: dict):
+        workspace_member = self.workspace_member_repo.insert_workspace_member(data)
+        return workspace_member
 
-    def get_all_members(self, workspace_id: int):
-        return self.workspace_member_repo.find_all(workspace_id)
+    def get_member_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
+        workspace_member = self.workspace_member_repo.find_by_user_id(id)
+        return workspace_member
     
-
-    def update_profile_by_user_id(self, user_id: UUID, update_data: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
-        params = update_data.model_dump(exclude_unset=True)
-        self.workspace_member_repo.update_by_user_id(user_id, params)
-        rows = self.workspace_member_repo.find_by_user_id(user_id)
-        if not rows:
-            raise ValueError("Updated member not found")
-        workspace_member = WorkspaceMemberSchema.from_row(rows[0])
-        return WorkspaceMemberResponse(workspace_member=workspace_member)
+    def get_member_by_email(self, email: str) -> WorkspaceMember:
+        workspace_member = self.workspace_member_repo.find_by_email(email)
+        return workspace_member
     
-    def _to_response(self, member: WorkspaceMember) -> WorkspaceMemberResponse:
-        from dataclasses import asdict
+    def get_member_by_nickname(self, nickname: str) -> WorkspaceMember:
+        workspace_member = self.workspace_member_repo.find_by_nickname(nickname)
+        return workspace_member
 
-        data = asdict(member)
-        data["id"] = member.id.hex
-        data["user_id"] = member.user_id.hex
-        return WorkspaceMemberResponse(**data)
+    def get_member_by_workspace_columns(self) -> list[str]:
+        workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
+        return workspace_columns

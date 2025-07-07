@@ -25,6 +25,7 @@ import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
+// import { Send } from "lucide-react";
 
 // 실험용
 import { jwtDecode } from "jwt-decode";
@@ -33,10 +34,16 @@ const TipTap = () => {
   const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // 한글 조합 추적 플래그.
+  const isComposingRef = useRef(false);
+  // 중복 전송 방지 플래그.
+  const isFetching = useMessageStore((s) => s.isFetching);
+  const setIsFetching = useMessageStore((s) => s.setIsFetching);
+
   const editor = useEditor({
     editable: true,
     extensions: [
-      StarterKit,
+      StarterKit, // 핵심 확장 모음
       Placeholder.configure({
         // placeholder가 뭐임?
         placeholder: "나만무 team3",
@@ -198,7 +205,7 @@ const TipTap = () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
 
     ////////////////////////////////////////////////
-    const token = localStorage.getItem("access_token")
+    const token = localStorage.getItem("access_token");
     console.log(jwtDecode<{ user_id: string }>(token!).user_id);
     ////////////////////////////////////////////////
 
@@ -215,6 +222,7 @@ const TipTap = () => {
     // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
+
     editor?.commands.clearContent();
   };
 
@@ -234,16 +242,32 @@ const TipTap = () => {
       <div className="toolbar-container">
         <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
       </div>
-      <div className="editor-container">
+      <div className="editor-container flex">
         <EditorContent
           editor={editor}
+          className="w-full"
+          // 한글 조합 추적.
+          onCompositionStart={() => {
+            isComposingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            isComposingRef.current = false;
+          }}
+          /////////////// 추가 ///////////////
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
+              if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
+
               event.preventDefault(); // 줄바꿈 방지
+              setIsFetching(true);
               handleSend();
+              setIsFetching(false); // 메시지 전송 후 플래그 초기화
             }
           }}
         />
+        {/* <div className="flex flex-1 justify-end items-end">
+          <Send size={20} />
+        </div> */}
       </div>
     </div>
   );

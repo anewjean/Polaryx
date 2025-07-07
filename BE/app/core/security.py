@@ -2,7 +2,6 @@
 # (모든 라우터에 depends)
 from fastapi import HTTPException, Request
 from jose import JWTError, jwt, ExpiredSignatureError
-import os
 from app.config.config import settings
 
 SECRET_KEY = settings.SECRET_KEY

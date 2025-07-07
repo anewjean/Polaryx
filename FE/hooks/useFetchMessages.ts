@@ -4,11 +4,13 @@ import { useMessageStore } from "@/store/messageStore";
 
 export function useFetchMessages(workspaceId: string, tabId: string) {
   const setMessages = useMessageStore((state) => state.setMessages);
-
+  // const messages = useMessageStore((state) => state.messages);
+  
   useEffect(() => {
     async function fetch() {
       const res = await getMessages(workspaceId, tabId);
       //   setMessages(res.messages); // 서버 응답 구조에 따라
+      console.log("here")
       const messages = res.messages.map((msg: any) => ({
         id: msg.id,
         nickname: msg.nickname,
@@ -20,7 +22,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
       setMessages(messages);
     }
     fetch();
-  }, [workspaceId, tabId, setMessages]);
+  }, [ workspaceId, tabId, setMessages]);
 }
 
 export function useDeleteMessage() {

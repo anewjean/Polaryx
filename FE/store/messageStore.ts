@@ -24,6 +24,11 @@ interface MessageStore {
   messages: Message[];
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
+  // 추가. 메세지 페이징 기능.
+  prependMessages: (msg: Message[]) => void;
+
+  isFetching: boolean;
+  setIsFetching: (flag: boolean) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -43,5 +48,13 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // List에 메시지 추가
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
-  appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  appendMessage: (msg) => set((state) => ({ messages: [msg, ...state.messages] })),
+  // 추가. 메시지 페이징 기능.
+  prependMessages: (msgs) =>
+    set((state) => ({
+      messages: [...msgs, ...state.messages],
+    })),
+
+  isFetching: false,
+  setIsFetching: (flag) => set({ isFetching: flag }),
 }));

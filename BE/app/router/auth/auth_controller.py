@@ -119,13 +119,11 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             user = userinfo_res.json()
 
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
             uuid_obj2 = uuid.uuid4()
             # 16바이트 바이너리로 변환
-            user_uuid = uuid_obj1.bytes
             refresh_token_uuid = uuid_obj2.bytes
 
-            data = {"user_email": user["email"], "user_provider_id": user["id"], "user_id": user_uuid}
+            data = {"user_email": user["email"], "user_provider_id": user["id"]}
 
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
             user_INdb = AuthService.find_db(data)
@@ -145,16 +143,10 @@ async def auth_callback(provider: Provider, code: str, response:Response):
 
                 jwt_refresh_token = TokenSerive.create_refresh_token(user_data)
                 res_data={"id": refresh_token_uuid,
-                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
-                jwt_access_token = TokenSerive.create_access_token(user_data)
-
-                jwt_refresh_token = TokenSerive.create_refresh_token(user_data)
-                res_data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
-                TokenSerive.save_refresh_token_to_db(res_data)
                 TokenSerive.save_refresh_token_to_db(res_data)
 
                 response.set_cookie(
@@ -168,42 +160,8 @@ async def auth_callback(provider: Provider, code: str, response:Response):
 
                 result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5], tab_id=1)
                 
-                return result    # github 구현 부분. 미완.
-
-    # elif provider.value == "github":
-    #     async with httpx.AsyncClient() as client:
-    #         # Step 1: access_token 요청
-    #         token_res = await client.post(
-    #             GITHUBS_TOKEN_URL,
-    #             headers={"Accept": "application/json"},
-    #             data={
-    #                 "code": code,
-    #                 "client_id": GITHUBS_CLIENT_ID,
-    #                 "client_secret": GITHUBS_CLIENT_SECRET,
-    #                 "redirect_uri": GITHUBS_REDIRECT_URI,
-    #             },
-    #         )
-    #         token_json = token_res.json()
-    #         access_token = token_json.get("access_token")
-
-    #         if not access_token:
-    #             return {"error": "Access token not received"}
-
-    #         # Step 2: 유저 정보 요청
-    #         user_res = await client.get(
-    #             GITHUBS_USERINFO_URL,
-    #             headers={"Authorization": f"Bearer {access_token}"}
-    #         )
-
-    #         user = user_res.json()
-
-    #         ########################################
-    #         # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
-    #         ########################################
-
-    #         return {"user": user}
-        
-
+                return result
+            
 
 # 로그아웃도 하기
 @router.delete("/logout")
