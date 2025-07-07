@@ -23,7 +23,7 @@ class Message:
     update_type: MessageUpdateType = MessageUpdateType.MODIFY
 
     @staticmethod
-    def of(tab_id: int, sender_id: UUID, content: str) -> Message:
+    def of(tab_id: int, sender_id: uuid.UUID, content: str) -> Message:
         return Message(
             tab_id=tab_id,
             sender_id=sender_id,
@@ -45,6 +45,7 @@ class Message:
 
     def modify(self, new_content: str):
         self.content = new_content
+        self.updated_at = datetime.now()
         self.is_updated = True
     
     def delete(self):
