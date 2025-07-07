@@ -27,8 +27,7 @@ export default function ChannelDefault() {
 
       {/* 3. 채팅 리스트 + 입력창 */}
       <div className="flex-1 flex flex-col min-h-0">
-        {/* 3-1. 채팅 리스트 : 남은 공간 사용, 스크롤 가능하게 */}
-
+        {/* 3-1. 채팅 리스트 */}
         <ChatPage />
 
         {/* 3-2. 입력창 */}

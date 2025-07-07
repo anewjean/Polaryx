@@ -1,0 +1,370 @@
+[33mf8f9c022[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmessage[m[33m, [m[1;31morigin/message[m[33m)[m 🐛Fix(*): 새로운 채팅 맨 아래에 고정
+[33ma84babd7[m 🐛Fix(*): css 오류 수정
+[33m77dd6b39[m 🐛 Fix(tiptap.tsx): 한글 입력시, 마지막 글자만 두번 전송되는 버그 해결.
+[33m1e63f2c7[m 🐛 Fix(mysql.py): autocommit=True 적용. 새로 고침시 모든 채팅 다 가져올 수 있도록 수정.
+[33mb92dfd4e[m 🐛 Fix(*): 잡버그 수정. 임포트 시 "none_image" 디폴트 값 삽입.
+[33m8c0f5565[m 🐛Fix(*): excel_import 기능 합치면서 발생하는 문제들 해결.
+[33m3d02df14[m Merge branch 'excel_import' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33mf885a515[m 🐛Fix(auth_controller.py, auth_service.py, repository/auth): 로그인 로직 변경.
+[33m1a101e04[m 🔀 Merge: 머지 막차타기
+[33m6c5ba8e6[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33m758a0ea5[m 🐛 Fix(*):BE. 지우기
+[33m9c08b2bf[m Merge branch 'message' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33m617bdb4c[m 🐛Fix(workspaceid.py, workspace_member.py): import 성공
+[33m1fba020f[m 🐛Fix(*): 날짜 수정중
+[33m8a97f78a[m 🐛 Fix(*): api 명세서 수정으로 인한 api 주소 수정.
+[33m94f49bf9[m Merge branch 'excel_import' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into excel-import
+[33m4925e8c1[m ✨Feat(*): import->createUser, createWM 구현.
+[33m2f608fdb[m ✨Feat(*): workspace members field 요청 api 추가
+[33ma9c9afb4[m Merge branch 'excel_import' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into excel-import
+[33md9a00f38[m ✨Feat(users.py): service, router 구현중.
+[33ma441700f[m ♻️Refactor (apis/excelApi, chat/ChatPage, excel_import/exImportButton): server에 넘겨주는 data 수정
+[33m16273d09[m ♻️Refactor(channel/page.tsx): channel page에서 excel button 띄우는 작업 수행
+[33m6bf32c94[m 🐛Fix(*): 연속된 채팅 한 번에 보내기
+[33m36ec04f6[m 🐛Fix(*): api 루트 수정
+[33m3e25b704[m Merge branch 'excel_import' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into excel-import
+[33m37c0ee16[m 🐛Fix(app/main, auth/controller): app 폴더에서 fastapi server가 실행하도록 수정
+[33m44a8095c[m 🔀 Merge(chat_testarea->message)
+[33med37b2c6[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into excel_import
+[33mca21cd59[m ✨Feat(*): workspace members field를 요청하는 query 생성
+[33m39899a69[m ✨Feat(app/main.py, router/user.py): excel import에서 받아온 데이터를 수신할 endpoint 구현
+[33m2a134017[m 🐛Fix(*): 1) 채팅 동작하도록, 2) 이미지 띄우기, 3) 첫 접속시 마지막 채팅 보이게 수정
+[33m9b1cc5b3[m ✨Feat(apis/excelApi.tsx, excel_import/exImportButton.tsx, excel_import/validation.ts): excel import 기능 추가
+[33m0ce22cd2[m Merge pull request #78 from Slack-LMS-Project-Team3/database
+[33m51d99665[m[33m ([m[1;31morigin/chatPage[m[33m, [m[1;32mchatPage[m[33m)[m 🐛Fix(*): css 수정
+[33m3792e3b6[m Merge branch 'chat_testarea' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chatPage
+[33mda52b5bc[m[33m ([m[1;31morigin/chat_testarea[m[33m)[m ♻️ Refactor(/repository/workspace_member.py, /router/message.py, /service/workspace_member.py): sender_id 타입 맞추기. 쿼리 맞추기.
+[33m24f7b26e[m Merge branch 'message' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea
+[33m702f6156[m 🐛Fix(*): Message 관련 프론트 송신 포맷 변경에 따른 적용
+[33m2ce00da0[m 🐛Fix(*): Message 관련 프론트 송신 포맷 변경에 따른 적용
+[33m6dc93101[m 🐛requirements.txt): 불필요한 MySQL 설치 패키지 삭제
+[33mc8901eb1[m 🐛Fix(BE/Dockerfile): 파이썬 설치 버전 변경
+[33mb0965b82[m 🐛requirements.txt) mysql 누락되어 추가함
+[33m09247d27[m 🐛Fix(cicd.yml): env 파일 복호화해서 EC2에 생성하도록 변경
+[33m3e202e69[m 🐛Fix(cicd.yml): ENV_FILE 생성 방식 변경
+[33md7487cd7[m 🐛Fix(cicd.yml, docker-compose): latest 이미지 태그 사용하도록 변경
+[33m841cfac7[m 🐛Fix(*): login 안되는 문제 해결
+[33m3b19f49a[m 🐛Fix(cicd.yml, FE/Dockerfile): github secrets에서 .env.prod 가져와서 읽어오도록 수정
+[33m4d51f0dc[m Merge branch 'chat_testarea' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea
+[33mb318d4ca[m 🐛Fix(*): 처음 로그인 시(provider_id가 존재하지 않는 경우), users 테이블 uuid 새로 발급 및 workspace_members->user_id, users->id 동기화 작업.
+[33m7723a080[m 🐛Fix(cicd.yml): target에서 따옴표 수정
+[33ma0088162[m 🐛Fix(cicd.yml): ./BE/.env.prod -> BE/.env.prod
+[33maf4ffd1a[m 🐛Fix(cicd.yml, Dockerfile, docker-compose.yml) credential 변수들 노출되지 않도록 .env 파일 이용
+[33m2b37af12[m 🐛Fix(docker-compose.yml): 환경변수 문자열리스트 형식으로 변경
+[33mbbe57801[m 🐛Fix(cicd.yml): build는 cicd 스크립트를 통해 하므로 build 코드 삭제 후 컨테이너 실행만 하도록 변경
+[33m69589f40[m 👷Chore(cicd.yml): 이미지 태그를 깃헙 커밋 해시로 변경
+[33m1078621a[m 👷Chore(cicd.yml): 이미지 build 시 캐싱하지 않고 새로 build&push 하도록 수정
+[33mfc468223[m 🧪(BE/app/main.py) 배포 테스트용 CORS 허용 Url 추가
+[33m831266b4[m 🐛Fix(BE/Dockerfile): NOSQL URL 삭제
+[33m5c576b69[m 🐛Fix(FE/app/auth/google/callback/page.tsx, AuthCall): 해당 페이지 미리 랜더링되지 않도록 수정3 - 파일 분리
+[33m9d20b18d[m 🐛Fix(FE/app/auth/google/callback/page.tsx): 해당 페이지 미리 랜더링되지 않도록 수정2 - Suspense 추가
+[33me0980afb[m 🐛Fix(FE/app/auth/google/callback/page.tsx): 해당 페이지 미리 랜더링되지 않도록 수정
+[33mddf4e910[m 🐛Fix(cicd.yml, BE/Dockerfile): GOOGLE_CLIENT_ID 컨테이너 실행 시 인자 전달
+[33mb160d6ae[m 👷Chore(eslint.config.mjs): any 타입 사용 허용
+[33m678bbdca[m 🐛Fix(FE/app/page.tsx): Any 타입 금지 에러 관련 수정
+[33m470c6035[m 🐛Fix(docker-compose.yml): 참조하는 env 파일명 변경
+[33m6e1b7311[m 🔨Env(config.py, create_tables.sql, docker-compose.yml): 배포환경 데이터베이스 세팅
+[33m69d4b505[m 🐛Fix(BE/app/domain/*, config.py, auth_controller.py): 에러 수정. default 값이 있는 애들은 @dataclass에서 가장 뒤에 와야함.
+[33m52743c2d[m[33m ([m[1;32mloginPage[m[33m)[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea
+[33m34502afa[m 💄Design(chatEditButton/Button.tsx): chatting 창의 edit button 디자인 수정
+[33m06578a24[m 💄Design(chatEditButton/Button.tsx, chatEditButton/chatEditButton.tsx): chatting 창의 edit button 디자인 수정
+[33m0bf4052a[m[33m ([m[1;31morigin/WorkspaceAndTab[m[33m)[m ✨Feat(BE/app/domain/*, BE/app/repository/*): workspace 접속시 유저와 관련된 각종 데이터 관련 기능.
+[33m1390f5fe[m 💄Design(chatEditButton.tsx, chatEditButton/chatEditButton.tsx): chatting 창의 edit button 디자인
+[33m8773aef8[m 💄Design(chat/ChatPage.tsx, chat/ChapProfile.tsx, hooks/useFetchMessages.ts): chatting 작성 시 nickname, img, time이 나오도록 수정
+[33mda3dbdb9[m ✨Feat(chat/ChatPage.tsx): chatting 삭제 시 화면 reload
+[33m9fec4031[m 🐛Fix(config/config.py, router/auth/auth_controller.py): os의 환경변수를 읽어오는 에러 수정
+[33m6d0f950e[m ✨Feat(apis/message.ts, chat/ChatPage.tsx, hooks/useFetchMessages.ts): 삭제 기능 추가
+[33ma2677ada[m[33m ([m[1;31morigin/database[m[33m)[m 🔨Env(requirements.txt): FastAPI 서버 의존성 관리 파일 갱신 2
+[33m43bbc1a5[m 🐛Fix(*): 루트 경로 수정
+[33m723e9797[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into database
+[33m43f8304d[m 🔨Env(requirements.txt): FastAPI 서버 의존성 관리 파일 갱신
+[33m814bfe1e[m 🔨Env(*): 기본 실행 루트를 BE로 변경하면서 의존성 주입 기준도 app으로 변경
+[33m20884946[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #77 from Slack-LMS-Project-Team3/loginPage
+[33meb03796c[m[33m ([m[1;31morigin/loginPage[m[33m)[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m1a8608f9[m 🐛 Fix(auth_controller.py): refresh_token_user_id_and_email 순서 변경.
+[33m4fa51bb9[m Merge pull request #76 from Slack-LMS-Project-Team3/loginPage
+[33m31a6cc88[m Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33me0f90ba3[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m19be29a3[m Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m449dc74f[m ✨Feat(*): 로그아웃 버튼 누르면 로그아웃 처리
+[33m34d96bfb[m 🐛Fix(*): security 의존성 함수 - verify_token_and_get_token_data 수정. FE, BE auth 관련 수정.
+[33m7e194d85[m 🔨Env(app/config/config.py): DEV 환경일 경우에만 .env 읽어오도록 수정
+[33m948d7bb3[m ✨Feat(*): 전체 message 출력 기능 추가
+[33mdaa89f64[m ✨Feat(*): server에서 보내주는 data를 받아서 chatting 화면에 띄웠습니다.
+[33m2b88d1d6[m Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m9a7ae23a[m ♻️Refactor (*): 디버깅중
+[33m1b81ce12[m ✨Feat(BE/sql/init/create_tables.sql): 전체 테이블 생성
+[33m42d400ee[m Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33mbd906c73[m t Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33mce7bfc18[m ✨Feat(authApi.ts, fetchWithAuth.ts): 로그인 기능 프론트에서 처리
+[33mdb8cc703[m ✨Feat(create_tables.sql): user, refresh_tokens 테이블 추가.
+[33mc4833017[m 🐛Fix(*): 잠시 대기. rebase 시작점.
+[33mffe4c355[m ✨Feat(create_tables.sql): user, refresh_tokens 테이블 추가
+[33m6f42b834[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea
+[33mdfc78b6a[m 💄Design(ChatHeader.tsx): header 부분의 tab button 디자인 수정
+[33m7a2e8eca[m Merge pull request #73 from Slack-LMS-Project-Team3/loginPage
+[33mb62c57c6[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m112daff9[m 웹소켓 기반 메세지 기능 구현
+[33ma2e379f9[m Merge branch 'main' into message
+[33m3eb83ef0[m 공용으로 사용할 database 관련 함수 및 도메인 정의
+[33m23fb984a[m 💄Design(chat/ChatPage.tsx, chat/ShowDate.tsx): 시간 및 날짜 표시 방법 수정
+[33m3e66166d[m 🔀Merge: 'database' -> message
+[33m95b790c5[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into database
+[33m26a1791e[m 🐛Fix(*): db insert시 str -> uuid 타입 적용 및 main, database, message 충돌 해결
+[33m37bd8936[m ✨Feat(chat/ChatPage.tsx, chat-text-area/tiptap.tsx, store/messageProfileStore.tsx): 채팅창의 nickname, time 출력
+[33m71a5e8a2[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m626af0ab[m ♻️Refactor(auth_service.py->security): Token 유효성 검사 기능
+[33mb1b72953[m Merge branch 'database' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33ma061f971[m ✨Feat(*): workspace_member 관련 쿼리 , 도메인 모델 정의
+[33m77d22bf2[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33mb110880e[m Merge branch 'database' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33m0214096e[m ✨Feat(*message): 웹소켓 기반 메세지 기능 완성
+[33m15c78856[m ✨Feat(*): fetch로 callback 호출해서 토큰 받아오기.
+[33mf4ebf2b0[m 💄Design(chat/ChatPage.tsx): Scroll 기능 추가
+[33m476449b3[m ♻️Refactor(channel/page.tsx, chat/ChatPage.tsx): ClientSocket 컴포넌트 위치 변경
+[33m691f2a52[m ✨Feat(chat/chatEditButton.tsx, chat/ChatPage.tsx): test 삭제 버튼 추가
+[33m4fffa8e2[m 🐛 Fix(auth_serivce.py, auth_controller.py): 구글 OAuth2 callback은 항상 get요청으로 처리해야 함. 그리고 토큰 생성시 UUID->str 변환 해줘야 함.
+[33m79420d29[m 💡Comment (store/messageStore.tsx): 주석 추가
+[33m8c7247a0[m ✨Feat(apis/messages.tsx): system message 생성
+[33m3493db27[m ✨Feat(messages.ts): 수정, 삭제, 조회 api 생성
+[33m6241fb2a[m 🐛Fix(auth_controller.py): 응답 body에 토큰 넣어 보내는 걸로 변경.
+[33m88414208[m Merge branch 'loginPage'
+[33m9e0ffb65[m ✨Feat(auth*): 로그인 유지 기능 및 refresh 토큰 만료 시 삭제 기능, 로그아웃 기능 추가.
+[33m2c3e8b55[m merge 완료
+[33m5e5f69db[m 🐛Fix(*): login 자잘한 거 수정
+[33ma4747e6c[m 🔀Merge: Login page -> main
+[33mfc1c3775[m 🔀Merge(*): loginPage -> main
+[33mfd65bbba[m 🐛Fix(repository/auth/mysql_query_repo.py, auth_service.py, auth_controller.py): refresh_tokens 데이터 테이블에 새로 넣고 조회하는 것까지 오케이.
+[33meb60367d[m 💄Design(*): 메인 화면 + 로그인 연결 완료
+[33m2018739f[m ✨Feat(*): chatting 수정 기능 보완
+[33m24c0721a[m 🔥Remove(MessageList.tsx): 필요가 없어서 삭제
+[33mc9d4a3a6[m 🐛Fix(BE/app/util/database/mysql.py): execute 메소드 쿼리별 fetchall, commit 처리
+[33mfdaf9f5f[m ✨Feat(chat/chatEditButton.tsx, chat/ChatPage.tsx): chatting edit button 추가
+[33m8029179f[m 🐛Fix(*): 로그인 관련 db 연결 및 사용
+[33maf09171f[m 💄Design (channel/page.tsx, chat/ChatPage.tsx): channel page에서 header, chatting 출력
+[33m11ba5b39[m Sidebar css 디버깅 및 프로필 표시 상태 및 호출 로직 추가
+[33m70ab82b4[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into sidebar
+[33m56b2f72f[m 💄Design (*): chatting message design
+[33m66d9e992[m 🐛Fix(workspaceId/layout.tsx): profile 표시 여부에 따른 sidebar 너비 변경 방지
+[33m15fcbb27[m ✨Feat(channel/page.tsx, chat-text-area/MessageList.tsx, chat-text-area/tiptap.tsx): 채팅 입력 시 화면에 출력
+[33m4ecdba77[m ✨Feat(*): sidebar footer 선택 시 popover 호출 / 프로필 호출 버튼 추가
+[33m93c7012e[m 💄Design (chat-text-area/styles.scss): 채팅창이 border가 끊긴 문제 해결
+[33m571f8e7a[m Merge branch 'loginPage' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m22c33703[m ✨Feat(repository/auth/mysql_query_repo.py, auth_controller.py, auth_service.py): access_token, refresh_token 발급, 소셜 로그인 시 데이터 변경.
+[33m72d841d6[m Feat(channel/page.tsx, chat-text-area/tiptap.tsx, ws/webSocketClient.tsx): chatting 창에서 chatting입력 시에 message전송
+[33m936e8224[m ✨Feat(*): login 기능 추가 (FE)
+[33m21ddffb8[m ✨Feat(auth_controller.py): login 기능 추가
+[33me8e87886[m ✨Feat(ws/webSocketClient.tsx): socket통신을 하기 위한 코드 작성
+[33m69eff62d[m ✨Feat(messageStore.tsx): message State를 store에 저장
+[33mc05cc4e5[m ♻️Refactor(*): 내 컴퓨터에서 안되는 거 수정
+[33m0efe6c5d[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into message
+[33m090aa6b9[m ✨Feat(BE/app/util/database/abstract_query_repo.py): db 객체 초기화 및 구현체에서 save 메소드 구현 강제
+[33m6baf9aa7[m ✨Feat(*): BE 쪽 소셜 로그인 구현 및 JWT Access token 발급
+[33m3de85de2[m Sidebar 일부 구현
+[33mb180586c[m 👷Chore(*): clerk 관련 코드 추가 삭제
+[33m02860ff8[m 👷Chore(*): 환경변수 관련 조정 (clerk 삭제, tiptap 추가 등)
+[33ma2d8bd63[m ⚔️ Merge(app/layout.tsx, client/layout.tsx, workspaceId/layout.tsx): 화면 전체 스크롤 발생 방지
+[33m47f34859[m 💄Design(app/layout.tsx, client/layout.tsx, @sidebar/page.tsx): sidebar css 일부 구현
+[33mbf872238[m 프로젝트 구조 2차 변경
+[33m02e38c3d[m Merge branch 'main' into architecture
+[33m8effe01d[m Database 모듈 구현
+[33m635a9040[m 🔨Env(.gitignore, BE/.gitignore): __pycache__, .vscode, .DS_Store 추적하지 않도록 변경
+[33m0841f76a[m ♻️Refactor(*): 프로젝트 구조 2차 변경
+[33mb6171d18[m Merge branch 'main' into database
+[33m635c80b0[m ✨Feat(BE/app/domain/message/crud/mysql_query_repo.py): message 도메인에 대해서 MySQL에서 사용할 쿼리 작성
+[33ma874b63f[m ✨Feat (BE/app/util/database): DB 연결 및 쿼리 수행 모듈화
+[33m6f908004[m 💄Design(sign-in/page.tsx): 로그인 박스 테마 변경
+[33mbf53fe6a[m 💄Design(sign-in/page.tsx): 로그인 박스 테마 변경
+[33mb1d31065[m 프로젝트 스케쥴링
+[33md226e592[m[33m ([m[1;31morigin/taskmaster[m[33m)[m Merge branch 'main' into taskmaster
+[33md7db02e6[m ✏️Docs(.taskmaster/tasks/tasks.json) frontend-backend 각 18일치 task 생성
+[33mddbfa2b3[m Merge pull request #65 from Slack-LMS-Project-Team3/chat_testarea
+[33m1326c1a4[m 💡Comment (channel/page.tsx): TipTap 컴포넌트 주석 추가
+[33m00183002[m 💄Design(workspaceId/layout.tsx, channel/page.tsx, store/channelStore.ts): chatting textarea size 동적으로 변경
+[33m213e2407[m 🔥Remove (*): 필요없는 file 정리
+[33m3cf56311[m 🔥Remove(*): file 경량화 작업
+[33m55de44d1[m 🔥Remove(*): file 경량화 작업
+[33m1f5cf952[m 🔥Remove(*): file 경량화 작업
+[33m61a563eb[m 🔥Remove(*): file 경량화 작업
+[33mb61f1eb0[m 🔥Remove(*): icon file 삭제
+[33m98e829f2[m 👷Chore (channel/page): chatting 위치 수정
+[33m73719d3f[m 👷Chore (chat-text-area/toolbar): file 경량화 작업
+[33mb431bdce[m 🧠AI(*): 뷰포트 이상으로 렌더링하여 상하 스크롤이 발생하는 원인 파악
+[33mc1599b40[m fix: type 변경
+[33m4deb697e[m 🐛Fix (tiptap.tsx): type 지정
+[33m212fad79[m 🐛Fix (tiptap.tsx): ESLint 빌드 실패 오류 수정
+[33m52bd1953[m fix: 환경변수 출력
+[33m7f9def95[m 👷Chore(Dockerfile): 환경변수 값 출력
+[33m94382162[m 🐛Fix(docker-compose.yml, Dockerfile): docker-compose.yml에서 args전달하는 부분 추가
+[33m845b4cc9[m 👷Chore(FE/Dockerfile ): clerk api key 주석처리
+[33m7656b877[m 💄Design(styles.scss): link 삽입 시 text color 변경
+[33mbcfeaa3a[m 💄Design(tiptap.tsx, styles.scss): send button 삭제
+[33m40889caf[m 💄Design(styles.scss): send button style 수정
+[33m00b15a78[m 💄Design(styles.scss, tiptap.tsx): placeholder 추가
+[33m23bfaae4[m 💄Design(styles.scss): selected state 추가
+[33m85885f60[m 💄Design(styles.scss, tiptap.tsx): send button 추가
+[33m7cf8912e[m 💄Design(styles.scss): chatting 시 border 생기는 문제 해결
+[33mb7c39952[m 💄Design(styles.scss): 글자 서식 적용 안되는 문제 해결
+[33m3287fef5[m 💄Design(*app/layout.tsx, client/layout.tsx, workspaceId/layout.tsx, workspaceId/page.tsx, sidebar.tsx): 할당받은 영역 내 sidebar의 높이를 뷰포트 끝까지 채우기
+[33m8253e284[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea
+[33mc9bbedd5[m 💄Design(tiptap.tsx): file default img 변경
+[33mb51e2a09[m Merge pull request #62 from Slack-LMS-Project-Team3/loginPage
+[33m96309b3a[m 💄Design(sign-in/page.tsx): 로그인 박스 테마 변경
+[33m4199b40a[m 💄Design(sign-in/page.tsx): 로그인 박스 테마 변경
+[33ma78494fa[m Merge pull request #59 from Slack-LMS-Project-Team3/loginPage
+[33m3a0c4f07[m 💡Comment(cicd.yml): 주석 제거
+[33m3e9a251e[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33m31338a76[m Fix: Taskmaster prd - 알람시스템 작동 방식 수정
+[33m533a1f0b[m Merge branch 'main' into taskmaster
+[33m521d0bc8[m ♻️Refactor(BE/app/domain/message): messenger -> message
+[33m27272c0d[m ✨Feat(tiptap.tsx, toolbar.tsx): file upload 기능 추가
+[33m9716bdc8[m 🐛Fix(cicd.yml, FE/Dockerfile): 환경변수 -> secret variable 설정
+[33mc80038c5[m Merge branch 'main' into taskmaster
+[33mcb0c9929[m Merge branch 'main' into message
+[33mb8a7b221[m ♻️Refactor(BE/app/domain/message): messenger -> message
+[33me3dedd87[m 🔨Env(BE/.gitignore): cursor 추적하지 않도록 수정
+[33m88e700b1[m 🐛Fix(BE/app/main.py): 배포 환경 설정
+[33m53cf50a0[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into loginPage
+[33mb53483ab[m ✨Feat(*): Clerk 사용 - FE 로그인 페이지 생성.
+[33m10da4dee[m ✏️Docs(.taskmaster/docs/prd.txt): 알람시스템 작동방식 수정
+[33mb0ec284c[m ✏️Docs(.taskmaster/): task-master-ai로 jungle-slam 일정 생성
+[33m6de62bb6[m Merge branch 'main' into taskmaster
+[33m84e1c953[m ✏️Docs(.taskmaster/): task-master-ai로 jungle-slam 일정 생성
+[33mab1c484a[m 💄Design(tiptap.tsx, toolbar.tsx): img 중복 삽입 문제로 toolbar를 다시 작업
+[33m33dc16f0[m 💄Design(MyEditor.tsx): image 삽입 button 위치 변경
+[33m78ea9980[m ✨Feat(*): Resizable
+[33mdd74d21b[m Merge branch 'main' into resizable
+[33m63d9c984[m ✨Feat(*): Sidebar, Profile이 Resizable 인터랙션과 Sync되도록 구현
+[33m3822fb87[m 프로젝트 폴더 구조 변경
+[33m38b5d092[m Merge branch 'main' into messenger
+[33m7eab9bfc[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS
+[33m04cdf6f2[m 🔨Env(BE/.gitignore): .env, DS_Store 추적하지 않도록 변경
+[33m0825e53b[m ♻️Refactor(*): 프로젝트 폴더 구조 변경
+[33m8a7a7e81[m 💄Design(ImagePreview.tsx): 미리보기 이미지 배치 수정
+[33m441d5772[m 💄Design(ImagePreview.tsx, MyEditor.tsx): 미리보기 이미지가 chatting에 가려지는 문제 해결
+[33m0411d43e[m 💄Design(CustomButton.tsx, MyEditor.tsx): 채팅을 입력할 때마다 div의 높이 변경 기능 추가
+[33m2ff3a3ea[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS
+[33m8dbdecc9[m [FE] 기본 레이아웃 구현 완료
+[33m7bd60b07[m 👷Chore(worksapceId/layout.tsx, OpenProfile.tsx): OpenProfile 컴포넌트 파일 분리
+[33mf837de5a[m 👷Chore(worksapceId/layout.tsx): 함수명 변경 (WorkspaceLayout)
+[33m7b51871a[m 👷Chore(cicd.yml): CI/CD 옵션 수정
+[33me4e81224[m 👷Chore(cicd.yml): CI/CD 옵션 수정
+[33m290213d2[m 👷Chore(eslint.config.mjs): unused-vars 옵션 off
+[33m05a7f623[m ✨Feat(*): 기본 layout 설정
+[33ma93c8169[m ✨Feat(*): 기본 layout 설정
+[33m295c13c0[m 💄Design(ImagePreview.tsx, MyEditor.tsx): img추가 시 미리보기 위치 수정
+[33mee75ede3[m ✨Feat(main.py, websocket_manager.py): 웹소켓 엔드포인트 정의 및 통신 로직 모듈화
+[33m8ef0c97b[m 💄Design(CustomButton.tsx, MyEditor.tsx): textarea 디자인 변경
+[33m3f252e39[m ✨Feat(CustomButton.tsx, ImagePreview.tsx): image file 선택 시 image를 미리보기가 가능합니다.
+[33m251a638b[m ✨Feat(*): 기본 레이아웃 설정
+[33m804ad8c1[m 🔥Remove(client/page.tsx, workspaceId/page.tsx, channelId/page.tsx): page.tsx 정리
+[33mcfac16a8[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS
+[33m4af4f817[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS
+[33m307c7426[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into chat_testarea merge: 최신 main으로 update
+[33ma4f0d924[m ♻️Refactor(FE/.prettierrc): prettier 확장 설정
+[33mfa01cf68[m 💄Design(MyEditor.tsx): textarea 디자인 변경
+[33m52775fe6[m ✨Feat (ToolBar.tsx): file upload 기능 구현 중
+[33mef4be531[m Merge branch 'main' into extensionSettings
+[33m4c2e805d[m ♻️Refactor(FE/.prettierrc): prettier 확장 설정
+[33md72536b4[m 🐛Fix(cicd.yml)
+[33m3a0da38e[m Install(*): text 서식 변경에 필요한 button을 구현하기 위해 설치한 file들입니다.
+[33m2a74d17a[m ✨Feat(MyEditor.tsx): markdown button 추가
+[33m1f38be61[m Merge branch 'fixCICD' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS into fixCICD
+[33mde6e1ee3[m 🐛Fix(cicd.yml): type->opened 수정
+[33m755b1975[m Merge branch 'main' into fixCICD
+[33mfb19a1eb[m 🔨Env(*): cicd 궁금증 해결: PR open 으로 해두면 어떻게 될까?
+[33m271bc08e[m 🐛Fix(cicd.yml, app/layout.tsx): 자잘한 오류 수정
+[33m7e988135[m 🐛Fix(cicd.yml, app/layout.tsx): 자잘한 오류 수정
+[33m80c2bcab[m ✨Feat(fonts.ts, globals.css, layout.tsx): 글꼴 설정
+[33m09ed71e7[m ✨Feat(fonts.ts, globals.css, layout.tsx): 글꼴 설정
+[33m2d9a6376[m Merge branch 'main' of https://github.com/Slack-LMS-Project-Team3/Slack-LMS merge : origin main에서 pull 받아왔습니다.
+[33m00da5084[m[33m ([m[1;31morigin/basic_structure[m[33m)[m 👷Chore(*): [FE] 작업 폴더/파일 생성
+[33md395ec08[m ✏️Docs(README.md): Commit Message Editor 활용 방법 작성
+[33m663c6df9[m ✏️Docs(README.md): Commit Message Editor 활용 방법 작성
+[33m05fb8632[m Merge remote-tracking branch 'origin/main'
+[33m8660f7cc[m ✏️ Docs(PULL_REQUEST_TEMPLATE.md): pull request중 필요 없는 내용 삭제
+[33m20b41230[m Update README.md
+[33m4206e47d[m feat : gitignore 수정
+[33m1a19c8b3[m ✏️ Docs(README.md, .github/PULL_REQUEST_TEMPLATE.md): 컨벤션 문서 작성
+[33m22978481[m ✨ Feat(/BE/.gitignore): test.db 추가
+[33mdd582256[m 🐛 Fix(*): 미사용 코드 삭제
+[33m044f9d1c[m ⏪ Revert(*): 명훈이형꺼 합치기 전.
+[33m0e48a9db[m ✨ Feat(/FE/*): 명훈 코드 병합
+[33mc334597f[m 👷 Chore(*): 배포 환경- 백, 프론트 연결 테스트
+[33m9344d8bc[m 🔨 Env: BE, FE 레포지토리 병합
+[33m204d10fb[m 🔨 Env(*): 초기 개발환경 세팅
+[33m92a56e8e[m Merge pull request #37 from Slack-LMS-Project-Team3/cicd
+[33m5053cc77[m feature: cicd front 이미지 빌드 수정(--build-arg NEXT_PUBLIC_API_URL=http://$<< secrets.EC2_HOST >>:8000 \ 제거)
+[33mbdf13e3e[m Merge pull request #36 from Slack-LMS-Project-Team3/cicd
+[33md5709fb4[m build: 아직도 백-프론트 연결...
+[33mf6579ac2[m Merge pull request #35 from Slack-LMS-Project-Team3/cicd
+[33m270a2130[m build: 아직도 백-프론트 연결...
+[33m7be0941f[m Merge pull request #34 from Slack-LMS-Project-Team3/cicd
+[33m6df69e99[m build: 아직도 백-프론트 연결...
+[33ma072c691[m Merge pull request #33 from Slack-LMS-Project-Team3/cicd
+[33m6cde109f[m build: 아직도 백-프론트 연결...
+[33m671443ad[m Merge pull request #32 from Slack-LMS-Project-Team3/cicd
+[33m6abde0d1[m build: 백-프론트 연결13
+[33m353204cf[m Merge pull request #31 from Slack-LMS-Project-Team3/cicd
+[33mdb70ba6e[m build: 백-프론트 연결12
+[33mc5a88c8e[m Merge pull request #30 from Slack-LMS-Project-Team3/cicd
+[33m8e70e5ab[m build: 백-프론트 연결12
+[33m3a0d1e25[m Merge pull request #29 from Slack-LMS-Project-Team3/cicd
+[33mc6787d71[m build: 백-프론트 연결11
+[33m5d477eec[m Merge pull request #28 from Slack-LMS-Project-Team3/cicd
+[33ma1b6fe4c[m build: 백-프론트 연결10
+[33m1c9cab80[m Merge pull request #27 from Slack-LMS-Project-Team3/cicd
+[33md106f9f6[m build: 백-프론트 연결7
+[33me2bd4b97[m Merge pull request #26 from Slack-LMS-Project-Team3/cicd
+[33m97cc3735[m build: 백-프론트 연결6
+[33m127cb9fa[m Merge pull request #25 from Slack-LMS-Project-Team3/cicd
+[33m775c9217[m build: 백-프론트 연결5
+[33m5341b529[m Merge pull request #24 from Slack-LMS-Project-Team3/cicd
+[33m4b2770f0[m build: 백-프론트 연결4
+[33m6703d1dd[m Merge pull request #23 from Slack-LMS-Project-Team3/cicd
+[33me944d386[m build: 백-프론트 연결3
+[33m12f47706[m Merge pull request #22 from Slack-LMS-Project-Team3/cicd
+[33m46cb46df[m build: 백-프론트 연결2
+[33mecd6c21c[m Merge pull request #21 from Slack-LMS-Project-Team3/cicd
+[33m5e0876b5[m build: 백-프론트 연결
+[33mf3e82764[m Merge pull request #20 from Slack-LMS-Project-Team3/cicd
+[33mcf704182[m build:repository 합치기11
+[33m96240880[m Merge pull request #19 from Slack-LMS-Project-Team3/cicd
+[33m426dbbd5[m build:repository 합치기10
+[33m2f694d6f[m Merge pull request #18 from Slack-LMS-Project-Team3/cicd
+[33m7f5ca2e1[m build:repository 합치기9
+[33ma679db35[m Merge pull request #17 from Slack-LMS-Project-Team3/cicd
+[33m15ce8fe0[m build:repository 합치기8
+[33mae66ab49[m Merge pull request #16 from Slack-LMS-Project-Team3/cicd
+[33m9f5dfb4f[m build:repository 합치기7
+[33m74e1d976[m Merge pull request #15 from Slack-LMS-Project-Team3/cicd
+[33m9b8dade9[m build:repository 합치기6
+[33m007ec3e5[m Merge pull request #14 from Slack-LMS-Project-Team3/cicd
+[33ma6846301[m build:repository 합치기6
+[33m5e864195[m Merge pull request #13 from Slack-LMS-Project-Team3/cicd
+[33m28f588cc[m build:repository 합치기5
+[33mf3636228[m Merge pull request #12 from Slack-LMS-Project-Team3/cicd
+[33m7aa3c4fd[m build:repository 합치기4
+[33m53377245[m Merge pull request #11 from Slack-LMS-Project-Team3/cicd
+[33ma1751589[m build: repository 합치기3
+[33m71fc222a[m Merge pull request #10 from Slack-LMS-Project-Team3/cicd
+[33mcfcc2298[m build: repository 합치기2
+[33md1a8fc7b[m Merge pull request #9 from Slack-LMS-Project-Team3/cicd
+[33m53fb0560[m build: repository 합치기
+[33ma46e88e3[m Merge pull request #8 from Slack-LMS-Project-Team3/cicd
+[33mc8ee7c65[m build: repository 합치기
+[33m7059449f[m Merge pull request #7 from Slack-LMS-Project-Team3/cicd
+[33me368a45e[m fix: docker 실행 포트 80 -> 8000 변경
+[33me62c6897[m Merge pull request #6 from Slack-LMS-Project-Team3/cicd
+[33md896847a[m try
+[33m49eea4ea[m Merge pull request #5 from Slack-LMS-Project-Team3/cicd
+[33m3119675f[m fix: Deploy to EC2/script
+[33m17ce220c[m Merge pull request #4 from Slack-LMS-Project-Team3/cicd
+[33m964d42f9[m build: requirements.txt
+[33m16b5c6c4[m Merge pull request #3 from Slack-LMS-Project-Team3/cicd
+[33m23cb7fef[m build: 초기 프로젝트 세팅
+[33mc3f6c8d5[m Merge pull request #2 from Slack-LMS-Project-Team3/cicd
+[33mb0bebb58[m build: dockerfile
+[33m7b00bf1e[m Merge pull request #1 from Slack-LMS-Project-Team3/cicd
+[33mc9f50402[m fix: dev.yml - 환경변수 값 추가
+[33m28104485[m build: cicd 스크립트 작성

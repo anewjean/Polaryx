@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
+import { WebSocketClient } from "../ws/webSocketClient";
+import { ShowDate } from "./ShowDate";
+import { ChatProfile } from "./ChatProfile";
+// import { useMessageProfileStore } from "@/store/messageProfileStore";
 // import { ChatEditButton } from "./chatEditButton";
 // import { EditInput } from "./EditInput";
 // import { updateMessage } from "@/apis/messages";
-import { WebSocketClient } from "../ws/webSocketClient";
-import { ShowDate } from "./ShowDate";
-// import { useMessageProfileStore } from "@/store/messageProfileStore";
-import { ChatProfile } from "./ChatProfile";
 import { getMessages } from "@/apis/messages";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
@@ -50,14 +50,13 @@ export function ChatPage(workspaceId: string, tabId: string) {
     return d.getTime();
   };
 
-  const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
-
   return (
     <div className="flex-1 min-h-0 overflow-y-auto" onScroll={(event)=> {
       handleScroll(event)
     }}>
       <WebSocketClient />
 
+      {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
         {[...messages].reverse().map((msg, idx) => {
           const prev = messages[idx - 1];
@@ -79,15 +78,10 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
           return (
             <React.Fragment key={msg.id}>
-              {showDateHeader &&
-                (idx === 0 ? (
-                  <div className="sticky top-0 date-header">
-                    <ShowDate timestamp={initialDateKey} />
-                  </div>
-                ) : (
-                  <ShowDate timestamp={initialDateKey} />
-                ))}
+              {/* 날짜 헤더 : sticky 추가 */}
+              {showDateHeader && <ShowDate timestamp={todayKey} />}
 
+              {/* 각각의 채팅 */}
               <ChatProfile
                 imgSrc={msg.image ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
