@@ -34,6 +34,8 @@ const TipTap = () => {
   const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // 한글 조합 추적 플래그.
+  const isComposingRef = useRef(false);
   const editor = useEditor({
     editable: true,
     extensions: [
@@ -240,8 +242,19 @@ const TipTap = () => {
         <EditorContent
           editor={editor}
           className="w-full"
+          // 한글 조합 추적.
+          onCompositionStart={() => {
+            isComposingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            isComposingRef.current = false;
+          }}
+          /////////////// 추가 ///////////////
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
+
+              if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
+
               event.preventDefault(); // 줄바꿈 방지
               handleSend();
             }
