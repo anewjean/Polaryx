@@ -81,7 +81,7 @@ export default function Page() {
     getToken();
   }, [router]);
   return (
-    <div className="relative flex justify-center items-center h-screen overflow-hidden bg-black">
+    <div className="relative flex justify-center items-center h-screen overflow-hidden bg-google-gradient">
       {/* 별만 있는 레이어 */}
       <Stars count={150} />
 
