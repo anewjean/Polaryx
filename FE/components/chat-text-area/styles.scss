@@ -144,6 +144,9 @@
 }
 
 .chat-text-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border: 2px solid gainsboro;
   border-radius: 10px;
 

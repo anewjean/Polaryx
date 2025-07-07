@@ -17,16 +17,13 @@ router = APIRouter(prefix="/auth")
 GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
 GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
+GOOGLE_CLIENT_ID = settings.GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET = settings.GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT_URI = settings.GOOGLE_REDIRECT_URI
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
-GITHUBS_CLIENT_ID = os.getenv("GITHUBS_CLIENT_ID")
-GITHUBS_CLIENT_SECRET = os.getenv("GITHUBS_CLIENT_SECRET")
-GITHUBS_REDIRECT_URI = os.getenv("GITHUBS_REDIRECT_URI")
-GITHUBS_AUTH_URL = "https://github.com/login/oauth/authorize"
-GITHUBS_TOKEN_URL = "https://github.com/login/oauth/access_token"
-GITHUBS_USERINFO_URL = "https://api.github.com/user"
 
 class Provider(str, Enum):
     google = "google"
@@ -39,12 +36,6 @@ google_params = {
     "scope": "openid email profile",
     "access_type": "offline",
     "prompt": "consent",
-}
-
-GITHUBS_params = {
-    "client_id": GITHUBS_CLIENT_ID,
-    "redirect_uri": GITHUBS_REDIRECT_URI,
-    "scope": "user",
 }
 
 #############################################
@@ -95,10 +86,6 @@ def social_login(provider: Provider):
     if provider.value == "google":
         params = google_params
         url = f"{GOOGLE_AUTH_URL}?{urlencode(params)}"
-
-    elif provider.value == "github":
-        params = GITHUBS_params
-        url = f"{GITHUBS_AUTH_URL}?{urlencode(params)}"
 
     return RedirectResponse(url)
 
@@ -158,10 +145,16 @@ async def auth_callback(provider: Provider, code: str, response:Response):
 
                 jwt_refresh_token = TokenSerive.create_refresh_token(user_data)
                 res_data={"id": refresh_token_uuid,
+                user_data = {"user_id": uuid.UUID(bytes=user_INdb[0][0]).hex , "email": user_INdb[0][2]}
+                jwt_access_token = TokenSerive.create_access_token(user_data)
+
+                jwt_refresh_token = TokenSerive.create_refresh_token(user_data)
+                res_data={"id": refresh_token_uuid,
                       "user_id": user_INdb[0][0], 
                       "user_refresh_token": jwt_refresh_token, 
                       }
                 
+                TokenSerive.save_refresh_token_to_db(res_data)
                 TokenSerive.save_refresh_token_to_db(res_data)
 
                 response.set_cookie(

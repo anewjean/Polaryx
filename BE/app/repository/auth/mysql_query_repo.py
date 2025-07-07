@@ -1,22 +1,34 @@
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
+from app.util.database.abstract_query_repo import AbstractQueryRepo
+from app.util.database.db_factory import DBFactory
 
 find_all_user = """
+SELECT * FROM users;
 SELECT * FROM users;
 """
 
 find_user_by_email = """
 SELECT * FROM users WHERE email = %(user_email)s;
+SELECT * FROM users WHERE email = %(user_email)s;
 """
 
 find_user_by_provider_id_and_email = """
+SELECT * FROM users WHERE provider_id = %(user_provider_id)s
 SELECT * FROM users WHERE provider_id = %(user_provider_id)s
                      AND email = %(user_email)s;
 """
 
 update_provider_id_and_id = """
 UPDATE users SET provider_id = %(user_provider_id)s,
+UPDATE users SET provider_id = %(user_provider_id)s,
                 id = %(user_id)s
+            WHERE email = %(user_email)s;
+"""
+
+update_user_id_in_workspace_members = """
+UPDATE workspace_members SET user_id = %(user_id)s
+                    WHERE email = %(user_email)s;
             WHERE email = %(user_email)s;
 """
 

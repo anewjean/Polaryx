@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 from uuid import UUID
 
@@ -44,6 +43,7 @@ SELECT
     m.tab_id,
     m.sender_id,
     wm.nickname,
+    wm.image,
     m.content,
     m.is_updated,
     m.created_at,
@@ -51,7 +51,7 @@ SELECT
     m.deleted_at
 FROM messages m
 JOIN workspace_members wm
-ON m.sender_id = wm.id
+ON m.sender_id = wm.user_id
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL;
 """

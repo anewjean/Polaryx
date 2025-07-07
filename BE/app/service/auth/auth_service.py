@@ -2,6 +2,8 @@ from datetime import datetime, timedelta, UTC
 import os
 from app.util.database.db_factory import DBFactory
 from app.repository.auth.mysql_query_repo import QueryRepo
+from app.util.database.db_factory import DBFactory
+from app.repository.auth.mysql_query_repo import QueryRepo
 from jose import jwt, ExpiredSignatureError
 
 
@@ -34,7 +36,10 @@ class AuthService:
         # provider_id와 id 업데이트
         if not result[0][4]:
             print("\n\n 회원의 provider_id가 없다? id 다시 세팅")
+            print("\n\n 회원의 provider_id가 없다? id 다시 세팅")
             sql = query_repo.get_sql("update_provider_id_and_id")
+            db.execute(sql, params)
+            sql = query_repo.get_sql("update_user_id_in_workspace_members")
             db.execute(sql, params)
             sql = query_repo.get_sql("update_user_id_in_workspace_members")
             db.execute(sql, params)
@@ -42,6 +47,7 @@ class AuthService:
         # 만약 provider_id도 존재하지만, 접근 시도하는 데이터의
         # provider_id와 다른것도 짤.
         elif result[0][4] != params["user_provider_id"]:
+            print("\n\n provider_id가 일치하지 않는다.")
             print("\n\n provider_id가 일치하지 않는다.")
             return None
         

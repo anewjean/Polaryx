@@ -1,8 +1,9 @@
+import ast
 import json
-from typing import List
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi import APIRouter
+import uuid
 
 from app.service.websocket_manager import ConnectionManager
 from app.service.message import MessageService
@@ -17,49 +18,6 @@ message_service = MessageService()
 workspace_member_service = WorkspaceMemberService()
 
 
-
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <h2>Your ID: <span id="ws-id"></span></h2>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var workspace_id = 1;
-            var tab_id = 1;
-            var client_id = Date.now(); 
-            document.querySelector("#ws-id").textContent = client_id;
-            var ws = new WebSocket(`ws://localhost:8000/ws/${workspace_id}/${tab_id}`);
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                const payload = {
-                    sender_id: "4e7e765b-5688-11f0-bb98-0242ac110002",
-                    content: input.value
-                }
-                ws.send(JSON.stringify(payload))
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
 
 @router.get("/workspaces/{workspace_id}/tabs/{tab_id}/messages", response_model=MessagesResponse)
 async def find_all_messages(workspace_id: int, tab_id: int) -> MessagesResponse:
@@ -94,10 +52,6 @@ async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> Non
     await message_service.delete_message(message_id)
     await connection.broadcast(workspace_id, tab_id, data)
 
-@router.get("/ws")
-async def get():
-    return HTMLResponse(html)
-
 @router.websocket("/ws/{workspace_id}/{tab_id}")
 async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: int):
     workspace_member = None
@@ -106,11 +60,11 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
         while True:
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
-            sender_id = data.get("sender_id")
+            sender_id = (data.get("sender_id"))
             content = data.get("content")
-            workspace_member = workspace_member_service.get_member_by_id(sender_id)
+            workspace_member = workspace_member_service.get_member_by_user_id(sender_id)
             nickname = workspace_member[0][3]
-            await connection.broadcast(workspace_id, tab_id, f"#{nickname}: {content}")
+            await connection.broadcast(workspace_id, tab_id, f"{nickname}:{content}")
             await message_service.save_message(tab_id, sender_id, content)
     except WebSocketDisconnect:
         connection.disconnect(workspace_id, tab_id, websocket)

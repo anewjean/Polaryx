@@ -23,25 +23,23 @@ import Link from "@tiptap/extension-link";
 import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
+import { useMessageStore } from "@/store/messageStore";
+import { useMessageProfileStore } from "@/store/messageProfileStore";
+
+// 실험용
+import { jwtDecode } from "jwt-decode";
 
 const TipTap = () => {
-  const [text, setText] = useState("helloWorld");
+  const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
+  const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     editable: true,
     extensions: [
       StarterKit,
       Placeholder.configure({
-        // Use a placeholder:
+        // placeholder가 뭐임?
         placeholder: "나만무 team3",
-        // Use different placeholders depending on the node type:
-        // placeholder: ({ node }) => {
-        //   if (node.type.name === 'heading') {
-        //     return 'What's the title?'
-        //   }
-
-        //   return 'Can you add some further context?'
-        // },
       }),
       Document,
       Paragraph,
@@ -117,7 +115,7 @@ const TipTap = () => {
         },
       }),
     ],
-    content: text,
+    content: message,
   });
 
   const setLink = useCallback(() => {
@@ -196,10 +194,28 @@ const TipTap = () => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
 
-  const handleSend = () => {
-    // 메시지 전송 로직 (예: 서버로 전송, 상태 초기화 등)
-    alert("메시지 전송!");
-    // editor.commands.clearContent(); // 필요시 입력창 비우기
+  const handleSend = async () => {
+    console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
+
+    ////////////////////////////////////////////////
+    const token = localStorage.getItem("access_token")
+    console.log(jwtDecode<{ user_id: string }>(token!).user_id);
+    ////////////////////////////////////////////////
+
+    const content = editor?.getText() || "";
+    if (!content.trim()) return;
+
+    // 메시지 전송 시 profile data 저장
+    addProfile({
+      nickname: "Dongseok Lee (이동석)",
+      timestamp: new Date().getTime(),
+      image: "/profileTest.png",
+    });
+
+    // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
+    setMessage(content); // 메시지 저장
+    setSendFlag(true); // 전송 트리거
+    editor?.commands.clearContent();
   };
 
   if (!editor) {
