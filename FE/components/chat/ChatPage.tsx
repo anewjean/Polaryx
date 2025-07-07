@@ -29,13 +29,11 @@ export function ChatPage(workspaceId: string, tabId: string) {
   // }, [messages]);
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    const el = event.currentTarget;
-    console.log("in handle scroll");
-    console.log("messages:", messages);
-    if (el.scrollTop < 30 && !isFetching) {
-      setIsFetching(true); // 중복 요청 방지
+    const el = event.currentTarget; 
+    console.log("in handle scroll")
+    if (el.scrollTop < 30) {
       const oldestId = messages[0]?.id;
-      const previousHeight = el.scrollHeight;
+      const previousHeight = el.scrollHeight/2;
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
@@ -75,7 +73,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
-        {messages.map((msg, idx) => {
+        {[...messages].reverse().map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;

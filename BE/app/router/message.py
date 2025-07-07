@@ -26,8 +26,8 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     print("************ in find all messages **************")
     print(tab_id)
     # 페이징 위해 교체 로직
-    rows:list = await message_service.find_recent_messages(tab_id, before_id)
-    rows.reverse()
+    rows = await message_service.find_recent_messages(tab_id, before_id)
+
     # 원래 로직
     # rows = await message_service.find_all_messages(tab_id)
     print(rows)
