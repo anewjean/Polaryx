@@ -179,12 +179,10 @@ async def create_users(request: Request, workspace_id):
     data: dict = await request.json()
     fail_count: int = 0
     fail_list = []
-
     # step 1.일단 이름이랑 email 받아와서,
     # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
     for i in data["users"]:
         print("************************")
-        print(i["email"])
         target = UserService.find_user_by_email(i["email"])
         # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
         # 생성 하면서 user id 만들어주기.
@@ -199,7 +197,7 @@ async def create_users(request: Request, workspace_id):
                 "user_name": i["name"],
                 "user_email": i["email"],
                 "provider": "google",
-                "workspace_id": 1
+                "workspace_id": workspace_id
             }
             # usertable에 넣어주기.
             print("create_user_in_usertable\n")
@@ -234,7 +232,6 @@ async def create_users(request: Request, workspace_id):
                 "user_name": target[0][1],
                 "user_email": target[0][2],
                 "workspace_id": workspace_id,
-                "role_id": 1,
                 "id": wm_id,                
             }
 
