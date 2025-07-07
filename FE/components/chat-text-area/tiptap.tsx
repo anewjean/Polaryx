@@ -25,20 +25,19 @@ import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
+import { getPresignedUrl, uploadFile } from "@/apis/fileImport";
 // import { Send } from "lucide-react";
 
 // 실험용
 import { jwtDecode } from "jwt-decode";
 
 const TipTap = () => {
-  const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
+  const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
-  const isFetching = useMessageStore((s) => s.isFetching);
-  const setIsFetching = useMessageStore((s) => s.setIsFetching);
 
   const editor = useEditor({
     editable: true,
@@ -162,6 +161,15 @@ const TipTap = () => {
   const handleFileSelect = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
+
+      // 파일 업로드 전 presignedUrl 발급
+      const { presignedUrl, fileKey } = await getPresignedUrl(file as File);
+      // 파일 업로드
+      const fileUrl = await uploadFile(file as File, presignedUrl);
+
+      // 파일 url 저장
+      useMessageStore.getState().setFileUrl(fileUrl);
+
       if (file && editor) {
         // 파일 크기 제한 (5MB)
         if (file.size > 5 * 1024 * 1024) {
@@ -259,9 +267,7 @@ const TipTap = () => {
               if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
 
               event.preventDefault(); // 줄바꿈 방지
-              setIsFetching(true);
               handleSend();
-              setIsFetching(false); // 메시지 전송 후 플래그 초기화
             }
           }}
         />

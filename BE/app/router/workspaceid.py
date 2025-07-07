@@ -22,6 +22,7 @@ workspace_mem_repo = WorkspaceMemRepo()
 tab_members_repo = TabMembersRepo()
 tab_repo = TabRepo()
 sub_tab_repo = SubTabRepo()
+workspace_member_service = WorkspaceMemberService()
 
 
 # 먼저 워크스페이스 접근하려고 하면,
@@ -173,11 +174,6 @@ async def invite_member_to_tab(
 
     return
 
-
-
-
-
-
 @router.post("/{workspace_id}/users")
 async def create_users(request: Request, workspace_id):
     data: dict = await request.json()
@@ -286,6 +282,5 @@ async def create_users(request: Request, workspace_id):
 
 @router.get("/{workspace_id}/users")
 async def create_users(request: Request):
-    print(1)
-    columns = WorkspaceMemberService.get_member_by_workspace_columns()
-    return {"columns": columns}
+    columns = workspace_member_service.get_member_by_workspace_columns()
+    return columns
