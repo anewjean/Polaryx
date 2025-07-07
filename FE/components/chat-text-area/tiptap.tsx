@@ -31,7 +31,7 @@ import { getPresignedUrl, uploadFile } from "@/apis/fileImport";
 import { jwtDecode } from "jwt-decode";
 
 const TipTap = () => {
-  const { message, setMessage, setSendFlag, appendMessage } = useMessageStore();
+  const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
@@ -161,6 +161,9 @@ const TipTap = () => {
       const { presignedUrl, fileKey } = await getPresignedUrl(file as File);
       // 파일 업로드
       const fileUrl = await uploadFile(file as File, presignedUrl);
+
+      // 파일 url 저장
+      useMessageStore.getState().setFileUrl(fileUrl);
 
       if (file && editor) {
         // 파일 크기 제한 (5MB)

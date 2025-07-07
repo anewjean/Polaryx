@@ -10,11 +10,13 @@ interface JWTPayload {
 
 export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
-  const { message, sendFlag, setSendFlag } = useMessageStore();
+  const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
 
-  useEffect(()=>{
-    {console.log("websocket_client")}
-  })
+  useEffect(() => {
+    {
+      console.log("websocket_client");
+    }
+  });
 
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
@@ -60,9 +62,11 @@ export const WebSocketClient = () => {
       const data = {
         sender_id: userId,
         content: message,
+        file_url: fileUrl,
       };
-      console.log(data.sender_id, data.content); //note: 나중에 지울 것
+      console.log(data.sender_id, data.content, data.file_url); //note: 나중에 지울 것
       socketRef.current.send(JSON.stringify(data));
+      useMessageStore.getState().setFileUrl(null);
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, setSendFlag, message]);

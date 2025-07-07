@@ -24,6 +24,10 @@ interface MessageStore {
   messages: Message[];
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
+
+  // file url 저장
+  fileUrl: string | null;
+  setFileUrl: (url: string | null) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -44,4 +48,8 @@ export const useMessageStore = create<MessageStore>((set) => ({
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+
+  // file url 저장
+  fileUrl: null,
+  setFileUrl: (url) => set({ fileUrl: url }),
 }));

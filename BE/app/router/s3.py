@@ -26,5 +26,11 @@ def get_presigned_url(data: dict = Body(...)):
         },
         ExpiresIn=60  # 유효시간 60초
     )
-    print("url", url) # url 출력된다.
+
+    # url = url.split("?")[0] 하면 정적 url 반환
+    # message_id = data['message_id']
+
+    # excute()로 데이터베이스에 저장 -> query를 insert로 짜면 DB에 저장되는 것 같음.
+
+    print("url", url.split("?")[0]) # url 출력된다.
     return {"url": url, "key": file_key}
