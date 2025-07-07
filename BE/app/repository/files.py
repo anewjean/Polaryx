@@ -65,6 +65,7 @@ class QueryRepo(AbstractQueryRepo):
         super().__init__(db)
 
     def save_file_to_db(self, data: dict):
+        data["file_url"] = data.get("file_url") or ""
         return self.db.execute(insert_file, data)
 
     def find_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
