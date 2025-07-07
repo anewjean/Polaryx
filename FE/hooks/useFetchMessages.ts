@@ -9,6 +9,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
     async function fetch() {
       const res = await getMessages(workspaceId, tabId);
       //   setMessages(res.messages); // 서버 응답 구조에 따라
+      console.log("here")
       const messages = res.messages.map((msg: any) => ({
         id: msg.id,
         nickname: msg.nickname,

@@ -13,42 +13,36 @@ import { getMessages } from "@/apis/messages";
 // 채팅방 내 채팅
 export function ChatPage(workspaceId: string, tabId: string) {
   const messages = useMessageStore((state) => state.messages);
-  const containerRef = useRef<HTMLDivElement>(null);
   
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
   
-  
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+  const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
+    const el = event.currentTarget; 
+    console.log("in handle scroll")
+    if (el.scrollTop < 30) {
+      const oldestId = messages[messages.length-1]?.id;
+      const previousHeight = el.scrollHeight/2;
+
+      console.log("oldestID:", oldestId);
+      console.log("previousHeight:", previousHeight);
+      const res = await getMessages("1", "1", oldestId); // 과거 메시지 요청
     
-    const handleScroll = async () => {
-      if (el.scrollTop < 30) {
-        const oldestId = messages[0]?.id;
-        const previousHeight = el.scrollHeight;
+      console.log(res["messages"]);
 
-        const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
-      
-        if (res.length > 0) {
-          prependMessages(res);
-          // 스크롤 위치를 현재 위치만큼 유지
-          requestAnimationFrame(() => {
-            el.scrollTop = el.scrollHeight - previousHeight;
-          });
-        }
-        
+      if (res["messages"].length > 0) {        
+        prependMessages(res["messages"]);
+        // 스크롤 위치를 현재 위치만큼 유지
+        console.log("messages + res");
+        console.log(messages);
+
+        requestAnimationFrame(() => {
+          el.scrollTop = el.scrollHeight - previousHeight;
+        });
       }
-    };
-    el.addEventListener("scroll", handleScroll);
+    }
+  };
   
-    return () => el.removeEventListener("scroll", handleScroll);
-
-    // 원래 로직
-    // if (el) {
-    //   el.scrollTop = el.scrollHeight;
-    // }
-  }, [messages]);
 
   const dayStart = (iso: string) => {
     const d = new Date(iso);
@@ -59,11 +53,13 @@ export function ChatPage(workspaceId: string, tabId: string) {
   const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
 
   return (
-    <div className="flex-1 flex-col">
+    <div className="flex-1 min-h-0 overflow-y-auto" onScroll={(event)=> {
+      handleScroll(event)
+    }}>
       <WebSocketClient />
 
-      <div ref={containerRef} className="text-m min-h-0 px-5 w-full">
-        {messages.map((msg, idx) => {
+      <div className="text-m min-h-0 px-5 w-full">
+        {[...messages].reverse().map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;
