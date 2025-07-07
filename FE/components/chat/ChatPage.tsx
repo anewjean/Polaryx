@@ -14,6 +14,7 @@ export function ChatPage() {
   const messages = useMessageStore((state) => state.messages);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // 맨 아래 채팅에 고정
   useEffect(() => {
     const el = containerRef.current;
     if (el) {
@@ -30,10 +31,10 @@ export function ChatPage() {
   const initialDateKey = messages.length > 0 ? dayStart(messages[0].created_at!) : dayStart(new Date().toISOString());
 
   return (
-    <div className="flex-1 flex-col">
+    <div className="flex-1 flex flex-col min-h-0">
       <WebSocketClient />
 
-      <div ref={containerRef} className="text-m min-h-0 px-5 w-full">
+      <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
