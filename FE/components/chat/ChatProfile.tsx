@@ -11,6 +11,10 @@ interface ChatProfileProps {
   fileUrl: string | null;
 }
 
+function isImageFile(url: string) {
+  return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
+}
+
 export function ChatProfile({ imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
   return (
     <div className="flex px-[8px] py-[4.5px] hover:bg-[#F4F4F4] group">
@@ -46,7 +50,19 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile, file
           </div>
         )}
         <div className="text-m">{content}</div>
-        {fileUrl && <ImageWithModal fileUrl={fileUrl} />}
+        {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
+        {fileUrl && !isImageFile(fileUrl) && (
+          <div className="mt-2">
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+            >
+              📎 첨부파일 다운로드
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );
