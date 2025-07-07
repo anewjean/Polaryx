@@ -8,42 +8,54 @@ import { ChatProfile } from "./ChatProfile";
 // import { EditInput } from "./EditInput";
 // import { updateMessage } from "@/apis/messages";
 import { getMessages } from "@/apis/messages";
+import { is } from "date-fns/locale";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
 
 // 채팅방 내 채팅
 export function ChatPage(workspaceId: string, tabId: string) {
   const messages = useMessageStore((state) => state.messages);
-  
+
   //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isFetching = useMessageStore((s) => s.isFetching);
+  const setIsFetching = useMessageStore((s) => s.setIsFetching);
+
+  // useEffect(() => {
+  //   const el = containerRef.current;
+  //   if (el) {
+  //     el.scrollTop = el.scrollHeight;
+  //   }
+  // }, [messages]);
+
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    const el = event.currentTarget; 
-    console.log("in handle scroll")
+    const el = event.currentTarget;
+    console.log("in handle scroll");
     console.log("messages:", messages);
-    if (el.scrollTop < 30) {
+    if (el.scrollTop < 30 && !isFetching) {
+      setIsFetching(true); // 중복 요청 방지
       const oldestId = messages[0]?.id;
-      const previousHeight = el.scrollHeight/2;
+      const previousHeight = el.scrollHeight;
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
       const res = await getMessages("1", "1", oldestId); // 과거 메시지 요청
-    
+
       console.log(res["messages"]);
 
-      if (res["messages"].length > 0) {        
+      if (res["messages"].length > 0) {
         prependMessages(res["messages"]);
         // 스크롤 위치를 현재 위치만큼 유지
         console.log("messages + res");
         console.log(messages);
 
+        setIsFetching(false); // 요청 완료 후 플래그 초기화
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
         });
       }
     }
   };
-  
 
   const dayStart = (iso: string) => {
     const d = new Date(iso);
@@ -52,9 +64,13 @@ export function ChatPage(workspaceId: string, tabId: string) {
   };
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto" onScroll={(event)=> {
-      handleScroll(event)
-    }}>
+    <div
+      ref={containerRef}
+      className="flex-1 min-h-0 overflow-y-auto"
+      onScroll={(event) => {
+        handleScroll(event);
+      }}
+    >
       <WebSocketClient />
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
@@ -84,7 +100,7 @@ export function ChatPage(workspaceId: string, tabId: string) {
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                imgSrc={msg.image != 'none_image' ? msg.image : "/profileDefault.png"}
+                imgSrc={msg.image != "none_image" ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
                 time={
                   msg.created_at
