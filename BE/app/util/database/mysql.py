@@ -18,7 +18,8 @@ class MySQL(DBImpl):
             user=settings.DB_USER,
             password=settings.DB_PASSWORD,
             database=settings.DB_NAME,
-            connect_timeout=settings.CONNECTION_TIMEOUT
+            connect_timeout=settings.CONNECTION_TIMEOUT,
+            autocommit=True
         )
         self.connection = connection
 
@@ -36,7 +37,7 @@ class MySQL(DBImpl):
                 result = self.cursor.fetchall()
             
             elif query_type in ("insert", "update", "delete"):
-                self.connection.commit()
+                # self.connection.commit()
 
                 result = {
                     "rowcount": self.cursor.rowcount,
