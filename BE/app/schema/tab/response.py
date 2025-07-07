@@ -4,12 +4,12 @@ from typing import Optional, List
 from uuid import UUID
 
 class TabInfo(BaseModel):
-    tab_id: str
+    tab_id: int
     tab_name: str
-    section_id: str
+    section_id: int
     section_name: str
-    subsection_id: Optional[str]
-    sub_section_name: Optional[str]
+    subsection_id: Optional[int]
+    subsection_name: Optional[str]
 
     @classmethod
     def from_row(cls, row: tuple) -> TabInfo:
@@ -18,18 +18,18 @@ class TabInfo(BaseModel):
             tab_name=row[1],
             section_id=row[2],
             section_name=row[3],
-            sub_section_id=row[4],
-            sub_section_name=row[5]
+            subsection_id=row[4],
+            subsection_name=row[5]
         )
 
 
 class TabDetailInfo(BaseModel):
-    tab_id: str
+    tab_id: int
     tab_name: str
-    section_id: str
+    section_id: int
     section_name: str
-    subsection_id: Optional[str]
-    sub_section_name: Optional[str]
+    subsection_id: Optional[int]
+    subsection_name: Optional[str]
     members_count: int
 
     @classmethod
@@ -41,8 +41,8 @@ class TabDetailInfo(BaseModel):
             tab_name=row[1],
             section_id=row[2],
             section_name=row[3],
-            sub_section_id=row[4],
-            sub_section_name=row[5],
+            subsection_id=row[4],
+            subsection_name=row[5],
             members_count=members_count
         )
 
@@ -52,7 +52,7 @@ class TabMember(BaseModel):
     nickname: str
     image: Optional[str]
     role: str
-    groups: List[str]
+    groups: Optional[List[str]]
 
     @classmethod
     def from_row(cls, row: tuple) -> TabMember:
@@ -61,7 +61,7 @@ class TabMember(BaseModel):
             nickname=row[1],
             image=row[2],
             role=row[3],
-            groups=[row[4]]
+            groups=[row[4]] if row[4] is not None else []
         )
 
 class TabInvitation(BaseModel):
