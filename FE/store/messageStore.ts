@@ -6,6 +6,7 @@ interface Message {
   image: string;
   content: string;
   created_at: string | undefined;
+  file_url: string | null;
 }
 
 interface MessageStore {

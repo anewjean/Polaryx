@@ -7,9 +7,10 @@ interface ChatProfileProps {
   time: string;
   content: string;
   showProfile: boolean;
+  fileUrl: string | null;
 }
 
-export function ChatProfile({ imgSrc, nickname, time, content, showProfile }: ChatProfileProps) {
+export function ChatProfile({ imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
   return (
     <div className="flex px-[8px] py-[4.5px] hover:bg-[#F4F4F4] group">
       {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
@@ -44,6 +45,7 @@ export function ChatProfile({ imgSrc, nickname, time, content, showProfile }: Ch
           </div>
         )}
         <div className="text-m">{content}</div>
+        {fileUrl && <img src={fileUrl} alt="file" className="w-[100px] h-[100px]" />}
       </div>
     </div>
   );

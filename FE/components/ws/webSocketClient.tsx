@@ -33,7 +33,7 @@ export const WebSocketClient = () => {
       try {
         const msg = JSON.parse(event.data);
         console.log("get append message");
-        console.log(msg);
+        console.log(msg.file_url);
         useMessageStore.getState().appendMessage(msg);
       } catch {
         console.warn("Invalid message format: ", event.data);
@@ -74,6 +74,7 @@ export const WebSocketClient = () => {
 
       const payload = {
         sender_id: user_id,
+        // sender_id: "10CE9BCC5B0211F0A3ABE1F31FC066BF",
         content: message,
         file_url: fileUrl,
       };
