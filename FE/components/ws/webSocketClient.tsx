@@ -1,5 +1,7 @@
 "use client";
 
+const BASE = process.env.NEXT_PUBLIC_BASE
+
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { jwtDecode } from "jwt-decode";
@@ -19,9 +21,10 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
   });
 
   useEffect(() => {
-    // 디버깅용
+
     console.log("new web sokcet");
-    const socket = new WebSocket(`ws://localhost:8000/ws/${workspaceId}/${tabId}`);
+    const socket = new WebSocket(`ws://${BASE}/ws/${workspaceId}/${tabId}`);
+
 
     socketRef.current = socket;
 
@@ -39,11 +42,6 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
         console.warn("Invalid message format: ", event.data);
       }
     };
-
-    //   const [nickname, ...contentArr] = event.data.split(":");
-    //   const content = contentArr.join(":");
-    //   useMessageStore.getState().appendMessage({ id: undefined, nickname, content, created_at: undefined });
-    // };
 
     socket.onerror = (error) => {
       console.error("❗ WebSocket 에러 발생", error);

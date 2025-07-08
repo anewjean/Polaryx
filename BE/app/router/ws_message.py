@@ -64,7 +64,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "image": image,
                 "created_at": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
             }
-            print(payload)
+            # print(payload)
 
             message_id = await message_service.save_message(tab_id, sender_id, content)
             
