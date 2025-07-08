@@ -15,16 +15,16 @@ export function ChatHeader() {
             <TabMembers />
           </div>
         </div>
-        <div className="flex items-center h-[38px] px-[16px] border-b-2">
-          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
+        <div className="flex items-center h-[38px] px-[16px] border-b-2 gap-0">
+          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
             <MessageCircle className="w-[16px] mr-[4px]" />
-            <p className="text-center text-s-bold">메시지</p>
+            <p className="text-center text-s-bold">Message</p>
           </div>
-          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
+          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
             <StickyNote className="w-[16px] mr-[4px]" />
-            <p className="text-center text-s-bold">캔버스</p>
+            <p className="text-center text-s-bold">Canvas</p>
           </div>
-          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md"></div>
+          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md"></div>
         </div>
       </div>
     </div>
