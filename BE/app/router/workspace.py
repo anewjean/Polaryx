@@ -83,35 +83,40 @@ async def create_users(request: Request, workspace_id):
         # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
         # 생성 하면서 user id 만들어주기.
 
+        if target:
+            # 이미 존재하는 유저는 실패로 간주
+            print("이미 존재하는 유저\n")
+            fail_count += 1
+            fail_list.append(i["name"])
+            continue
+
+        # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
+        uuid_obj1 = uuid.uuid4()
+        user_uuid = uuid_obj1.bytes
+
+        target_data = {
+            "id": user_uuid,
+            "user_name": i["name"],
+            "user_email": i["email"],
+            "provider": "google",
+            "workspace_id": 1
+        }
+        # usertable에 넣어주기.
+        UserService.create_user_in_usertable(target_data)
+
+        print("create_member_roles\n")
+        create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
+
+        # 잘 들어갔는지 확인.
+        print("find_user_by_email\n")
+        target = UserService.find_user_by_email(target_data["user_email"])
+        # user가 안만들어졌다? -> error
         if not target:
-            print("in not target\n")
-            # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
-            user_uuid = uuid_obj1.bytes
-
-            target_data = {
-                "id": user_uuid,
-                "user_name": i["name"],
-                "user_email": i["email"],
-                "provider": "google",
-                "workspace_id": 1
-            }
-            # usertable에 넣어주기.
-            UserService.create_user_in_usertable(target_data)
-
-            print("create_member_roles\n")
-            create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
-
-            # 잘 들어갔는지 확인.
-            print("find_user_by_email\n")
-            target = UserService.find_user_by_email(target_data["user_email"])
-            # user가 안만들어졌다? -> error
-            if not target:
-                print("\nerror\n")
-                print("no target\n")
-                fail_count += 1
-                fail_list.append(i["name"])
-                continue
+            print("\nerror\n")
+            print("no target\n")
+            fail_count += 1
+            fail_list.append(i["name"])
+            continue
 
         target_user_id = target[0][0]
         print("get_member_by_user_id\n")
