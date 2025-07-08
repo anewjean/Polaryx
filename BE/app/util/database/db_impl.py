@@ -1,7 +1,6 @@
 from abc import ABCMeta
 from mysql.connector import pooling
 from app.config.config import settings 
-import mysql.connector
 
 class ConnectionError(Exception):
     pass

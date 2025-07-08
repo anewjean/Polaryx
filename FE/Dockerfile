@@ -1,8 +1,8 @@
 FROM node:20-alpine
 
-ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_BASE
 
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
+ENV NEXT_PUBLIC_BASE=$NEXT_PUBLIC_BASE 
 
 WORKDIR /app
 
@@ -10,8 +10,6 @@ COPY ./package*.json .
 RUN npm install
 
 COPY . .
-# 필요없는 부분 제거
-# RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL"
 RUN npm run build
 
 # RUN npm run build 
