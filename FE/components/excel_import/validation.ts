@@ -12,13 +12,6 @@ export function filterUsers(data: any[]): { users: any[]; errors: string[] } {
       continue;
     }
 
-    let roles: string[] = [];
-    if (typeof row.role === "string") {
-      roles = row.role.split(",").map((r: string) => r.trim());
-      // 허용된 role만 있는지 검사
-      const allValid = roles.every((role) => allowedRoles.includes(role));
-      if (!allValid) continue;
-    }
     users.push(row);
   }
   return {
