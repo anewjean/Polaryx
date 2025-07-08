@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { jwtDecode } from "jwt-decode";
+import { useParams } from "next/navigation";
 
 interface JWTPayload {
   user_id: string;
@@ -11,6 +12,9 @@ interface JWTPayload {
 export const WebSocketClient = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  const tabId = params.tabId as string;
 
   useEffect(() => {
     {
@@ -21,7 +25,7 @@ export const WebSocketClient = () => {
   useEffect(() => {
     // 디버깅용
     console.log("new web sokcet");
-    const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
+    const socket = new WebSocket(`ws://localhost:8000/ws/${workspaceId}/${tabId}`);
 
     socketRef.current = socket;
 
