@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { useEffect, useState } from "react";
 import { ExUpload } from "@/components/excel_import/exImportButton";
-import { TabMembers } from "@/components/tab/TabMembers";
+import { TabMembers } from "@/components/modal/TabMembers";
 import { getMemberList, getPossibleMemberList } from "@/apis/tabApi";
 import { Member } from "@/apis/tabApi";
 

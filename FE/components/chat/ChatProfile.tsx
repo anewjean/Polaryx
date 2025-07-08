@@ -30,8 +30,12 @@ export function ChatProfile({ key, imgSrc, nickname, time, content, showProfile,
             <div className="relative">
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <button className="w-[36px] mr-[8px] cursor-pointer">
-                    <img src={imgSrc} className="w-[36px] h-[36px] mt-1 rounded-md object-cover" alt="profile" />
+                  <button className="w-[40px] mr-[8px] cursor-pointer">
+                    <img
+                      src={imgSrc}
+                      className="w-[40px] h-[40px] mt-1 rounded-lg object-cover bg-gray-400"
+                      alt="profile"
+                    />
                   </button>
                 </HoverCardTrigger>
                 <MiniProfile imgSrc={imgSrc} nickname={nickname} />

@@ -41,7 +41,7 @@ export default function AppSidebar({ width }: SidebarProps) {
   // URL에서 workspaceId, tabId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
-  const tabId = params.tabId as string;  
+  const tabId = params.tabId as string;
 
   // 워크스페이스 이름 상태 관리
   const [workspaceInfo, setWorkspaceInfo] = useState<workspace | null>(null);
@@ -52,8 +52,9 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 프로필 상태 관리
   const [profile, setProfile] = useState<Profile | null>(null);
 
-  // 탭 생성 모달 상태 관리
+  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
   const { openSections, toggleSection } = useSectionStore();
@@ -62,9 +63,10 @@ export default function AppSidebar({ width }: SidebarProps) {
   const [tabName, setTabName] = useState("");
 
   // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
-  const handleModalOpenChange = (open: boolean) => {
-    setIsModalOpen(open);
-    if (!open) {
+  const handleModalOpenChange = (isOpen: boolean, sectionId: string | null = null) => {
+    setIsModalOpen(isOpen);
+    setSelectedSectionId(isOpen ? sectionId : null);
+    if (!isOpen) {
       setTabName("");
     }
   };
@@ -177,7 +179,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                       title="Create a Tab"
                       defaultOpen={false}
                       open={isModalOpen}
-                      onOpenChange={handleModalOpenChange}
+                      onOpenChange={(isOpen) => handleModalOpenChange(isOpen, section.id.toString())}
                       trigger={
                         <SidebarMenuItem>
                           <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0">
@@ -208,7 +210,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                           </Button>
                           <Button
                             variant="default"
-                            onClick={() => handleAddTab(section.id, tabName)}
+                            onClick={() => selectedSectionId && handleAddTab(selectedSectionId, tabName)}
                             disabled={tabName.trim() === ""}
                             className="flex flex-1"
                           >

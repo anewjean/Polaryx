@@ -123,7 +123,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
               {/* 각각의 채팅 */}
               <ChatProfile
                 key={msg.id ? msg.id : 0}
-                imgSrc={msg.image ? msg.image : "/profileDefault.png"}
+                imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
                 time={
                   msg.created_at

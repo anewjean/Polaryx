@@ -1,15 +1,17 @@
 "use client";
 
+import { Member } from "@/apis/tabApi";
 import { ReactNode } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface MemberModalProps {
-  trigger: ReactNode;
+  trigger?: ReactNode;
   title?: string;
   children: ReactNode;
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  possibleMembers?: Member[];
 }
 
 export function MemberModal({ trigger, title, children, defaultOpen = false, open, onOpenChange }: MemberModalProps) {

@@ -1,5 +1,5 @@
 import { MessageCircle, StickyNote } from "lucide-react";
-import { TabMembers } from "@/components/tab/TabMembers";
+import { TabMembers } from "@/components/modal/TabMembers";
 
 export function ChatHeader() {
   return (
@@ -8,7 +8,8 @@ export function ChatHeader() {
         <div className="flex items-center h-[50px] px-[17px]">
           <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
             <div className="flex items-center">
-              <img src="/profileDefault.png" className="w-[24px] h-[24px] mr-[8px] rounded-md object-cover" />
+              {/* 추후 DM 탭만 프로필 이미지 표시 */}
+              <img src="/user_default.png" className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover" />
               <p className="text-l">어디갔어 이거</p>
             </div>
             <TabMembers />
@@ -23,8 +24,7 @@ export function ChatHeader() {
             <StickyNote className="w-[16px] mr-[4px]" />
             <p className="text-center text-s-bold">캔버스</p>
           </div>
-          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">            
-          </div>
+          <div className="flex items-center w-[72px] p-[8px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md"></div>
         </div>
       </div>
     </div>
