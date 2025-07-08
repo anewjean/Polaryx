@@ -22,13 +22,12 @@ def validate_tab_name(workspace_id: str, section_id: str, name: str = Query(None
 @router.post("/{workspace_id}/tabs", response_model=CreateTabResponse)
 def create_tab(workspace_id: int, tab_data: CreateTabRequest, user_info: Dict = Depends(verify_token_and_get_token_data)):
     user_id = user_info.get("user_id")
-def create_tab(workspace_id: int, tab_data: CreateTabRequest, user_info: Dict = Depends(verify_token_and_get_token_data)):
-    user_id = user_info.get("user_id")
     tab_name = tab_data.tab_name
     section_id = tab_data.section_id
     subsection_id = tab_data.subsection_id
+    print(user_id, workspace_id, tab_name, section_id, subsection_id)
     rows = service.create_tab(user_id, workspace_id, tab_name, section_id, subsection_id)
-    rows = service.create_tab(user_id, workspace_id, tab_name, section_id, subsection_id)
+    print(rows)
     return CreateTabResponse.from_row(rows[0])
 
 # 참여중인 탭 리스트 조회
