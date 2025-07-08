@@ -43,11 +43,23 @@ class MySQL(DBImpl):
                     "lastrowid": getattr(cursor, "lastrowid", None)  # insert일 경우
                 }
 
-            cursor.close()
-            cnx.close()
-            return result 
         except Exception as e:
             raise ExecuteError(f"쿼리 실행에 실패했습니다 :: {e}")
+
+        finally:
+            try:
+                print("******** cursor.close() 실행 ********")
+                cursor.close()
+            except Exception:
+                print("cursor.close() 실패.")
+                pass
+            try:
+                print("******** cnx.close() 실행 ********")
+                cnx.close()
+            except:
+                print("cnx.close() 실패.")
+                pass
+        return result 
 
     def execute_many(self, query, bind_value, fields=None):
         try:

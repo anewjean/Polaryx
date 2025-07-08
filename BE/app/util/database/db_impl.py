@@ -28,5 +28,5 @@ pool = pooling.MySQLConnectionPool(
 class DBImpl(metaclass = ABCMeta):
     def __init__(self):
         self.pool = pool
-        self.connection = pool.get_connection()
-        self.cursor = self.connection.cursor()
+        # self.connection = pool.get_connection()
+        # self.cursor = self.connection.cursor()
