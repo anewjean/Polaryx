@@ -63,9 +63,8 @@ export const systemMessage = async (workspaceId: string, tabId: string, timestam
   });
 };
 
-
 // DM 메시지 보내기
-export async function sendDirectMessage(workspaceId: string, userIds: string[]): Promise<{ tabId: number }> {
+export async function sendDirectMessage(workspaceId: string, userIds: string[]): Promise<{ tab_id: number }> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
@@ -81,6 +80,3 @@ export async function sendDirectMessage(workspaceId: string, userIds: string[]):
   if (!res.ok) throw new Error("DM 생성 실패");
   return res.json();
 }
-
-
-

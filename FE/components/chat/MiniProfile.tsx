@@ -12,10 +12,9 @@ interface MiniProfileProps {
 }
 
 export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
-  // URL에서 workspaceId, tabId 추출
+  // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
-  const tabId = params.tabId as string;
 
   // 라우터
   const router = useRouter();
@@ -27,7 +26,8 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   const createDM = async (userIds: string[]) => {
     try {
       const res = await sendDirectMessage(workspaceId, userIds);
-      router.push(`/workspaces/${workspaceId}/tabs/${res.tabId}`);
+      console.log("DM 생성 응답:", res);
+      router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
     } catch (error) {
       console.error("DM 생성 중 오류:", error);
     }
