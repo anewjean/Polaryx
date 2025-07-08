@@ -25,7 +25,8 @@ import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
-import { getPresignedUrl, uploadFile } from "@/apis/fileImport";
+import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
+import { useFileStore } from "@/store/fileStore";
 // import { Send } from "lucide-react";
 
 // 실험용
@@ -161,9 +162,10 @@ const TipTap = () => {
   const handleFileSelect = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
+      useFileStore.getState().setFile(file || null); // file store에 file 저장
 
       // 파일 업로드 전 presignedUrl 발급
-      const { presignedUrl, fileKey } = await getPresignedUrl(file as File);
+      const { presignedUrl, fileKey } = await putPresignedUrl(file as File);
       // 파일 업로드
       const fileUrl = await uploadFile(file as File, presignedUrl);
 
