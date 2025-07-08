@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:8000";
+const BASE = "127.0.0.1:8000";
 
 export interface workspace {
   workspace_id: number;
@@ -11,7 +11,7 @@ export async function getWorkspaceName(workspaceId: string): Promise<workspace> 
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-    const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/title`, {
+    const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/title`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,

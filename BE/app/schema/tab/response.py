@@ -52,7 +52,7 @@ class TabMember(BaseModel):
     nickname: str
     image: Optional[str]
     role: str
-    groups: Optional[List[str]]
+    groups: List[Optional[str]]
 
     @classmethod
     def from_row(cls, row: tuple) -> Optional[TabMember]:
