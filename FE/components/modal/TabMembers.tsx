@@ -43,7 +43,7 @@ export function TabMembers() {
       // 탭 멤버 목록 조회
       getMemberList(workspaceId, tabId).then(setTabMembers);
     }
-  }, [workspaceId, tabId]);
+  }, [isAddModalOpen]);
 
   // 참여 가능 멤버 목록 조회
   const handleAddMember = () => {
