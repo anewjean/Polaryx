@@ -7,6 +7,8 @@ from app.repository.tab_members import QueryRepo as TabMembersRepo
 from app.repository.tabs import QueryRepo as TabRepo
 from app.repository.sub_tabs import QueryRepo as SubTabRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
+from app.repository.roles import RolesRepository # 명훈 추가
+from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 
 from app.service.users import UserService
 from app.service.workspace import WorkspaceService
@@ -23,6 +25,8 @@ tab_members_repo = TabMembersRepo()
 tab_repo = TabRepo()
 sub_tab_repo = SubTabRepo()
 workspace_member_service = WorkspaceMemberService()
+roles_repo = RolesRepository() # 명훈 추가
+member_roles_repo = MemberRolesRepository() # 명훈 추가
 
 
 @router.get("/{workspace_id}")
@@ -72,39 +76,47 @@ async def create_users(request: Request, workspace_id):
 
     # step 1.일단 이름이랑 email 받아와서,
     # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
+    print("create_users\n")
     for i in data["users"]:
-        print("************************")
-        print(i["email"])
         target = UserService.find_user_by_email(i["email"])
+        print("target", target)
         # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
         # 생성 하면서 user id 만들어주기.
+
+        if target:
+            # 이미 존재하는 유저는 실패로 간주
+            print("이미 존재하는 유저\n")
+            fail_count += 1
+            fail_list.append(i["name"])
+            continue
+
+        # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
+        uuid_obj1 = uuid.uuid4()
+        user_uuid = uuid_obj1.bytes
+
+        target_data = {
+            "id": user_uuid,
+            "user_name": i["name"],
+            "user_email": i["email"],
+            "provider": "google",
+            "workspace_id": 1
+        }
+        # usertable에 넣어주기.
+        UserService.create_user_in_usertable(target_data)
+
+        print("create_member_roles\n")
+        create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
+
+        # 잘 들어갔는지 확인.
+        print("find_user_by_email\n")
+        target = UserService.find_user_by_email(target_data["user_email"])
+        # user가 안만들어졌다? -> error
         if not target:
-            print("in not target\n")
-            # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
-            user_uuid = uuid_obj1.bytes
-
-            target_data = {
-                "id": user_uuid,
-                "user_name": i["name"],
-                "user_email": i["email"],
-                "provider": "google",
-                "workspace_id": 1
-            }
-            # usertable에 넣어주기.
-            print("create_user_in_usertable\n")
-            UserService.create_user_in_usertable(target_data)
-
-            # 잘 들어갔는지 확인.
-            print("find_user_by_email\n")
-            target = UserService.find_user_by_email(target_data["user_email"])
-            # user가 안만들어졌다? -> error
-            if not target:
-                print("\nerror\n")
-                print("no target\n")
-                fail_count += 1
-                fail_list.append(i["name"])
-                continue
+            print("\nerror\n")
+            print("no target\n")
+            fail_count += 1
+            fail_list.append(i["name"])
+            continue
 
         target_user_id = target[0][0]
         print("get_member_by_user_id\n")
@@ -152,6 +164,15 @@ async def create_users(request: Request, workspace_id):
     
     return result 
 
+def create_member_roles(i, user_id: str):
+    roles = roles_repo.get_all_roles()
+    role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
+
+    if role_id is None:
+        raise ValueError(f"역할 {i['role']}에 해당하는 role_id를 찾을 수 없습니다.")
+
+    test = member_roles_repo.insert_member_roles(user_id, role_id)
+    print("test", test)
 
 @router.get("/{workspace_id}/users")
 async def create_users(request: Request):
