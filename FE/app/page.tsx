@@ -1,5 +1,7 @@
 "use client";
 
+const BASE = process.env.NEXT_PUBLIC_BASE
+
 import React, { useMemo } from "react";
 import { LoginButton } from "../components/login/LoginButton";
 import { useEffect } from "react";
@@ -56,7 +58,7 @@ export default function Page() {
         const token = localStorage.getItem("access_token");
         console.log(token);
 
-        const res = await fetch(`http://localhost:8000/api/auth/check`, {
+        const res = await fetch(`http://${BASE}/api/auth/check`, {
           headers: { authorization: `Bearer ${token}` },
         });
 

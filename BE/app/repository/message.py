@@ -125,6 +125,7 @@ class QueryRepo(AbstractQueryRepo):
         return self.db.execute(find_all_messages, param)
 
     def find_recent_30(self, tab_id: int, before_id: int | None) -> List[Message]:
+        print("before_id: ", before_id)
         if before_id == None:
             param = {
                 "tab_id": tab_id, 

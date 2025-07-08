@@ -1,3 +1,5 @@
+const BASE = process.env.NEXT_PUBLIC_BASE
+
 const request = async <T = any>(path: string, options: RequestInit = {}): Promise<T> => {
   const response = await fetch(path, {
     headers: { "Content-Type": "application/json" },
@@ -20,7 +22,7 @@ export const updateMessage = async (id: number, message: string) => {
 };
 
 export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number) => {
-  return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
+  return request(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
     method: "POST",
   });
 };
@@ -33,7 +35,7 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 
 export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
   
-  const url = new URL(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
+  const url = new URL(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
 
   // beforeId가 있을 경우 쿼리로 추가
   if (beforeId !== undefined) {
