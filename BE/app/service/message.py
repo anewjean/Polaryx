@@ -41,6 +41,9 @@ class MessageService:
     async def save_file_to_db(self, data: dict):
         self.files_repo.save_file_to_db(data)
 
+    async def find_file_by_message_id(self, data: dict):
+        self.files_repo.find_file_by_message_id(data)
+
     # 디버깅용 다지우기 함수
     async def delete_all_message(self):
         self.message_repo.delete_all()

@@ -29,8 +29,8 @@ SET
 WHERE;
 """
 
-find_member_by_user_id = """
-SELECT * FROM workspace_members 
+find_file_by_message_id = """
+SELECT * FROM files 
 WHERE user_id = %(id)s;
 """
 
@@ -67,11 +67,8 @@ class QueryRepo(AbstractQueryRepo):
     def save_file_to_db(self, data: dict):
         return self.db.execute(insert_file, data)
 
-    def find_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
-        param = {
-            "id": id
-        }
-        return self.db.execute(find_member_by_user_id, param)
+    def find_file_by_message_id(self, data: dict):
+        return self.db.execute(find_file_by_message_id, data)
 
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {

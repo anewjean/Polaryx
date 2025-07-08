@@ -5,7 +5,7 @@ from app.service.workspace_member import WorkspaceMemberService
 from uuid import UUID
 
 
-router = APIRouter(prefix="/api/workspaces")
+router = APIRouter(prefix="/workspaces")
 service = WorkspaceMemberService()
 
 @router.get("/{workspace_id}/members/{user_id}/profile", response_model=WorkspaceMemberSchema)
