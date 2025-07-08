@@ -16,10 +16,15 @@ class WorkspaceMemberService:
         workspace_member = self.workspace_member_repo.insert_workspace_member(data)
         return workspace_member
 
-    def get_member_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
-        workspace_member = self.workspace_member_repo.find_by_user_id(id.bytes)
-        return workspace_member
+    # def get_member_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
+    #     workspace_member = self.workspace_member_repo.find_by_user_id(id.bytes)
+    #     return workspace_member
     
+    def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
+        user_id_bytes = id.bytes if isinstance(id, UUID) else id  
+        return self.workspace_member_repo.find_by_user_id(user_id_bytes)
+
+
     def get_member_by_email(self, email: str) -> WorkspaceMember:
         workspace_member = self.workspace_member_repo.find_by_email(email)
         return workspace_member
@@ -31,12 +36,6 @@ class WorkspaceMemberService:
     def get_member_by_workspace_columns(self) -> list[str]:
         workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
         return workspace_columns
-    
-    # def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
-    #   user_id_bytes = user_id.bytes  # BINARY(16)에 맞게 변환
-    #   updated_member = self.workspace_member_repo.update(user_id_bytes, payload)
-    #   return WorkspaceMemberResponse(workspace_member=updated_member)
-  
   
     def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
         user_id_bytes = user_id.bytes  # BINARY(16)에 맞게 변환
