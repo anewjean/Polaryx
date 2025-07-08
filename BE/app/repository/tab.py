@@ -135,6 +135,14 @@ JOIN workspace_members wm
 WHERE tm.tab_id = %(tab_id)s;
 """
 
+find_tabs_by_id = """
+SELECT * FROM tabs WHERE id = %(id)s;
+"""
+
+find_tab_member_by_user_id = """
+SELECT * FROM tab_members WHERE user_id = %(user_id)s;
+"""
+
 class TabRepository(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -174,6 +182,13 @@ class TabRepository(AbstractQueryRepo):
         }
         return self.execute(find_tab_by_uq, param)
     
+    def find_tabs_by_id(self, tab_id: int):
+        param = {
+            # "workspace_id": workspace_id,
+            "id": tab_id
+        }
+        return self.execute(find_tabs_by_id, param)
+    
     def find_all(self, workspace_id: int, user_id: str):
         param = {
             "workspace_id": workspace_id,
@@ -181,7 +196,7 @@ class TabRepository(AbstractQueryRepo):
         }
         return self.execute(find_tabs, param)
     
-    def validate_section_in_workspace(self, section_id: int, workspace_id: int) -> bool:
+    def validate_section_in_workspace(self, section_id: int, workspace_id: int):
         param = {
             "workspace_id": workspace_id,
             "section_id": section_id
@@ -215,3 +230,8 @@ class TabRepository(AbstractQueryRepo):
 
         return self.execute(find_nicknames, {"tab_id": tab_id})
     
+    def find_by_user_id(self, user_id: UUID.bytes):
+        param = {
+            "user_id": user_id
+        }
+        return self.db.execute(find_tab_member_by_user_id, param)
