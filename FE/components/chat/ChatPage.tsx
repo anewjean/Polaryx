@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-// import { useMessageProfileStore } from "@/store/messageProfileStore";
-// import { ChatEditButton } from "./chatEditButton";
-import { EditInput } from "./EditInput";
 import { updateMessage } from "@/apis/messages";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
@@ -15,18 +12,10 @@ import { elementFromString } from "@tiptap/core";
 // 채팅방 내 채팅
 export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
   const messages = useMessageStore((state) => state.messages);
-  //////////////////// 추가 ////////////////////
   const prependMessages = useMessageStore((state) => state.prependMessages);
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
-
-  // useEffect(() => {
-  //   const el = containerRef.current;
-  //   if (el) {
-  //     el.scrollTop = el.scrollHeight;
-  //   }
-  // }, [messages]);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
@@ -52,7 +41,6 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
     const el = event.currentTarget;
     console.log("in handle scroll");
     if (el.scrollTop < 30 && !isFetching.current) {
-      // if (!isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.id;
@@ -71,7 +59,6 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
         console.log(messages);
 
         isFetching.current = false;
-        // isFetching.current = false; // 요청 완료 후 플래그 초기화
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
           // el.scrollTop = el.scrollHeight;

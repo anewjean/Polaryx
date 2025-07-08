@@ -22,7 +22,7 @@ export default function ChannelDefault() {
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
   const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
 
-  useFetchMessages("1", "1");
+  useFetchMessages(workspaceId, tabId);
 
   useEffect(() => {
     if (workspaceId && tabId) {
