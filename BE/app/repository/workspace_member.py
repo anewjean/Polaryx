@@ -112,6 +112,7 @@ class QueryRepo(AbstractQueryRepo):
     def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
         params = update_data.dict()
         params["user_id"] = id if isinstance(id, bytes) else UUID(id).bytes
+  
         return self.db.execute(update_workspace_member_by_user_id, params)
 
     def find_by_user_id(self, user_id: UUID.bytes) -> WorkspaceMember:

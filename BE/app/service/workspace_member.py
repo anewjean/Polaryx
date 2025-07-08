@@ -17,12 +17,13 @@ class WorkspaceMemberService:
         return workspace_member
 
     # def get_member_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
-    #     workspace_member = self.workspace_member_repo.find_by_user_id(id.bytes)
+    #     workspace_member = self.workspace_member_repo.find_by_user_id(id)
     #     return workspace_member
     
     def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
         user_id_bytes = id.bytes if isinstance(id, UUID) else id  
-        return self.workspace_member_repo.find_by_user_id(user_id_bytes)
+        workspace_member = self.workspace_member_repo.find_by_user_id(user_id_bytes)
+        return workspace_member
 
 
     def get_member_by_email(self, email: str) -> WorkspaceMember:
