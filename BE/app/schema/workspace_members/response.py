@@ -21,7 +21,7 @@ class WorkspaceMemberSchema(BaseModel):
             email=row[3],
             image=row[4],
             role=row[5],
-            groups=[row[6]] if isinstance(row[6], str) else row[6],
+            groups=row[6].split(',') if isinstance(row[6], str) else [],
             github=row[7],
             blog=row[8]
         )

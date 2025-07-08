@@ -15,7 +15,7 @@ export function MiniProfile({ imgSrc, nickname }: MiniProfileProps) {
     <div>
       <HoverCardContent side="top" className="flex items-center HoverCardContent">
         <div>
-          <img src={imgSrc} className="w-[60px] h-[60px] rounded-md mr-3 object-cover" />
+          <img src={imgSrc} className="w-[60px] h-[60px] rounded-lg bg-gray-400 mr-3 object-cover" />
         </div>
         <div>
           <div className="ml-0.5 text-m-bold">{nickname}</div>
