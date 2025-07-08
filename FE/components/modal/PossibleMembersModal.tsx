@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { MemberModal } from "./MemberModal";
 import { UserMenuItem } from "@/components/tab/UserMenuItem";
 import { useParams } from "next/navigation";
-import { Alert } from "@/components/ui/alert";
+import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 
 export interface possibleMembersProps {
@@ -62,26 +62,15 @@ export function PossibleMembersModal({
         selectedMembers.map((member) => member.user_id),
       );
     } catch (error) {
-      Alert({
-        variant: "destructive",
-        children: (
-          <div className="flex flex-row justify-start items-center gap-2">
-            <Ban className="size-6 text-red-500" />
-            <span className="text-md font-bold text-red-500">초대에 실패했습니다</span>
-          </div>
-        ),
+      toast.error("초대에 실패했습니다", {
+        icon: <Ban className="size-5" />,
       });
+      return;
     }
-    onOpenChange(false);
-    Alert({
-      variant: "default",
-      children: (
-        <div className="flex flex-row justify-start items-center gap-2">
-          <CircleCheck className="size-6 text-green-500" />
-          <span className="text-md font-bold text-green-500">{selectedMembers.length}명이 초대되었습니다</span>
-        </div>
-      ),
+    toast.success(`${selectedMembers.length}명이 초대되었습니다`, {
+      icon: <CircleCheck className="size-5" />,
     });
+    onOpenChange(false);
   };
 
   return (

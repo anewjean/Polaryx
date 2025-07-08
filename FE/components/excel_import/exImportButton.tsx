@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { createUsers } from "@/apis/excelApi";
 import { detectTyposJaccard } from "./detectTyposJaccard";
 import { useMemberStore } from "@/store/memberStore";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 
 export function ExUpload() {
@@ -36,17 +36,11 @@ export function ExUpload() {
     if (!file) return;
 
     if (!/\.(xlsx|xls)$/i.test(file.name)) {
-      setAlertInfo({
-        variant: "destructive",
-        message: (
-          <div className="flex flex-row justify-start items-center gap-2">
-            <Ban className="size-6" />
-            <span className="text-md font-bold text-red-500">엑셀 파일만 업로드 가능합니다. (.xlsx, .xls)</span>
-          </div>
-        ),
+      toast.error("엑셀 파일만 업로드 가능합니다. (.xlsx, .xls)", {
+        icon: <Ban className="size-5" />,
       });
       return;
-    }
+    }  
 
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();
@@ -100,48 +94,23 @@ export function ExUpload() {
     try {
       const result = await createUsers(memberList);
       if (result.success_count === 0) {
-        setAlertInfo({
-          variant: "destructive",
-          message: (
-            <div className="flex flex-row justify-start items-center gap-2">
-              <Ban className="size-6" />
-              <span className="text-md font-bold text-red-500">등록에 실패했습니다.</span>
-            </div>
-          ),
-        });
+        toast.error("등록에 실패했습니다", {
+          icon: <Ban className="size-5" />,
+        });       
         return;
       }
-      setAlertInfo({
-        variant: "default",
-        message: (
-          <div className="flex flex-row justify-start items-center gap-2">
-            <CircleCheck className="size-6 text-green-500" />
-            <span className="text-md font-bold text-green-500">{`${result.success_count}명이 등록되었습니다.`}</span>
-          </div>
-        ),
+      toast.success(`${result.success_count}명이 등록되었습니다`, {
+        icon: <CircleCheck className="size-5" />,
       });
     } catch (err) {
-      setAlertInfo({
-        variant: "destructive",
-        message: (
-          <div className="flex flex-row justify-start items-center gap-2">
-            <Ban className="size-6" />
-            <span className="text-md font-bold text-red-500">등록에 실패했습니다.</span>
-          </div>
-        ),
+      toast.error("등록에 실패했습니다", {
+        icon: <Ban className="size-5" />,
       });
     }
   };
 
   return (
     <>
-      {alertInfo && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
-          <Alert variant={alertInfo.variant}>
-            <AlertDescription>{alertInfo.message}</AlertDescription>
-          </Alert>
-        </div>
-      )}
       <Button onClick={handleClick} variant="link" className="text-gray-200">
         회원등록
       </Button>
