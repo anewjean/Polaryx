@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { deleteMessage, getMessages } from "@/apis/messages";
+import { deleteMessage, getMessages } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 
 export function useFetchMessages(workspaceId: string, tabId: string) {
   const setMessages = useMessageStore((state) => state.setMessages);
-  
+
   useEffect(() => {
     async function fetch() {
       const res = await getMessages(workspaceId, tabId);
       //   setMessages(res.messages); // 서버 응답 구조에 따라
-      console.log("here")
+      console.log("here");
       const messages = res.messages.map((msg: any) => ({
         senderId: msg.sender_id,
         msgId: msg.id,

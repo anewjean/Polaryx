@@ -167,6 +167,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                       .map((tab) => (
                         <SidebarMenuItem key={tab.tab_id}>
                           <SidebarMenuButton
+                            isActive={tab.tab_id.toString() === tabId}
                             className="flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0"
                             onClick={() => router.push(`/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`)}
                           >
@@ -182,7 +183,11 @@ export default function AppSidebar({ width }: SidebarProps) {
                       onOpenChange={(isOpen) => handleModalOpenChange(isOpen, section.id.toString())}
                       trigger={
                         <SidebarMenuItem>
-                          <SidebarMenuButton className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0">
+                          <SidebarMenuButton
+                            asChild
+                            isActive={false}
+                            className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0"
+                          >
                             <span className="flex flex-row gap-2 items-center truncate">
                               <Plus size={18} className="bg-gray-700 rounded-sm" />
                               Add Tab

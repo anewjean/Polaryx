@@ -1,7 +1,7 @@
 "use client";
 
 import { ContextMenuContent, ContextMenuItem } from "@/components/ui/context-menu";
-import { deleteMessage as deleteMessageApi, updateMessage as updateMessageApi } from "@/apis/messages";
+import { deleteMessage as deleteMessageApi, updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useState } from "react";

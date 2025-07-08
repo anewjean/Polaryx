@@ -14,8 +14,6 @@ dm_service = DMService()
 @router.post("/{workspace_id}/dms", response_model=CreateTabResponse)
 def create_tab(workspace_id: int, tab_data: CreateTabRequest):
     member_names = dm_service.find_member_names(tab_data.user_ids)
-    tab_dict = tab_data.model_dump()
-    tab_name = tab_dict.get("tab_name", ", ".join(member_names))
     tab_name = ", ".join(member_names)
     section_id = 4
     subsection_id = None

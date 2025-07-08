@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-import { updateMessage } from "@/apis/messages";
+import { updateMessage } from "@/apis/messageApi";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 import { ChatEditButton } from "./chatEditButton/chatEditButton";
-import { getMessages } from "@/apis/messages";
+import { getMessages } from "@/apis/messageApi";
 import { elementFromString } from "@tiptap/core";
 
 // 채팅방 내 채팅
