@@ -4,7 +4,7 @@ import { TabMembers } from "@/components/tab/TabMembers";
 export function ChatHeader() {
   return (
     <div>
-      <div className="sticky top-0 z-20 bg-white">
+      <div className="sticky top-0 bg-white">
         <div className="flex items-center h-[50px] px-[17px]">
           <div className="flex items-center h-[30px] px-[3px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-md">
             <img src="/profileDefault.png" className="w-[24px] h-[24px] mr-[8px] rounded-md object-cover" />
