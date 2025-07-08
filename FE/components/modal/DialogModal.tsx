@@ -1,8 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { ModalTrigger } from "./ModalTrigger";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 interface DialogModalProps {
   trigger: ReactNode;
@@ -11,19 +11,19 @@ interface DialogModalProps {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  className?: string;
 }
 
-export function DialogModal({ trigger, title, children, defaultOpen = false, open, onOpenChange }: DialogModalProps) {
+export function DialogModal({ trigger, title, children, defaultOpen = false, open, onOpenChange, className }: DialogModalProps) {
   return (
-    <ModalTrigger trigger={trigger} defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="flex flex-col justify-start py-5 gap-8">
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-          </DialogHeader>
-          {children}
-        </DialogContent>
-      </Dialog>
-    </ModalTrigger>
+    <Dialog defaultOpen={defaultOpen} open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className={cn("flex flex-col justify-start py-5 gap-8", className)}>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 }
