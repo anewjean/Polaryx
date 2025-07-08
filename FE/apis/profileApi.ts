@@ -36,7 +36,7 @@ export async function patchProfile(workspaceId: string, userId: string, payload:
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/members/${userId}/profile`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/members/${userId}/profile`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,
