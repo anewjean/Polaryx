@@ -1,4 +1,4 @@
-export async function getPresignedUrl(file: File) {
+export async function putPresignedUrl(file: File) {
   const res = await fetch("http://localhost:8000/api/s3/presigned-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -9,6 +9,24 @@ export async function getPresignedUrl(file: File) {
   });
   const data = await res.json();
   const presignedUrl = data.url; // 서버에서 반환한 presigned URL
+  const fileKey = data.key;
+
+  return { presignedUrl, fileKey };
+}
+
+export async function getPresignedUrl(file: File) {
+  const res = await fetch("http://localhost:8000/api/s3/presigned-url-get", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      filename: file.name,
+      filetype: file.type,
+    }),
+  });
+  if (!res.ok) throw new Error("presigned url 요청 실패");
+
+  const data = await res.json();
+  const presignedUrl = data.url;
   const fileKey = data.key;
 
   return { presignedUrl, fileKey };
