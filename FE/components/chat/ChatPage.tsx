@@ -43,7 +43,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
-      const oldestId = messages[0]?.id;
+      const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
       console.log("oldestID:", oldestId);
@@ -86,18 +86,16 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
         {messages.map((msg, idx) => {
-          console.log("msg:", msg);
-          const id = msg["id"] ? msg["id"] : -1;
           const prev = messages[idx - 1];
-          const todayKey = dayStart(msg.created_at!);
-          const prevKey = prev ? dayStart(prev.created_at!) : null;
+          const todayKey = dayStart(msg.createdAt!);
+          const prevKey = prev ? dayStart(prev.createdAt!) : null;
           const showDateHeader = prevKey === null || todayKey !== prevKey;
 
           let showProfile = true;
 
-          if (prev && prev.nickname === msg.nickname && prev.created_at && msg.created_at) {
-            const prevTime = new Date(prev.created_at).getTime();
-            const currTime = new Date(msg.created_at).getTime();
+          if (prev && prev.nickname === msg.nickname && prev.createdAt && msg.createdAt) {
+            const prevTime = new Date(prev.createdAt).getTime();
+            const currTime = new Date(msg.createdAt).getTime();
             const diff = currTime - prevTime;
 
             if (diff <= 5 * 60 * 1000) {
@@ -106,19 +104,19 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
           }
 
           return (
-            <React.Fragment key={msg.id}>
+            <React.Fragment key={msg.msgId}>
               {/* 날짜 헤더 : sticky 추가 */}
               {showDateHeader && <ShowDate timestamp={todayKey} />}
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                id={msg.id ? msg.id : 0}
+                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
-
                 nickname={msg.nickname}
                 time={
-                  msg.created_at
-                    ? new Date(msg.created_at).toLocaleTimeString("ko-KR", {
+                  msg.createdAt
+                    ? new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
                         hour: "numeric",
                         minute: "2-digit",
                         hour12: true,
@@ -128,7 +126,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
                 }
                 content={msg.content}
                 showProfile={showProfile}
-                fileUrl={msg.file_url}
+                fileUrl={msg.fileUrl}
               />
             </React.Fragment>
           );

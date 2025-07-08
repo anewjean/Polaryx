@@ -6,7 +6,8 @@ import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 
 interface ChatProfileProps {
-  id: number;
+  senderId: Buffer;
+  msgId: number;
   imgSrc: string;
   nickname: string;
   time: string;
@@ -19,7 +20,7 @@ function isImageFile(url: string) {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
 }
 
-export function ChatProfile({ id, imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
+export function ChatProfile({ senderId, msgId, imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
   const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
 
   return (
@@ -39,7 +40,7 @@ export function ChatProfile({ id, imgSrc, nickname, time, content, showProfile, 
                     />
                   </button>
                 </HoverCardTrigger>
-                <MiniProfile imgSrc={imgSrc} nickname={nickname} />
+                <MiniProfile senderId={senderId} imgSrc={imgSrc} nickname={nickname} />
               </HoverCard>
             </div>
           ) : (
@@ -55,7 +56,7 @@ export function ChatProfile({ id, imgSrc, nickname, time, content, showProfile, 
                   <HoverCardTrigger asChild>
                     <span className="text-m-bold cursor-pointer hover:underline">{nickname}</span>
                   </HoverCardTrigger>
-                  <MiniProfile imgSrc={imgSrc} nickname={nickname} />
+                  <MiniProfile senderId={senderId} imgSrc={imgSrc} nickname={nickname} />
                 </HoverCard>
 
                 <span className="text-xs chat-time-stamp">{time}</span>
@@ -67,7 +68,7 @@ export function ChatProfile({ id, imgSrc, nickname, time, content, showProfile, 
           </div>
         </div>
       </ContextMenuTrigger>
-      <MyContextMenu messageId={id} />
+      <MyContextMenu messageId={msgId} />
     </ContextMenu>
   );
 }

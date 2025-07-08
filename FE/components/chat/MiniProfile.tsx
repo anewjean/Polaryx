@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useProfileStore } from "@/store/profileStore";
 
 interface MiniProfileProps {
+  senderId: Buffer;
   imgSrc: string;
   nickname: string;
 }
 
-export function MiniProfile({ imgSrc, nickname }: MiniProfileProps) {
+export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   // 1) 프로필
   const openProfile = useProfileStore((s) => s.setOpen);
   return (

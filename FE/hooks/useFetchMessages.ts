@@ -11,11 +11,12 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
       //   setMessages(res.messages); // 서버 응답 구조에 따라
       console.log("here")
       const messages = res.messages.map((msg: any) => ({
-        id: msg.id,
+        senderId: msg.sender_id,
+        msgId: msg.id,
         nickname: msg.nickname,
         content: msg.content,
         image: msg.image,
-        created_at: msg.created_at,
+        createdAt: msg.created_at,
       }));
       console.log(messages);
       setMessages(messages);
@@ -36,7 +37,7 @@ export function useDeleteMessage() {
       setError(null);
       try {
         await deleteMessage(workspaceId, tabId, messageId);
-        setMessages(messages.filter((msg) => msg.id !== messageId));
+        setMessages(messages.filter((msg) => msg.msgId !== messageId));
       } catch (e: any) {
         setError("삭제에 실패했습니다.");
       } finally {
