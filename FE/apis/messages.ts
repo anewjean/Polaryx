@@ -9,6 +9,10 @@ const request = async <T = any>(path: string, options: RequestInit = {}): Promis
     throw new Error(errorText || "서버 에러");
   }
 
+  // No Content (204) 이면 JSON 파싱대신 null 반환 (DELETE 요청 등)
+  if (response.status === 204) {
+    return null as any;
+  }
   return response.json();
 };
 
@@ -19,9 +23,9 @@ export const updateMessage = async (id: number, message: string) => {
   });
 };
 
-export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number) => {
+export const deleteMessage = async (workspaceId: number, tabId: number, messageId: number): Promise<null> => {
   return request(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
-    method: "POST",
+    method: "DELETE",
   });
 };
 
@@ -32,7 +36,6 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 // };
 
 export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
-  
   const url = new URL(`http://localhost:8000/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
 
   // beforeId가 있을 경우 쿼리로 추가

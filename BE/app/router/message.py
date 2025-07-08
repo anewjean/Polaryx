@@ -68,7 +68,7 @@ async def modify_message(workspace_id: int, tab_id: int, message_id: int, reques
     await message_service.modify_message(message_id, new_content)
     await connection.broadcast(workspace_id, tab_id, data)
 
-@router.post("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
+@router.delete("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
 async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> None:
     data = {
         "type": "delete",

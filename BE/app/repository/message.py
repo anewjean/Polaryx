@@ -116,7 +116,7 @@ class QueryRepo(AbstractQueryRepo):
         param = {
             "id": id
         }
-        return self.db.excute(find_message, param)
+        return self.db.execute(find_message, param)
 
     def find_all(self, tab_id: int) -> List[Message]:
         param = {
@@ -138,9 +138,15 @@ class QueryRepo(AbstractQueryRepo):
             return self.db.execute(find_recent_30_before, param)
 
     def insert(self, message: Message):
+        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
+        sender_id = message.sender_id
+        if isinstance(sender_id, UUID):
+            sender_id_bytes = sender_id.bytes
+        else:
+            sender_id_bytes = UUID(str(sender_id)).bytes
         params = {
             "tab_id": message.tab_id,
-            "sender_id": UUID(message.sender_id).bytes,
+            "sender_id": sender_id_bytes,
             "content": message.content
         }
         return self.db.execute(insert_message, params)
@@ -148,19 +154,17 @@ class QueryRepo(AbstractQueryRepo):
     def update(self, message: Message):
         if message.update_type == MessageUpdateType.MODIFY:
             params = {
-                "id": message.id, 
+                "id": str(message.id), 
                 "content": message.content
             }
             return self.db.execute(update_message, params)
-
-        elif message.update_type == MessageUpdateType.DELETE:
+        if message.update_type == MessageUpdateType.DELETE:
             params = {
-                "id": message.id,
+                "id": str(message.id),
                 "deleted_at": message.deleted_at
             }
             return self.db.execute(delete_message, params)
     
-
     def delete_all(self):
         print("delete_all_message")
         return self.db.execute(delete_all_message)

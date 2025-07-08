@@ -10,6 +10,7 @@ import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { getMessages } from "@/apis/messages";
+import { elementFromString } from "@tiptap/core";
 
 // 채팅방 내 채팅
 export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
@@ -98,6 +99,8 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
         {messages.map((msg, idx) => {
+          console.log("msg:", msg);
+          const id = msg["id"] ? msg["id"] : -1;
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;
@@ -122,7 +125,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                key={msg.id ? msg.id : 0}
+                id={id}
                 imgSrc={msg.image ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
                 time={

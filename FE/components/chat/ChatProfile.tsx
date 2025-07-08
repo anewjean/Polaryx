@@ -5,7 +5,7 @@ import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { MyContextMenu } from "./MyContextMenu";
 
 interface ChatProfileProps {
-  key: number;
+  id: number;
   imgSrc: string;
   nickname: string;
   time: string;
@@ -18,7 +18,7 @@ function isImageFile(url: string) {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
 }
 
-export function ChatProfile({ key, imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
+export function ChatProfile({ id, imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
   const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
 
   return (
@@ -73,7 +73,7 @@ export function ChatProfile({ key, imgSrc, nickname, time, content, showProfile,
           </div>
         </div>
       </ContextMenuTrigger>
-      <MyContextMenu id={key} />
+      <MyContextMenu messageId={id} />
     </ContextMenu>
   );
 }
