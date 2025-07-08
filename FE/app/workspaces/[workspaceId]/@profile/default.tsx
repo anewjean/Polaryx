@@ -296,7 +296,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Groups</span>
         <div className="flex-1 min-w-0 text-md">
           <ul className="list-disc list-inside pl-1">
-            {(profile?.groups || []).map((group) => (
+            {profile?.groups?.map((group) => (
               <li key={group} className="truncate">
                 {group}
               </li>

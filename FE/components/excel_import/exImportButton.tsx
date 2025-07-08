@@ -65,8 +65,8 @@ export function ExUpload() {
 
   return (
     <>
-      <Button onClick={handleClick} variant="secondary">
-        Excel에서 가져오기
+      <Button onClick={handleClick} variant="link" className="text-gray-200">
+        회원등록
       </Button>
       <input type="file" accept=".xlsx, .xls" onChange={handleFile} ref={inputRef} className="hidden" />
     </>

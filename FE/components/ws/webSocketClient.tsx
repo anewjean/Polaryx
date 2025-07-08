@@ -8,7 +8,7 @@ interface JWTPayload {
   user_id: string;
 }
 
-export const WebSocketClient = () => {
+export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; tabId: string }) => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
 
@@ -21,7 +21,7 @@ export const WebSocketClient = () => {
   useEffect(() => {
     // 디버깅용
     console.log("new web sokcet");
-    const socket = new WebSocket(`ws://localhost:8000/ws/1/1`);
+    const socket = new WebSocket(`ws://localhost:8000/ws/${workspaceId}/${tabId}`);
 
     socketRef.current = socket;
 
@@ -57,7 +57,7 @@ export const WebSocketClient = () => {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [workspaceId, tabId]);
 
   // 메시지 전송 감지
   useEffect(() => {
