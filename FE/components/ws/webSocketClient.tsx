@@ -5,7 +5,6 @@ const BASE = process.env.NEXT_PUBLIC_BASE
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { jwtDecode } from "jwt-decode";
-import { useParams } from "next/navigation";
 
 interface JWTPayload {
   user_id: string;
@@ -14,9 +13,6 @@ interface JWTPayload {
 export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; tabId: string }) => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
-  const params = useParams();
-  const workspaceId = params.workspaceId as string;
-  const tabId = params.tabId as string;
 
   useEffect(() => {
     {
