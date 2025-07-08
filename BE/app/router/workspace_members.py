@@ -5,12 +5,12 @@ from app.service.workspace_member import WorkspaceMemberService
 from uuid import UUID
 
 
-router = APIRouter(prefix="/api/workspaces")
+router = APIRouter(prefix="/workspaces")
 service = WorkspaceMemberService()
 
 @router.get("/{workspace_id}/members/{user_id}/profile", response_model=WorkspaceMemberSchema)
 def get_profile(workspace_id: int, user_id: str):
-    uuid_obj = UUID(user_id)  # str → UUID 변환
+    uuid_obj = UUID(user_id).bytes  # str → UUID 변환
     rows = service.get_member_by_user_id(uuid_obj)
     return WorkspaceMemberSchema.from_row(rows[0])
 

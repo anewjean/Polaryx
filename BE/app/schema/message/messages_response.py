@@ -10,7 +10,7 @@ class MessageSchema(BaseModel):
     tab_id: int
     sender_id: uuid.UUID
     nickname: str
-    image: str
+    image: str | None
     content: str
     is_updated: bool
     created_at: datetime

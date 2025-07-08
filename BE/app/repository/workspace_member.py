@@ -97,12 +97,6 @@ class QueryRepo(AbstractQueryRepo):
     def insert_workspace_member(self, data: dict):
         return self.db.execute(insert_workspace_member, data)
 
-    def find_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
-        param = {
-            "id": id
-        }
-        return self.db.execute(find_member_by_user_id, param)
-
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {
             "email": email
@@ -121,9 +115,9 @@ class QueryRepo(AbstractQueryRepo):
         params["id"] = UUID(id).bytes
         return self.db.execute(update_workspace_member, params)
 
-    def find_by_user_id(self, user_id: UUID) -> WorkspaceMember:
+    def find_by_user_id(self, user_id: UUID.bytes) -> WorkspaceMember:
         param = {
-            "user_id": user_id.bytes
+            "user_id": user_id
         }
         return self.db.execute(find_member_by_user_id, param)
 
