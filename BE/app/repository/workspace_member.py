@@ -111,9 +111,9 @@ class QueryRepo(AbstractQueryRepo):
 
     def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
         """Update a workspace member's profile fields."""
-        params = {**update_data}
-        params["id"] = UUID(id).bytes
-        return self.db.execute(update_workspace_member, params)
+        params = update_data.dict()
+        params["user_id"] = id
+        return self.db.execute(update_workspace_member_by_user_id, params)
 
     def find_by_user_id(self, user_id: UUID.bytes) -> WorkspaceMember:
         param = {
@@ -123,3 +123,5 @@ class QueryRepo(AbstractQueryRepo):
 
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
+    
+    
