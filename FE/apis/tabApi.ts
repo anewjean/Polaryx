@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:8000";
+const BASE = "127.0.0.1:8000";
 
 export interface Tab {
   tab_id: number;
@@ -24,7 +24,7 @@ export async function checkTabName(workspaceId: string, sectionId: string, tabNa
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/sections/${sectionId}/tabs?name=${tabName}`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/sections/${sectionId}/tabs?name=${tabName}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -40,7 +40,7 @@ export async function getTabInfo(workspaceId: string, tabId: string): Promise<Ta
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/info`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/info`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -59,7 +59,7 @@ export async function getTabList(workspaceId: string): Promise<Tab[]> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -79,7 +79,7 @@ export async function createTab(workspaceId: string, sectionId: string, tabName:
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -97,7 +97,7 @@ export async function getMemberList(workspaceId: string, tabId: string): Promise
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -113,7 +113,7 @@ export async function getPossibleMemberList(workspaceId: string, tabId: string):
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/non-members`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/non-members`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -129,7 +129,7 @@ export async function postMemberList(workspaceId: string, tabId: string, userIds
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/members`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,

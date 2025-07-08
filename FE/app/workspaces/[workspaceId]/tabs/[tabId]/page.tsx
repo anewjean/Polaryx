@@ -12,6 +12,7 @@ import { ExUpload } from "@/components/excel_import/exImportButton";
 import { TabMembers } from "@/components/modal/TabMembers";
 import { getMemberList, getPossibleMemberList } from "@/apis/tabApi";
 import { Member } from "@/apis/tabApi";
+import { getTabInfo } from "@/apis/tabApi";
 
 export default function ChannelDefault() {
   const { channelWidth } = useChannelStore();
@@ -19,10 +20,27 @@ export default function ChannelDefault() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
-// 만약 터지면 여기부터 확인해볼 것.
+  // 만약 터지면 여기부터 확인해볼 것.
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
   const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
 
+  const [tabName, setTabName] = useState<string>(""); // 탭 이름
+  const [sectionId, setSectionId] = useState<number>(0); // 섹션 ID
+
+  useEffect(() => {
+    if (!workspaceId || !tabId) return;
+
+    (async () => {
+      console.log("탭 정보 조회 시작");
+      try {
+        const info = await getTabInfo(workspaceId, tabId);
+        setTabName(info.tab_name); // tab_name 불러오기
+        setSectionId(info.section_id ? info.section_id : 0); // section_id 불러오기
+      } catch (e) {
+        console.log("탭 정보 조회 실패:", e);
+      }
+    })();
+  }, [workspaceId, tabId]);
   useFetchMessages(workspaceId, tabId);
 
   useEffect(() => {
@@ -43,12 +61,10 @@ export default function ChannelDefault() {
     }
   }, [workspaceId, tabId]);
 
-
-
   return (
     <div className="flex flex-col h-full">
       {/* 1. 상단 헤더 */}
-      <ChatHeader />
+      <ChatHeader sectionId = {sectionId} tabName={tabName} />
 
       {/* 2. 엑셀 업로드 버튼 : 추후 위치 수정 */}
       {/* <div className="flex-none">
