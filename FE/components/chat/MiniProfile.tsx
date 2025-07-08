@@ -10,7 +10,6 @@ interface MiniProfileProps {
 export function MiniProfile({ imgSrc, nickname }: MiniProfileProps) {
   // 1) 프로필
   const openProfile = useProfileStore((s) => s.setOpen);
-
   return (
     <div>
       <HoverCardContent side="top" className="flex items-center HoverCardContent">

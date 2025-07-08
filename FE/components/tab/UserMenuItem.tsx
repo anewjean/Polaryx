@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
-import { Plus } from "lucide-react";
+import { Plus, CircleCheck } from "lucide-react";
 import clsx from "clsx";
 import { Member } from "@/apis/tabApi";
 
@@ -9,9 +9,10 @@ export interface UserMenuItemProps {
   user: Member;
   mode?: "default" | "addable";
   onClick?: () => void;
+  isSelected?: boolean;
 }
 
-export function UserMenuItem({ user, mode = "default", onClick }: UserMenuItemProps) {
+export function UserMenuItem({ user, mode = "default", onClick, isSelected }: UserMenuItemProps) {
   return (
     <SidebarMenuItem key={user.user_id}>
       <SidebarMenuButton
@@ -32,11 +33,17 @@ export function UserMenuItem({ user, mode = "default", onClick }: UserMenuItemPr
             <span className="text-sm font-bold text-gray-400 truncate">{user.role}</span>
           </div>
 
-          {/* possibleMember: Add 버튼 추가 표시 */}
-          {mode === "addable" && (
+          {/* possibleMember: Add 버튼 + Added 상태 추가 표시 */}
+          {mode === "addable" && !isSelected && (
             <div className="flex items-center gap-1 text-gray-400">
               <Plus className="size-4 aspect-square" />
               <span>Add</span>
+            </div>
+          )}
+          {mode === "addable" && isSelected && (
+            <div className="flex items-center gap-1 text-gray-400">
+              <CircleCheck className="size-4 aspect-square text-green-500" />
+              <span className="text-green-500">Added</span>
             </div>
           )}
         </div>

@@ -54,15 +54,11 @@ export function TabMembers() {
     }
   };
 
-  return (          
+  return (
     <>
       <TabMembersModal
         trigger={
-          <Button
-            variant="ghost"
-            size="icon"
-            className="flex items-center gap-1 px-3 hover:bg-gray-200"
-          >
+          <Button variant="ghost" size="icon" className="flex items-center gap-1 px-7 hover:bg-gray-200">
             <Users size={28} />
             <span>{tabInfo?.members_count}</span>
           </Button>
@@ -72,6 +68,7 @@ export function TabMembers() {
         open={isModalOpen}
         onOpenChange={handleModalOpenChange}
         onAddClick={handleAddMember}
+        membersCount={tabInfo?.members_count ?? undefined}
       />
 
       <PossibleMembersModal
@@ -79,6 +76,7 @@ export function TabMembers() {
         possibleMembers={possibleMembers}
         open={isAddModalOpen}
         onOpenChange={handleAddModalOpenChange}
+        membersCount={tabInfo?.members_count ?? undefined}
       />
     </>
   );

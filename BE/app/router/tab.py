@@ -5,13 +5,9 @@ from app.schema.tab.response import TabInfo, TabDetailInfo, TabMember, TabInvita
 from app.service.tab import TabService
 from app.core.security import verify_token_and_get_token_data
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
-from app.repository.tab_members import QueryRepo as TabMembersRepo
 
 router = APIRouter(prefix="/workspaces")
 service = TabService()
-
-workspace_mem_repo = WorkspaceMemRepo()
-tab_members_repo = TabMembersRepo()
 
 # 탭 이름 중복 확인
 @router.get("/{workspace_id}/sections/{section_id}/tabs")
@@ -74,16 +70,6 @@ async def invite_member_to_tab(
             group_id: int,
             user_info: Dict = Depends(verify_token_and_get_token_data),
 ):
-    # 그룹아이디를 통해서 모든 유저들 정보 가져오기.
-    # 얘는 리스트 형식임.
-    members = workspace_mem_repo.find_members_by_group_id(group_id)
-    
-    # tab_members에 초대할 멤버 + tab_id 데이터 넣기.
-    for user in members:
-        # user_id로 tab_members에 tab_id와 함께 넣어주기.
-        user_id_and_tab_id = {"user_id": user["user_id"], "tab_id": tab_id}
-        tab_members_repo.insert_tab_members(user_id_and_tab_id)
-
 
     #######################################################
     # 추가 -> 현재 채팅 기능에 초대된 사람 추가.

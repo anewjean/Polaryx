@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { createUsers } from "@/apis/excelApi";
 import { detectTyposJaccard } from "./detectTyposJaccard";
 import { useMemberStore } from "@/store/memberStore";
+import { Alert } from "@/components/ui/alert";
+import { CircleCheck, Ban } from "lucide-react";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
@@ -19,7 +21,15 @@ export function ExUpload() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!/\.(xlsx|xls)$/i.test(file.name)) {
-      alert("엑셀 파일만 업로드 가능합니다 (.xlsx, .xls)");
+      Alert({
+        variant: "destructive",
+        children: (
+          <div className="flex flex-row justify-start items-start gap-4">
+            <Ban className="size-4" />
+            <span>엑셀 파일만 업로드 가능합니다. (.xlsx, .xls)</span>
+          </div>
+        ),
+      });
       return;
     }
 
@@ -36,7 +46,23 @@ export function ExUpload() {
 
     const typos = detectTyposJaccard(uploadedHeaders as string[]);
     if (typos.length > 0) {
-      alert(`오타가 있습니다. ${typos.map((t) => t.wrong).join(", ")}`);
+      Alert({
+        variant: "destructive",
+        children: (
+          <div className="flex flex-row justify-start items-start gap-4">
+            <Ban className="size-4" />
+            <div>
+              <p>필드명을 정확하게 설정해주세요.</p>
+              <ul>
+                <li>name</li>
+                <li>email</li>
+                <li>role</li>
+                <li>group</li>
+              </ul>
+            </div>
+          </div>
+        ),
+      });
       return;
     }
 
@@ -57,9 +83,25 @@ export function ExUpload() {
 
     try {
       const result = await createUsers(memberList);
-      alert(`성공적으로 등록된 유저 수: ${result.success_count}`);
+      Alert({
+        variant: "default",
+        children: (
+          <div className="flex flex-row justify-start items-start gap-4">
+            <CircleCheck className="size-4" />
+            <span>${result.success_count}명이 등록되었습니다.</span>
+          </div>
+        ),
+      });
     } catch (err) {
-      alert("유저 등록에 실패했습니다.");
+      Alert({
+        variant: "destructive",
+        children: (
+          <div className="flex flex-row justify-start items-start gap-4">
+            <Ban className="size-4" />
+            <span>등록에 실패했습니다.</span>
+          </div>
+        ),
+      });
     }
   };
 
