@@ -124,4 +124,3 @@ class QueryRepo(AbstractQueryRepo):
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
     
-    

@@ -15,16 +15,11 @@ class WorkspaceMemberService:
     def insert_workspace_member(self, data: dict):
         workspace_member = self.workspace_member_repo.insert_workspace_member(data)
         return workspace_member
-
-    # def get_member_by_user_id(self, id: UUID.bytes) -> WorkspaceMember:
-    #     workspace_member = self.workspace_member_repo.find_by_user_id(id)
-    #     return workspace_member
     
     def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
         user_id_bytes = id.bytes if isinstance(id, UUID) else id  
         workspace_member = self.workspace_member_repo.find_by_user_id(user_id_bytes)
         return workspace_member
-
 
     def get_member_by_email(self, email: str) -> WorkspaceMember:
         workspace_member = self.workspace_member_repo.find_by_email(email)

@@ -18,6 +18,9 @@ interface MessageStore {
   // 수정 버튼 누르면 수정 모드로 변경
   updateMessage: (idx: number, msg: Message) => void;
 
+  // 메시지 삭제
+  deleteMessage: (id: number) => void;
+  
   // 메시지 전송 trigger
   sendFlag: boolean;
   setSendFlag: (flag: boolean) => void;
@@ -43,6 +46,13 @@ export const useMessageStore = create<MessageStore>((set) => ({
       messages: state.messages.map((m, i) => (i === idx ? msg : m)),
     })),
 
+
+  // 메시지 삭제
+  deleteMessage: (id) =>
+    set((state) => ({
+      messages: state.messages.filter((msg) => msg.id !== id),
+    })),
+    
   // 메시지 전송 trigger
   sendFlag: false,
   setSendFlag: (flag) => set({ sendFlag: flag }),

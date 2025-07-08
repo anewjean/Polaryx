@@ -1,4 +1,3 @@
-from mysql.connector import pooling
 from app.config.config import settings 
 import mysql.connector
 from app.util.database.db_impl import DBImpl, ExecuteError
