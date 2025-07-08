@@ -1,6 +1,9 @@
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import { useProfileStore } from "@/store/profileStore";
+import { sendDirectMessage } from "@/apis/messageApi";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface MiniProfileProps {
   senderId: Buffer;
@@ -9,8 +12,27 @@ interface MiniProfileProps {
 }
 
 export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
-  // 1) 프로필
+  // URL에서 workspaceId, tabId 추출
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  const tabId = params.tabId as string;
+
+  // 라우터
+  const router = useRouter();
+
+  // 프로필
   const openProfile = useProfileStore((s) => s.setOpen);
+
+  // DM 생성 이벤트 핸들러
+  const createDM = async (userIds: string[]) => {
+    try {
+      const res = await sendDirectMessage(workspaceId, userIds);
+      router.push(`/workspaces/${workspaceId}/tabs/${res.tabId}`);
+    } catch (error) {
+      console.error("DM 생성 중 오류:", error);
+    }
+  };
+
   return (
     <div>
       <HoverCardContent side="top" className="flex items-center HoverCardContent">
@@ -20,7 +42,14 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
         <div>
           <div className="ml-0.5 text-m-bold">{nickname}</div>
           <div className="mt-1.5">
-            <Button className="cursor-pointer" variant="outline" size="sm">
+            <Button
+              className="cursor-pointer"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                createDM([senderId.toString()]);
+              }}
+            >
               <div className="text-s-bold">DM</div>
             </Button>
             <Button onClick={openProfile} className="ml-1 cursor-pointer" variant="outline" size="sm">
