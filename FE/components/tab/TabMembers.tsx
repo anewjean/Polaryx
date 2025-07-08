@@ -7,7 +7,7 @@ import { getTabInfo, getMemberList, getPossibleMemberList, Tab, Member } from "@
 import { useEffect, useState } from "react";
 import { MemberModal } from "@/components/modal/MemberModal";
 import { Separator } from "@/components/ui/separator";
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 
 export function TabMembers() {
   // 파라미터에서 workspaceId와 tabId 추출
@@ -16,6 +16,7 @@ export function TabMembers() {
   const tabId = params.tabId as string;
 
   // 멤버 리스트 상태 관리
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
   const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
 
@@ -44,11 +45,24 @@ export function TabMembers() {
         .catch((error) => console.error("Failed to fetch tab members:", error));
 
       // 참여 가능 멤버 목록 조회
-      getPossibleMemberList(workspaceId, tabId)
-        .then(setPossibleMembers)
-        .catch((error) => console.error("Failed to fetch possible members:", error));
+      // getPossibleMemberList(workspaceId, tabId)
+      //   .then(setPossibleMembers)
+      //   .catch((error) => console.error("Failed to fetch possible members:", error));
     }
   }, [workspaceId, tabId]);
+
+  /////////////////////////////////////////setSelectedMember에 poosiblemembers와 tabmembers 매핑
+  // 멤버 클릭 시 호출: selectedMember 세팅 + 모달 열기
+  const openMemberModal = (member: Member) => {
+    setSelectedMember(member);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫힐 때 호출: 상태 초기화
+  const closeMemberModal = () => {
+    setIsModalOpen(false);
+    setSelectedMember(null);
+  };
 
   return (
     <MemberModal
@@ -67,60 +81,40 @@ export function TabMembers() {
         </Button>
       }
     >
-      {/* MemberModal 내용: 멤버 리스트 */}      
-      <div className="flex flex-col gap-5">
+      {/* MemberModal 내용: 멤버 리스트 */}
+      <div className="flex flex-col overflow-y-auto gap-0">
         <Separator />
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-              <div className="flex flex-row justify-start items-center p-4 gap-3">                
-                <UserRoundPlus 
-                  size={28}
-                  className="w-[28px] aspect-square bg-gray-400 rounded-lg"
-                />
-                <span className="text-lg font-bold text-gray-800 truncate">Add Member</span>                
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-         {tabMembers.map((member) => (
-          <SidebarMenuItem key={member.user_id}>
-            <SidebarMenuButton>
-              <div className="flex flex-row justify-start items-center p-4 gap-3">
-                <img 
-                  src={member?.image || "/user_default.png"}
-                  alt="profile_image"
-                  className="w-[28px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
-                />
-                <span className="text-lg font-bold text-gray-800 truncate">{member?.nickname}</span>
-                <span className="text-sm font-normal text-gray-500 truncate">{member?.role}</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-         ))}
-        </SidebarMenu>
-
-        <h2>참여 인원</h2>
-        <ul>
-          {tabMembers.map((member) => (
-            <li key={member.user_id}>
-              {member?.image}
-              {member?.nickname}
-              {member?.role}
-              {member?.groups}
-            </li>
-          ))}
-        </ul>
-        <h2>참여 가능 인원</h2>
-        <ul>
-          {possibleMembers.map((member) => (
-            <li key={member.user_id}>
-              {member?.image}
-              {member?.nickname}
-              {member?.role}
-              {member?.groups}
-            </li>
-          ))}
-        </ul>
+        <SidebarProvider>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton className="py-8 px-4 hover:bg-gray-200 rounded-none">
+                <div className="flex flex-row justify-start items-center gap-3">
+                  <UserRoundPlus size={28} className="w-[28px] aspect-square bg-gray-400 text-white rounded-md" />
+                  <span className="text-md font-bold text-gray-800 truncate">Add Member</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            {tabMembers.map((member) => (
+              <SidebarMenuItem key={member.user_id}>
+                <SidebarMenuButton className="py-8 px-4 hover:bg-gray-200 rounded-none">
+                  <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row justify-start gap-3">
+                      <img
+                        src={member?.image || "/user_default.png"}
+                        alt="profile_image"
+                        className="w-[28px] aspect-square bg-gray-400 rounded-md overflow-hidden"
+                      />
+                      <span className="text-lg font-bold text-gray-800 truncate">{member?.nickname}</span>
+                    </div>
+                    <span className="flex justify-start text-sm font-normal text-gray-600 truncate">
+                      {member?.role}
+                    </span>
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarProvider>
       </div>
     </MemberModal>
   );
