@@ -27,9 +27,9 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
   //   }
   // }, [messages]);
 
-  // 새로운 메세지가 추가되었을 때, 
+  // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
-    console.log("메세지 추가됐음.")
+    console.log("메세지 추가됐음.");
     const el = containerRef.current;
     if (!el) return;
 
@@ -44,16 +44,14 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
     // 길이 업데이트
     prevMessageLengthRef.current = messages.length;
   }, [messages]);
-  
 
-    
   // 스크롤을 올려서 과거 메세지들을 불러와
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    const el = event.currentTarget; 
-    console.log("in handle scroll")
+    const el = event.currentTarget;
+    console.log("in handle scroll");
     if (el.scrollTop < 30 && !isFetching.current) {
-    // if (!isFetching.current) {
+      // if (!isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.id;
@@ -76,8 +74,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
           // el.scrollTop = el.scrollHeight;
-        }
-      );
+        });
       }
     }
   };
@@ -100,8 +97,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 px-5 w-full">
-        {
-        messages.map((msg, idx) => {
+        {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = dayStart(msg.created_at!);
           const prevKey = prev ? dayStart(prev.created_at!) : null;
@@ -126,8 +122,8 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                key={msg.id}
-                imgSrc={msg.image != "none_image" ? msg.image : "/profileDefault.png"}
+                key={msg.id ? msg.id : 0}
+                imgSrc={msg.image ? msg.image : "/profileDefault.png"}
                 nickname={msg.nickname}
                 time={
                   msg.created_at
@@ -142,7 +138,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
                 content={msg.content}
                 showProfile={showProfile}
                 fileUrl={msg.file_url}
-                />
+              />
             </React.Fragment>
           );
         })}

@@ -1,7 +1,7 @@
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from uuid import UUID
-from typing import List
+from typing import List, Optional
 
 is_dup_name_in_tab_by_section = """
 SELECT * FROM tabs
@@ -19,11 +19,20 @@ INSERT INTO tabs (
     sub_section_id
 )
 VALUES (
-    %(name)s, 
+    %(tab_name)s, 
     %(workspace_id)s, 
     %(section_id)s, 
-    %(sub_section_id)s
+    %(subsection_id)s
 )
+"""
+
+find_tab_by_uq = """
+SELECT id, name, section_id, sub_section_id
+FROM tabs
+WHERE workspace_id = %(workspace_id)s
+  AND name = %(tab_name)s
+  AND section_id = %(section_id)s
+  AND sub_section_id <=> %(subsection_id)s
 """
 
 find_tab = """
@@ -142,8 +151,14 @@ class TabRepository(AbstractQueryRepo):
         result = self.execute(is_dup_name_in_tab_by_section, param)
         return bool(result)
 
-    def insert(self, data: dict):
-        self.execute(create_tab, data)
+    def insert(self, workspace_id, tab_name, section_id, subsection_id):
+        param = {
+            "workspace_id": workspace_id,
+            "tab_name": tab_name,
+            "section_id": section_id,
+            "subsection_id": subsection_id
+        }
+        self.execute(create_tab, param)
 
     def find(self, workspace_id: int, tab_id: int):
         param = {
@@ -151,6 +166,15 @@ class TabRepository(AbstractQueryRepo):
             "tab_id": tab_id
         }
         return self.execute(find_tab, param)
+
+    def find_by_uq(self, workspace_id: int, tab_name: str, section_id: int, subsection_id: Optional[int]):
+        param = {
+            "workspace_id": workspace_id,
+            "tab_name": tab_name,
+            "section_id": section_id,
+            "subsection_id": subsection_id
+        }
+        return self.execute(find_tab_by_uq, param)
     
     def find_all(self, workspace_id: int, user_id: str):
         param = {

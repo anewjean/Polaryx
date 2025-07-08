@@ -31,6 +31,18 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     rows = await message_service.find_recent_messages(tab_id, before_id)
     rows.reverse()
     
+    # 뒤집힌 rows
+    # [0]: m.id
+    # [1]: m.tab_id
+    # [2]: m.sender_id
+    # [3]: wm.nickname
+    # [4]: wm.image
+    # [5]: m.content
+    # [6]: m.is_updated
+    # [7]: m.created_at
+    # [8]: m.updated_at
+    # [9]: m.deleted_at
+    
     # 원래 로직
     # rows = await message_service.find_all_messages(tab_id)
     print(rows)
