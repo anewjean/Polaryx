@@ -1,7 +1,7 @@
 "use client";
 
 import { Member, postMemberList } from "@/apis/tabApi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarMenu, SidebarFooter } from "@/components/ui/sidebar";
@@ -35,6 +35,13 @@ export function PossibleMembersModal({
   // 참여 가능 멤버 명단 관리
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
 
+  // 모달이 닫힐 때 selectedMembers 초기화
+  useEffect(() => {
+    if (!open) {
+      setSelectedMembers([]);
+    }
+  }, [open]);
+
   // 참여 가능 멤버 선택 핸들러
   const toggleMemberSelect = (member: Member) => {
     setSelectedMembers((prev) => {
@@ -58,9 +65,9 @@ export function PossibleMembersModal({
       Alert({
         variant: "destructive",
         children: (
-          <div className="flex flex-row justify-start items-start gap-4">
-            <Ban className="size-4" />
-            <span>초대에 실패했습니다</span>
+          <div className="flex flex-row justify-start items-center gap-2">
+            <Ban className="size-6 text-red-500" />
+            <span className="text-md font-bold text-red-500">초대에 실패했습니다</span>
           </div>
         ),
       });
@@ -69,9 +76,9 @@ export function PossibleMembersModal({
     Alert({
       variant: "default",
       children: (
-        <div className="flex flex-row justify-start items-start gap-4">
-          <CircleCheck className="size-4" />
-          <span>{selectedMembers.length}명이 초대되었습니다</span>
+        <div className="flex flex-row justify-start items-center gap-2">
+          <CircleCheck className="size-6 text-green-500" />
+          <span className="text-md font-bold text-green-500">{selectedMembers.length}명이 초대되었습니다</span>
         </div>
       ),
     });
