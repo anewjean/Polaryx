@@ -8,12 +8,17 @@ interface SectionStore {
 }
 
 export const useSectionStore = create<SectionStore>((set) => ({    
-    openSections: {} as Record<string, boolean>,
-    toggleSection: (id: string) =>
-      set(state => ({
-        openSections: {
-          ...state.openSections,
-          [id]: !state.openSections[id],
-        },
-      })),
-  }));
+  openSections: {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+  },
+  toggleSection: (id: string) =>
+    set(state => ({
+      openSections: {
+        ...state.openSections,
+        [id]: !state.openSections[id],
+      },
+    })),
+}));
