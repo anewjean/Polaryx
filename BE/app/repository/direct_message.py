@@ -10,7 +10,8 @@ class DMRepository(AbstractQueryRepo):
         super().__init__(db)
 
     def find_member_names(self, user_ids: List[str]):
-        format_strings = ','.join(['%s'] * len(user_ids))
-        query = f"SELECT nickname FROM workspace_members WHERE user_id IN ({format_strings})"
+        user_id_bytes = [UUID(user_id).bytes for user_id in user_ids]
+        format_strings = ','.join(['%s'] * len(user_id_bytes))
+        query = f"SELECT nickname FROM workspace_members WHERE user_id IN ({format_strings}) AND deleted_at IS NULL"
         
-        return self.db.execute(query, tuple(user_ids))
+        return self.db.execute(query, tuple(user_id_bytes))
