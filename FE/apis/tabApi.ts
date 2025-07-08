@@ -1,4 +1,4 @@
-const BASE = "127.0.0.1:8000";
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export interface Tab {
   tab_id: number;
