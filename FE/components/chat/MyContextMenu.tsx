@@ -16,11 +16,11 @@ interface MyContextMenuProps {
 export function MyContextMenu({ messageId }: MyContextMenuProps) {
   // 1) 프로필 보기
   const openProfile = useProfileStore((s) => s.setOpen);
-  const params = useParams();
+  // const params = useParams();
 
-  params.workspaceID;
-  params.tabID;
-  
+  // params.workspaceID;
+  // params.tabID;
+
   // 2) 메시지 삭제
   const removeMessage = useMessageStore((s) => s.deleteMessage);
   const handleDelete = async () => {
@@ -30,7 +30,7 @@ export function MyContextMenu({ messageId }: MyContextMenuProps) {
     }
     try {
       // 2-1) 백엔드 API 호출
-      await deleteMessageApi(1, 1, messageId); // 추후 수정 22
+      await deleteMessageApi("1", "1", messageId); // 추후 수정 22
 
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
