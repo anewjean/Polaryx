@@ -31,13 +31,6 @@ class TabService:
 
     def get_available_tab_members(self, workspace_id: int, tab_id: int):
         return self.repo.find_non_members(workspace_id, tab_id)
-    
-    # def get_tab_members(self, workspace_id: int, tab_id: int) -> List[TabMember]:
-    #     rows = self.repo.find_members(workspace_id, tab_id)
-    #     return [TabMember.from_row(row) for row in rows]
-    # def get_available_tab_members(self, workspace_id: int, tab_id: int) -> List[TabMember]:
-    #     rows = self.repo.find_non_members(workspace_id, tab_id)
-    #     return [TabMember.from_row(row) for row in rows]
-
+        
     def invite_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         return self.repo.insert_members(workspace_id, tab_id, user_ids)

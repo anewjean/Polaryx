@@ -38,19 +38,19 @@ WHERE workspace_id = %(workspace_id)s
 find_tab = """
 SELECT 
   t.id,
-  t.name,
+  t.name as tab_name,
   t.section_id,
-  s.name,
+  s.name as section_name,
   t.sub_section_id,
-  s.sub_name
+  s.sub_name as subsection_id
 FROM tabs t
 LEFT JOIN tab_members tm ON t.id = tm.tab_id
 LEFT JOIN sections s 
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
-WHERE t.workspace_id = %(workspace_id)s
-  AND t.id = %(tab_id)s
+WHERE tm.workspace_id = %(workspace_id)s
+  AND tm.user_id = %(user_id)s
   AND t.deleted_at IS NULL;
 """
 
@@ -68,7 +68,7 @@ LEFT JOIN sections s
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
-WHERE t.workspace_id = %(workspace_id)s
+WHERE tm.workspace_id = %(workspace_id)s
   AND tm.user_id = %(user_id)s
   AND t.deleted_at IS NULL;
 """
