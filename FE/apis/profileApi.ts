@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:8000";
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export interface Profile {
   user_id: string;
@@ -18,7 +18,7 @@ export async function getProfile(workspaceId: string, targetId: string): Promise
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`, {
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
