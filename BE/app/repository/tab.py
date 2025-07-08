@@ -22,7 +22,7 @@ VALUES (
     %(tab_name)s, 
     %(workspace_id)s, 
     %(section_id)s, 
-    %(subsection_id)s
+    {subsection_id}
 )
 """
 
@@ -159,13 +159,15 @@ class TabRepository(AbstractQueryRepo):
         return bool(result)
 
     def insert(self, workspace_id, tab_name, section_id, subsection_id):
+        query = create_tab.format(
+            subsection_id=subsection_id if subsection_id is not None else "NULL"
+        )
         param = {
             "workspace_id": workspace_id,
             "tab_name": tab_name,
-            "section_id": section_id,
-            "subsection_id": subsection_id
+            "section_id": section_id
         }
-        self.execute(create_tab, param)
+        self.execute(query, param)
 
     def find(self, workspace_id: int, tab_id: int):
         param = {

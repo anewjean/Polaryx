@@ -1,7 +1,7 @@
 "use client";
 
 import { Member, postMemberList } from "@/apis/tabApi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { SidebarProvider, SidebarMenu, SidebarFooter } from "@/components/ui/sidebar";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { MemberModal } from "./MemberModal";
 import { UserMenuItem } from "@/components/tab/UserMenuItem";
 import { useParams } from "next/navigation";
-import { Alert } from "@/components/ui/alert";
+import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 
 export interface possibleMembersProps {
@@ -35,6 +35,13 @@ export function PossibleMembersModal({
   // 참여 가능 멤버 명단 관리
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
 
+  // 모달이 닫힐 때 selectedMembers 초기화
+  useEffect(() => {
+    if (!open) {
+      setSelectedMembers([]);
+    }
+  }, [open]);
+
   // 참여 가능 멤버 선택 핸들러
   const toggleMemberSelect = (member: Member) => {
     setSelectedMembers((prev) => {
@@ -55,26 +62,15 @@ export function PossibleMembersModal({
         selectedMembers.map((member) => member.user_id),
       );
     } catch (error) {
-      Alert({
-        variant: "destructive",
-        children: (
-          <div className="flex flex-row justify-start items-start gap-4">
-            <Ban className="size-4" />
-            <span>초대에 실패했습니다</span>
-          </div>
-        ),
+      toast.error("초대에 실패했습니다", {
+        icon: <Ban className="size-5" />,
       });
+      return;
     }
-    onOpenChange(false);
-    Alert({
-      variant: "default",
-      children: (
-        <div className="flex flex-row justify-start items-start gap-4">
-          <CircleCheck className="size-4" />
-          <span>{selectedMembers.length}명이 초대되었습니다</span>
-        </div>
-      ),
+    toast.success(`${selectedMembers.length}명이 초대되었습니다`, {
+      icon: <CircleCheck className="size-5" />,
     });
+    onOpenChange(false);
   };
 
   return (

@@ -52,6 +52,19 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   const [preview, setPreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 모달이 닫힐 때 편집 내용 초기화
+  useEffect(() => {
+    if (!isModalOpen && profile) {
+      setForm({
+        nickname: profile.nickname,
+        github: profile.github ?? "",
+        blog: profile.blog ?? "",
+      });
+      setSelectedFile(null);
+      setPreview("");
+    }
+  }, [isModalOpen, profile]);
+
   // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
   useEffect(() => {
     (async () => {
