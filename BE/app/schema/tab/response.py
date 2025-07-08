@@ -55,7 +55,7 @@ class TabMember(BaseModel):
     groups: Optional[List[str]]
 
     @classmethod
-    def from_row(cls, row: tuple) -> TabMember:
+    def from_row(cls, row: tuple) -> Optional[TabMember]:
         return cls(
             user_id=row[0],
             nickname=row[1],
