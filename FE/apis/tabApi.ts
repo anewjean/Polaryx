@@ -49,13 +49,13 @@ export async function getTabInfo(workspaceId: string, tabId: string): Promise<Ta
   });
 
   if (!res.ok) {
-    console.error(`탭 정보 조회 실패: ${res.status}`); 
+    console.error(`탭 정보 조회 실패: ${res.status}`);
   }
   return res.json();
 }
 
 /* 탭 리스트 조회 */
-export async function getTabList(workspaceId: string): Promise<Tab[]> {  
+export async function getTabList(workspaceId: string): Promise<Tab[]> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
@@ -68,8 +68,8 @@ export async function getTabList(workspaceId: string): Promise<Tab[]> {
   });
 
   if (!res.ok) {
-    console.error(`탭 리스트 조회 실패: ${res.status}`);         
-  }    
+    console.error(`탭 리스트 조회 실패: ${res.status}`);
+  }
 
   return res.json();
 }
@@ -136,7 +136,7 @@ export async function postMemberList(workspaceId: string, tabId: string, userIds
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ userIds }),
+    body: JSON.stringify({ user_ids: userIds }),
   });
   if (!res.ok) throw new Error("탭 참여 인원 추가 실패");
   return res.json();
