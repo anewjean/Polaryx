@@ -25,9 +25,7 @@ def create_tab(workspace_id: int, tab_data: CreateTabRequest, user_info: Dict = 
     tab_name = tab_data.tab_name
     section_id = tab_data.section_id
     subsection_id = tab_data.subsection_id
-    print(user_id, workspace_id, tab_name, section_id, subsection_id)
-    rows = service.create_tab(user_id, workspace_id, tab_name, section_id, subsection_id)
-    print(rows)
+    rows = service.create_tab([user_id], workspace_id, tab_name, section_id, subsection_id)
     return CreateTabResponse.from_row(rows[0])
 
 # 참여중인 탭 리스트 조회
