@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE;
 
 export async function get() {
   const res = await fetch(`${BASE_URL}/posts`);

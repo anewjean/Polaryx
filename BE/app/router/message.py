@@ -26,9 +26,10 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     # 디버깅용. 한번 싹 지우고 다시 하고 싶을때 쓰면 됨.
     # MessageService.delete_all_message(message_service)
     print("************ in find all messages **************")
-    print(tab_id)
+    print("tab_id, before_id: ", tab_id, before_id)
     # 페이징 위해 교체 로직
     rows = await message_service.find_recent_messages(tab_id, before_id)
+    print("rows: ", rows)
     rows.reverse()
     
     # 뒤집힌 rows
@@ -68,7 +69,7 @@ async def modify_message(workspace_id: int, tab_id: int, message_id: int, reques
     await message_service.modify_message(message_id, new_content)
     await connection.broadcast(workspace_id, tab_id, data)
 
-@router.post("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
+@router.delete("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
 async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> None:
     data = {
         "type": "delete",

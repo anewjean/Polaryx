@@ -19,7 +19,31 @@ export default function ChannelDefault() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
+// 만약 터지면 여기부터 확인해볼 것.
+  const [tabMembers, setTabMembers] = useState<Member[]>([]);
+  const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
+
   useFetchMessages(workspaceId, tabId);
+
+  useEffect(() => {
+    if (workspaceId && tabId) {
+      const fetchData = async () => {
+        try {
+          const [tabMembersData, possibleMembersData] = await Promise.all([
+            getMemberList(workspaceId, tabId),
+            getPossibleMemberList(workspaceId, tabId),
+          ]);
+          setTabMembers(tabMembersData);
+          setPossibleMembers(possibleMembersData);
+        } catch (error) {
+          console.error("Failed to fetch members:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [workspaceId, tabId]);
+
+
 
   return (
     <div className="flex flex-col h-full">
