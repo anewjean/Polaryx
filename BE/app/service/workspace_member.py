@@ -31,3 +31,7 @@ class WorkspaceMemberService:
     def get_member_by_workspace_columns(self) -> list[str]:
         workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
         return workspace_columns
+
+    def update_profile_by_user_id(self, user_id: UUID, update_data: dict) -> list[str]:
+        workspace_columns = self.workspace_member_repo.update(user_id, update_data)
+        return workspace_columns

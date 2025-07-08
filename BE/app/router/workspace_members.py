@@ -10,9 +10,10 @@ service = WorkspaceMemberService()
 
 @router.get("/{workspace_id}/members/{user_id}/profile", response_model=WorkspaceMemberSchema)
 def get_profile(workspace_id: int, user_id: str):
-    uuid_obj = UUID(user_id).bytes  # str → UUID 변환
-    rows = service.get_member_by_user_id(uuid_obj)
-    return WorkspaceMemberSchema.from_row(rows[0])
+    uuid_obj = UUID(user_id)  # str → UUID 변환
+    row = service.get_member_by_user_id(uuid_obj)
+    print(row)
+    return WorkspaceMemberSchema.from_row(row)
 
 @router.patch("/{workspace_id}/members/{user_id}/profile", response_model=WorkspaceMemberSchema)
 def update_profile(workspace_id: int, user_id: str, payload: UpdateWorkspaceMemberRequest):
