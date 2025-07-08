@@ -3,6 +3,7 @@ import { ImageWithModal } from "./imageWithModal";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { MyContextMenu } from "./MyContextMenu";
+import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 
 interface ChatProfileProps {
   key: number;
@@ -53,24 +54,15 @@ export function ChatProfile({ key, imgSrc, nickname, time, content, showProfile,
                   <MiniProfile imgSrc={imgSrc} nickname={nickname} />
                 </HoverCard>
 
-            <span className="text-xs chat-time-stamp">{time}</span>
+                <span className="text-xs chat-time-stamp">{time}</span>
+              </div>
+            )}
+            {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
+            {fileUrl && !isImageFile(fileUrl) && <FileDownload />}
+            <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
           </div>
-        )}
-        {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
-        {fileUrl && !isImageFile(fileUrl) && (
-          <div className="mt-2">
-            <a
-              href={fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
-            >
-              📎 첨부파일 다운로드
-            </a>
-          </div>
-        )}
-        <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
-      </div>
-    </div>
+        </div>
+      </ContextMenuTrigger>
+    </ContextMenu>
   );
 }
