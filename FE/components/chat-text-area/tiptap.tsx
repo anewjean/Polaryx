@@ -165,7 +165,7 @@ const TipTap = () => {
         onChange={handleFileSelect}
         style={{ display: "none" }}
       />
-      <div className="toolbar-container">
+      <div className="toolbar-container rounded-t-[7px]">
         <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
       </div>
       <div className="editor-container flex">
