@@ -40,10 +40,21 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
 
 
             workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
+            # 가져온 workspace_member data
+            # [0]: wm.user_id
+            # [1]: wm.workspace_id
+            # [2]: wm.nickname
+            # [3]: wm.email
+            # [4]: wm.image
+            # [5]: r.name AS role
+            # [6]: GROUP_CONCAT(DISTINCT g.name)
+            # [7]: wm.github
+            # [8]: wm.blog
+            
             print(workspace_member)
-            nickname = workspace_member[0][3]
-            print(nickname)
-            image = workspace_member[0][5]
+            nickname = workspace_member[0][2]
+            print("nickname: ", nickname)
+            image = workspace_member[0][4]
             print(image)
 
             payload = {
@@ -61,8 +72,8 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "message_id": message_id,
                 "file_url": file_data
             }
-
-            await message_service.save_file_to_db(file_data_with_msg_id)
+            if file_data != None:
+                await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
     
     except WebSocketDisconnect:
