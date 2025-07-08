@@ -43,15 +43,16 @@ SELECT
   s.name,
   t.sub_section_id,
   s.sub_name
-FROM tabs t
-LEFT JOIN tab_members tm ON t.id = tm.tab_id
+FROM tab_members tm
+LEFT JOIN tabs t ON t.id = tm.tab_id
 LEFT JOIN sections s 
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
 WHERE t.workspace_id = %(workspace_id)s
   AND t.id = %(tab_id)s
-  AND t.deleted_at IS NULL;
+  AND t.deleted_at IS NULL
+GROUP BY tm.user_id;
 """
 
 find_tabs = """
@@ -68,7 +69,7 @@ LEFT JOIN sections s
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
-WHERE t.workspace_id = %(workspace_id)s
+WHERE tm.workspace_id = %(workspace_id)s
   AND tm.user_id = %(user_id)s
   AND t.deleted_at IS NULL;
 """
