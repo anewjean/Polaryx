@@ -159,6 +159,7 @@ export function TipTap() {
       alert((e as Error).message);
     }
   }, [editor]);
+
   const { handleFileSelect } = useFilePreview(editor, fileInputRef as React.RefObject<HTMLInputElement>);
   const addImage = useCallback(() => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
@@ -223,5 +224,5 @@ export function TipTap() {
       </div>
     </div>
   );
-}
+};
 export default TipTap;
