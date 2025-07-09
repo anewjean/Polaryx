@@ -136,13 +136,7 @@ async def create_users(request: Request, workspace_id):
 
 def create_member_roles(i, user_id: str):
     roles = roles_repo.get_all_roles()
-    role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
-
-    if role_id is None:
-        raise ValueError(f"역할 {i['role']}에 해당하는 role_id를 찾을 수 없습니다.")
-
-    test = member_roles_repo.insert_member_roles(user_id, role_id)
-    print("test", test)
+    member_roles_repo.insert_member_roles(user_id, i["name"], i["role"])
 
 @router.get("/{workspace_id}/users")
 async def create_users(request: Request):
