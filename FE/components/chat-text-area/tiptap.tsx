@@ -224,6 +224,6 @@ export function TipTap() {
       </div>
     </div>
   );
-}
+};
 export default TipTap;
 
