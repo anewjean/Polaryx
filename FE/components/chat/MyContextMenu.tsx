@@ -15,16 +15,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { EditInput } from "./EditInput";
 
 interface MyContextMenuProps {
   // workspaceId: number;
   // tapId: number;
   messageId: number;
+  userId: Buffer; // 작성자 id 추가
 }
 
-// 추후 수정 : workspaceId, tabId 추가해야 함. 우선은 하드 코딩으로 진행함
-export function MyContextMenu({ messageId }: MyContextMenuProps) {
+export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
   // 1) 프로필 보기
+  const setProfileUserId = useProfileStore((s) => s.setUserId); // zustand store에 setUserId 함수 필요
   const openProfile = useProfileStore((s) => s.setOpen);
   // const params = useParams();
 
@@ -72,9 +74,9 @@ export function MyContextMenu({ messageId }: MyContextMenuProps) {
     <>
       {/* 우클릭시 메뉴 박스 */}
       <ContextMenuContent>
-        <ContextMenuItem onClick={openProfile}>프로필 보기</ContextMenuItem>
+        <ContextMenuItem onClick={() => { setProfileUserId(userId); openProfile(); }}>프로필 보기</ContextMenuItem>
 
-        <ContextMenuItem>메시지 편집</ContextMenuItem>
+        <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
 
         <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
       </ContextMenuContent>

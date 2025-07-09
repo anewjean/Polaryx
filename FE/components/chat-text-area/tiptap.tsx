@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import "./styles.scss";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -26,90 +26,119 @@ import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
 import { useFileStore } from "@/store/fileStore";
 import { useFilePreview } from "@/hooks/useFilePreview";
+import { useParams } from "next/navigation";
+import { getTabInfo } from "@/apis/tabApi";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
 // import { Send } from "lucide-react";
 // 실험용
 import { jwtDecode } from "jwt-decode";
-const TipTap = () => {
+
+export function TipTap() {
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  const tabId = params.tabId as string;
+
+  const [tabName, setTabName] = useState<string>(""); // 탭 이름
+
+  useEffect(() => {
+    if (!workspaceId || !tabId) return;
+
+    (async () => {
+      console.log("탭 정보 조회 시작");
+      try {
+        const info = await getTabInfo(workspaceId, tabId);
+        setTabName(info.tab_name); // tab_name 불러오기
+        console.log("탭 이름:", info.tab_name);
+      } catch (e) {
+        console.log("탭 정보 조회 실패:", e);
+      }
+    })();
+  }, [workspaceId, tabId]);
+  useFetchMessages(workspaceId, tabId);
+
   const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
-  const editor = useEditor({
-    editable: true,
-    extensions: [
-      StarterKit, // 핵심 확장 모음
-      Placeholder.configure({
-        // placeholder가 뭐임?
-        placeholder: "나만무 team3",
-      }),
-      Document,
-      Paragraph,
-      Text,
-      Blockquote,
-      Bold,
-      Italic,
-      Strike,
-      Code,
-      ListItem,
-      OrderedList,
-      BulletList,
-      CodeBlock,
-      Dropcursor,
-      Image,
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        defaultProtocol: "https",
-        protocols: ["http", "https"],
-        isAllowedUri: (url, ctx) => {
-          try {
-            // construct URL
-            const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
-            // use default validation
-            if (!ctx.defaultValidate(parsedUrl.href)) {
+  const editor = useEditor(
+    {
+      editable: true,
+      extensions: [
+        StarterKit, // 핵심 확장 모음
+        Placeholder.configure({
+          // placeholder가 뭐임?
+          placeholder: `${tabName}에 메시지 보내기`,
+        }),
+        Document,
+        Paragraph,
+        Text,
+        Blockquote,
+        Bold,
+        Italic,
+        Strike,
+        Code,
+        ListItem,
+        OrderedList,
+        BulletList,
+        CodeBlock,
+        Dropcursor,
+        Image,
+        Link.configure({
+          openOnClick: false,
+          autolink: true,
+          defaultProtocol: "https",
+          protocols: ["http", "https"],
+          isAllowedUri: (url, ctx) => {
+            try {
+              // construct URL
+              const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
+              // use default validation
+              if (!ctx.defaultValidate(parsedUrl.href)) {
+                return false;
+              }
+              // disallowed protocols
+              const disallowedProtocols = ["ftp", "file", "mailto"];
+              const protocol = parsedUrl.protocol.replace(":", "");
+              if (disallowedProtocols.includes(protocol)) {
+                return false;
+              }
+              // only allow protocols specified in ctx.protocols
+              const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
+              if (!allowedProtocols.includes(protocol)) {
+                return false;
+              }
+              // disallowed domains
+              const disallowedDomains = ["example-phishing.com", "malicious-site.net"];
+              const domain = parsedUrl.hostname;
+              if (disallowedDomains.includes(domain)) {
+                return false;
+              }
+              // all checks have passed
+              return true;
+            } catch {
               return false;
             }
-            // disallowed protocols
-            const disallowedProtocols = ["ftp", "file", "mailto"];
-            const protocol = parsedUrl.protocol.replace(":", "");
-            if (disallowedProtocols.includes(protocol)) {
+          },
+          shouldAutoLink: (url) => {
+            try {
+              // construct URL
+              const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
+              // only auto-link if the domain is not in the disallowed list
+              const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
+              const domain = parsedUrl.hostname;
+              return !disallowedDomains.includes(domain);
+            } catch {
               return false;
             }
-            // only allow protocols specified in ctx.protocols
-            const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
-            if (!allowedProtocols.includes(protocol)) {
-              return false;
-            }
-            // disallowed domains
-            const disallowedDomains = ["example-phishing.com", "malicious-site.net"];
-            const domain = parsedUrl.hostname;
-            if (disallowedDomains.includes(domain)) {
-              return false;
-            }
-            // all checks have passed
-            return true;
-          } catch {
-            return false;
-          }
-        },
-        shouldAutoLink: (url) => {
-          try {
-            // construct URL
-            const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
-            // only auto-link if the domain is not in the disallowed list
-            const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
-            const domain = parsedUrl.hostname;
-            return !disallowedDomains.includes(domain);
-          } catch {
-            return false;
-          }
-        },
-      }),
-    ],
-    content: message,
-  });
+          },
+        }),
+      ],
+      content: message,
+    },
+    [tabName],
+  );
   const setLink = useCallback(() => {
     if (!editor) return;
     const previousUrl = editor.getAttributes("link").href;
@@ -150,7 +179,7 @@ const TipTap = () => {
       image: "/profileTest.png",
     });
     // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
-    setMessage(content); // 메시지 저장
+    setMessage(content) // 메시지 저장
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();
   };
