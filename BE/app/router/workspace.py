@@ -136,7 +136,8 @@ async def create_users(request: Request, workspace_id):
 
 def create_member_roles(i, user_id: str):
     roles = roles_repo.get_all_roles()
-    member_roles_repo.insert_member_roles(user_id, i["name"], i["role"])
+    role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
+    member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
 
 @router.get("/{workspace_id}/users")
 async def create_users(request: Request):
