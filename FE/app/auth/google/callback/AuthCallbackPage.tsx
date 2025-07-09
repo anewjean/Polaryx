@@ -1,9 +1,9 @@
 "use client";
 
+const BASE = process.env.NEXT_PUBLIC_BASE
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-export const dynamic = "force-dynamic";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -26,16 +26,15 @@ export default function AuthCallbackPage() {
     const getToken = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
+          `http://${BASE}/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
-            credentials: "include",
+            credentials: "include", // refresh_token 받을 때 필요
           },
         );
 
         if (errorParam) {
-          setError(
-            errorParam === "not_found" ? "등록된 사용자가 아닙니다." : "알 수 없는 오류입니다."
-          );
+          // 추후 수정
+          setError(errorParam === "not_found" ? "등록된 사용자가 아닙니다." : "알 수 없는 오류입니다.");
           setIsLoading(false);
           return;
         }
@@ -43,6 +42,8 @@ export default function AuthCallbackPage() {
         if (!res.ok) throw new Error("백엔드 요청 실패");
 
         const data = await res.json();
+        const workspaceId = data.workspace_id;
+        const tabId = data.tab_id;
         const accessToken = data.access_token;
 
         if (!accessToken) {
@@ -54,7 +55,7 @@ export default function AuthCallbackPage() {
         localStorage.setItem("access_token", accessToken);
 
         setTimeout(() => {
-          router.replace("/client/workspaceId");
+          router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
         }, 1500);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);
@@ -65,29 +66,28 @@ export default function AuthCallbackPage() {
     getToken();
   }, [code, scope, prompt, errorParam, router]);
 
+  // 실패 시 UI
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <h1 className="text-2xl font-bold mb-2">로그인 실패</h1>
         <p className="mb-6 text-red-600">{error}</p>
-        <button
-          onClick={() => router.push("/")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button onClick={() => router.push("/")} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           홈으로 가기
         </button>
       </div>
     );
   }
 
+  // 로딩 UI
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
         <div className="w-12 h-12 border-4 border-t-blue-400 border-gray-600 rounded-full animate-spin mb-4" />
-        <div className="text-lg">로그인 처리 중입니다</div>
+        <div className="text-lg">로그인 중입니다</div>
       </div>
     );
   }
 
-  return null;
+  return null; // 성공 시 자동 리디렉트됨
 }

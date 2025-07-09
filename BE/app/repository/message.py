@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 from uuid import UUID
 
@@ -44,6 +43,7 @@ SELECT
     m.tab_id,
     m.sender_id,
     wm.nickname,
+    wm.image,
     m.content,
     m.is_updated,
     m.created_at,
@@ -51,10 +51,61 @@ SELECT
     m.deleted_at
 FROM messages m
 JOIN workspace_members wm
-ON m.sender_id = wm.id
+ON m.sender_id = wm.user_id
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL;
 """
+
+# 페이징
+find_recent_30_latest = """
+SELECT 
+    m.id,
+    m.tab_id,
+    m.sender_id,
+    wm.nickname,
+    wm.image,
+    m.content,
+    m.is_updated,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at
+FROM messages m
+JOIN workspace_members wm
+ON m.sender_id = wm.user_id
+WHERE m.tab_id = %(tab_id)s
+AND m.deleted_at IS NULL
+ORDER BY m.id DESC
+LIMIT 30;
+"""
+
+find_recent_30_before = """
+SELECT 
+    m.id,
+    m.tab_id,
+    m.sender_id,
+    wm.nickname,
+    wm.image,
+    m.content,
+    m.is_updated,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at
+FROM messages m
+JOIN workspace_members wm
+ON m.sender_id = wm.user_id
+WHERE m.tab_id = %(tab_id)s
+AND m.id < %(message_id)s
+AND m.deleted_at IS NULL
+ORDER BY m.id DESC
+LIMIT 30;
+"""
+
+# 디버깅용
+delete_all_message = """
+DELETE FROM messages
+WHERE id > 0;
+"""
+
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
@@ -73,10 +124,30 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_messages, param)
 
+    def find_recent_30(self, tab_id: int, before_id: int | None) -> List[Message]:
+        print("before_id: ", before_id)
+        if before_id == None:
+            param = {
+                "tab_id": tab_id, 
+            }
+            return self.db.execute(find_recent_30_latest, param)
+        else:
+            param = {
+                "tab_id": tab_id, 
+                "message_id": before_id
+            }
+            return self.db.execute(find_recent_30_before, param)
+
     def insert(self, message: Message):
+        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
+        sender_id = message.sender_id
+        if isinstance(sender_id, UUID):
+            sender_id_bytes = sender_id.bytes
+        else:
+            sender_id_bytes = UUID(str(sender_id)).bytes
         params = {
             "tab_id": message.tab_id,
-            "sender_id": UUID(message.sender_id).bytes,
+            "sender_id": sender_id_bytes,
             "content": message.content
         }
         return self.db.execute(insert_message, params)
@@ -84,15 +155,17 @@ class QueryRepo(AbstractQueryRepo):
     def update(self, message: Message):
         if message.update_type == MessageUpdateType.MODIFY:
             params = {
-                "id": message.id, 
+                "id": str(message.id), 
                 "content": message.content
             }
             return self.db.execute(update_message, params)
-
-        elif message.update_type == MessageUpdateType.DELETE:
+        if message.update_type == MessageUpdateType.DELETE:
             params = {
-                "id": message.id,
+                "id": str(message.id),
                 "deleted_at": message.deleted_at
             }
             return self.db.execute(delete_message, params)
     
+    def delete_all(self):
+        print("delete_all_message")
+        return self.db.execute(delete_all_message)

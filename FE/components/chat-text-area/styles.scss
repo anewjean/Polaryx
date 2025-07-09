@@ -106,7 +106,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding: 5px 10px;
+  padding: 5px;
 
   .itemBox {
     // display: flex;
@@ -115,8 +115,12 @@
     // height: 100%;
 
     .toolbarBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 23px; // note: icon size
       height: 23px;
+      margin: 0 2px;
       cursor: pointer;
 
       &:not(:last-child) {
@@ -128,8 +132,10 @@
       }
 
       &.is-active {
+        color: black;
+
         border: 1px solid gainsboro;
-        border-radius: 5px;
+        border-radius: 3px;
         background-color: gainsboro;
       }
     }
@@ -144,12 +150,15 @@
 }
 
 .chat-text-area {
-  border: 2px solid gainsboro;
-  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1.5px solid gainsboro;
+  border-radius: 7px;
 
   .toolbar-container {
     background-color: #f5f5f5;
-    padding: 10px 15px 0px 15px;
+    padding: 5px 15px 0px 5px;
   }
 
   .editor-container {

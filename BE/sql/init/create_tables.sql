@@ -1,31 +1,3 @@
-<<<<<<< Updated upstream
-CREATE DATABASE IF NOT EXISTS jungle_slam;
-USE jungle_slam;
-
-CREATE TABLE IF NOT EXISTS users (
-    id BINARY(16) NOT NULL PRIMARY KEY, 
-    name VARCHAR(32) NOT NULL, 
-    email VARCHAR(128) NOT NULL, 
-    provider VARCHAR(16) NOT NULL, 
-    provider_id VARCHAR(255) NULL, 
-    workspace_id INTEGER NULL, 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL,
-    UNIQUE KEY uq_email_provider (email, provider)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id BINARY(16) NOT NULL PRIMARY KEY, 
-    user_id BINARY(16) NOT NULL, 
-    token VARCHAR(255) NOT NULL, 
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS messages (
-=======
 CREATE TABLE `users` (
     id BINARY(16) NOT NULL PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
@@ -42,6 +14,7 @@ CREATE TABLE `users` (
 CREATE TABLE `refresh_tokens` (
     id BINARY(16) NOT NULL PRIMARY KEY,
     user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     token VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
@@ -49,7 +22,6 @@ CREATE TABLE `refresh_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `workspaces` (
->>>>>>> Stashed changes
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -59,8 +31,9 @@ CREATE TABLE `workspaces` (
 
 CREATE TABLE `workspace_members` (
     id BINARY(16) PRIMARY KEY,
-    user_id BINARY(16) NOT NULL,
     workspace_id BIGINT NOT NULL,
+    user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     nickname VARCHAR(32) NOT NULL,
     email VARCHAR(128) NOT NULL,
     image VARCHAR(255),
@@ -86,6 +59,7 @@ CREATE TABLE `group_members` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     group_id INTEGER NOT NULL,
     user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
@@ -102,6 +76,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `member_roles` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     role_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_role_user (role_id, user_id)
@@ -111,49 +86,10 @@ CREATE TABLE `messages` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tab_id BIGINT NOT NULL,
     sender_id BINARY(16) NOT NULL,
+    sender_name VARCHAR(32) NOT NULL,
     content TEXT NOT NULL,
     is_updated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-<<<<<<< Updated upstream
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS sub_messages (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    message_id BIGINT,
-    sender_id BINARY(16),
-    content TEXT,
-    is_updated BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS workspaces (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS workspace_members (
-    id BINARY(16) PRIMARY KEY,
-    user_id BINARY(16) NOT NULL,
-    workspace_id INT NOT NULL,
-    nickname VARCHAR(32) NOT NULL,
-    email VARCHAR(128) NOT NULL,
-    image VARCHAR(255) NULL,
-    role_id INT NOT NULL,
-    group_id INT DEFAULT NULL,
-    github VARCHAR(255) DEFAULT NULL,
-    blog VARCHAR(255) DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL,
-    UNIQUE KEY uq_user_provider (user_id, workspace_id)
-=======
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -162,6 +98,7 @@ CREATE TABLE `sub_messages` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     message_id BIGINT NOT NULL,
     sender_id BINARY(16) NOT NULL,
+    sender_name VARCHAR(32) NOT NULL,
     content TEXT NOT NULL,
     is_updated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -170,11 +107,11 @@ CREATE TABLE `sub_messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `sections` (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER,
     workspace_id BIGINT NOT NULL,
-    name VARCHAR(32) NOT NULL,
+    name VARCHAR(64) NOT NULL,
     sub_id INTEGER,
-    sub_name VARCHAR(32)
+    sub_name VARCHAR(256)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tabs` (
@@ -186,15 +123,17 @@ CREATE TABLE `tabs` (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    UNIQUE KEY uq_tab (workspace_id, section_id, sub_section_id)
+    UNIQUE KEY uq_tab (workspace_id, section_id, sub_section_id, name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `tab_members` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    workspace_id INTEGER NOT NULL,
     user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     tab_id BIGINT NOT NULL,
     visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_tab_member (user_id, tab_id)
+    UNIQUE KEY uq_tab_member (user_id, tab_id, workspace_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `files` (
@@ -243,151 +182,9 @@ CREATE TABLE `reactions` (
     workspace_id BIGINT NOT NULL,
     message_id BIGINT NOT NULL,
     user_id BINARY(16) NOT NULL,
+    user_name VARCHAR(32) NOT NULL,
     emoji VARCHAR(32),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL
->>>>>>> Stashed changes
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS groups (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32),
-    description VARCHAR(255) NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS roles (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32),
-    permissions JSON
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS section_types (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(8)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS announces (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    section_id INTEGER,
-    tab_id INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS courses (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    section_id INTEGER,
-    tab_id INTEGER,
-    sub_tab_id INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS channels (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    section_id INTEGER,
-    tab_id INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS direct_messages (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    section_id INTEGER,
-    tab_id BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS tabs (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    is_pinned BOOLEAN DEFAULT FALSE,
-    workspace_id INTEGER,
-    section_id INTEGER,
-    name VARCHAR(64),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS sub_tabs (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    workspace_id INTEGER,
-    section_id INTEGER,
-    tab_id INTEGER,
-    name VARCHAR(64),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS tab_members (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BINARY(16),
-    tab_id BIGINT,
-    UNIQUE KEY uq_tab_user (user_id, tab_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS files (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    message_id INTEGER,
-    url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS links (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    message_id INTEGER,
-    url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS canvases (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tab_id INTEGER,
-    content TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS notification_types (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS notifications (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    receiver_id BINARY(16),
-    sender_id BINARY(16),
-    tab_id INTEGER,
-    message_id BIGINT,
-    type INTEGER,
-    content VARCHAR(255),
-    is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    read_at TIMESTAMP NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-CREATE TABLE IF NOT EXISTS reactions (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
-    workspace_id INTEGER,
-    message_id BIGINT,
-    user_id BINARY(16),
-    emoji VARCHAR(32),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
