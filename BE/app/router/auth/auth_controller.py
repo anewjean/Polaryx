@@ -24,6 +24,7 @@ GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
+REFRESH_TOKEN_EXPIRE_MINUTES = settings.REFRESH_TOKEN_EXPIRE_MINUTES
 
 class Provider(str, Enum):
     google = "google"
@@ -155,7 +156,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     httponly=True,
                     secure=True,
                     samesite="lax",
-                    max_age= 5*60
+                    max_age= 60*REFRESH_TOKEN_EXPIRE_MINUTES
                 )
 
                 result = AccessToken_and_WorkspaceID(access_token=jwt_access_token, workspace_id=user_INdb[0][5], tab_id=1)

@@ -1,23 +1,29 @@
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
-import { Member } from "./tabApi";
+import { fetchWithAuth } from "./authApi";
 
-const request = async <T = any>(path: string, options: RequestInit = {}): Promise<T> => {
-  const response = await fetch(path, {
+const request = async (path: string, options: RequestInit = {}): Promise<any> => {
+  const response = await fetchWithAuth(path, {
     headers: { "Content-Type": "application/json" },
     ...options,
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || "서버 에러");
+  if (response == null)
+  {
+    console.log("NOT REACH")
+    return;
   }
-
-  // No Content (204) 이면 JSON 파싱대신 null 반환 (DELETE 요청 등)
-  if (response.status === 204) {
-    return null as any;
+  else{
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "서버 에러");
+    }
+  
+    // No Content (204) 이면 JSON 파싱대신 null 반환 (DELETE 요청 등)
+    if (response.status === 204) {
+      return null as any;
+    }
+    return response.json();
   }
-  return response.json();
 };
 
 export const updateMessage = async (id: number, message: string) => {
@@ -42,6 +48,7 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
   const url = new URL(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
 
+  console.log("************ get Messages ***********");
   // beforeId가 있을 경우 쿼리로 추가
   if (beforeId !== undefined) {
     url.searchParams.append("before_id", beforeId.toString());
@@ -68,7 +75,7 @@ export async function sendDirectMessage(workspaceId: string, userIds: string[]):
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/dms`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/${workspaceId}/dms`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -77,6 +84,14 @@ export async function sendDirectMessage(workspaceId: string, userIds: string[]):
     },
     body: JSON.stringify({ user_ids: userIds }),
   });
-  if (!res.ok) throw new Error("DM 생성 실패");
-  return res.json();
+  if (res == null)
+  {
+    console.log("NOT REACH : sendDirectMessage")
+    return { tab_id: -1 };
+  }
+  else
+  {
+    if (!res.ok) throw new Error("DM 생성 실패");
+    return res.json();
+  }
 }

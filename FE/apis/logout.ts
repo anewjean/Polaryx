@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "./authApi";
+
 const BASE = process.env.NEXT_PUBLIC_BASE
 
 export async function logout() {
@@ -8,17 +10,24 @@ export async function logout() {
   }
 
   // api 호출
-  const res = await fetch(`http://${BASE}/api/auth/logout`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/auth/logout`, {
     method: "DELETE",
     credentials: "include",
     headers: {
       Authorization: `Bearer ${access_token}`, // access_token 담아서 보내기
     },
   });
-
-  // 에러 처리
-  if (!res.ok) {
-    throw new Error(`Logout failed: ${res.status}`);
+  if (res == null)
+  {
+    console.log("NOT REACH : logout");
+    return;
   }
-  return res;
+  else
+  {
+    // 에러 처리
+    if (!res.ok) {
+      throw new Error(`Logout failed: ${res.status}`);
+    }
+    return res;
+  }
 }

@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "./authApi";
+
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export interface Profile {
@@ -13,21 +15,41 @@ export interface Profile {
   blog?: string | null;
 }
 
+const dummyProfile: Profile = {
+  user_id: "none",
+  workspace_id: -1,
+  nickname: "none",
+  email: "none",
+  // phone?: string | null;
+  image: null,
+  role: "none",
+  groups: [],
+  github: "none",
+  blog: "none"
+}
+
 /* 프로필 조회 */
 export async function getProfile(workspaceId: string, targetId: string): Promise<Profile> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/json",
     },
   });
-  if (res.status === 401) throw new Error("세션이 만료되었습니다.");
-  if (!res.ok) throw new Error("프로필 조회에 실패했습니다.");
-  return res.json();
+  if (res == null)
+  {
+    console.log("NOT REACH - getProfile");
+    return dummyProfile;
+  }
+  else{
+    // if (res.status === 401) throw new Error("세션이 만료되었습니다.");
+    if (!res.ok) throw new Error("프로필 조회에 실패했습니다.");
+    return res.json();
+  }
 }
 
 /* 프로필 부분 수정 (PATCH) */
@@ -36,7 +58,7 @@ export async function patchProfile(workspaceId: string, userId: string, payload:
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/members/${userId}/profile`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/${workspaceId}/members/${userId}/profile`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -45,7 +67,14 @@ export async function patchProfile(workspaceId: string, userId: string, payload:
     },
     body: JSON.stringify(payload),
   });
-  if (res.status === 401) throw new Error("세션이 만료되었습니다.");
-  if (!res.ok) throw new Error("프로필 수정에 실패했습니다.");
-  return res.json();
+  if (res == null)
+  {
+    console.log("NOT REACH - patchProfile");
+    return dummyProfile;
+  }
+  else {
+    // if (res.status === 401) throw new Error("세션이 만료되었습니다.");
+    if (!res.ok) throw new Error("프로필 수정에 실패했습니다.");
+    return res.json();
+  }
 }
