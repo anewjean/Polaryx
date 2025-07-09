@@ -14,12 +14,12 @@ export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
           <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
             <div className="flex items-center">
               {/* DM 탭만 프로필 이미지 표시 */}
-              {sectionId === 4 && (
+              {/* {sectionId === 4 && (
                 <img
                   src="/user_default.png"
                   className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
                 />
-              )}
+              )} */}
               <p className="text-l">{tabName}</p>
             </div>
             <TabMembers />
