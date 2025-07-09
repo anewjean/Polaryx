@@ -14,10 +14,11 @@ import { useProfileStore } from "@/store/profileStore";
 import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
+import { is } from "date-fns/locale";
 
 type ProfileProps = { targetId?: string };
 
-export default function ProfilePage({ targetId }: ProfileProps) {
+export default function ProfilePage() {
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
@@ -26,6 +27,17 @@ export default function ProfilePage({ targetId }: ProfileProps) {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
   const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;
+
+  // store에서 targetId 가져오기
+  const { isOpen, userId: bufferTargetId, setClose } = useProfileStore();
+
+  const targetId = bufferTargetId // bufferTargetId가 존재하면
+    ? bufferTargetId.toString("hex") // hex로
+    : userId; // 아니면 내 userId 사용
+
+  useEffect(() => {
+    getProfile(workspaceId, targetId).then(setProfile).catch(console.error);
+  }, [bufferTargetId, isOpen]);
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -142,7 +154,7 @@ export default function ProfilePage({ targetId }: ProfileProps) {
         <img
           src={profile?.image || "/user_default.png"}
           alt="profile_image"
-          className="w-1/2 aspect-square bg-gray-400 rounded-2xl overflow-hidden"
+          className="w-1/2 aspect-square bg-gray-400 rounded-2xl overflow-hidden object-cover"
         />
       </div>
       {/* 사용자 이름과 역할 */}
