@@ -1,5 +1,7 @@
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
+import { Member } from "./tabApi";
+
 const request = async <T = any>(path: string, options: RequestInit = {}): Promise<T> => {
   const response = await fetch(path, {
     headers: { "Content-Type": "application/json" },
@@ -60,3 +62,21 @@ export const systemMessage = async (workspaceId: string, tabId: string, timestam
     body: JSON.stringify({ timestamp, message }),
   });
 };
+
+// DM 메시지 보내기
+export async function sendDirectMessage(workspaceId: string, userIds: string[]): Promise<{ tab_id: number }> {
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) throw new Error("로그인이 필요합니다.");
+
+  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/dms`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ user_ids: userIds }),
+  });
+  if (!res.ok) throw new Error("DM 생성 실패");
+  return res.json();
+}

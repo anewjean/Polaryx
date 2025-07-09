@@ -445,9 +445,7 @@ const sidebarMenuButtonVariants = cva(
 peer/menu-button flex w-full min-w-0 items-center gap-2 overflow-hidden rounded-md
 p-2 text-left text-sm outline-hidden ring-sidebar-ring
 transition-[width,height,padding]
-hover:bg-[rgba(255,255,255,0.10)] hover:text-gray-400
 focus-visible:ring-2
-active:bg-[rgba(255,255,255,0.10)] active:text-gray-400
 disabled:pointer-events-none disabled:opacity-50
 group-has-data-[sidebar=menu-action]/menu-item:pr-8
 aria-disabled:pointer-events-none aria-disabled:opacity-50
@@ -458,7 +456,8 @@ group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!
   {
     variants: {
       variant: {
-        default: "hover:bg-[rgba(255,255,255,0.10)] hover:text-gray-400",
+        default:
+          "text-gray-400 hover:bg-[rgba(255,255,255,0.10)] hover:text-white",
         outline:
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
       },
@@ -467,15 +466,22 @@ group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!
         sm: "h-7 text-xs",
         lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
       },
-      disableActive: {
+      isActive: {
         true: "",
         false: "",
       },
     },
+    compoundVariants: [
+      {
+        variant: "default",
+        isActive: true,
+        className: "bg-slate-300 text-black font-bold hover:bg-slate-300 hover:text-black",
+      },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",
-      disableActive: false,
+      isActive: false,
     },
   },
 );
@@ -485,9 +491,8 @@ function SidebarMenuButton({
   isActive = false,
   variant = "default",
   size = "default",
-  disableActive = false,
-  tooltip,
   className,
+  tooltip,
   ...props
 }: React.ComponentProps<"button"> & {
   asChild?: boolean;
@@ -503,7 +508,7 @@ function SidebarMenuButton({
       data-sidebar="menu-button"
       data-size={size}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size, disableActive }), className)}
+      className={cn(sidebarMenuButtonVariants({ variant, size, isActive }), className)}
       {...props}
     />
   );

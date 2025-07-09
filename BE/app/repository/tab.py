@@ -22,7 +22,7 @@ VALUES (
     %(tab_name)s, 
     %(workspace_id)s, 
     %(section_id)s, 
-    %(subsection_id)s
+    {subsection_id}
 )
 """
 
@@ -43,15 +43,16 @@ SELECT
   s.name,
   t.sub_section_id,
   s.sub_name
-FROM tabs t
-LEFT JOIN tab_members tm ON t.id = tm.tab_id
+FROM tab_members tm
+LEFT JOIN tabs t ON t.id = tm.tab_id
 LEFT JOIN sections s 
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
 WHERE t.workspace_id = %(workspace_id)s
   AND t.id = %(tab_id)s
-  AND t.deleted_at IS NULL;
+  AND t.deleted_at IS NULL
+GROUP BY tm.user_id;
 """
 
 find_tabs = """
@@ -68,7 +69,7 @@ LEFT JOIN sections s
   ON s.id = t.section_id 
  AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
-WHERE t.workspace_id = %(workspace_id)s
+WHERE tm.workspace_id = %(workspace_id)s
   AND tm.user_id = %(user_id)s
   AND t.deleted_at IS NULL;
 """
@@ -135,6 +136,14 @@ JOIN workspace_members wm
 WHERE tm.tab_id = %(tab_id)s;
 """
 
+find_tabs_by_id = """
+SELECT * FROM tabs WHERE id = %(id)s;
+"""
+
+find_tab_member_by_user_id = """
+SELECT * FROM tab_members WHERE user_id = %(user_id)s;
+"""
+
 class TabRepository(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -150,13 +159,15 @@ class TabRepository(AbstractQueryRepo):
         return bool(result)
 
     def insert(self, workspace_id, tab_name, section_id, subsection_id):
+        query = create_tab.format(
+            subsection_id=subsection_id if subsection_id is not None else "NULL"
+        )
         param = {
             "workspace_id": workspace_id,
             "tab_name": tab_name,
-            "section_id": section_id,
-            "subsection_id": subsection_id
+            "section_id": section_id
         }
-        self.execute(create_tab, param)
+        self.execute(query, param)
 
     def find(self, workspace_id: int, tab_id: int):
         param = {
@@ -174,6 +185,13 @@ class TabRepository(AbstractQueryRepo):
         }
         return self.execute(find_tab_by_uq, param)
     
+    def find_tabs_by_id(self, tab_id: int):
+        param = {
+            # "workspace_id": workspace_id,
+            "id": tab_id
+        }
+        return self.execute(find_tabs_by_id, param)
+    
     def find_all(self, workspace_id: int, user_id: str):
         param = {
             "workspace_id": workspace_id,
@@ -181,7 +199,7 @@ class TabRepository(AbstractQueryRepo):
         }
         return self.execute(find_tabs, param)
     
-    def validate_section_in_workspace(self, section_id: int, workspace_id: int) -> bool:
+    def validate_section_in_workspace(self, section_id: int, workspace_id: int):
         param = {
             "workspace_id": workspace_id,
             "section_id": section_id
@@ -215,3 +233,8 @@ class TabRepository(AbstractQueryRepo):
 
         return self.execute(find_nicknames, {"tab_id": tab_id})
     
+    def find_by_user_id(self, user_id: UUID.bytes):
+        param = {
+            "user_id": user_id
+        }
+        return self.db.execute(find_tab_member_by_user_id, param)

@@ -1,16 +1,26 @@
 import { MessageCircle, StickyNote } from "lucide-react";
 import { TabMembers } from "@/components/modal/TabMembers";
 
-export function ChatHeader() {
+interface ChatHeaderProps {
+  sectionId: number;
+  tabName: string;
+}
+
+export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
   return (
     <div>
       <div className="sticky top-0 bg-white">
         <div className="flex items-center h-[50px] px-[17px]">
           <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
             <div className="flex items-center">
-              {/* 추후 DM 탭만 프로필 이미지 표시 */}
-              <img src="/user_default.png" className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover" />
-              <p className="text-l">어디갔어 이거</p>
+              {/* DM 탭만 프로필 이미지 표시 */}
+              {sectionId === 4 && (
+                <img
+                  src="/user_default.png"
+                  className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
+                />
+              )}
+              <p className="text-l">{tabName}</p>
             </div>
             <TabMembers />
           </div>

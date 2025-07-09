@@ -15,24 +15,25 @@ export interface TabMembersModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAddClick: () => void;
+  membersCount?: number;
 }
 
-export function TabMembersModal({trigger, title, tabMembers, open, onOpenChange, onAddClick}: TabMembersModalProps) {
+export function TabMembersModal({trigger, title, tabMembers, open, onOpenChange, onAddClick, membersCount}: TabMembersModalProps) {
 
   return (
     <MemberModal
       trigger={trigger}
-      title={title}
+      title={title}      
       open={open}
       onOpenChange={onOpenChange}
+      membersCount={membersCount}
     >
-      <div className="flex flex-col overflow-y-auto gap-0">
-        <Separator />
+      <div className="flex flex-col overflow-y-auto gap-0">        
         <SidebarProvider>
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton className="py-8 px-4 hover:bg-gray-200 rounded-none">
-                        <button onClick={onAddClick} className="flex flex-row justify-start items-center gap-2">
+                        <button onClick={onAddClick} className="flex flex-row justify-center items-center gap-2">
                             <UserRoundPlus size={28} className="w-[28px] aspect-square bg-gray-400 text-white rounded-md" />
                             <span className="text-lg font-bold text-gray-800 truncate">Add Member</span>
                         </button>

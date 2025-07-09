@@ -20,12 +20,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
       <div className="itemBox">
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleBold().run()}
               className={`toolbarBtn ${editor.isActive("bold") ? "is-active" : ""}`}
             >
               <BoldIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>굵게</span>
@@ -34,12 +34,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleItalic().run()}
               className={`toolbarBtn ${editor.isActive("italic") ? "is-active" : ""}`}
             >
               <ItalicIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>기울임꼴</span>
@@ -48,12 +48,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleStrike().run()}
               className={`toolbarBtn ${editor.isActive("strike") ? "is-active" : ""}`}
             >
               <StrikethroughIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>취소선</span>
@@ -62,9 +62,9 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button onClick={setLink} className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}>
+            <div onClick={setLink} className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}>
               <LinkIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>링크</span>
@@ -73,12 +73,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               className={`toolbarBtn ${editor.isActive("orderedList") ? "is-active" : ""}`}
             >
               <ListOrderedIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>순서가 지정된 목록</span>
@@ -87,12 +87,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={`toolbarBtn ${editor.isActive("bulletList") ? "is-active" : ""}`}
             >
               <ListIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>글머리 기호 목록</span>
@@ -101,12 +101,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
               className={`toolbarBtn ${editor.isActive("blockquote") ? "is-active" : ""}`}
             >
               <TextQuoteIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>인용구</span>
@@ -115,12 +115,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleCode().run()}
               className={`toolbarBtn ${editor.isActive("code") ? "is-active" : ""}`}
             >
               <CodeIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>코드</span>
@@ -129,12 +129,12 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button
+            <div
               onClick={() => editor.chain().focus().toggleCodeBlock().run()}
               className={`toolbarBtn ${editor.isActive("codeBlock") ? "is-active" : ""}`}
             >
               <CodeBlockIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>코드 블록</span>
@@ -143,9 +143,9 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <button onClick={addImage} className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}>
+            <div onClick={addImage} className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}>
               <HardDriveUploadIcon className="w-4 h-4" />
-            </button>
+            </div>
           </TooltipTrigger>
           <TooltipContent className="flex flex-col text-xs text-center gap-2">
             <span>첨부</span>

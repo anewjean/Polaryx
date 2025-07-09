@@ -1,8 +1,6 @@
 "use client";
-
 import { useRef, useState } from "react";
 import "./styles.scss";
-
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Dropcursor from "@tiptap/extension-dropcursor";
@@ -29,10 +27,8 @@ import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
 import { useFileStore } from "@/store/fileStore";
 import { useFilePreview } from "@/hooks/useFilePreview";
 // import { Send } from "lucide-react";
-
 // 실험용
 import { jwtDecode } from "jwt-decode";
-
 const TipTap = () => {
   const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
   const { addProfile } = useMessageProfileStore();
@@ -40,7 +36,6 @@ const TipTap = () => {
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
-
   const editor = useEditor({
     editable: true,
     extensions: [
@@ -72,35 +67,27 @@ const TipTap = () => {
           try {
             // construct URL
             const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
-
             // use default validation
             if (!ctx.defaultValidate(parsedUrl.href)) {
               return false;
             }
-
             // disallowed protocols
             const disallowedProtocols = ["ftp", "file", "mailto"];
             const protocol = parsedUrl.protocol.replace(":", "");
-
             if (disallowedProtocols.includes(protocol)) {
               return false;
             }
-
             // only allow protocols specified in ctx.protocols
             const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
-
             if (!allowedProtocols.includes(protocol)) {
               return false;
             }
-
             // disallowed domains
             const disallowedDomains = ["example-phishing.com", "malicious-site.net"];
             const domain = parsedUrl.hostname;
-
             if (disallowedDomains.includes(domain)) {
               return false;
             }
-
             // all checks have passed
             return true;
           } catch {
@@ -111,11 +98,9 @@ const TipTap = () => {
           try {
             // construct URL
             const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
-
             // only auto-link if the domain is not in the disallowed list
             const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
             const domain = parsedUrl.hostname;
-
             return !disallowedDomains.includes(domain);
           } catch {
             return false;
@@ -125,24 +110,19 @@ const TipTap = () => {
     ],
     content: message,
   });
-
   const setLink = useCallback(() => {
     if (!editor) return;
     const previousUrl = editor.getAttributes("link").href;
     const url = window.prompt("URL", previousUrl);
-
     // cancelled
     if (url === null) {
       return;
     }
-
     // empty
     if (url === "") {
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
-
       return;
     }
-
     // update link
     try {
       editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
@@ -152,40 +132,31 @@ const TipTap = () => {
   }, [editor]);
 
   const { handleFileSelect } = useFilePreview(editor, fileInputRef as React.RefObject<HTMLInputElement>);
-
   const addImage = useCallback(() => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
-
   const handleSend = async () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
-
     ////////////////////////////////////////////////
     const token = localStorage.getItem("access_token");
     console.log(jwtDecode<{ user_id: string }>(token!).user_id);
     ////////////////////////////////////////////////
-
     const content = editor?.getText() || "";
     if (!content.trim()) return;
-
     // 메시지 전송 시 profile data 저장
     addProfile({
       nickname: "Dongseok Lee (이동석)",
       timestamp: new Date().getTime(),
       image: "/profileTest.png",
     });
-
     // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
-
     editor?.commands.clearContent();
   };
-
   if (!editor) {
     return null;
   }
-
   return (
     <div className="chat-text-area">
       <input
@@ -213,7 +184,6 @@ const TipTap = () => {
           onKeyDown={(event) => {
             if (event.key === "Enter" && !event.shiftKey) {
               if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
-
               event.preventDefault(); // 줄바꿈 방지
               handleSend();
             }
@@ -226,5 +196,4 @@ const TipTap = () => {
     </div>
   );
 };
-
 export default TipTap;

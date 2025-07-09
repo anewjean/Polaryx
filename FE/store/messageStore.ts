@@ -2,12 +2,13 @@ import { ms } from "date-fns/locale";
 import { create } from "zustand";
 
 interface Message {
-  id: number | undefined;
+  senderId: Buffer;
+  msgId: number | undefined;
   nickname: string;
   image: string;
   content: string;
-  created_at: string | undefined;
-  file_url: string | null;
+  createdAt: string | undefined;
+  fileUrl: string | null;
 }
 
 interface MessageStore {
@@ -50,7 +51,7 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // 메시지 삭제
   deleteMessage: (id) =>
     set((state) => ({
-      messages: state.messages.filter((msg) => msg.id !== id),
+      messages: state.messages.filter((msg) => msg.msgId !== id),
     })),
     
   // 메시지 전송 trigger
