@@ -87,15 +87,15 @@ async def create_users(request: Request, workspace_id):
             "provider": "google",
             "workspace_id": 1
         }
+        print("target_data", target_data["user_email"])
         # usertable에 넣어주기.
         user_service.create_user_in_usertable(target_data)
 
-        print("create_member_roles\n")
         create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
 
         # 잘 들어갔는지 확인.
-        print("find_user_by_email\n")
         target = user_service.find_user_by_email(target_data["user_email"])
+        print("target", target)
         # user가 안만들어졌다? -> error
         if not target:
             print("\nerror\n")
@@ -105,8 +105,9 @@ async def create_users(request: Request, workspace_id):
             continue
 
         target_user_id = target[0][0]
+        print("target_user_id", target_user_id)
         target_in_wm = workspace_member_service.get_member_by_user_id(target_user_id)
-            
+        print("target_in_wm", target_in_wm)
         if not target_in_wm:
             uuid_obj2 = uuid.uuid4()
             wm_id = uuid_obj2.bytes
@@ -114,9 +115,9 @@ async def create_users(request: Request, workspace_id):
             target_data = {
                 "user_id": target[0][0],
                 "user_name": target[0][1],
-                "user_email": target[0][2],
+                "nickname": target[0][1],
+                "email": target[0][2],
                 "workspace_id": workspace_id,
-                "role_id": 1,
                 "id": wm_id,                
             }
 
@@ -135,13 +136,7 @@ async def create_users(request: Request, workspace_id):
 
 def create_member_roles(i, user_id: str):
     roles = roles_repo.get_all_roles()
-    role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
-
-    if role_id is None:
-        raise ValueError(f"역할 {i['role']}에 해당하는 role_id를 찾을 수 없습니다.")
-
-    test = member_roles_repo.insert_member_roles(user_id, role_id)
-    print("test", test)
+    member_roles_repo.insert_member_roles(user_id, i["name"], i["role"])
 
 @router.get("/{workspace_id}/users")
 async def create_users(request: Request):
