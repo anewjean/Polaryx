@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
+import { useTabStore } from "@/store/tabStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -60,6 +61,9 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 탭 생성 시 탭명 상태 관리
   const [tabName, setTabName] = useState("");
 
+  // 탭 목록 새로고침 필요 상태 관리
+  const { needsRefresh, resetRefresh } = useTabStore();
+
   // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
   const handleModalOpenChange = (isOpen: boolean, sectionId: string | null = null) => {
     setIsModalOpen(isOpen);
@@ -67,7 +71,7 @@ export default function AppSidebar({ width }: SidebarProps) {
     if (!isOpen) {
       setTabName("");
     }
-  };
+  };  
 
   // 진입 시 워크스페이스, 탭, 프로필 정보 획득
   useEffect(() => {
@@ -92,8 +96,13 @@ export default function AppSidebar({ width }: SidebarProps) {
         console.error("데이터 로딩 실패:", error);
       }
     };
+
     fetchData();
-  }, [workspaceId]);
+
+    if (needsRefresh) {
+      resetRefresh(); // 상태 초기화
+    }
+  }, [workspaceId, needsRefresh]);
 
   // 탭 추가 시 재 렌더링 후 해당 탭으로 이동
   async function handleAddTab(sectionId: string, tabName: string) {
