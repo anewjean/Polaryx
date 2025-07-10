@@ -1,7 +1,6 @@
 from pydantic import BaseModel
-from uuid import UUID
 
 
 class MessageUpdateRequest(BaseModel):
-    sender_id: UUID
+    sender_id: str
     new_content: str
