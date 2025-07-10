@@ -12,13 +12,15 @@ export function FileDownload({ fileUrl }: FileDownloadProps) {
 
   const handleDownload = async () => {
     try {
-      // file 명 추출
       const fileName = fileUrl.split("/").pop();
 
-      // presigned URL 요청
-      const { presignedUrl } = await getPresignedUrl({ name: fileName } as File);
+      const result = await getPresignedUrl({ name: fileName } as File);
+      if (!result) {
+        alert("다운로드 실패");
+        return;
+      }
 
-      // 새 창에서 다운로드(혹은 fetch+blob 방식도 가능)
+      const { presignedUrl } = result;
       window.open(presignedUrl, "_blank");
     } catch (e) {
       alert("다운로드 실패");

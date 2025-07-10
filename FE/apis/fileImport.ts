@@ -1,7 +1,9 @@
+import { fetchWithAuth } from "./authApi";
+
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export async function putPresignedUrl(file: File) {
-  const res = await fetch(`http://${BASE}/api/s3/presigned-url`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/s3/presigned-url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -9,15 +11,20 @@ export async function putPresignedUrl(file: File) {
       filetype: file.type,
     }),
   });
-  const data = await res.json();
-  const presignedUrl = data.url; // 서버에서 반환한 presigned URL
-  const fileKey = data.key;
 
-  return { presignedUrl, fileKey };
+  if (res == null) {
+    console.log("NOT REACH : putPresignedUrl");
+  } else {
+    const data = await res.json();
+    const presignedUrl = data.url; // 서버에서 반환한 presigned URL
+    const fileKey = data.key;
+
+    return { presignedUrl, fileKey };
+  }
 }
 
 export async function getPresignedUrl(file: File) {
-  const res = await fetch(`http://${BASE}/api/s3/presigned-url-get`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/s3/presigned-url-get`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -25,29 +32,36 @@ export async function getPresignedUrl(file: File) {
       //   filetype: file.type,
     }),
   });
-  if (!res.ok) throw new Error("presigned url 요청 실패");
+  if (res == null) {
+    console.log("NOT REACH : getPresignedUrl");
+  } else {
+    if (!res.ok) throw new Error("presigned url 요청 실패");
 
-  const data = await res.json();
-  const presignedUrl = data.url;
-  const fileKey = data.key;
+    const data = await res.json();
+    const presignedUrl = data.url;
+    const fileKey = data.key;
 
-  return { presignedUrl, fileKey };
+    return { presignedUrl, fileKey };
+  }
 }
 
 export async function uploadFile(file: File, presignedUrl: string) {
-  const res = await fetch(presignedUrl, {
+  const res = await fetchWithAuth(presignedUrl, {
     method: "PUT",
     headers: {
       "Content-Type": file.type, // ex: "image/png"
     },
     body: file,
   });
+  if (res == null) {
+    console.log("NOT REACH : uploadFile");
+  } else {
+    if (!res.ok) {
+      throw new Error("파일 업로드 실패");
+    }
 
-  if (!res.ok) {
-    throw new Error("파일 업로드 실패");
+    // 업로드 성공 후 이미지 URL 반환
+    const fileUrl = presignedUrl.split("?")[0]; // query string 제거하면 정적 URL
+    return fileUrl;
   }
-
-  // 업로드 성공 후 이미지 URL 반환
-  const fileUrl = presignedUrl.split("?")[0]; // query string 제거하면 정적 URL
-  return fileUrl;
 }
