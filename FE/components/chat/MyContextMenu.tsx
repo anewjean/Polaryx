@@ -21,7 +21,7 @@ interface MyContextMenuProps {
   // workspaceId: number;
   // tapId: number;
   messageId: number;
-  userId: Buffer; // 작성자 id 추가
+  userId: string; // 작성자 id 추가
 }
 
 export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {

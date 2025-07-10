@@ -2,7 +2,7 @@ import { ms } from "date-fns/locale";
 import { create } from "zustand";
 
 interface Message {
-  senderId: Buffer;
+  senderId: string;
   msgId: number | undefined;
   nickname: string;
   image: string;
@@ -21,7 +21,7 @@ interface MessageStore {
 
   // 메시지 삭제
   deleteMessage: (id: number) => void;
-  
+
   // 메시지 전송 trigger
   sendFlag: boolean;
   setSendFlag: (flag: boolean) => void;
@@ -31,7 +31,7 @@ interface MessageStore {
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
   prependMessages: (msg: Message[]) => void;
-  
+
   // file url 저장
   fileUrl: string | null;
   setFileUrl: (url: string | null) => void;
@@ -47,13 +47,12 @@ export const useMessageStore = create<MessageStore>((set) => ({
       messages: state.messages.map((m, i) => (i === idx ? msg : m)),
     })),
 
-
   // 메시지 삭제
   deleteMessage: (id) =>
     set((state) => ({
       messages: state.messages.filter((msg) => msg.msgId !== id),
     })),
-    
+
   // 메시지 전송 trigger
   sendFlag: false,
   setSendFlag: (flag) => set({ sendFlag: flag }),
@@ -62,9 +61,10 @@ export const useMessageStore = create<MessageStore>((set) => ({
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
-  prependMessages: (msgs) => set((state) => ({
-    messages: [...msgs, ...state.messages],
-  })),
+  prependMessages: (msgs) =>
+    set((state) => ({
+      messages: [...msgs, ...state.messages],
+    })),
 
   // file url 저장
   fileUrl: null,

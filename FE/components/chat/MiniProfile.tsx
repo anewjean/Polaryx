@@ -1,6 +1,7 @@
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import { useProfileStore } from "@/store/profileStore";
+import { useTabStore } from "@/store/tabStore";
 import { sendDirectMessage } from "@/apis/messageApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -8,7 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 
 interface MiniProfileProps {
-  senderId: Buffer;
+  senderId: string;
   imgSrc: string;
   nickname: string;
 }
@@ -21,6 +22,7 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
 
   // 프로필
   const openProfile = useProfileStore((s) => s.openWithId);
+  const refreshTabs = useTabStore((s) => s.refreshTabs);
 
   // 현재 유저 ID 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -41,6 +43,7 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
     try {
       const res = await sendDirectMessage(workspaceId, userIds);
       console.log("DM 생성 응답:", res);
+      refreshTabs(); // 탭 새로고침 상태 업데이트
       router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
     } catch (error) {
       console.error("DM 생성 중 오류:", error);
@@ -63,7 +66,13 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
               size="sm"
               onClick={() => {
                 if (userId) {
-                  createDM([userId, senderId.toString()]);
+                  const userIds = [userId];
+                  if (userId != senderId) {
+                    userIds.push(senderId);
+                  }
+                  createDM(userIds);
+                  console.log("userId:", userId);
+                  console.log("senderId:", senderId);
                 }
               }}
             >

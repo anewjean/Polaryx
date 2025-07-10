@@ -6,7 +6,7 @@ import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 
 interface ChatProfileProps {
-  senderId: Buffer;
+  senderId: string;
   msgId: number;
   imgSrc: string;
   nickname: string;

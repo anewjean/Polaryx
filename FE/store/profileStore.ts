@@ -4,11 +4,11 @@ import { create } from "zustand";
 
 interface ProfileStore {
   isOpen: boolean;
-  userId: Buffer | null;
-  setUserId: (id: Buffer) => void;
+  userId: string | null;
+  setUserId: (id: string) => void;
   setOpen: () => void;
   setClose: () => void;
-  openWithId: (id: Buffer) => void;
+  openWithId: (id: string) => void;
 }
 
 export const useProfileStore = create<ProfileStore>((set) => ({

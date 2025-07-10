@@ -110,7 +110,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                senderId={msg.senderId ? msg.senderId : ""}
                 msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
