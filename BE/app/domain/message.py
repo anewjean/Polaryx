@@ -43,6 +43,7 @@ class Message:
             created_at=row[5],
             updated_at=row[6],
             deleted_at=row[7],
+            file_url=row[8] if len(row) > 8 else None
         )
 
     def modify(self, new_content: str):

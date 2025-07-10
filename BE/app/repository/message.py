@@ -36,7 +36,11 @@ WHERE id = %(id)s;
 """
 
 find_message = """
-SELECT * FROM messages WHERE id = %(id)s;
+SELECT 
+    id, tab_id, sender_id, content, 
+    is_updated, created_at, updated_at, deleted_at, url
+FROM messages 
+WHERE id = %(id)s;
 """
 
 find_all_messages = """
@@ -50,7 +54,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
@@ -70,7 +75,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
@@ -91,7 +97,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
