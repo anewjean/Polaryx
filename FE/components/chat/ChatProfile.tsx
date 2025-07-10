@@ -4,6 +4,7 @@ import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
+import DOMPurify from "dompurify";
 
 interface ChatProfileProps {
   senderId: string;
@@ -30,8 +31,7 @@ export function ChatProfile({
   showProfile,
   fileUrl,
 }: ChatProfileProps) {
-  const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
-
+  const safeHTML = DOMPurify.sanitize(content);
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -73,7 +73,10 @@ export function ChatProfile({
             )}
             {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
             {fileUrl && !isImageFile(fileUrl) && <FileDownload />}
-            <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
+            <div
+              className="whitespace-pre-wrap break-words break-anywhere text-m"
+              dangerouslySetInnerHTML={{ __html: safeHTML }}
+            />{" "}
           </div>
         </div>
       </ContextMenuTrigger>

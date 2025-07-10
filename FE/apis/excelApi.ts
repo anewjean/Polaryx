@@ -1,12 +1,20 @@
+import { fetchWithAuth } from "./authApi";
+
 const BASE = process.env.NEXT_PUBLIC_BASE
 
 // FE/apis/excelApi.ts
 export async function getWorkspaceColumns() {
-  const res = await fetch(`http://${BASE}/api/workspaces/1/users`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/1/users`, {
     method: "GET",
   });
-  if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
-  return res.json();
+  if (res == null)
+  {
+
+  } else {
+
+    if (!res.ok) throw new Error("워크스페이스 컬럼 조회 실패");
+    return res.json();
+  }
 }
 
 // users 테이블에 user 생성

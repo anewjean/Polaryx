@@ -1,6 +1,6 @@
 "use client";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,9 +54,7 @@ export default function AuthCallbackPage() {
 
         localStorage.setItem("access_token", accessToken);
 
-        setTimeout(() => {
-          router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
-        }, 1500);
+        router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);
         setIsLoading(false);
