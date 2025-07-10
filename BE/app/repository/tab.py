@@ -160,7 +160,7 @@ class TabRepository(AbstractQueryRepo):
 
     def insert(self, workspace_id, tab_name, section_id, subsection_id):
         query = create_tab.format(
-            subsection_id=subsection_id if subsection_id is not None else "NULL"
+            subsection_id=subsection_id if subsection_id is not None else 0
         )
         param = {
             "workspace_id": workspace_id,

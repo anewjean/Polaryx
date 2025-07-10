@@ -24,6 +24,7 @@ export default function ChannelDefault() {
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
   const [possibleMembers, setPossibleMembers] = useState<Member[]>([]);
 
+  // 탭 정보 가져오기
   const [tabName, setTabName] = useState<string>(""); // 탭 이름
   const [sectionId, setSectionId] = useState<number>(0); // 섹션 ID
 
@@ -64,7 +65,7 @@ export default function ChannelDefault() {
   return (
     <div className="flex flex-col h-full">
       {/* 1. 상단 헤더 */}
-      <ChatHeader sectionId = {sectionId} tabName={tabName} />
+      <ChatHeader sectionId={sectionId} tabName={tabName} />
 
       {/* 2. 엑셀 업로드 버튼 : 추후 위치 수정 */}
       {/* <div className="flex-none">

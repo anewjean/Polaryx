@@ -22,9 +22,9 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
-import { useMessageProfileStore } from "@/store/messageProfileStore";
-import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
-import { useFileStore } from "@/store/fileStore";
+// import { useMessageProfileStore } from "@/store/messageProfileStore";
+// import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
+// import { useFileStore } from "@/store/fileStore";
 import { useFilePreview } from "@/hooks/useFilePreview";
 import { useParams } from "next/navigation";
 import { getTabInfo } from "@/apis/tabApi";
@@ -57,7 +57,7 @@ export function TipTap() {
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
-  const { addProfile } = useMessageProfileStore();
+  // const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
@@ -139,6 +139,15 @@ export function TipTap() {
     },
     [tabName],
   );
+
+  // 메시지 전송 후에도 채팅이 남아있는 문제 해결을 위한 초기화
+  // 탭이 바뀔 때마다 입력창을 비워줌
+  useEffect(() => {
+    if (editor) {
+      editor.commands.clearContent();
+    }
+  }, [tabId, editor]);
+
   const setLink = useCallback(() => {
     if (!editor) return;
     const previousUrl = editor.getAttributes("link").href;
@@ -170,16 +179,17 @@ export function TipTap() {
     const token = localStorage.getItem("access_token");
     console.log(jwtDecode<{ user_id: string }>(token!).user_id);
     ////////////////////////////////////////////////
-    const content = editor?.getText() || "";
+    const content = editor?.getHTML() || ""; // 마크다운으로 받기
+    if (!content.replace(/<[^>]*>/g, "").trim()) return; // 내용이 없으면 전송 안 함
     if (!content.trim()) return;
     // 메시지 전송 시 profile data 저장
-    addProfile({
-      nickname: "Dongseok Lee (이동석)",
-      timestamp: new Date().getTime(),
-      image: "/profileTest.png",
-    });
+    // addProfile({
+    //   nickname: "Dongseok Lee (이동석)",
+    //   timestamp: new Date().getTime(),
+    //   image: "/profileTest.png",
+    // });
     // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
-    setMessage(content) // 메시지 저장
+    setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();
   };
@@ -224,6 +234,5 @@ export function TipTap() {
       </div>
     </div>
   );
-};
+}
 export default TipTap;
-
