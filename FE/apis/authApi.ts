@@ -50,7 +50,6 @@ export async function fetchWithAuth(
           console.log("** no new ACcesssToken  **")
           return null;
         }
-        console.log(newAccessToken);
         console.log("**** Acess Token 받기 성공 ***");
 
         // Authorization 다시 업데이트
