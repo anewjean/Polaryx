@@ -97,12 +97,13 @@ class TokenSerive:
         
         return result[0][2]
 
-    # 저장해둔 refresh_token이 유효하지 않다면 db에서 제거하기.
     def delete_refresh_token_from_db(data: dict):
         print("in delete_refresh_token_from_db")
-        print("data: ", data)
-        sql = query_repo.get_sql("remove_refresh_token_by_user_id_and_token")
+        sql = query_repo.get_sql("find_refresh_token_id_by_user_id_and_token")
         params = {"user_id": data["user_id"], "user_refresh_token": data["user_refresh_token"]}
+        res = db.execute(sql, params)
+        params = {"refresh_tokens_id": res[0][0]}
+        sql = query_repo.get_sql("remove_refresh_token_by_id")
         db.execute(sql, params)
 
 
