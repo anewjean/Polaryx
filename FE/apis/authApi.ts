@@ -95,7 +95,7 @@ export async function reissueAccessToken(details: string): Promise<any> {
   
   if (details == "EXPIRED TOKEN") {
     console.log("in reissueAccessToken, EXPIRED TOKEN");
-    const res = await fetch(`http://${BASE}/api/auth/refresh`, {
+    const res = await fetch(`${BASE}/api/auth/refresh`, {
       method: "POST",
       credentials: "include", // httpOnly 쿠키에 담긴 refresh_token 자동 전송
     });

@@ -22,7 +22,8 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
   useEffect(() => {
     console.log("new web sokcet");
-    const socket = new WebSocket(`ws://${BASE}/ws/${workspaceId}/${tabId}`);
+    // const socket = new WebSocket(`ws://localhost:8000/api/ws/${workspaceId}/${tabId}`); 개발용
+    const socket = new WebSocket(`ws://jungle-lms.site:8000/api/ws/${workspaceId}/${tabId}`);
 
     socketRef.current = socket;
 
