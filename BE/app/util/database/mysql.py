@@ -47,13 +47,11 @@ class MySQL(DBImpl):
 
         finally:
             try:
-                print("******** cursor.close() 실행 ********")
                 cursor.close()
             except Exception:
                 print("cursor.close() 실패.")
                 pass
             try:
-                print("******** cnx.close() 실행 ********")
                 cnx.close()
             except:
                 print("cnx.close() 실패.")

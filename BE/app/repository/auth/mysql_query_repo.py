@@ -38,8 +38,14 @@ find_refresh_token_by_refresh_token = """
 SELECT * FROM refresh_tokens WHERE token = %(user_refresh_token)s;
 """
 
-remove_refresh_token_by_user_id_and_token = """
-DELETE FROM refresh_tokens WHERE user_id = %(user_id)s AND token = %(user_refresh_token)s;
+find_refresh_token_id_by_user_id_and_token = """
+SELECT id FROM refresh_tokens
+WHERE token = %(user_refresh_token)s AND user_id = unhex(%(user_id)s);
+"""
+
+remove_refresh_token_by_id = """
+DELETE FROM refresh_tokens
+WHERE id = %(refresh_tokens_id)s;
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -52,6 +58,7 @@ class QueryRepo(AbstractQueryRepo):
         self.queries["update_provider_id"] = update_provider_id
         self.queries["save_refresh_token"] = save_refresh_token
         self.queries["find_refresh_token_by_refresh_token"] = find_refresh_token_by_refresh_token
-        self.queries["remove_refresh_token_by_user_id_and_token"] = remove_refresh_token_by_user_id_and_token
+        self.queries["find_refresh_token_id_by_user_id_and_token"] = find_refresh_token_id_by_user_id_and_token
         self.queries["update_user_id_in_workspace_members"] = update_user_id_in_workspace_members
         self.queries["insert_user"] = insert_user
+        self.queries["remove_refresh_token_by_id"] = remove_refresh_token_by_id

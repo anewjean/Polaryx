@@ -29,7 +29,6 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     print("tab_id, before_id: ", tab_id, before_id)
     # 페이징 위해 교체 로직
     rows = await message_service.find_recent_messages(tab_id, before_id)
-    print("rows: ", rows)
     rows.reverse()
     
     # 뒤집힌 rows
@@ -45,11 +44,7 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     # [9]: m.deleted_at
     
     # 원래 로직
-    # rows = await message_service.find_all_messages(tab_id)
-    print(rows)
     messages = [MessageSchema.from_row(row) for row in rows]
-    # print("*********** messages ************")
-    # print(messages)
     return MessagesResponse(messages=messages)
 
 @router.patch("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)

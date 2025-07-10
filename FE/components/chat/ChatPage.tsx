@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-import { updateMessage } from "@/apis/messageApi";
+// import { updateMessage } from "@/apis/messageApi";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
-import { useMessageProfileStore } from "@/store/messageProfileStore";
+// import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
-import { ChatEditButton } from "./chatEditButton/chatEditButton";
+// import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { getMessages } from "@/apis/messageApi";
-import { elementFromString } from "@tiptap/core";
+// import { elementFromString } from "@tiptap/core";
 
 // 채팅방 내 채팅
 export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {

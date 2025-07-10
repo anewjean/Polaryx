@@ -7,15 +7,13 @@ export function FileDownload() {
   if (!file) return null;
 
   const handleDownload = async () => {
-    try {
-      // presigned URL 요청
-      const { presignedUrl } = await getPresignedUrl(file);
-
-      // 새 창에서 다운로드(혹은 fetch+blob 방식도 가능)
+      const result = await getPresignedUrl(file);
+      if (!result) {
+        alert("다운로드 실패");
+        throw new Error("presignedUrl 요청 실패");
+      }
+      const { presignedUrl } = result
       window.open(presignedUrl, "_blank");
-    } catch (e) {
-      alert("다운로드 실패");
-    }
   };
 
   return (
