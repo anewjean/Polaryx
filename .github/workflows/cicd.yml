@@ -65,7 +65,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --no-cache \
-            --build-arg NEXT_PUBLIC_BASE=${{ secrets.EC2_HOST }}:8000 \
+            --build-arg NEXT_PUBLIC_BASE=jungle-lms.site:8000 \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
