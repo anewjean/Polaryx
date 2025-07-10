@@ -20,7 +20,16 @@ function isImageFile(url: string) {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(url);
 }
 
-export function ChatProfile({ senderId, msgId, imgSrc, nickname, time, content, showProfile, fileUrl }: ChatProfileProps) {
+export function ChatProfile({
+  senderId,
+  msgId,
+  imgSrc,
+  nickname,
+  time,
+  content,
+  showProfile,
+  fileUrl,
+}: ChatProfileProps) {
   const text = content.replace(/\n+$/, ""); // 마지막 줄의 개행 문자 제거
 
   return (
@@ -68,7 +77,7 @@ export function ChatProfile({ senderId, msgId, imgSrc, nickname, time, content, 
           </div>
         </div>
       </ContextMenuTrigger>
-      <MyContextMenu messageId={msgId} />
+      <MyContextMenu messageId={msgId} userId={senderId} />
     </ContextMenu>
   );
 }
