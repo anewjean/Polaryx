@@ -9,12 +9,14 @@ insert_message = """
 INSERT INTO messages (
     tab_id,
     sender_id,
-    content
+    content,
+    url
 )
 VALUES (
     %(tab_id)s,
     %(sender_id)s,
-    %(content)s
+    %(content)s,
+    %(url)s
 );
 """
 
@@ -148,7 +150,8 @@ class QueryRepo(AbstractQueryRepo):
         params = {
             "tab_id": message.tab_id,
             "sender_id": sender_id_bytes,
-            "content": message.content
+            "content": message.content,
+            "url": message.file_url
         }
         return self.db.execute(insert_message, params)
     
