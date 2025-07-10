@@ -71,9 +71,9 @@ export function ChatProfile({
                 <span className="text-xs chat-time-stamp">{time}</span>
               </div>
             )}
-            {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
-            {fileUrl && !isImageFile(fileUrl) && <FileDownload />}
             <div className="whitespace-pre-wrap break-words break-anywhere text-m">{text}</div>
+            {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
+            {fileUrl && !isImageFile(fileUrl) && <FileDownload fileUrl={fileUrl} />}
           </div>
         </div>
       </ContextMenuTrigger>

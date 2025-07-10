@@ -1,4 +1,4 @@
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export async function putPresignedUrl(file: File) {
   const res = await fetch(`http://${BASE}/api/s3/presigned-url`, {
@@ -22,7 +22,7 @@ export async function getPresignedUrl(file: File) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       filename: file.name,
-      filetype: file.type,
+      //   filetype: file.type,
     }),
   });
   if (!res.ok) throw new Error("presigned url 요청 실패");
