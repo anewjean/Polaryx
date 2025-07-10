@@ -114,11 +114,12 @@ async def create_users(request: Request, workspace_id):
             
             target_data = {
                 "user_id": target[0][0],
-                "user_name": target[0][1],
+                # "user_name": target[0][1],
                 "nickname": target[0][1],
                 "email": target[0][2],
-                "workspace_id": workspace_id,
-                "id": wm_id,                
+                "workspace_id": int(workspace_id),
+                "id": wm_id,
+                "image" : None,                
             }
 
             workspace_member_service.insert_workspace_member(target_data)
