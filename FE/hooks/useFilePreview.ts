@@ -18,10 +18,24 @@ export function useFilePreview(editor: any, fileInputRef: React.RefObject<HTMLIn
       const file = event.target.files?.[0];
       useFileStore.getState().setFile(file || null); // file store에 file 저장
       // 파일 업로드 전 presignedUrl 발급
-      const { presignedUrl, fileKey } = await putPresignedUrl(file as File);
+      if (!file) return;
+
+      // presignedUrl 발급
+      const result = await putPresignedUrl(file);
+      if (!result || !result.presignedUrl) {
+        alert("업로드 URL을 가져오지 못했습니다.");
+        return;
+      }
+      const { presignedUrl, fileKey } = result;
+
       // 파일 업로드
-      const fileUrl = await uploadFile(file as File, presignedUrl);
-      // 파일 url 저장
+      const fileUrl = await uploadFile(file, presignedUrl);
+
+      if (!fileUrl) {
+        alert("fileUrl이 없습니다");
+        return;
+      }
+
       useMessageStore.getState().setFileUrl(fileUrl);
       if (file && editor) {
         // 파일 크기 제한 (5MB)
