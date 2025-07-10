@@ -40,6 +40,12 @@ export function TipTap() {
   const tabId = params.tabId as string;
   const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
   const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
+  const [mounted, setMounted] = useState(false);
+
+  // 클라이언트에서만 mounted = true
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (workspaceId && tabId) {
@@ -56,6 +62,7 @@ export function TipTap() {
   // 중복 전송 방지 플래그.
   const editor = useEditor(
     {
+      // immediatelyRender: false 제거해도 됨
       editable: true,
       extensions: [
         StarterKit, // 핵심 확장 모음
@@ -184,6 +191,11 @@ export function TipTap() {
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();
   };
+  // 서버사이드에서는 아무것도 렌더링하지 않음
+  if (!mounted) {
+    return <div className="chat-text-area">Loading...</div>;
+  }
+
   if (!editor) {
     return null;
   }
