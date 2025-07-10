@@ -32,26 +32,30 @@ import { useFetchMessages } from "@/hooks/useFetchMessages";
 // import { Send } from "lucide-react";
 // 실험용
 import { jwtDecode } from "jwt-decode";
+import { useTabInfoStore } from "@/store/tabStore";
 
 export function TipTap() {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
-
-  const [tabName, setTabName] = useState<string>(""); // 탭 이름
+  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
+  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
+  const tabInfo = tabInfoCache[tabId];  
 
   useEffect(() => {
     if (!workspaceId || !tabId) return;
 
-    (async () => {
-      try {
-        const info = await getTabInfo(workspaceId, tabId);
-        setTabName(info.tab_name); // tab_name 불러오기
-      } catch (e) {
-        console.log("탭 정보 조회 실패:", e);
-      }
-    })();
-  }, [workspaceId, tabId]);
+    // 캐시에 현재 탭 정보가 없으면 API 호출
+    if (!tabInfo) {
+      getTabInfo(workspaceId, tabId)
+        .then((info) => {
+          setTabInfo(tabId, info); // 캐시에 정보 저장
+        })
+        .catch((e) => {
+          console.log("탭 정보 조회 실패:", e);
+        });
+    }
+  }, [workspaceId, tabId, tabInfo]);
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
@@ -67,7 +71,7 @@ export function TipTap() {
         StarterKit, // 핵심 확장 모음
         Placeholder.configure({
           // placeholder가 뭐임?
-          placeholder: `${tabName}에 메시지 보내기`,
+          placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
         }),
         Document,
         Paragraph,
@@ -135,7 +139,7 @@ export function TipTap() {
       ],
       content: message,
     },
-    [tabName],
+    [tabInfo?.tab_name],
   );
 
   // 메시지 전송 후에도 채팅이 남아있는 문제 해결을 위한 초기화

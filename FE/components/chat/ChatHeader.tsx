@@ -1,12 +1,35 @@
 import { MessageCircle, StickyNote } from "lucide-react";
 import { TabMembers } from "@/components/modal/TabMembers";
+import { useTabInfoStore } from "@/store/tabStore";
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
+import { getTabInfo } from "@/apis/tabApi";
 
-interface ChatHeaderProps {
-  sectionId: number;
-  tabName: string;
-}
+export function ChatHeader() {
+  // 파라미터에서 workspaceId와 tabId 추출
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  const tabId = params.tabId as string;
 
-export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
+  // 탭 정보 캐시에서 가져오기
+  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
+  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
+  const tabInfo = tabInfoCache[tabId];
+
+  useEffect(() => {
+    if (workspaceId && tabId && !tabInfo) {
+      (async () => {
+        getTabInfo(workspaceId, tabId)
+          .then((info) => {
+            setTabInfo(tabId, info); // 캐시에 정보 저장
+          })
+          .catch((e) => {
+            console.log("탭 정보 조회 실패:", e);
+          });
+      })();
+    }
+  }, [workspaceId, tabId, tabInfo]);
+
   return (
     <div>
       <div className="sticky top-0 bg-white">
@@ -20,7 +43,7 @@ export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
                   className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
                 />
               )} */}
-              <p className="text-l">{tabName}</p>
+              <p className="text-l">{tabInfo?.tab_name}</p>
             </div>
             <TabMembers />
           </div>

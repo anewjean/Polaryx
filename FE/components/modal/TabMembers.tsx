@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { MemberModal } from "@/components/modal/MemberModal";
 import { TabMembersModal } from "@/components/modal/TabMembersModal";
 import { PossibleMembersModal } from "@/components/modal/PossibleMembersModal";
+import { useTabInfoStore } from "@/store/tabStore";
 
 export function TabMembers() {
   // 파라미터에서 workspaceId와 tabId 추출
@@ -15,8 +16,10 @@ export function TabMembers() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
-  // 탭 정보 상태 관리
-  const [tabInfo, setTabInfo] = useState<Tab | null>(null);
+  // 탭 정보 캐시에서 가져오기 (무한 루프 방지를 위해 객체로 한 번에 구독)
+  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
+  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
+  const tabInfo = tabInfoCache[tabId];
 
   // 멤버 리스트 상태 관리
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
@@ -34,16 +37,26 @@ export function TabMembers() {
     setIsAddModalOpen(open);
   };
 
-  // 탭 정보 및 멤버 조회
+  // 탭 정보 조회
   useEffect(() => {
-    if (workspaceId && tabId) {
-      // 탭 정보 조회
-      getTabInfo(workspaceId, tabId).then(setTabInfo);
-
-      // 탭 멤버 목록 조회
-      getMemberList(workspaceId, tabId).then(setTabMembers);
+    if (workspaceId && tabId && !tabInfo) {
+      getTabInfo(workspaceId, tabId)
+        .then((info) => {
+          setTabInfo(tabId, info); // 캐시에 정보 저장
+        })
+        .catch((e) => {
+          console.log("탭 정보 조회 실패:", e);
+        });
     }
-  }, [isAddModalOpen]);
+  }, [workspaceId, tabId, tabInfo]);
+
+  // 모달이 열릴 때 멤버 목록 조회
+  useEffect(() => {
+    if (isModalOpen && workspaceId && tabId) {
+      getMemberList(workspaceId, tabId).then(setTabMembers);
+      getPossibleMemberList(workspaceId, tabId).then(setPossibleMembers);
+    }
+  }, [isModalOpen, workspaceId, tabId]);
 
   // 참여 가능 멤버 목록 조회
   const handleAddMember = () => {
