@@ -63,7 +63,7 @@ async def reaccess(request: Request,
         print("NO REFRESH TOKEN IN COOKIES\n")
         raise HTTPException(status_code=401, detail="NO REFRESH TOKEN IN COOKIES")
 
-    refresh_token_user_id_and_email = TokenSerive.verify_access_token(refresh_token)
+    refresh_token_user_id_and_email = TokenSerive.verify_access_token(refresh_token)    
     data = {"user_refresh_token": refresh_token}
     
     # 그 refresh_token으로 db에서 refresh_token 찾아오기
@@ -149,7 +149,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                       }
                 
                 TokenSerive.save_refresh_token_to_db(res_data)
-
+                print("REFRESH_TOKEN_EXPIRE_MINUTES: ", REFRESH_TOKEN_EXPIRE_MINUTES)
                 response.set_cookie(
                     key="refresh_token",
                     value=jwt_refresh_token,
@@ -170,19 +170,11 @@ async def logout(request:Request,
                  response:Response, 
                  token_user_id_and_email=Depends(verify_token_and_get_token_data),
                  ):
-    
-    # 로그아웃할 때도 refresh token 넣어서 보내줌.
     refresh_token = request.cookies.get("refresh_token")
     data = {"user_refresh_token": refresh_token}
 
     data.update({"user_id": token_user_id_and_email["user_id"], "email": token_user_id_and_email["email"]})
-
-    # 그럼 그거 받아서 db에 있는 refresh_token 찾아서 삭제해주고
-    # (삭제하려면 user_id 있어야됨. 한번 받아오기.)
     TokenSerive.delete_refresh_token_from_db(data)
-
-    # 클라이언트에서 쿠키에 저장해놨냐?
-    # 아님 스토리지에 저장해놨냐에 따라 다르게
     response.delete_cookie("refresh_token")
 
     return

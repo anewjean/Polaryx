@@ -44,11 +44,9 @@ export function TipTap() {
     if (!workspaceId || !tabId) return;
 
     (async () => {
-      console.log("탭 정보 조회 시작");
       try {
         const info = await getTabInfo(workspaceId, tabId);
         setTabName(info.tab_name); // tab_name 불러오기
-        console.log("탭 이름:", info.tab_name);
       } catch (e) {
         console.log("탭 정보 조회 실패:", e);
       }

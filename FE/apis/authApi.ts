@@ -46,10 +46,11 @@ export async function fetchWithAuth(
         const newAccessToken = await reissueAccessToken("EXPIRED TOKEN");
 
         if (!newAccessToken) {
-          window.location.href = "/";
+          // window.location.href = "/";
+          console.log("** no new ACcesssToken  **")
           return null;
         }
-
+        console.log(newAccessToken);
         console.log("**** Acess Token 받기 성공 ***");
 
         // Authorization 다시 업데이트
@@ -66,6 +67,7 @@ export async function fetchWithAuth(
 
         // 재요청
         res = await fetch(input, retryInit);
+        return res;
       } else if (detail === "INVALID ACCESS TOKEN" || detail === "NOT INVALID REFRESH TOKEN") {
         console.warn("유효하지 않은 토큰");
         window.location.href = "/";
@@ -73,7 +75,7 @@ export async function fetchWithAuth(
       }
     } catch (e) {
       console.error("fetchWithAuth json parse 실패", e);
-      window.location.href = "/";
+      // window.location.href = "/";
       return null;
     }
   }
