@@ -39,9 +39,9 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   }, []);
 
   // DM 생성 이벤트 핸들러
-  const createDM = async (userIds: string[]) => {
+  const createDM = async (userIds: string[], userId: string) => {
     try {
-      const res = await sendDirectMessage(workspaceId, userIds);
+      const res = await sendDirectMessage(workspaceId, userIds, userId);
       console.log("DM 생성 응답:", res);
       refreshTabs(); // 탭 새로고침 상태 업데이트
       router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
@@ -66,13 +66,8 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
               size="sm"
               onClick={() => {
                 if (userId) {
-                  const userIds = [userId];
-                  if (userId != senderId) {
-                    userIds.push(senderId);
-                  }
-                  createDM(userIds);
-                  console.log("userId:", userId);
-                  console.log("senderId:", senderId);
+                  const uniqueUserIds = new Set([userId, senderId]);
+                  createDM(Array.from(uniqueUserIds), userId);
                 }
               }}
             >
