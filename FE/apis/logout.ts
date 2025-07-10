@@ -17,6 +17,8 @@ export async function logout() {
       Authorization: `Bearer ${access_token}`, // access_token 담아서 보내기
     },
   });
+  // 액세스 토큰도 삭제.
+  localStorage.clear();
   if (res == null)
   {
     console.log("NOT REACH : logout");

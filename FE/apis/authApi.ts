@@ -74,20 +74,18 @@ export async function fetchWithAuth(
         return null;
       }
     } catch (e) {
-      console.error("fetchWithAuth json parse 실패", e);
+      console.error(input," json parse 실패", e);
       // window.location.href = "/";
       return null;
     }
+  }
+  else {
+    console.log("not 401: ", res.status);
   }
 
   return res;
 }
 
-
-
-
-// refresh_token 쿠키를 자동으로 보내서, 기존 엑세스 토큰 삭제하고,
-// 새 access_token을 발급받고 local storage에 저장한 뒤 반환
 export async function reissueAccessToken(details: string): Promise<any> {
   
   console.log("access_token 삭제");
@@ -117,7 +115,6 @@ export async function reissueAccessToken(details: string): Promise<any> {
     console.log("INVALID ACCESS TOKEN")
   }
   else {
-    // refresh token이 비정상일 때
     console.log("NOT INVALID REFRESH TOKEN")
   }
 
