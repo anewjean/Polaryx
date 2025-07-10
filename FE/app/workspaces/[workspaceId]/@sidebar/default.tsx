@@ -35,10 +35,8 @@ import { getProfile, Profile } from "@/apis/profileApi";
 type SidebarProps = { width: number };
 
 export default function AppSidebar({ width }: SidebarProps) {
-  const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null);
-
   // URL에서 workspaceId, tabId 추출
+  const router = useRouter();
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
@@ -71,31 +69,31 @@ export default function AppSidebar({ width }: SidebarProps) {
     }
   };
 
-  // 진입 시 유저 ID 획득
+  // 진입 시 워크스페이스, 탭, 프로필 정보 획득
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      setUserId(jwtDecode<{ user_id: string }>(token).user_id);
-    }
-  }, []);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+          const userId = jwtDecode<{ user_id: string }>(token).user_id;
 
-  // 진입 시 워크스페이스, 참여중인 탭, 프로필 정보 획득
-  useEffect(() => {
-    getWorkspaceName(workspaceId)
-      .then(setWorkspaceInfo)
-      .catch((error) => console.error("워크스페이스 정보 로딩 실패:", error));
-    getTabList(workspaceId)
-      .then(setTabList)
-      .catch((error) => console.error("탭 리스트 로딩 실패:", error));
-    if (userId) {
-      getProfile(workspaceId, userId)
-        .then(setProfile)
-        .catch((error) => console.error("프로필 로딩 실패:", error));
-    }
-  }, [workspaceId, userId]);
-  ////////////////////////////////////
-  console.log({ tabList });
-  ///////////////////////////////////
+          // 모든 데이터 요청 병렬로 시작
+          const promises = [getWorkspaceName(workspaceId), getTabList(workspaceId), getProfile(workspaceId, userId)];
+
+          const [workspace, tabs, profileData] = await Promise.all(promises);
+
+          setWorkspaceInfo(workspace as workspace);
+          setTabList(tabs as Tab[]);
+          setProfile(profileData as Profile);
+        } else {
+          router.replace("/");
+        }
+      } catch (error) {
+        console.error("데이터 로딩 실패:", error);
+      }
+    };
+    fetchData();
+  }, [workspaceId]);
 
   // 탭 추가 시 재 렌더링 후 해당 탭으로 이동
   async function handleAddTab(sectionId: string, tabName: string) {
