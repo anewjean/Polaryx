@@ -3,7 +3,7 @@
 import React from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useState, useEffect } from "react";
-import { useChannelStore } from "@/store/channelStore";
+
 import { useProfileStore } from "@/store/profileStore";
 import { useRouter } from "next/navigation";
 
@@ -21,9 +21,6 @@ export default function WorkspaceIdLayout({
   const [currentSidebarWidth, setCurrentSidebarWidth] = useState(20);
   const [profileWidth, setProfileWidth] = useState(15);
 
-  // 채널 너비 추적을 위한 state 구독
-  const { channelWidth, setChannelWidth } = useChannelStore();
-
   // 프로필 표시를 위한 state 구독
   const { isOpen } = useProfileStore();
 
@@ -36,28 +33,21 @@ export default function WorkspaceIdLayout({
     }
   }, [router]);
 
-  // 채널 너비 갱신 (사이드바 너비는 유지)
-  useEffect(() => {
-    if (isOpen) {
-      setChannelWidth(100 - currentSidebarWidth - profileWidth);
-    } else {
-      setChannelWidth(100 - currentSidebarWidth);
-    }
-  }, [isOpen, currentSidebarWidth, profileWidth, setChannelWidth]);
-
-  // 사이드바 너비가 변경 시 defaultSize 업데이트
+  // 사이드바 너비가변경 시 defaultSize 업데이트
   useEffect(() => {
     setCurrentSidebarWidth(sidebarWidth);
   }, [sidebarWidth]);
 
-  // 패널 크기 변경 시 상태 업데이트
+  // 프로필 패널 크기 변경 시 상태 업데이트
   const handleLayout = (sizes: number[]) => {
     setSidebarWidth(sizes[0]);
-    setChannelWidth(sizes[1]);
     if (isOpen) {
       setProfileWidth(sizes[2]);
     }
   };
+
+  // 렌더링 시 채널 너비를 직접 계산
+  const channelWidth = isOpen ? 100 - currentSidebarWidth - profileWidth : 100 - currentSidebarWidth;
 
   return (
     <div className="flex flex-1 min-h-0">
