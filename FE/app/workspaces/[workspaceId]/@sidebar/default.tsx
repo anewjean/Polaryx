@@ -53,6 +53,8 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)

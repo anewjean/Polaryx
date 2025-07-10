@@ -145,8 +145,8 @@ export default function ProfilePage() {
       {/* 헤더 (프로필과 닫기 버튼) */}
       <div className="flex flex-row w-full">
         <h1 className="flex flex-1 items-center justify-start text-xl font-bold">Profile</h1>
-        <button className="flex flex-1 items-center justify-end text-sm">
-          <X size={20} onClick={close} />
+        <button className="flex flex-1 items-center justify-end text-sm" onClick={close}>
+          <X size={20} />
         </button>
       </div>
       {/* 프로필 이미지 */}
