@@ -5,8 +5,6 @@ export interface Tab {
   tab_name: string;
   section_id?: number;
   section_name?: string;
-  subsection_id?: number | null;
-  subsection_name?: string | null;
   members_count?: number | null;
   members?: Member[] | null;
 }
@@ -86,7 +84,7 @@ export async function createTab(workspaceId: string, sectionId: string, tabName:
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ workspace_id: workspaceId, section_id: sectionId, tab_name: tabName, subsection_id: null }),
+    body: JSON.stringify({ workspace_id: workspaceId, section_id: sectionId, tab_name: tabName }),
   });
   if (!res.ok) throw new Error("탭 추가 실패");
   return res.json();
