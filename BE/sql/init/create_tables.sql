@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 CREATE TABLE `user`(
     id BINARY(16) NOT NULL PRIMARY KEY, 
     name VARCHAR(32) NOT NULL, 
@@ -22,7 +20,6 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     deleted_at DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
->>>>>>> 20884946d6aeb1153f26862c914a8b6d559d5d6c
 CREATE TABLE messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     tab_id INT NOT NULL,
