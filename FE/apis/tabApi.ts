@@ -17,8 +17,6 @@ const dummyTab: Tab = {
   tab_name: "none",
   section_id: -1,
   section_name: "none",
-  subsection_id: null,
-  subsection_name: null,
   members_count: null,
   members: null
 };
