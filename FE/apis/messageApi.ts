@@ -45,7 +45,7 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 //   });
 // };
 
-export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
+export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number): Promise<{ messages: any[] }> => {
   const url = new URL(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
 
   console.log("************ get Messages ***********");
@@ -71,7 +71,7 @@ export const systemMessage = async (workspaceId: string, tabId: string, timestam
 };
 
 // DM 메시지 보내기
-export async function sendDirectMessage(workspaceId: string, userIds: string[]): Promise<{ tab_id: number }> {
+export async function sendDirectMessage(workspaceId: string, userIds: string[], userId: string): Promise<{ tab_id: number }> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
@@ -82,7 +82,7 @@ export async function sendDirectMessage(workspaceId: string, userIds: string[]):
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ user_ids: userIds }),
+    body: JSON.stringify({ user_ids: userIds, user_id: userId }),
   });
   if (res == null)
   {
