@@ -8,7 +8,7 @@ interface ProfileStore {
   setUserId: (id: Buffer) => void;
   setOpen: () => void;
   setClose: () => void;
-  openWithId: (id: Buffer) => void;
+  openWithId: (id: Buffer | null) => void;
 }
 
 export const useProfileStore = create<ProfileStore>((set) => ({
