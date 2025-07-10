@@ -8,10 +8,10 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-    id, user_id, user_name, workspace_id, nickname, email, image
+    id, user_id, workspace_id, nickname, email, image
 )
 VALUES (
-    %(id)s, %(user_id)s, %(user_name)s, %(workspace_id)s, %(nickname)s, %(email)s, default
+    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s, default
 );
 """
 

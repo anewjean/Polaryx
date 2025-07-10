@@ -17,6 +17,7 @@ class MessageSchema(BaseModel):
     created_at: datetime
     updated_at: datetime | None
     deleted_at: datetime | None
+    file_url: Optional[str] = None
 
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
@@ -31,6 +32,7 @@ class MessageSchema(BaseModel):
             created_at=row[7],
             updated_at=row[8],
             deleted_at=row[9],
+            file_url=row[10] if len(row) > 10 else None,
         )
 
 
