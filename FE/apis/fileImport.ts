@@ -46,7 +46,7 @@ export async function getPresignedUrl(file: File) {
 }
 
 export async function uploadFile(file: File, presignedUrl: string) {
-  const res = await fetchWithAuth(presignedUrl, {
+  const res = await fetch(presignedUrl, {
     method: "PUT",
     headers: {
       "Content-Type": file.type, // ex: "image/png"
