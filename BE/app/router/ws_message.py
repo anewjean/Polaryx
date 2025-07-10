@@ -66,14 +66,14 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             }
             # print(payload)
 
-            message_id = await message_service.save_message(tab_id, sender_id, content)
+            message_id = await message_service.save_message(tab_id, sender_id, content, file_data) 
             
-            file_data_with_msg_id = {
-                "message_id": message_id,
-                "file_url": file_data
-            }
-            if file_data != None:
-                await message_service.save_file_to_db(file_data_with_msg_id)
+            # file_data_with_msg_id = {
+            #     "message_id": message_id,
+            #     "file_url": file_data
+            # }
+            # if file_data != None:
+            #     await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
     
     except WebSocketDisconnect:

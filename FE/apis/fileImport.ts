@@ -1,6 +1,6 @@
 import { fetchWithAuth } from "./authApi";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export async function putPresignedUrl(file: File) {
   const res = await fetchWithAuth(`http://${BASE}/api/s3/presigned-url`, {
@@ -12,15 +12,13 @@ export async function putPresignedUrl(file: File) {
     }),
   });
 
-  if (res == null)
-  {
-    console.log("NOT REACH : putPresignedUrl")
-  }
-  else {
+  if (res == null) {
+    console.log("NOT REACH : putPresignedUrl");
+  } else {
     const data = await res.json();
     const presignedUrl = data.url; // 서버에서 반환한 presigned URL
     const fileKey = data.key;
-  
+
     return { presignedUrl, fileKey };
   }
 }
@@ -31,41 +29,37 @@ export async function getPresignedUrl(file: File) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       filename: file.name,
-      filetype: file.type,
+      //   filetype: file.type,
     }),
   });
-  if (res == null)
-  {
-    console.log("NOT REACH : getPresignedUrl")
-  }
-  else{
+  if (res == null) {
+    console.log("NOT REACH : getPresignedUrl");
+  } else {
     if (!res.ok) throw new Error("presigned url 요청 실패");
-  
+
     const data = await res.json();
     const presignedUrl = data.url;
     const fileKey = data.key;
-  
+
     return { presignedUrl, fileKey };
   }
 }
 
 export async function uploadFile(file: File, presignedUrl: string) {
-  const res = await fetchWithAuth(presignedUrl, {
+  const res = await fetch(presignedUrl, {
     method: "PUT",
     headers: {
       "Content-Type": file.type, // ex: "image/png"
     },
     body: file,
   });
-  if (res == null)
-  {
-    console.log("NOT REACH : uploadFile")
-  }
-  else{
+  if (res == null) {
+    console.log("NOT REACH : uploadFile");
+  } else {
     if (!res.ok) {
       throw new Error("파일 업로드 실패");
     }
-  
+
     // 업로드 성공 후 이미지 URL 반환
     const fileUrl = presignedUrl.split("?")[0]; // query string 제거하면 정적 URL
     return fileUrl;
