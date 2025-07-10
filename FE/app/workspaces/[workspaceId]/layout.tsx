@@ -58,7 +58,7 @@ export default function WorkspaceIdLayout({
           className="flex-1 min-h-0"
           onLayout={handleLayout}
         >
-          <ResizablePanel defaultSize={currentSidebarWidth} minSize={10} maxSize={30}>
+          <ResizablePanel minSize={10} maxSize={30}>
             {/* 사이드바 영역: 너비값을 함께 전달 */}
             <aside className="h-full">
               {React.isValidElement(sidebar)
@@ -67,7 +67,7 @@ export default function WorkspaceIdLayout({
             </aside>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel defaultSize={channelWidth} minSize={30} maxSize={90}>
+          <ResizablePanel minSize={30}>
             {/* 탭 영역*/}
             <main className="h-full">{children}</main>
           </ResizablePanel>
@@ -76,7 +76,6 @@ export default function WorkspaceIdLayout({
             <>
               <ResizableHandle />
               <ResizablePanel
-                defaultSize={profileWidth}
                 minSize={15}
                 maxSize={30}
                 style={{ boxShadow: "-8px 0 16px rgba(0, 0, 0, 0.1)" }}
