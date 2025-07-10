@@ -11,24 +11,15 @@ export function ChatHeader() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
-  // 탭 정보 캐시에서 가져오기
-  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
-  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
-  const tabInfo = tabInfoCache[tabId];
+  // 탭 정보 가져오기
+  const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
+  const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
 
   useEffect(() => {
-    if (workspaceId && tabId && !tabInfo) {
-      (async () => {
-        getTabInfo(workspaceId, tabId)
-          .then((info) => {
-            setTabInfo(tabId, info); // 캐시에 정보 저장
-          })
-          .catch((e) => {
-            console.log("탭 정보 조회 실패:", e);
-          });
-      })();
+    if (workspaceId && tabId) {
+      fetchTabInfo(workspaceId, tabId);
     }
-  }, [workspaceId, tabId, tabInfo]);
+  }, [workspaceId, tabId, fetchTabInfo]);
 
   return (
     <div>

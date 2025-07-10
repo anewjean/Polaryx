@@ -3,9 +3,8 @@
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
-import { getTabInfo, getMemberList, getPossibleMemberList, Tab, Member } from "@/apis/tabApi";
+import { getTabInfo, getMemberList, getPossibleMemberList, Member } from "@/apis/tabApi";
 import { useEffect, useState } from "react";
-import { MemberModal } from "@/components/modal/MemberModal";
 import { TabMembersModal } from "@/components/modal/TabMembersModal";
 import { PossibleMembersModal } from "@/components/modal/PossibleMembersModal";
 import { useTabInfoStore } from "@/store/tabStore";
@@ -16,10 +15,7 @@ export function TabMembers() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
-  // 탭 정보 캐시에서 가져오기 (무한 루프 방지를 위해 객체로 한 번에 구독)
-  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
-  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
-  const tabInfo = tabInfoCache[tabId];
+
 
   // 멤버 리스트 상태 관리
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
@@ -29,34 +25,19 @@ export function TabMembers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // 멤버 확인 및 초대 모달 종료 핸들러
-  const handleModalOpenChange = (open: boolean) => {
-    setIsModalOpen(open);
-  };
   const handleAddModalOpenChange = (open: boolean) => {
     setIsAddModalOpen(open);
   };
 
-  // 탭 정보 조회
-  useEffect(() => {
-    if (workspaceId && tabId && !tabInfo) {
-      getTabInfo(workspaceId, tabId)
-        .then((info) => {
-          setTabInfo(tabId, info); // 캐시에 정보 저장
-        })
-        .catch((e) => {
-          console.log("탭 정보 조회 실패:", e);
-        });
-    }
-  }, [workspaceId, tabId, tabInfo]);
+  // 탭 정보 가져오기
+  const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
+  const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
 
-  // 모달이 열릴 때 멤버 목록 조회
   useEffect(() => {
-    if (isModalOpen && workspaceId && tabId) {
-      getMemberList(workspaceId, tabId).then(setTabMembers);
-      getPossibleMemberList(workspaceId, tabId).then(setPossibleMembers);
+    if (workspaceId && tabId) {
+      fetchTabInfo(workspaceId, tabId);
     }
-  }, [isModalOpen, workspaceId, tabId]);
+  }, [workspaceId, tabId, fetchTabInfo]);
 
   // 참여 가능 멤버 목록 조회
   const handleAddMember = () => {
@@ -67,11 +48,23 @@ export function TabMembers() {
     }
   };
 
+  const handleOpenMembersModal = () => {
+    if (workspaceId && tabId) {
+      getMemberList(workspaceId, tabId).then(setTabMembers);
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <>
       <TabMembersModal
         trigger={
-          <Button variant="ghost" size="icon" className="flex items-center gap-1 px-7 hover:bg-gray-200">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="flex items-center gap-1 px-7 hover:bg-gray-200"
+            onClick={handleOpenMembersModal}
+          >
             <Users size={28} />
             <span>{tabInfo?.members_count}</span>
           </Button>
@@ -79,7 +72,7 @@ export function TabMembers() {
         title={tabInfo?.tab_name || ""}
         tabMembers={tabMembers}
         open={isModalOpen}
-        onOpenChange={handleModalOpenChange}
+        onOpenChange={setIsModalOpen}
         onAddClick={handleAddMember}
         membersCount={tabInfo?.members_count ?? undefined}
       />

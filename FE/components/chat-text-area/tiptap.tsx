@@ -38,24 +38,14 @@ export function TipTap() {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
-  const tabInfoCache = useTabInfoStore((state) => state.tabInfoCache);
-  const setTabInfo = useTabInfoStore((state) => state.setTabInfo);
-  const tabInfo = tabInfoCache[tabId];  
+  const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
+  const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
 
   useEffect(() => {
-    if (!workspaceId || !tabId) return;
-
-    // 캐시에 현재 탭 정보가 없으면 API 호출
-    if (!tabInfo) {
-      getTabInfo(workspaceId, tabId)
-        .then((info) => {
-          setTabInfo(tabId, info); // 캐시에 정보 저장
-        })
-        .catch((e) => {
-          console.log("탭 정보 조회 실패:", e);
-        });
+    if (workspaceId && tabId) {
+      fetchTabInfo(workspaceId, tabId);
     }
-  }, [workspaceId, tabId, tabInfo]);
+  }, [workspaceId, tabId, fetchTabInfo]);
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
