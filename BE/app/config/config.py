@@ -34,5 +34,9 @@ class Settings(BaseSettings):
     AWS_BUCKET_NAME: str
     AWS_ACCESS_KEY_ID: str
     AWS_SECRET_ACCESS_KEY: str
+    
+    VAPID_PUBLIC_KEY: str
+    VAPID_PRIVATE_KEY: str
+    VAPID_EMAIL: str
 
 settings = Settings()

@@ -12,6 +12,7 @@ from app.router import s3
 from app.router import tab
 from app.router import ws_message
 from app.router import direct_message
+from app.router import push
 
 load_dotenv()
 
@@ -28,6 +29,7 @@ app.include_router(router=ws_message.router, prefix="/ws")
 app.include_router(router=message.router, prefix="/api")
 app.include_router(router=auth.router, prefix="/api")
 app.include_router(router=s3.router, prefix="/api")
+app.include_router(router=push.router, prefix="/api")
 
 app.include_router(router=workspace_members.router, prefix="/api")
 app.include_router(router=tab.router, prefix="/api")

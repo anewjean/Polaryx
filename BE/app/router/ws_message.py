@@ -7,6 +7,8 @@ from app.service.websocket_manager import ConnectionManager
 from app.service.message import MessageService
 from app.service.workspace_member import WorkspaceMemberService
 
+from app.service.push import send_push
+
 import uuid
 
 router = APIRouter()
@@ -75,6 +77,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             if file_data != None:
                 await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+            send_push({
+                "title": "New Message",
+                "body": f"{nickname}: {content}"
+            })
     
     except WebSocketDisconnect:
         print("********* except *********")
