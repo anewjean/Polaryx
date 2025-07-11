@@ -57,8 +57,6 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
     if (newContent === null) return; // 사용자가 취소를 선택하면 아무 작업도 하지 않음
 
     try {
-      console.log("update messageId : ", messageId);
-      console.log("update newContent : ", newContent);
       // 3-1) 백엔드 API 호출
       await updateMessageApi(workspaceId as string, tabId as string, messageId, newContent);
 

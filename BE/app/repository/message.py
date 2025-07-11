@@ -4,6 +4,7 @@ from uuid import UUID
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.message import Message, MessageUpdateType
+from datetime import datetime
 
 insert_message = """
 INSERT INTO messages (
@@ -33,7 +34,8 @@ delete_message = """
 UPDATE messages
 SET 
     deleted_at = %(deleted_at)s
-WHERE id = %(id)s;
+WHERE id = %(message_id)s
+  AND deleted_at IS NULL;
 """
 
 find_message = """

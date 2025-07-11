@@ -69,7 +69,7 @@ async def modify_message(workspace_id: int, tab_id: int, message_id: int, reques
 @router.delete("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
 async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> None:
     data = {
-        "type": "delete",
+        # "type": "delete",
         "message_id": message_id
     }
 
