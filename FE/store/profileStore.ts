@@ -4,8 +4,8 @@ import { create } from "zustand";
 
 interface ProfileStore {
   isOpen: boolean;
-  userId: Buffer | null;
-  setUserId: (id: Buffer) => void;
+  userId: Buffer | null | string;
+  setUserId: (id: Buffer | string) => void;
   setOpen: () => void;
   setClose: () => void;
   openWithId: (id: Buffer | null) => void;
