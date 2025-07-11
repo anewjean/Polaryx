@@ -5,6 +5,7 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.message import Message, MessageUpdateType
 from datetime import datetime
+from fastapi import HTTPException
 
 insert_message = """
 INSERT INTO messages (
@@ -27,6 +28,7 @@ SET
     content = %(new_content)s,
     is_updated = TRUE
 WHERE id = %(message_id)s
+  AND sender_id = %(current_user_id)s -- 권한 검증
   AND deleted_at IS NULL;
 """
 
@@ -165,12 +167,20 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(insert_message, params)
     
-    def update_message_content(self, message_id: int, new_content: str):
+    def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
         params = {
             "message_id": message_id, 
-            "new_content": new_content
+            "new_content": new_content,
+            "current_user_id": UUID(current_user_id).bytes
         }
-        return self.db.execute(update_message, params)
+        result = self.db.execute(update_message, params)
+        
+        if result["rowcount"] == 0:
+            raise HTTPException(
+            status_code=403, 
+            detail="메시지 수정 권한이 없거나 메시지를 찾을 수 없습니다"
+        )
+        return result
 
     def delete_message_by_id(self, message_id: int):
         params = {

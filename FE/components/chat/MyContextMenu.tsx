@@ -20,7 +20,8 @@ import { useParams } from "next/navigation";
 
 interface MyContextMenuProps {
   messageId: number;
-  userId: Buffer; // 작성자 id 추가
+  // userId: Buffer; // 작성자 id 추가
+  userId: string;
 }
 
 export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
@@ -63,9 +64,9 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
       // 3-2) 로컬 store 에서 메시지 업데이트
       updateMessage(messageId, newContent);
 
-      console.log("메시지 수정 성공");
+      alert("메시지 수정 성공");
     } catch (e) {
-      console.error("메시지 수정 실패:", e);
+      alert("메시지 수정 권한이 없거나 메시지를 찾을 수 없습니다");
     }
   };
 
