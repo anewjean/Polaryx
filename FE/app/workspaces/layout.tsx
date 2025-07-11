@@ -1,6 +1,6 @@
 "use client";
 
-import "../globals.css";
+import "@/styles/globals.css";
 import { Button } from "@/components/ui/button";
 import { ExUpload } from "@/components/excel_import/exImportButton";
 
