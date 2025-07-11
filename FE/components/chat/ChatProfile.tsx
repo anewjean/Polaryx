@@ -98,7 +98,7 @@ export function ChatProfile({
           </div>
         </div>
       </ContextMenuTrigger>
-      <MyContextMenu messageId={msgId} userId={senderId} />
+      <MyContextMenu messageId={msgId} userId={senderId.toString("hex")} />
     </ContextMenu>
   );
 }
