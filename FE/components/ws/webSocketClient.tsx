@@ -11,7 +11,13 @@ interface JWTPayload {
   user_id: string;
 }
 
-export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; tabId: string }) => {
+export const WebSocketClient = ({
+  workspaceId,
+  tabId,
+}: {
+  workspaceId: string;
+  tabId: string;
+}) => {
   const socketRef = useRef<WebSocket | null>(null);
   const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
 
@@ -23,7 +29,9 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
   useEffect(() => {
     console.log("new web sokcet");
-    const socket = new WebSocket(`${NEXT_PUBLIC_WS}/api/ws/${workspaceId}/${tabId}`);
+    const socket = new WebSocket(
+      `${NEXT_PUBLIC_WS}/api/ws/${workspaceId}/${tabId}`,
+    );
 
     socketRef.current = socket;
 
@@ -43,6 +51,8 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
         const msg = {
           ...msgWithoutFileUrl,
           fileUrl: file_url, // file_url -> fileUrl로 변환
+          senderId: rawMsg.sender_id,
+          msgId: rawMsg.message_id,
         };
 
         useMessageStore.getState().appendMessage(msg);
@@ -67,7 +77,11 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
   // 메시지 전송 감지
   useEffect(() => {
-    if (sendFlag && message && socketRef.current?.readyState === WebSocket.OPEN) {
+    if (
+      sendFlag &&
+      message &&
+      socketRef.current?.readyState === WebSocket.OPEN
+    ) {
       const token = localStorage.getItem("access_token");
 
       if (!token) {
