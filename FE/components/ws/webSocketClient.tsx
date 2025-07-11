@@ -1,6 +1,7 @@
 "use client";
 
 const BASE = process.env.NEXT_PUBLIC_BASE;
+const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
@@ -22,8 +23,7 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
   useEffect(() => {
     console.log("new web sokcet");
-    // const socket = new WebSocket(`wss://localhost:8000/api/ws/${workspaceId}/${tabId}`); 개발용
-    const socket = new WebSocket(`wss://jungle-lms.site/api/ws/${workspaceId}/${tabId}`);
+    const socket = new WebSocket(`${NEXT_PUBLIC_WS}/api/ws/${workspaceId}/${tabId}`);
 
     socketRef.current = socket;
 

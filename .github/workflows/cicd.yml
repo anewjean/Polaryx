@@ -66,6 +66,7 @@ jobs:
         run: |
           docker build --no-cache \
             --build-arg NEXT_PUBLIC_BASE=https://jungle-lms.site \
+            --build-arg NEXT_PUBLIC_WS=wss://jungle-lms.site \            
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
