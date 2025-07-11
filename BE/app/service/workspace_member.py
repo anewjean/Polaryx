@@ -1,4 +1,5 @@
 from uuid import UUID
+from typing import List
 
 from app.domain.workspace_member import WorkspaceMember
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
@@ -33,6 +34,11 @@ class WorkspaceMemberService:
         workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
         return workspace_columns
   
+    def get_member_by_workspace_id(self, workspace_id: int) -> List[tuple]:
+        members_infos = self.workspace_member_repo.find_by_user_workspace_id(workspace_id)
+        return members_infos
+
+
     def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
         user_id_bytes = user_id.bytes  # BINARY(16)에 맞게 변환
         # 업데이트 쿼리는 영향받은 행 수만 반환하므로, 업데이트 후 다시 조회하여 데이터 반환

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 class WorkspaceNameSchema(BaseModel):
     workspace_id: int
@@ -9,4 +10,29 @@ class WorkspaceNameSchema(BaseModel):
         return cls(
             workspace_id=row[0],
             workspace_name=row[1]
+        )
+
+
+class MemberInfo(BaseModel):
+    user_name: str
+    email: str
+    image: str | None
+    role_name: str
+
+
+class WorkspaceMembersSchema(BaseModel):
+    mem_infos: List[MemberInfo]
+
+    @classmethod 
+    def from_row(cls, rows: List[tuple]) -> "WorkspaceMembersSchema":
+        return cls(
+            mem_infos=[
+                MemberInfo(
+                    user_name=row[0],
+                    email=row[1],
+                    image=row[2],
+                    role_name=row[3]
+                )
+                for row in rows
+            ]
         )
