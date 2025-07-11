@@ -7,7 +7,7 @@ from app.service.websocket_manager import ConnectionManager
 from app.service.message import MessageService
 from app.service.workspace_member import WorkspaceMemberService
 
-from app.service.push import send_push_to
+from app.service.push import PushService
 from app.service.tab import TabService
 
 import uuid
@@ -16,7 +16,9 @@ router = APIRouter()
 connection = ConnectionManager()
 message_service = MessageService()
 workspace_member_service = WorkspaceMemberService()
+
 tab_service = TabService()
+push_service = PushService()
 
 
 @router.websocket("/{workspace_id}/{tab_id}")
@@ -79,9 +81,13 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             if file_data != None:
                 await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+            
             members = tab_service.get_tab_members(workspace_id, tab_id)
-            recipients = [str(uuid.UUID(bytes=row[0])) for row in members if row[0] != uuid.UUID(sender_id).bytes]
-            send_push_to(recipients, {
+            recipients = [str(uuid.UUID(bytes=row[0])) 
+                          for row in members 
+                          if row[0] != uuid.UUID(sender_id).bytes]
+            
+            push_service.send_push_to(recipients, {
                 "title": "New Message",
                 "body": f"{nickname}: {content}"
             })

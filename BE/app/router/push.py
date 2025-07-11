@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from app.service.push import add_subscription
+from app.service.push import PushService
 
 router = APIRouter(prefix="/push", tags=["Push"])
+push_service = PushService()
 
 class SubscribeRequest(BaseModel):
     user_id: str
@@ -10,5 +11,6 @@ class SubscribeRequest(BaseModel):
 
 @router.post("/subscribe")
 async def subscribe(request: SubscribeRequest):
-    add_subscription(request.user_id, request.subscription)
+    push_service.add_subscription(request.user_id, request.subscription)
+
     return {"status": "subscribed"}

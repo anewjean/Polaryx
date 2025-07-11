@@ -1,6 +1,7 @@
 "use client";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string | undefined;
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
@@ -38,6 +39,14 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
         console.log("get append message");
         console.log(msg.file_url);
         useMessageStore.getState().appendMessage(msg);
+
+        if (Notification.permission === "granted") {
+          new Notification("새 메시지 도착", {
+            body: msg.content || "파일이 전송되었습니다.",
+            icon: "/icon-192x192.png",
+        });
+    }
+
       } catch {
         console.warn("Invalid message format: ", event.data);
       }
