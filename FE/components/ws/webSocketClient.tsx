@@ -1,7 +1,7 @@
 "use client";
 
 const BASE = process.env.NEXT_PUBLIC_BASE;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string | undefined;
+
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";

@@ -10,6 +10,8 @@ from app.service.workspace_member import WorkspaceMemberService
 from app.service.push import PushService
 from app.service.tab import TabService
 
+from app.service.notification import NotificationService
+
 import uuid
 
 router = APIRouter()
@@ -19,6 +21,8 @@ workspace_member_service = WorkspaceMemberService()
 
 tab_service = TabService()
 push_service = PushService()
+notification_service = NotificationService()
+
 
 
 @router.websocket("/{workspace_id}/{tab_id}")
@@ -83,14 +87,24 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
             members = tab_service.get_tab_members(workspace_id, tab_id)
-            recipients = [str(uuid.UUID(bytes=row[0])) 
-                          for row in members 
+            recipients = [str(uuid.UUID(bytes=row[0]))
+                          for row in members
                           if row[0] != uuid.UUID(sender_id).bytes]
-            
+
             push_service.send_push_to(recipients, {
                 "title": "New Message",
                 "body": f"{nickname}: {content}"
             })
+
+            for receiver in recipients:
+                notification_service.create_notification(
+                    receiver_id= receiver,
+                    sender_id=sender_id,
+                    tab_id=tab_id,
+                    message_id=message_id,
+                    type=1,
+                    content=content,
+                )
     
     except WebSocketDisconnect:
         print("********* except *********")

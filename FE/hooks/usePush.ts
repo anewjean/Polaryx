@@ -20,6 +20,7 @@ export function usePush() {
       });
       const token = localStorage.getItem('access_token');
       if (!token) return;
+
       const { user_id } = jwtDecode<{ user_id: string }>(token);
       await fetch(`http://${BASE}/api/push/subscribe`, {
         method: 'POST',
