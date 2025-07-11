@@ -20,7 +20,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
     workspace_member = None
     print("******************* ws endpoint *******************")
     print(tab_id)
-
+    
     await connection.connect(workspace_id, tab_id, websocket)
     try:
         while True:
@@ -78,5 +78,5 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
     
     except WebSocketDisconnect:
         print("********* except *********")
+        # await connection.broadcast(workspace_id, tab_id, f"#{nickname}님이 나갔습니다.")
         connection.disconnect(workspace_id, tab_id, websocket)
-        await connection.broadcast(workspace_id, tab_id, f"#{nickname}님이 나갔습니다.")

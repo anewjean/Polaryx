@@ -3,6 +3,14 @@ from app.repository.tab import TabRepository
 from fastapi import HTTPException
 from app.schema.tab.response import TabMember
 
+# 탭 퇴장시 시스템 메세지를 위한 websocket_manager
+from app.service.websocket_manager import ConnectionManager
+from app.service.message import MessageService
+from uuid import UUID
+
+connection = ConnectionManager()
+message_service = MessageService()
+
 class TabService:
     def __init__(self):
         self.repo = TabRepository()
@@ -34,3 +42,17 @@ class TabService:
 
     def invite_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         return self.repo.insert_members(workspace_id, tab_id, user_ids)
+    
+    async def exit_tab(self, workspace_id: int, tab_id: int, user_ids: List[str]):
+        users = self.repo.exit_members(workspace_id, tab_id, user_ids)
+        users.sort()
+        print("in exit_tab, user_names: ", users)
+        for user in users:
+            # [0]: nickname, [1]: user_id, [2]: tab_name
+            await connection.broadcast(workspace_id, tab_id, f"<p style='color: gray'>{user[0]}님이 {user[2]}에서 나갔습니다.</p>")
+            await message_service.save_message(tab_id, 
+                                               UUID(user[1]), 
+                                               f"<p style='color: gray'>{user[0]}님이 {user[2]}에서 나갔습니다.</p>", 
+                                               None)
+        return
+    

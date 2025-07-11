@@ -125,6 +125,20 @@ INSERT INTO tab_members
 VALUES (%(workspace_id)s, %(user_id)s, %(tab_id)s);
 """
 
+# 미완
+exit_tab_members_by_id = """
+DELETE FROM tab_members 
+WHERE id =%(id)s;
+"""
+
+find_exit_member_by_user_id = """
+SELECT wm.nickname, tm.id, t.name FROM tab_members tm
+JOIN workspace_members wm 
+JOIN tabs t
+WHERE tm.user_id = %(user_id)s AND wm.user_id = %(user_id)s
+  AND tm.tab_id = %(tab_id)s AND t.id = %(tab_id)s;
+"""
+
 find_nicknames = """
 SELECT wm.nickname 
 FROM tab_members tm 
@@ -222,6 +236,22 @@ class TabRepository(AbstractQueryRepo):
             }
             self.execute(insert_tab_members, param)
         return self.execute(find_nicknames, {"tab_id": tab_id})
+    
+    # 생각해볼 문제들: tab_members가 아무도 없으면, tabs에서 tab도 삭제?
+    def exit_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
+        res = []
+        for user_id in user_ids:
+            param = {
+                "workspace_id": workspace_id,
+                "tab_id": tab_id,
+                "user_id": UUID(user_id).bytes
+            }
+            target = self.execute(find_exit_member_by_user_id, param)
+            # [0]: nickname, [1]: id, [2]: tab_name
+            res.append((target[0][0], user_id, target[0][2]))
+            target_id = {"id": target[0][1]}
+            self.execute(exit_tab_members_by_id, target_id)
+        return res
     
     def find_by_user_id(self, user_id: UUID.bytes):
         param = {
