@@ -127,6 +127,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
                 content={msg.content}
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
+                isUpdated={msg.isUpdated}
               />
             </React.Fragment>
           );

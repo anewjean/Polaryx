@@ -20,6 +20,7 @@ interface ChatProfileProps {
   content: string;
   showProfile: boolean;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 function isImageFile(url: string) {
@@ -35,6 +36,7 @@ export function ChatProfile({
   content,
   showProfile,
   fileUrl,
+  isUpdated,
 }: ChatProfileProps) {
   const safeHTML = DOMPurify.sanitize(content, {
     FORBID_TAGS: ["img"], // 👈 img 태그 완전 제거
@@ -135,9 +137,10 @@ export function ChatProfile({
                   <FileDownload fileUrl={fileUrl} />
                 )}
                 <div
-                  className="message-content whitespace-pre-wrap break-words break-anywhere text-m"
-                  dangerouslySetInnerHTML={{ __html: safeHTML }}
-                />{" "}
+                  className="message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
+                  {isUpdated && <span className="ml-2 text-xs text-gray-500">(편집됨)</span>}
+                  </div>
               </>
             )}
           </div>

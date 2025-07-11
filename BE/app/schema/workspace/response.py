@@ -12,6 +12,18 @@ class WorkspaceNameSchema(BaseModel):
             workspace_name=row[1]
         )
 
+class InsertWorkspaceSchema(BaseModel):
+    success_count: int
+    fail_user_name: List[str]
+
+    @classmethod 
+    def from_row(cls, count, row: tuple) -> "InsertWorkspaceSchema":
+        success_count = count - len(row)
+        return cls(
+            success_count=success_count,
+            fail_user_name=row
+        )
+
 
 class MemberInfo(BaseModel):
     user_name: str
