@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const { isOpen, userId: bufferTargetId, setClose } = useProfileStore();
 
   const targetId = bufferTargetId // bufferTargetId가 존재하면
-    ? bufferTargetId.toString("hex") // hex로
+    ? bufferTargetId.toString() // hex로
     : userId; // 아니면 내 userId 사용
 
   useEffect(() => {
