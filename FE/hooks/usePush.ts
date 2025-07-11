@@ -5,6 +5,17 @@ import { jwtDecode } from 'jwt-decode';
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string | undefined;
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
 export function usePush() {
   useEffect(() => {
     if (!PUBLIC_KEY || !BASE) return;
@@ -14,9 +25,10 @@ export function usePush() {
     Notification.requestPermission().then(async perm => {
       if (perm !== 'granted') return;
       const reg = await navigator.serviceWorker.register('/sw.js');
+      const convertedKey = urlBase64ToUint8Array(PUBLIC_KEY);
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: PUBLIC_KEY,
+        applicationServerKey: convertedKey,
       });
       const token = localStorage.getItem('access_token');
       if (!token) return;
