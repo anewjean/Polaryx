@@ -22,11 +22,15 @@ export default function ProfilePage() {
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
-
-  // accessToken에 있는 userId 추출
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
-  const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;
+  const [userId, setUserId] = useState<string | null>(null);
+  
+  useEffect(() => {
+    // accessToken에 있는 userId 추출
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) throw new Error("로그인이 필요합니다.");
+    const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;    
+    setUserId(userId);
+  }, []);  
 
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId, setClose } = useProfileStore();
@@ -36,6 +40,7 @@ export default function ProfilePage() {
     : userId; // 아니면 내 userId 사용
 
   useEffect(() => {
+    if (!targetId) return;
     getProfile(workspaceId, targetId).then(setProfile).catch(console.error);
   }, [bufferTargetId, isOpen]);
 
@@ -113,7 +118,7 @@ export default function ProfilePage() {
       if (selectedFile && preview) {
         payload.image = preview;
       }
-      const updatedProfile = await patchProfile(workspaceId, userId, payload);
+      const updatedProfile = await patchProfile(workspaceId, userId!, payload);
       setProfile(updatedProfile);
       setIsModalOpen(false);
     } catch (error) {
