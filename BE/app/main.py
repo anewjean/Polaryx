@@ -19,12 +19,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://43.201.21.169:3000", "http://jungle-lms.site:3000"], 
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://3.36.61.200:3000", "http://jungle-lms.site:3000"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(router=ws_message.router, prefix="/ws")
+app.include_router(router=ws_message.router, prefix="/api/ws")
 app.include_router(router=message.router, prefix="/api")
 app.include_router(router=auth.router, prefix="/api")
 app.include_router(router=s3.router, prefix="/api")

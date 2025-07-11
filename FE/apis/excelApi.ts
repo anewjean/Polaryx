@@ -4,7 +4,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 
 // FE/apis/excelApi.ts
 export async function getWorkspaceColumns() {
-  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/1/users`, {
+  const res = await fetchWithAuth(`${BASE}/api/workspaces/1/users`, {
     method: "GET",
   });
 
@@ -18,7 +18,7 @@ export async function getWorkspaceColumns() {
 // users 테이블에 user 생성
 export async function createUsers(users: any[]) {
   // 예시: 여러 명을 한 번에 생성하는 API가 있다면
-  const res = await fetch(`http://${BASE}/api/workspaces/1/users`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ users }),
