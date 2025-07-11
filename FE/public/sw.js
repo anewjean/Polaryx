@@ -1,4 +1,5 @@
 self.addEventListener('push', function(event) {
+  
   const data = event.data ? event.data.json() : {};
   const title = data.title || 'New Message';
   const options = {

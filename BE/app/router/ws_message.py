@@ -13,6 +13,7 @@ from app.service.tab import TabService
 from app.service.notification import NotificationService
 
 import uuid
+import re
 
 router = APIRouter()
 connection = ConnectionManager()
@@ -22,6 +23,11 @@ workspace_member_service = WorkspaceMemberService()
 tab_service = TabService()
 push_service = PushService()
 notification_service = NotificationService()
+
+
+# HTML 태그 제거 함수
+def strip_tags(text: str) -> str:
+    return re.sub(r'<[^>]+>', '', text)
 
 
 
@@ -47,6 +53,8 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             # 추가
             file_data = data.get("file_url")
             print(file_data)
+            
+            clean_content = strip_tags(content)
 
 
             workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
@@ -72,7 +80,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "content": content,
                 "nickname": nickname,
                 "image": image,
-                "created_at": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
+                "createdAt": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
             }
             # print(payload)
 
@@ -93,7 +101,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
 
             push_service.send_push_to(recipients, {
                 "title": "New Message",
-                "body": f"{nickname}: {content}"
+                "body": f"{nickname}: {clean_content}"
             })
 
             for receiver in recipients:
@@ -103,7 +111,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     tab_id=tab_id,
                     message_id=message_id,
                     type=1,
-                    content=content,
+                    content=clean_content,
                 )
     
     except WebSocketDisconnect:
