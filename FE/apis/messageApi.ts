@@ -2,7 +2,10 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 
 import { fetchWithAuth } from "./authApi";
 
-const request = async (path: string, options: RequestInit = {}): Promise<any> => {
+const request = async (
+  path: string,
+  options: RequestInit = {},
+): Promise<any> => {
   const response = await fetchWithAuth(path, {
     headers: { "Content-Type": "application/json" },
     ...options,
@@ -31,10 +34,17 @@ export const updateMessage = async (workspaceId: string, tabId: string, messageI
   });
 };
 
-export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number): Promise<null> => {
-  return request(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
-    method: "DELETE",
-  });
+export const deleteMessage = async (
+  workspaceId: string,
+  tabId: string,
+  messageId: number,
+): Promise<null> => {
+  return request(
+    `${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`,
+    {
+      method: "DELETE",
+    },
+  );
 };
 
 // export const getMessages = async (workspaceId: string, tabId: string) => {
@@ -43,8 +53,14 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 //   });
 // };
 
-export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
-  const url = new URL(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
+export const getMessages = async (
+  workspaceId: string,
+  tabId: string,
+  beforeId?: number,
+) => {
+  const url = new URL(
+    `${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`,
+  );
 
   console.log("************ get Messages ***********");
   // beforeId가 있을 경우 쿼리로 추가
@@ -61,7 +77,12 @@ export const getMessages = async (workspaceId: string, tabId: string, beforeId?:
   });
 };
 
-export const systemMessage = async (workspaceId: string, tabId: string, timestamp: string, message: string) => {
+export const systemMessage = async (
+  workspaceId: string,
+  tabId: string,
+  timestamp: string,
+  message: string,
+) => {
   return request(`/messages/${workspaceId}/${tabId}`, {
     method: "POST",
     body: JSON.stringify({ timestamp, message }),
@@ -69,7 +90,10 @@ export const systemMessage = async (workspaceId: string, tabId: string, timestam
 };
 
 // DM 메시지 보내기
-export async function sendDirectMessage(workspaceId: string, userIds: string[]): Promise<{ tab_id: number }> {
+export async function sendDirectMessage(
+  workspaceId: string,
+  userIds: string[],
+): Promise<{ tab_id: number }> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
