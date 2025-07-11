@@ -50,7 +50,6 @@ export async function fetchWithAuth(
           console.log("** no new ACcesssToken  **")
           return null;
         }
-        console.log(newAccessToken);
         console.log("**** Acess Token 받기 성공 ***");
 
         // Authorization 다시 업데이트
@@ -96,7 +95,7 @@ export async function reissueAccessToken(details: string): Promise<any> {
   
   if (details == "EXPIRED TOKEN") {
     console.log("in reissueAccessToken, EXPIRED TOKEN");
-    const res = await fetch(`http://${BASE}/api/auth/refresh`, {
+    const res = await fetch(`${BASE}/api/auth/refresh`, {
       method: "POST",
       credentials: "include", // httpOnly 쿠키에 담긴 refresh_token 자동 전송
     });

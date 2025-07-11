@@ -18,7 +18,7 @@ export async function getWorkspaceName(workspaceId: string): Promise<workspace> 
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-    const res = await fetchWithAuth(`http://${BASE}/api/workspaces/${workspaceId}/title`, {
+    const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/title`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,

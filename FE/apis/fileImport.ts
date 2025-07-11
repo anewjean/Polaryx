@@ -3,7 +3,7 @@ import { fetchWithAuth } from "./authApi";
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
 export async function putPresignedUrl(file: File) {
-  const res = await fetchWithAuth(`http://${BASE}/api/s3/presigned-url`, {
+  const res = await fetchWithAuth(`${BASE}/api/s3/presigned-url`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -24,7 +24,7 @@ export async function putPresignedUrl(file: File) {
 }
 
 export async function getPresignedUrl(file: File) {
-  const res = await fetchWithAuth(`http://${BASE}/api/s3/presigned-url-get`, {
+  const res = await fetchWithAuth(`${BASE}/api/s3/presigned-url-get`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
