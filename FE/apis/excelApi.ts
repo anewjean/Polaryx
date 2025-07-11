@@ -18,7 +18,7 @@ export async function getWorkspaceColumns() {
 // users 테이블에 user 생성
 export async function createUsers(users: any[], workspaceId: string | number) {
   // 예시: 여러 명을 한 번에 생성하는 API가 있다면
-  const res = await fetch(`http://${BASE}/api/workspaces/${workspaceId}/users`, {
+  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ users }),

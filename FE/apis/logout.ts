@@ -10,7 +10,7 @@ export async function logout() {
   }
 
   // api 호출
-  const res = await fetchWithAuth(`http://${BASE}/api/auth/logout`, {
+  const res = await fetchWithAuth(`${BASE}/api/auth/logout`, {
     method: "DELETE",
     credentials: "include",
     headers: {

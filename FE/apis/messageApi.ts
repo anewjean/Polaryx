@@ -32,7 +32,7 @@ export const updateMessage = async (workspaceId: string, tabId: string, messageI
 };
 
 export const deleteMessage = async (workspaceId: string, tabId: string, messageId: number): Promise<null> => {
-  return request(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
+  return request(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
     method: "DELETE",
   });
 };
@@ -44,7 +44,7 @@ export const deleteMessage = async (workspaceId: string, tabId: string, messageI
 // };
 
 export const getMessages = async (workspaceId: string, tabId: string, beforeId?: number) => {
-  const url = new URL(`http://${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
+  const url = new URL(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`);
 
   console.log("************ get Messages ***********");
   // beforeId가 있을 경우 쿼리로 추가
@@ -73,7 +73,7 @@ export async function sendDirectMessage(workspaceId: string, userIds: string[]):
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
 
-  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/${workspaceId}/dms`, {
+  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/dms`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
