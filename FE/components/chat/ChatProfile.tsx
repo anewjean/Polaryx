@@ -51,12 +51,18 @@ export function ChatProfile({
                     />
                   </button>
                 </HoverCardTrigger>
-                <MiniProfile senderId={senderId} imgSrc={imgSrc} nickname={nickname} />
+                <MiniProfile
+                  senderId={senderId}
+                  imgSrc={imgSrc}
+                  nickname={nickname}
+                />
               </HoverCard>
             </div>
           ) : (
-            <div className="flex flex-shrink-0 items-center justify-end text-xxs chat-time-stamp w-[36px] mr-[8px]">
-              <div className="hidden group-hover:block">{time.split(" ")[1]}</div>
+            <div className="flex flex-shrink-0 items-center justify-end text-xxs chat-time-stamp w-[40px] mr-[8px]">
+              <div className="hidden group-hover:block">
+                {time.split(" ")[1]}
+              </div>
             </div>
           )}
 
@@ -65,18 +71,28 @@ export function ChatProfile({
               <div className="flex items-baseline space-x-1">
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <span className="text-m-bold cursor-pointer hover:underline">{nickname}</span>
+                    <span className="text-m-bold cursor-pointer hover:underline">
+                      {nickname}
+                    </span>
                   </HoverCardTrigger>
-                  <MiniProfile senderId={senderId} imgSrc={imgSrc} nickname={nickname} />
+                  <MiniProfile
+                    senderId={senderId}
+                    imgSrc={imgSrc}
+                    nickname={nickname}
+                  />
                 </HoverCard>
 
                 <span className="text-xs chat-time-stamp">{time}</span>
               </div>
             )}
-            {fileUrl && isImageFile(fileUrl) && <ImageWithModal fileUrl={fileUrl} />}
-            {fileUrl && !isImageFile(fileUrl) && <FileDownload fileUrl={fileUrl} />}
+            {fileUrl && isImageFile(fileUrl) && (
+              <ImageWithModal fileUrl={fileUrl} />
+            )}
+            {fileUrl && !isImageFile(fileUrl) && (
+              <FileDownload fileUrl={fileUrl} />
+            )}
             <div
-              className="whitespace-pre-wrap break-words break-anywhere text-m"
+              className="message-content whitespace-pre-wrap break-words break-anywhere text-m"
               dangerouslySetInnerHTML={{ __html: safeHTML }}
             />{" "}
           </div>
