@@ -23,9 +23,10 @@ VALUES (
 update_message = """
 UPDATE messages
 SET 
-    content = %(content)s,
+    content = %(new_content)s,
     is_updated = TRUE
-WHERE id = %(id)s;
+WHERE id = %(message_id)s
+  AND deleted_at IS NULL;
 """
 
 delete_message = """
@@ -162,19 +163,19 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(insert_message, params)
     
-    def update(self, message: Message):
-        if message.update_type == MessageUpdateType.MODIFY:
-            params = {
-                "id": str(message.id), 
-                "content": message.content
-            }
-            return self.db.execute(update_message, params)
-        if message.update_type == MessageUpdateType.DELETE:
-            params = {
-                "id": str(message.id),
-                "deleted_at": message.deleted_at
-            }
-            return self.db.execute(delete_message, params)
+    def update_message_content(self, message_id: int, new_content: str):
+        params = {
+            "message_id": message_id, 
+            "new_content": new_content
+        }
+        return self.db.execute(update_message, params)
+
+    def delete_message_by_id(self, message_id: int):
+        params = {
+            "message_id": message_id,
+            "deleted_at": datetime.now()
+        }
+        return self.db.execute(delete_message, params)
     
     def delete_all(self):
         print("delete_all_message")

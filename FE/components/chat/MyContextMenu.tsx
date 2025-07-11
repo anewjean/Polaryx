@@ -16,10 +16,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { EditInput } from "./EditInput";
+import { useParams } from "next/navigation";
 
 interface MyContextMenuProps {
-  // workspaceId: number;
-  // tapId: number;
   messageId: number;
   userId: Buffer; // 작성자 id 추가
 }
@@ -28,19 +27,19 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
   // 1) 프로필 보기
   const setProfileUserId = useProfileStore((s) => s.setUserId); // zustand store에 setUserId 함수 필요
   const openProfile = useProfileStore((s) => s.setOpen);
-  // const params = useParams();
 
-  // params.workspaceID;
-  // params.tabID;
+  // workspaceId, tabId 가져오기
+  const params = useParams();
+  const workspaceId = params.workspaceId;
+  const tabId = params.tabId;
 
   // 2) 메시지 삭제
   const removeMessage = useMessageStore((s) => s.deleteMessage);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleDelete = async () => {
-    console.log("handleDelete 들어옴");
     try {
       // 2-1) 백엔드 API 호출
-      await deleteMessageApi("1", "1", messageId); // 추후 수정 22
+      await deleteMessageApi(workspaceId as string, tabId as string, messageId); // 추후 수정 22
 
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
@@ -58,11 +57,13 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
     if (newContent === null) return; // 사용자가 취소를 선택하면 아무 작업도 하지 않음
 
     try {
+      console.log("update messageId : ", messageId);
+      console.log("update newContent : ", newContent);
       // 3-1) 백엔드 API 호출
-      await updateMessageApi(messageId, newContent);
+      await updateMessageApi(workspaceId as string, tabId as string, messageId, newContent);
 
       // 3-2) 로컬 store 에서 메시지 업데이트
-      // updateMessage(messageId, { id: messageId, content: newContent });
+      updateMessage(messageId, newContent);
 
       console.log("메시지 수정 성공");
     } catch (e) {
@@ -74,7 +75,14 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
     <>
       {/* 우클릭시 메뉴 박스 */}
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => { setProfileUserId(userId); openProfile(); }}>프로필 보기</ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            setProfileUserId(userId);
+            openProfile();
+          }}
+        >
+          프로필 보기
+        </ContextMenuItem>
 
         <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
 

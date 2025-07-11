@@ -28,10 +28,13 @@ class MessageService:
         return self.message_repo.find_all(tab_id)
 
     async def modify_message(self, message_id: int, new_content: str):
-        row = self.message_repo.find_by_id(message_id)[0]
-        message = Message.from_row(row)
-        message.modify(new_content)
-        self.message_repo.update(message)
+        # row = self.message_repo.find_by_id(message_id)[0]
+        # message = Message.from_row(row)
+        # message.modify(new_content)
+        affected_rows = self.message_repo.update_message_content(message_id, new_content)
+        if affected_rows == 0:
+            raise ValueError(f"메시지 ID {message_id}를 찾을 수 없습니다")
+        return affected_rows
 
     async def delete_message(self, message_id: int):
         row = self.message_repo.find_by_id(message_id)[0]

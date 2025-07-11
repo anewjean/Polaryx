@@ -50,14 +50,15 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
 
 @router.patch("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
 async def modify_message(workspace_id: int, tab_id: int, message_id: int, request: MessageUpdateRequest) -> None:
-    sender_id = request.sender_id
+    # sender_id = request.sender_id
     new_content = request.new_content
-    workspace_member = workspace_member_service.get_member_by_id(sender_id)
+    # workspace_member = workspace_member_service.get_member_by_id(sender_id)
+    # message = message_service.modify_message(message_id, new_content)
     
     data = {
         "type": "update",
-        "sender_id": sender_id,
-        "nickname": workspace_member[0][3],
+        # "sender_id": sender_id,
+        # "nickname": workspace_member[0][3],
         "message_id": message_id,
         "new_content": new_content
     }
