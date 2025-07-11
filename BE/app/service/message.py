@@ -36,11 +36,11 @@ class MessageService:
             raise ValueError(f"메시지 ID {message_id}를 찾을 수 없습니다")
         return affected_rows
 
-    async def delete_message(self, message_id: int):
+    async def delete_message(self, message_id: int, current_user_id: str):
         # row = self.message_repo.find_by_id(message_id)[0]
         # message = Message.from_row(row)
         # message.delete()
-        affected_rows = self.message_repo.delete_message_by_id(message_id)
+        affected_rows = self.message_repo.delete_message_by_id(message_id, current_user_id)
         if affected_rows == 0:
             raise ValueError(f"메시지 ID {message_id}를 찾을 수 없습니다")
         return affected_rows

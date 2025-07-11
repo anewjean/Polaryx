@@ -45,9 +45,9 @@ export function MyContextMenu({ messageId, userId }: MyContextMenuProps) {
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
 
-      console.log("메시지 삭제 성공");
+      alert("메시지 삭제 성공");
     } catch (e) {
-      console.error("메시지 삭제 실패:", e);
+      alert("메시지 삭제 권한이 없거나 메시지를 찾을 수 없습니다");
     }
   };
 

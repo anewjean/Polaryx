@@ -37,6 +37,7 @@ UPDATE messages
 SET 
     deleted_at = %(deleted_at)s
 WHERE id = %(message_id)s
+  AND sender_id = %(current_user_id)s
   AND deleted_at IS NULL;
 """
 
@@ -182,12 +183,19 @@ class QueryRepo(AbstractQueryRepo):
         )
         return result
 
-    def delete_message_by_id(self, message_id: int):
+    def delete_message_by_id(self, message_id: int, current_user_id: str):
         params = {
             "message_id": message_id,
-            "deleted_at": datetime.now()
+            "deleted_at": datetime.now(),
+            "current_user_id": UUID(current_user_id).bytes  # 권한 검증용
         }
-        return self.db.execute(delete_message, params)
+        result = self.db.execute(delete_message, params)
+        if result["rowcount"] == 0:
+            raise HTTPException(
+            status_code=403, 
+            detail="메시지 삭제 권한이 없거나 메시지를 찾을 수 없습니다"
+        )
+        return result["rowcount"]
     
     def delete_all(self):
         print("delete_all_message")

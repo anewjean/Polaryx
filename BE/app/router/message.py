@@ -76,12 +76,19 @@ async def modify_message(
     await connection.broadcast(workspace_id, tab_id, data)
 
 @router.delete("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)
-async def delete_message(workspace_id: int, tab_id: int, message_id: int) -> None:
+async def delete_message(
+    workspace_id: int, 
+    tab_id: int, 
+    message_id: int,
+    token_data: dict = Depends(verify_token_and_get_token_data)  # 토큰 검증 추가
+) -> None:
+    current_user_id = token_data["user_id"]  # 현재 사용자 ID
+    
     data = {
         # "type": "delete",
         "message_id": message_id
     }
 
-    await message_service.delete_message(message_id)
+    await message_service.delete_message(message_id, current_user_id)  # user_id 추가
     await connection.broadcast(workspace_id, tab_id, data)
 
