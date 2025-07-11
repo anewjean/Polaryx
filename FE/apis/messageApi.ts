@@ -27,19 +27,11 @@ const request = async (
   }
 };
 
-export const updateMessage = async (
-  workspaceId: string,
-  tabId: string,
-  messageId: number,
-  message: string,
-) => {
-  return request(
-    `${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({ new_content: message }),
-    },
-  );
+export const updateMessage = async (workspaceId: string, tabId: string, messageId: number, message: string) => {
+  return request(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ new_content: message }),
+  });
 };
 
 export const deleteMessage = async (
