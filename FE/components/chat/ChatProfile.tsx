@@ -59,7 +59,7 @@ export function ChatProfile({
               </HoverCard>
             </div>
           ) : (
-            <div className="flex flex-shrink-0 items-center justify-end text-xxs chat-time-stamp w-[36px] mr-[8px]">
+            <div className="flex flex-shrink-0 items-center justify-end text-xxs chat-time-stamp w-[40px] mr-[8px]">
               <div className="hidden group-hover:block">
                 {time.split(" ")[1]}
               </div>
@@ -85,8 +85,12 @@ export function ChatProfile({
                 <span className="text-xs chat-time-stamp">{time}</span>
               </div>
             )}
-            {fileUrl && isImageFile(fileUrl) && (<ImageWithModal fileUrl={fileUrl} />)}
-            {fileUrl && !isImageFile(fileUrl) && <FileDownload fileUrl={fileUrl} />}
+            {fileUrl && isImageFile(fileUrl) && (
+              <ImageWithModal fileUrl={fileUrl} />
+            )}
+            {fileUrl && !isImageFile(fileUrl) && (
+              <FileDownload fileUrl={fileUrl} />
+            )}
             <div
               className="message-content whitespace-pre-wrap break-words break-anywhere text-m"
               dangerouslySetInnerHTML={{ __html: safeHTML }}
