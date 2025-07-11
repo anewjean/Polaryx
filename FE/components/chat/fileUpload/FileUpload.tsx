@@ -2,18 +2,29 @@ import { Button } from "@/components/ui/button";
 import { getPresignedUrl } from "@/apis/fileImport";
 import { useFileStore } from "@/store/fileStore";
 
-export function FileDownload() {
-  const file = useFileStore((state) => state.file);
-  if (!file) return null;
+interface FileDownloadProps {
+  fileUrl: string;
+}
+
+export function FileDownload({ fileUrl }: FileDownloadProps) {
+  // const file = useFileStore((state) => state.file);
+  // if (!fileUrl) return null;
 
   const handleDownload = async () => {
-      const result = await getPresignedUrl(file);
+    try {
+      const fileName = fileUrl.split("/").pop();
+
+      const result = await getPresignedUrl({ name: fileName } as File);
       if (!result) {
         alert("다운로드 실패");
-        throw new Error("presignedUrl 요청 실패");
+        return;
       }
-      const { presignedUrl } = result
+
+      const { presignedUrl } = result;
       window.open(presignedUrl, "_blank");
+    } catch (e) {
+      alert("다운로드 실패");
+    }
   };
 
   return (

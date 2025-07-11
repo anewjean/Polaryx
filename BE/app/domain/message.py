@@ -21,13 +21,15 @@ class Message:
     updated_at: Optional[datetime] = None
     deleted_at: Optional[datetime] = None
     update_type: MessageUpdateType = MessageUpdateType.MODIFY
+    file_url: Optional[str] = None
 
     @staticmethod
-    def of(tab_id: int, sender_id: uuid.UUID, content: str) -> Message:
+    def of(tab_id: int, sender_id: uuid.UUID, content: str, file_url: Optional[str]) -> Message:
         return Message(
             tab_id=tab_id,
             sender_id=sender_id,
-            content=content 
+            content=content,
+            file_url=file_url
         )
 
     @staticmethod
@@ -41,6 +43,7 @@ class Message:
             created_at=row[5],
             updated_at=row[6],
             deleted_at=row[7],
+            file_url=row[8] if len(row) > 8 else None
         )
 
     def modify(self, new_content: str):

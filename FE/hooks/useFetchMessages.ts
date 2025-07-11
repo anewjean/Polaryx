@@ -16,6 +16,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
         content: msg.content,
         image: msg.image,
         createdAt: msg.created_at,
+        fileUrl: msg.file_url,
       }));
       setMessages(messages);
     }

@@ -22,10 +22,8 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
   });
 
   useEffect(() => {
-
     console.log("new web sokcet");
     const socket = new WebSocket(`ws://${BASE}/ws/${workspaceId}/${tabId}`);
-
 
     socketRef.current = socket;
 
@@ -35,9 +33,18 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
     socket.onmessage = (event) => {
       try {
-        const msg = JSON.parse(event.data);
+        const rawMsg = JSON.parse(event.data);
         console.log("get append message");
-        console.log(msg.file_url);
+        console.log("rawMsg", rawMsg);
+        console.log("rawMsg.file_url", rawMsg.file_url);
+
+        // file_url을 fileUrl로 변환하고 원본 제거
+        const { file_url, ...msgWithoutFileUrl } = rawMsg;
+        const msg = {
+          ...msgWithoutFileUrl,
+          fileUrl: file_url, // file_url -> fileUrl로 변환
+        };
+
         useMessageStore.getState().appendMessage(msg);
 
         if (Notification.permission === "granted") {
@@ -85,8 +92,7 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
         content: message,
         file_url: fileUrl,
       };
-      console.log("sender_id", payload.sender_id);
-      console.log("content", payload.content);
+
       console.log("file_url", payload.file_url); //note: 나중에 지울 것
       useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
