@@ -42,9 +42,6 @@ export const WebSocketClient = ({
     socket.onmessage = (event) => {
       try {
         const rawMsg = JSON.parse(event.data);
-        console.log("get append message");
-        console.log("rawMsg", rawMsg);
-        console.log("rawMsg.file_url", rawMsg.file_url);
 
         // file_url을 fileUrl로 변환하고 원본 제거
         const { file_url, ...msgWithoutFileUrl } = rawMsg;
