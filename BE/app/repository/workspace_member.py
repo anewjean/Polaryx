@@ -11,7 +11,7 @@ INSERT INTO workspace_members (
     id, user_id, workspace_id, nickname, email, image
 )
 VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(user_name)s, %(user_email)s, default
+    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s, default
 );
 """
 

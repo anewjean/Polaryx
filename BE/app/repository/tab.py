@@ -15,24 +15,21 @@ create_tab = """
 INSERT INTO tabs (
     name, 
     workspace_id, 
-    section_id, 
-    sub_section_id
+    section_id
 )
 VALUES (
     %(tab_name)s, 
     %(workspace_id)s, 
-    %(section_id)s, 
-    {subsection_id}
+    %(section_id)s
 )
 """
 
 find_tab_by_uq = """
-SELECT id, name, section_id, sub_section_id
+SELECT id, name, section_id
 FROM tabs
 WHERE workspace_id = %(workspace_id)s
   AND name = %(tab_name)s
   AND section_id = %(section_id)s
-  AND sub_section_id <=> %(subsection_id)s
 """
 
 find_tab = """
@@ -40,14 +37,11 @@ SELECT
   t.id,
   t.name,
   t.section_id,
-  s.name,
-  t.sub_section_id,
-  s.sub_name
+  s.name
 FROM tab_members tm
 LEFT JOIN tabs t ON t.id = tm.tab_id
 LEFT JOIN sections s 
   ON s.id = t.section_id 
- AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
 WHERE t.workspace_id = %(workspace_id)s
   AND t.id = %(tab_id)s
@@ -60,18 +54,16 @@ SELECT
   t.id,
   t.name,
   t.section_id,
-  s.name,
-  t.sub_section_id,
-  s.sub_name
+  s.name
 FROM tabs t
 LEFT JOIN tab_members tm ON t.id = tm.tab_id
 LEFT JOIN sections s 
   ON s.id = t.section_id 
- AND s.sub_id <=> t.sub_section_id
  AND s.workspace_id = t.workspace_id
 WHERE tm.workspace_id = %(workspace_id)s
   AND tm.user_id = %(user_id)s
-  AND t.deleted_at IS NULL;
+  AND t.deleted_at IS NULL
+GROUP BY t.id;
 """
 
 is_section_in_workspace = """
@@ -86,8 +78,8 @@ SELECT
     wm.user_id,
     wm.nickname,
     wm.image, 
-    r.name as role,
-    GROUP_CONCAT(DISTINCT g.name) as groups
+    MAX(r.name) AS role,
+    GROUP_CONCAT(DISTINCT g.name) AS groups
 FROM workspace_members wm
 LEFT JOIN tab_members tm ON wm.user_id = tm.user_id
 LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
@@ -97,7 +89,7 @@ LEFT JOIN groups g ON gm.group_id = g.id
 WHERE wm.workspace_id = %(workspace_id)s
   AND tm.tab_id = %(tab_id)s
   AND wm.deleted_at IS NULL
-GROUP BY wm.user_id, wm.nickname, wm.image, r.name;
+GROUP BY wm.user_id, wm.nickname, wm.image;
 """
 
 find_non_members = """
@@ -120,6 +112,11 @@ WHERE wm.workspace_id = %(workspace_id)s
   )
   AND wm.deleted_at IS NULL
 GROUP BY wm.user_id, wm.nickname, wm.image, r.name;
+"""
+
+insert_tab = """
+INSERT INTO tabs (name, workspace_id, section_id)
+VALUES (%(tab_name)s, %(workspace_id)s, %(section_id)s);
 """
 
 insert_tab_members = """
@@ -158,16 +155,13 @@ class TabRepository(AbstractQueryRepo):
         result = self.execute(is_dup_name_in_tab_by_section, param)
         return bool(result)
 
-    def insert(self, workspace_id, tab_name, section_id, subsection_id):
-        query = create_tab.format(
-            subsection_id=subsection_id if subsection_id is not None else "NULL"
-        )
+    def insert(self, workspace_id, tab_name, section_id):
         param = {
             "workspace_id": workspace_id,
             "tab_name": tab_name,
             "section_id": section_id
         }
-        self.execute(query, param)
+        self.execute(insert_tab, param)
 
     def find(self, workspace_id: int, tab_id: int):
         param = {
@@ -176,18 +170,16 @@ class TabRepository(AbstractQueryRepo):
         }
         return self.execute(find_tab, param)
 
-    def find_by_uq(self, workspace_id: int, tab_name: str, section_id: int, subsection_id: Optional[int]):
+    def find_by_uq(self, workspace_id: int, tab_name: str, section_id: int):
         param = {
             "workspace_id": workspace_id,
             "tab_name": tab_name,
-            "section_id": section_id,
-            "subsection_id": subsection_id
+            "section_id": section_id
         }
         return self.execute(find_tab_by_uq, param)
     
     def find_tabs_by_id(self, tab_id: int):
         param = {
-            # "workspace_id": workspace_id,
             "id": tab_id
         }
         return self.execute(find_tabs_by_id, param)
@@ -228,9 +220,7 @@ class TabRepository(AbstractQueryRepo):
                 "tab_id": tab_id,
                 "user_id": UUID(user_id).bytes
             }
-            
             self.execute(insert_tab_members, param)
-
         return self.execute(find_nicknames, {"tab_id": tab_id})
     
     def find_by_user_id(self, user_id: UUID.bytes):

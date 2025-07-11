@@ -13,7 +13,7 @@ interface ProfileMenuProps {
 }
 
 export function ProfileMenu({ logout, router }: ProfileMenuProps) {
-  const open = useProfileStore((s) => s.setOpen);
+  const openProfile = useProfileStore((s) => s.openWithId);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -21,7 +21,7 @@ export function ProfileMenu({ logout, router }: ProfileMenuProps) {
         <Button
           variant="ghost"
           className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-          onClick={open}
+          onClick={() => openProfile(null)} // null을 인자로 보낼시 내 프로필 전송 (profile/default.tsx 참고)
         >
           <UserRoundCog />
           프로필

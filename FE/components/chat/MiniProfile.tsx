@@ -20,7 +20,7 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   const router = useRouter();
 
   // 프로필
-  const openProfile = useProfileStore((s) => s.setOpen);
+  const openProfile = useProfileStore((s) => s.openWithId);
 
   // DM 생성 이벤트 핸들러
   const createDM = async (userIds: string[]) => {
@@ -42,6 +42,8 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
         <div>
           <div className="ml-0.5 text-m-bold">{nickname}</div>
           <div className="mt-1.5">
+
+            {/* DM 버튼 */}
             <Button
               className="cursor-pointer"
               variant="outline"
@@ -52,7 +54,9 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
             >
               <div className="text-s-bold">DM</div>
             </Button>
-            <Button onClick={openProfile} className="ml-1 cursor-pointer" variant="outline" size="sm">
+            
+            {/* 프로필 버튼 */}
+            <Button onClick={() => openProfile(senderId)} className="ml-1 cursor-pointer" variant="outline" size="sm">
               <div className="text-s-bold">프로필</div>
             </Button>
           </div>

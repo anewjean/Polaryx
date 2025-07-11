@@ -56,9 +56,8 @@ export default function Page() {
     const getToken = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        console.log(token);
 
-        const res = await fetch(`http://${BASE}/api/auth/check`, {
+        const res = await fetch(`${BASE}/api/auth/check`, {
           headers: { authorization: `Bearer ${token}` },
         });
 

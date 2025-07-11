@@ -1,6 +1,7 @@
 "use client";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
+const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
@@ -21,10 +22,8 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
   });
 
   useEffect(() => {
-
     console.log("new web sokcet");
-    const socket = new WebSocket(`ws://${BASE}/ws/${workspaceId}/${tabId}`);
-
+    const socket = new WebSocket(`${NEXT_PUBLIC_WS}/api/ws/${workspaceId}/${tabId}`);
 
     socketRef.current = socket;
 
@@ -34,9 +33,18 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
     socket.onmessage = (event) => {
       try {
-        const msg = JSON.parse(event.data);
+        const rawMsg = JSON.parse(event.data);
         console.log("get append message");
-        console.log(msg.file_url);
+        console.log("rawMsg", rawMsg);
+        console.log("rawMsg.file_url", rawMsg.file_url);
+
+        // file_url을 fileUrl로 변환하고 원본 제거
+        const { file_url, ...msgWithoutFileUrl } = rawMsg;
+        const msg = {
+          ...msgWithoutFileUrl,
+          fileUrl: file_url, // file_url -> fileUrl로 변환
+        };
+
         useMessageStore.getState().appendMessage(msg);
       } catch {
         console.warn("Invalid message format: ", event.data);
@@ -72,18 +80,16 @@ export const WebSocketClient = ({ workspaceId, tabId }: { workspaceId: string; t
 
       const payload = {
         sender_id: user_id,
-        // sender_id: "10CE9BCC5B0211F0A3ABE1F31FC066BF",
         content: message,
         file_url: fileUrl,
       };
-      console.log("sender_id", payload.sender_id);
-      console.log("content", payload.content);
       console.log("file_url", payload.file_url); //note: 나중에 지울 것
+
       useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
-  }, [sendFlag, setSendFlag, message]);
+  }, [sendFlag, message]);
 
   return <div>{/* 필요시 메시지 입력창/버튼 등 추가 */}</div>;
 };

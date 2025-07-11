@@ -8,8 +8,6 @@ class TabInfo(BaseModel):
     tab_name: str
     section_id: int
     section_name: str
-    subsection_id: Optional[int]
-    subsection_name: Optional[str]
 
     @classmethod
     def from_row(cls, row: tuple) -> TabInfo:
@@ -17,9 +15,7 @@ class TabInfo(BaseModel):
             tab_id=row[0],
             tab_name=row[1],
             section_id=row[2],
-            section_name=row[3],
-            subsection_id=row[4],
-            subsection_name=row[5]
+            section_name=row[3]
         )
 
 
@@ -28,8 +24,6 @@ class TabDetailInfo(BaseModel):
     tab_name: str
     section_id: int
     section_name: str
-    subsection_id: Optional[int]
-    subsection_name: Optional[str]
     members_count: int
 
     @classmethod
@@ -41,8 +35,6 @@ class TabDetailInfo(BaseModel):
             tab_name=row[1],
             section_id=row[2],
             section_name=row[3],
-            subsection_id=row[4],
-            subsection_name=row[5],
             members_count=members_count
         )
 
@@ -56,6 +48,11 @@ class TabMember(BaseModel):
 
     @classmethod
     def from_row(cls, row: tuple) -> Optional[TabMember]:
+        # print("user_id", row[0])
+        # print("nickname", row[1])
+        # print("image", row[2])
+        # print("role", row[3])
+        # print("groups", row[4])
         return cls(
             user_id=row[0],
             nickname=row[1],
@@ -82,13 +79,11 @@ class CreateTabResponse(BaseModel):
     tab_id: int
     tab_name: str
     section_id: int
-    subsection_id: Optional[int] = None
 
     @classmethod
     def from_row(cls, row: tuple) -> CreateTabResponse:
         return cls(
             tab_id=row[0],
             tab_name=row[1],
-            section_id=row[2],
-            subsection_id=row[3]
+            section_id=row[2]
         )
