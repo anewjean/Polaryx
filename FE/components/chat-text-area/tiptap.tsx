@@ -32,6 +32,18 @@ import { useFetchMessages } from "@/hooks/useFetchMessages";
 // import { Send } from "lucide-react";
 // 실험용
 import { jwtDecode } from "jwt-decode";
+import { Extension } from "@tiptap/core";
+
+// Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
+const CustomEnter = Extension.create({
+  name: "custom-enter",
+  addKeyboardShortcuts() {
+    return {
+      "Shift-Enter": () => true,
+      "Enter": () => true,
+    };
+  },
+});
 
 export function TipTap() {
   const params = useParams();
@@ -152,6 +164,7 @@ export function TipTap() {
             }
           },
         }),
+        CustomEnter, // 커스텀 확장 추가
       ],
       content: message,
     },
@@ -199,16 +212,26 @@ export function TipTap() {
   const addImage = useCallback(() => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
-  const handleSend = async () => {
-    console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
 
-    const content = editor?.getHTML() || ""; // 마크다운으로 받기
-    if (!content.trim()) return;
+const handleSend = async () => {
+  let content = editor?.getHTML() || "";
 
-    setMessage(content); // 메시지 저장
-    setSendFlag(true); // 전송 트리거
-    editor?.commands.clearContent();
-  };
+  // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
+  let prev;
+  do {
+    prev = content;
+    content = content
+      .replace(/(?:<p>(?:<br>)?<\/p>)+$/g, "") // 빈 단락
+      .replace(/<li><p>(?:<br>)?<\/p><\/li>/g, "") // 빈 리스트 항목
+      .replace(/<br\s*\/?>/g, ""); // 남아있는 <br> 모두 제거
+  } while (content !== prev);
+
+  if (!content.trim()) return;
+  setMessage(content);
+  setSendFlag(true);
+  editor?.commands.clearContent();
+};
+
   // 서버사이드에서는 아무것도 렌더링하지 않음
   if (!mounted) {
     return <div className="chat-text-area">Loading...</div>;
@@ -242,10 +265,19 @@ export function TipTap() {
           }}
           /////////////// 추가 ///////////////
           onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
-              if (isComposingRef.current) return; // 한글 조합 중일 땐 무시
-              event.preventDefault(); // 줄바꿈 방지
-              handleSend();
+            if (event.key === "Enter") {
+              if (isComposingRef.current) return;
+              event.preventDefault();
+              if (event.shiftKey) {
+                // 리스트 안이면 새 리스트 항목, 아니면 새 단락
+                if (editor.isActive("bulletList") || editor.isActive("orderedList")) {
+                  editor.commands.splitListItem("listItem");
+                } else {
+                  editor.commands.splitBlock();
+                }
+              } else {
+                handleSend();
+              }
             }
           }}
         />
