@@ -60,7 +60,8 @@ export function TipTap() {
   }, [workspaceId, tabId]);
   useFetchMessages(workspaceId, tabId);
 
-  const { message, setMessage, setSendFlag, setMessages, appendMessage } = useMessageStore();
+  const { message, setMessage, setSendFlag, setMessages, appendMessage } =
+    useMessageStore();
   // const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
@@ -98,7 +99,9 @@ export function TipTap() {
           isAllowedUri: (url, ctx) => {
             try {
               // construct URL
-              const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
+              const parsedUrl = url.includes(":")
+                ? new URL(url)
+                : new URL(`${ctx.defaultProtocol}://${url}`);
               // use default validation
               if (!ctx.defaultValidate(parsedUrl.href)) {
                 return false;
@@ -110,12 +113,17 @@ export function TipTap() {
                 return false;
               }
               // only allow protocols specified in ctx.protocols
-              const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
+              const allowedProtocols = ctx.protocols.map((p) =>
+                typeof p === "string" ? p : p.scheme,
+              );
               if (!allowedProtocols.includes(protocol)) {
                 return false;
               }
               // disallowed domains
-              const disallowedDomains = ["example-phishing.com", "malicious-site.net"];
+              const disallowedDomains = [
+                "example-phishing.com",
+                "malicious-site.net",
+              ];
               const domain = parsedUrl.hostname;
               if (disallowedDomains.includes(domain)) {
                 return false;
@@ -129,9 +137,14 @@ export function TipTap() {
           shouldAutoLink: (url) => {
             try {
               // construct URL
-              const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
+              const parsedUrl = url.includes(":")
+                ? new URL(url)
+                : new URL(`https://${url}`);
               // only auto-link if the domain is not in the disallowed list
-              const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
+              const disallowedDomains = [
+                "example-no-autolink.com",
+                "another-no-autolink.com",
+              ];
               const domain = parsedUrl.hostname;
               return !disallowedDomains.includes(domain);
             } catch {
@@ -168,32 +181,30 @@ export function TipTap() {
     }
     // update link
     try {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
     } catch (e) {
       alert((e as Error).message);
     }
   }, [editor]);
 
-  const { handleFileSelect } = useFilePreview(editor, fileInputRef as React.RefObject<HTMLInputElement>);
+  const { handleFileSelect } = useFilePreview(
+    editor,
+    fileInputRef as React.RefObject<HTMLInputElement>,
+  );
   const addImage = useCallback(() => {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
   const handleSend = async () => {
     console.log("handleSend"); // hack: 한글로만 한 줄 입력하면 이거 2번 실행됨
-    ////////////////////////////////////////////////
-    const token = localStorage.getItem("access_token");
-    console.log(jwtDecode<{ user_id: string }>(token!).user_id);
-    ////////////////////////////////////////////////
+
     const content = editor?.getHTML() || ""; // 마크다운으로 받기
-    if (!content.replace(/<[^>]*>/g, "").trim()) return; // 내용이 없으면 전송 안 함
     if (!content.trim()) return;
-    // 메시지 전송 시 profile data 저장
-    // addProfile({
-    //   nickname: "Dongseok Lee (이동석)",
-    //   timestamp: new Date().getTime(),
-    //   image: "/profileTest.png",
-    // });
-    // appendMessage(content); // hack: 이 부분 어떻게 수정해야할 지 모르겠음
+
     setMessage(content); // 메시지 저장
     setSendFlag(true); // 전송 트리거
     editor?.commands.clearContent();
