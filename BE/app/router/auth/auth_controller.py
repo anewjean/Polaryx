@@ -156,7 +156,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     httponly=True,
                     secure=True,
                     samesite="None",
-                    domain="jungle-lms.site",       # 배포용.
+                    # domain="jungle-lms.site",       # 배포용.
                     max_age= 60*REFRESH_TOKEN_EXPIRE_MINUTES
                 )
 
