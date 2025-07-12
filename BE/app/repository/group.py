@@ -80,7 +80,6 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_groups_by_id, param)
     
-    # 미완
     def insert_member_by_group_name(self, data: dict):
         params = {
             "user_id": data["user_id"],
