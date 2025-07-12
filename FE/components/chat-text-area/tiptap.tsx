@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./styles.scss";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -19,7 +19,6 @@ import Text from "@tiptap/extension-text";
 import Strike from "@tiptap/extension-strike";
 import Link from "@tiptap/extension-link";
 import { EditorContent, useEditor } from "@tiptap/react";
-import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 // import { useMessageProfileStore } from "@/store/messageProfileStore";
@@ -34,6 +33,15 @@ import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { jwtDecode } from "jwt-decode";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -54,6 +62,11 @@ export function TipTap() {
   const [tabName, setTabName] = useState<string>(""); // 탭 이름
   const [mounted, setMounted] = useState(false);
 
+  // 링크 다이얼로그 상태
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+  const [linkText, setLinkText] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
+
   // 클라이언트에서만 mounted = true
   useEffect(() => {
     setMounted(true);
@@ -71,15 +84,16 @@ export function TipTap() {
       }
     })();
   }, [workspaceId, tabId]);
+
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } =
     useMessageStore();
-  // const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
+
   const editor = useEditor(
     {
       // immediatelyRender: false 제거해도 됨
@@ -187,31 +201,59 @@ export function TipTap() {
     }
   }, [tabId, editor]);
 
+  // 링크 다이얼로그 열기
+  const openLinkDialog = useCallback(() => {
+    if (!editor) return;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, " ") || "";
+    const previousUrl = editor.getAttributes("link").href || "";
+    setLinkText(selectedText);
+    setLinkUrl(previousUrl);
+    setIsLinkDialogOpen(true);
+  }, [editor]);
+
   const setLink = useCallback(() => {
     if (!editor) return;
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
-    // cancelled
-    if (url === null) {
+
+    // 기존 링크 해제
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+
+    // 빈 URL이면 그냥 닫기
+    if (linkUrl === "") {
+      setIsLinkDialogOpen(false);
       return;
     }
-    // empty
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-    // update link
-    try {
+
+    // 프로토콜이 없으면 https:// 붙이기
+    const href = /^https?:\/\//.test(linkUrl) ? linkUrl : `https://${linkUrl}`;
+    const { from, to } = editor.state.selection;
+
+    // 선택 영역이 있으면 대체, 없으면 삽입
+    if (from !== to) {
       editor
         .chain()
         .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
+        .deleteRange({ from, to })
+        .insertContentAt(from, {
+          type: "text",
+          text: linkText,
+          marks: [{ type: "link", attrs: { href } }],
+        })
         .run();
-    } catch (e) {
-      alert((e as Error).message);
+    } else {
+      editor
+        .chain()
+        .focus()
+        .insertContentAt(from, {
+          type: "text",
+          text: linkText,
+          marks: [{ type: "link", attrs: { href } }],
+        })
+        .run();
     }
-  }, [editor]);
+
+    setIsLinkDialogOpen(false);
+  }, [editor, linkText, linkUrl]);
 
   const { handleFileSelect } = useFilePreview(
     editor,
@@ -276,8 +318,44 @@ export function TipTap() {
         style={{ display: "none" }}
       />
       <div className="toolbar-container rounded-t-[7px]">
-        <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
+        <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
       </div>
+
+      {/* 링크 추가 다이얼로그 */}
+      <AlertDialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl mb-2">
+              링크 추가
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-2">
+            <>
+              <p className="text-m-bold">텍스트</p>
+              <input
+                type="text"
+                className="border rounded-md px-2 py-1.5 mb-2"
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+              />
+            </>
+            <>
+              <p className="text-m-bold">링크</p>
+              <input
+                type="text"
+                className="border rounded-md px-2 py-1.5"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+              />
+            </>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={setLink}>저장</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="editor-container flex">
         <EditorContent
           editor={editor}
