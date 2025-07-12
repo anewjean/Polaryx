@@ -2,9 +2,9 @@ from uuid import UUID, uuid4
 from typing import List
 
 from app.service.users import UserService
-from app.service.groups import GroupsService
+from app.service.group import GroupsService
 
-from app.repository.roles import RolesRepository # 명훈 추가
+from app.repository.role import RolesRepository
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 
 from app.domain.workspace_member import WorkspaceMember

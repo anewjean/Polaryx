@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 from typing import List
 
-from app.repository.groups import QueryRepo as GroupsRepo
+from app.repository.group import QueryRepo as GroupsRepo
 from app.schema.workspace_members.response import (
     WorkspaceMemberResponse,
     WorkspaceMemberSchema,
