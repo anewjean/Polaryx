@@ -1,11 +1,18 @@
 "use client";
 
-import React from "react";
-import { Popover, PopoverTrigger, PopoverContent, PopoverClose } from "@/components/ui/popover";
+import React, { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverClose,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { UserRoundCog, LogOut } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useProfileStore } from "@/store/profileStore";
+import { useMyUserStore } from "@/store/myUserStore";
 
 interface ProfileMenuProps {
   logout: () => void;
@@ -14,6 +21,7 @@ interface ProfileMenuProps {
 
 export function ProfileMenu({ logout, router }: ProfileMenuProps) {
   const openProfile = useProfileStore((s) => s.openWithId);
+  const myUserId = useMyUserStore((s) => s.userId);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -21,7 +29,7 @@ export function ProfileMenu({ logout, router }: ProfileMenuProps) {
         <Button
           variant="ghost"
           className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-          onClick={() => openProfile(null)} // null을 인자로 보낼시 내 프로필 전송 (profile/default.tsx 참고)
+          onClick={() => openProfile(myUserId!)}
         >
           <UserRoundCog />
           프로필

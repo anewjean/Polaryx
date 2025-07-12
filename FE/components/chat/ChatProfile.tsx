@@ -6,13 +6,14 @@ import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 import DOMPurify from "dompurify";
 import ChatEditTiptap from "./ChatEditTiptap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
+import { jwtDecode } from "jwt-decode";
 
 interface ChatProfileProps {
-  senderId: Buffer;
+  senderId: string;
   msgId: number;
   imgSrc: string;
   nickname: string;
@@ -38,6 +39,9 @@ export function ChatProfile({
   fileUrl,
   isUpdated,
 }: ChatProfileProps) {
+  // 유저 id 상태 관리
+  const [userId, setUserId] = useState<string | null>(null);
+
   const safeHTML = DOMPurify.sanitize(content, {
     FORBID_TAGS: ["img"], // 👈 img 태그 완전 제거
   });
@@ -63,12 +67,14 @@ export function ChatProfile({
   // 메시지 취소 핸들러
   const handleCancel = () => {
     setIsEditMode(false);
-  };
+  };  
 
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <div className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}>
+        <div
+          className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}
+        >
           {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
           {showProfile ? (
             <div className="relative">
@@ -101,8 +107,7 @@ export function ChatProfile({
             {isEditMode ? (
               <>
                 {showProfile && (
-                  <div className="flex items-baseline space-x-1 mb-1">
-                  </div>
+                  <div className="flex items-baseline space-x-1 mb-1"></div>
                 )}
                 <ChatEditTiptap
                   initialContent={editContent}
@@ -150,12 +155,13 @@ export function ChatProfile({
           </div>
         </div>
       </ContextMenuTrigger>
+
       <MyContextMenu
-        messageId={msgId}
-        userId={typeof senderId === "string" ? senderId : senderId.toString()}
-        content={editContent}
-        onEdit={() => setIsEditMode(true)}
-      />
+          messageId={msgId}
+          userId={senderId}
+          content={editContent}
+          onEdit={() => setIsEditMode(true)}
+        />
     </ContextMenu>
   );
 }
