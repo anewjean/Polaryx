@@ -98,7 +98,7 @@ export const WebSocketClient = ({
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
-  }, [sendFlag, message, fileUrl]);
+  }, [sendFlag, message, fileUrl, setSendFlag]);
 
   return <div>{/* 필요시 메시지 입력창/버튼 등 추가 */}</div>;
 };
