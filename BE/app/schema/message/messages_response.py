@@ -7,7 +7,7 @@ from typing import Optional
 
 
 class MessageSchema(BaseModel):
-    id: int
+    msgId: int
     tabId: int
     senderId: uuid.UUID
     nickname: str
@@ -22,7 +22,7 @@ class MessageSchema(BaseModel):
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
         return cls(
-            id=row[0],
+            msgId=row[0],
             tabId=row[1],
             senderId=row[2],
             nickname=row[3],

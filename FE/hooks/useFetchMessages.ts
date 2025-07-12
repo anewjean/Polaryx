@@ -11,7 +11,7 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
       //   setMessages(res.messages); // 서버 응답 구조에 따라
       const messages = res.messages.map((msg: any) => ({
         senderId: msg.senderId,
-        msgId: msg.id,
+        msgId: msg.msgId,
         nickname: msg.nickname,
         content: msg.content,
         image: msg.image,
