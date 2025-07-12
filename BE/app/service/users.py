@@ -6,7 +6,7 @@ UserRepo = QueryRepo()
 
 
 class UserService:
-    def find_user_by_email(user_email: str):        
+    def find_user_by_email(self, user_email: str):        
         params = {"user_email": user_email, 
                   }
 
@@ -22,7 +22,7 @@ class UserService:
             print("\n\n email이 이미 있음.")
             return result
         
-    def create_user_in_usertable(data: dict):
+    def create_user_in_usertable(self, data: dict):
         # 일단 email로 먼저 찾아내기.
         sql = UserRepo.get_sql("insert_user")
         db.execute(sql, data)

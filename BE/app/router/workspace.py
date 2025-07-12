@@ -62,7 +62,6 @@ async def create_users(request: Request, workspace_id):
 
     # step 1.일단 이름이랑 email 받아와서,
     # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
-    print("create_users\n")
     for i in data["users"]:
         target = user_service.find_user_by_email(i["email"])
         # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
@@ -88,7 +87,7 @@ async def create_users(request: Request, workspace_id):
         }
         print("target_data", target_data["user_email"])
         # usertable에 넣어주기.
-        UserService.create_user_in_usertable(target_data)
+        user_service.create_user_in_usertable(target_data)
 
         create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
 
@@ -140,6 +139,6 @@ def create_member_roles(i, user_id: str):
     member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
 
 @router.get("/{workspace_id}/userinfo")
-async def create_users(request: Request):
+async def get_user_columns(request: Request):
     columns = workspace_member_service.get_member_by_workspace_columns()
     return columns
