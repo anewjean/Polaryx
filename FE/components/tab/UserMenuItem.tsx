@@ -5,7 +5,6 @@ import { Plus, CircleCheck, Mail, SquareUserRound, AtSign } from "lucide-react";
 import clsx from "clsx";
 import { Member } from "@/apis/tabApi";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 export interface UserMenuItemProps {
   user: Member;
@@ -34,11 +33,9 @@ export function UserMenuItem({
         {/* 공통: 프로필 + 닉네임 + 역할 */}
         <div className="flex flex-row w-full justify-between items-center">
           <div className="flex items-end gap-2">
-            <Image
+            <img
               src={user.image || "/user_default.png"}
               alt={user.nickname}
-              width={28}
-              height={28}
               className="w-[28px] aspect-square bg-gray-400 rounded-md"
             />
             <span className="text-lg font-bold text-gray-800 truncate">
