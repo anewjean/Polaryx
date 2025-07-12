@@ -1,56 +1,62 @@
-from typing import Optional
+from fastapi import HTTPException, status
+from app.core.error_codes import ErrorCode
 
 
-class DatabaseError(Exception):
-    """데이터베이스 관련 기본 예외"""
-    def __init__(self, message: str, original_error: Optional[Exception] = None):
-        self.message = message
-        self.original_error = original_error
-        super().__init__(self.message)
+class CustomHTTPException(HTTPException):
+    def __init__(self, status_code: int, error_code: ErrorCode, detail: str = None):
+        self.error_code = error_code
+        super().__init__(status_code=status_code, detail=detail or error_code.value)
 
 
-class ConnectionError(DatabaseError):
-    """데이터베이스 연결 오류"""
-    pass
+class UnauthorizedException(CustomHTTPException):
+    def __init__(self, error_code: ErrorCode = ErrorCode.UNAUTHORIZED, detail: str = None):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            error_code=error_code,
+            detail=detail
+        )
 
 
-class QueryExecutionError(DatabaseError):
-    """쿼리 실행 오류"""
-    pass
+class ForbiddenException(CustomHTTPException):
+    def __init__(self, error_code: ErrorCode = ErrorCode.FORBIDDEN, detail: str = None):
+        super().__init__(
+            status_code=status.HTTP_403_FORBIDDEN,
+            error_code=error_code,
+            detail=detail
+        )
 
 
-class DataNotFoundError(DatabaseError):
-    """데이터를 찾을 수 없음"""
-    pass
+class BadRequestException(CustomHTTPException):
+    def __init__(self, detail: str = "Bad Request"):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            error_code=None,
+            detail=detail
+        )
 
 
-class DataValidationError(DatabaseError):
-    """데이터 유효성 검증 오류"""
-    pass
+class NotFoundException(CustomHTTPException):
+    def __init__(self, detail: str = "Not Found"):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            error_code=None,
+            detail=detail
+        )
 
 
-class DuplicateDataError(DatabaseError):
-    """중복 데이터 오류"""
-    pass
+class ValidationException(CustomHTTPException):
+    def __init__(self, detail: str = "Validation Error"):
+        super().__init__(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            error_code=None,
+            detail=detail
+        )
 
 
-class RoleError(Exception):
-    """역할 관련 기본 예외"""
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
-
-
-class RoleNotFoundError(RoleError):
-    """역할을 찾을 수 없음"""
-    pass
-
-
-class RoleAlreadyExistsError(RoleError):
-    """역할이 이미 존재함"""
-    pass
-
-
-class InvalidPermissionError(RoleError):
-    """잘못된 권한"""
-    pass
+class InternalServerException(CustomHTTPException):
+    def __init__(self, detail: str = "Internal Server Error"):
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            error_code=None,
+            detail=detail
+        )

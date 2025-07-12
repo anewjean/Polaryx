@@ -50,4 +50,5 @@ def verify_token_and_get_token_data(request: Request) -> dict:
             raise HTTPException(status_code=401, detail="INVALID TOKEN")
 
     result = {"user_id": payload.get("user_id"), "email": payload.get("email")}
+    print("in verify_token_and_get_token_data, result: ", result)
     return result

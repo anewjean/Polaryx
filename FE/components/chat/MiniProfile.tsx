@@ -5,8 +5,8 @@ import { useTabStore } from "@/store/tabStore";
 import { sendDirectMessage } from "@/apis/messageApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMyUserStore } from "@/store/myUserStore";
 
 interface MiniProfileProps {
   senderId: string;
@@ -24,19 +24,8 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   const openProfile = useProfileStore((s) => s.openWithId);
   const refreshTabs = useTabStore((s) => s.refreshTabs);
 
-  // 현재 유저 ID 상태 관리
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // 진입 시 유저 ID 획득
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      const currentUserId = jwtDecode<{ user_id: string }>(token).user_id;
-      setUserId(currentUserId);
-    } else {
-      router.replace("/");
-    }
-  }, []);
+  // // 현재 유저 ID 상태 관리
+  const userId = useMyUserStore((s) => s.userId);
 
   // DM 생성 이벤트 핸들러
   const createDM = async (userIds: string[], userId: string) => {
@@ -52,9 +41,15 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
 
   return (
     <div>
-      <HoverCardContent side="top" className="flex items-center HoverCardContent">
+      <HoverCardContent
+        side="top"
+        className="flex items-center HoverCardContent"
+      >
         <div>
-          <img src={imgSrc} className="w-[60px] h-[60px] rounded-lg bg-gray-400 mr-3 object-cover" />
+          <img
+            src={imgSrc}
+            className="w-[60px] h-[60px] rounded-lg bg-gray-400 mr-3 object-cover"
+          />
         </div>
         <div>
           <div className="ml-0.5 text-m-bold">{nickname}</div>
@@ -75,7 +70,12 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
             </Button>
 
             {/* 프로필 버튼 */}
-            <Button onClick={() => openProfile(senderId)} className="ml-1 cursor-pointer" variant="outline" size="sm">
+            <Button
+              onClick={() => openProfile(senderId)}
+              className="ml-1 cursor-pointer"
+              variant="outline"
+              size="sm"
+            >
               <div className="text-s-bold">프로필</div>
             </Button>
           </div>

@@ -2,8 +2,7 @@ from app.config.config import settings
 import mysql.connector
 from mysql.connector import Error as MySQLError
 import logging
-from app.util.database.db_impl import DBImpl, ExecuteError
-from app.core.exceptions import ConnectionError as DBConnectionError, QueryExecutionError
+from app.util.database.db_impl import DBImpl
 
 
 class MySQL(DBImpl):
@@ -26,7 +25,7 @@ class MySQL(DBImpl):
             self.connection = connection
         except MySQLError as e:
             logging.error(f"데이터베이스 연결 실패: {e}")
-            raise DBConnectionError("데이터베이스에 연결할 수 없습니다", e)
+            raise e
 
     def execute(self, query, bind_value=None):
         cnx = None
@@ -60,7 +59,7 @@ class MySQL(DBImpl):
                 except:
                     pass
             logging.error(f"MySQL 쿼리 실행 오류: {e}, Query: {query[:100]}...")
-            raise QueryExecutionError(f"쿼리 실행에 실패했습니다: {str(e)}", e)
+            raise e
         except Exception as e:
             if cnx:
                 try:
@@ -68,7 +67,7 @@ class MySQL(DBImpl):
                 except:
                     pass
             logging.error(f"예상치 못한 오류: {e}, Query: {query[:100]}...")
-            raise QueryExecutionError(f"예상치 못한 오류가 발생했습니다: {str(e)}", e)
+            raise e
 
         finally:
             if cursor:
@@ -100,7 +99,7 @@ class MySQL(DBImpl):
                 except:
                     pass
             logging.error(f"MySQL executemany 오류: {e}, Query: {query[:100]}...")
-            raise QueryExecutionError(f"배치 쿼리 실행에 실패했습니다: {str(e)}", e)
+            raise e
         except Exception as e:
             if cnx:
                 try:
@@ -108,7 +107,7 @@ class MySQL(DBImpl):
                 except:
                     pass
             logging.error(f"예상치 못한 오류: {e}, Query: {query[:100]}...")
-            raise QueryExecutionError(f"예상치 못한 오류가 발생했습니다: {str(e)}", e)
+            raise e
         finally:
             if cursor:
                 try:
@@ -126,9 +125,3 @@ class MySQL(DBImpl):
     
     def clear_bind(self):
         self.bind_value.clear()
-    
-    def commit(self):
-        cnx.commit()
-    
-    def rollback(self):
-        cnx.rollback()

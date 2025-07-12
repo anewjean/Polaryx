@@ -1,16 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-// import { updateMessage } from "@/apis/messageApi";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
-// import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 // import { elementFromString } from "@tiptap/core";
 
 // 채팅방 내 채팅
-export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
+export function ChatPage({
+  workspaceId,
+  tabId,
+}: {
+  workspaceId: string;
+  tabId: string;
+}) {
   const { messages, prependMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
@@ -21,10 +25,9 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
-    console.log("메세지 추가됐음.");
     const el = containerRef.current;
     if (!el) return;
-
+    
     // 새로운 메시지가 추가되었는지 확인
     if (messages.length > prevMessageLengthRef.current) {
       // 가장 최근 메시지가 추가된 상황으로 판단
@@ -41,25 +44,22 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
-    console.log("in handle scroll");
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      console.log("oldestID:", oldestId);
-      console.log("previousHeight:", previousHeight);
-      console.log(messages);
-
       if (messages.length > 0) {
-        prependMessages(messages);
+        // 기존 문제 코드
+        prependMessages(messages); // hack : 현재 messages를 다시 추가! 중복된 메시지를 다시 불러옴
+        // TODO: 실제로는 API를 호출해서 과거 메시지를 가져와야 함
+        // const olderMessages = await getOlderMessages(workspaceId, tabId, oldestId);
+        // prependMessages(olderMessages);
+
         // 스크롤 위치를 현재 위치만큼 유지
-
-        console.log("messages + res");
-        console.log(messages);
-
         isFetching.current = false;
+        // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
           // el.scrollTop = el.scrollHeight;
@@ -94,7 +94,12 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
           let showProfile = true;
 
-          if (prev && prev.nickname === msg.nickname && prev.createdAt && msg.createdAt) {
+          if (
+            prev &&
+            prev.nickname === msg.nickname &&
+            prev.createdAt &&
+            msg.createdAt
+          ) {
             const prevTime = new Date(prev.createdAt).getTime();
             const currTime = new Date(msg.createdAt).getTime();
             const diff = currTime - prevTime;

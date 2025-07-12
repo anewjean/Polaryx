@@ -52,7 +52,6 @@ find_member_by_nickname = """
 SELECT * FROM workspace_members WHERE nickname = %(nickname)s;
 """
 
-# note: 명훈 추가
 find_member_by_workspace_columns = """
 SELECT COLUMN_NAME
 FROM INFORMATION_SCHEMA.COLUMNS
