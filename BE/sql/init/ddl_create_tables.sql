@@ -18,7 +18,7 @@ CREATE TABLE `refresh_tokens` (
     id BINARY(16) NOT NULL PRIMARY KEY,
     user_id BINARY(16) NOT NULL,
     token VARCHAR(255) NOT NULL,
-    user_name VARCHAR(32) NOT NULL,
+    user_name VARCHAR(32) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL
@@ -84,7 +84,7 @@ CREATE TABLE `member_roles` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BINARY(16) NOT NULL,
     role_id INTEGER NOT NULL,
-    user_name VARCHAR(32) NOT NULL,
+    user_name VARCHAR(32) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_role_user (role_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
