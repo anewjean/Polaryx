@@ -29,6 +29,7 @@ import { useFilePreview } from "@/hooks/useFilePreview";
 import { useParams } from "next/navigation";
 import { getTabInfo } from "@/apis/tabApi";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
+import { useTabInfoStore } from "@/store/tabStore";
 // import { Send } from "lucide-react";
 // 실험용
 import { jwtDecode } from "jwt-decode";
