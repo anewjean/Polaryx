@@ -4,12 +4,13 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class MessageSchema(BaseModel):
     id: int
     tab_id: int
-    sender_id: uuid.UUID
+    sender_id: str
     nickname: str
     image: Optional[str] = None
     content: str
@@ -24,7 +25,7 @@ class MessageSchema(BaseModel):
         return cls(
             id=row[0],
             tab_id=row[1],
-            sender_id=row[2],
+            sender_id=row[2].hex(),
             nickname=row[3],
             image=row[4] or "",
             content=row[5],

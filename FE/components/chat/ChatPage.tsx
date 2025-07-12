@@ -6,16 +6,18 @@ import { ShowDate } from "./ShowDate";
 // import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
-import { getMessages } from "@/apis/messageApi";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
 // import { elementFromString } from "@tiptap/core";
 
 // 채팅방 내 채팅
 export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
-  const messages = useMessageStore((state) => state.messages);
-  const prependMessages = useMessageStore((state) => state.prependMessages);
+  const { messages, prependMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
+
+  // 초기 메시지 로드
+  useFetchMessages(workspaceId, tabId);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
@@ -48,13 +50,12 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
-      const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
+      console.log(messages);
 
-      console.log(res["messages"]);
-
-      if (res["messages"].length > 0) {
-        prependMessages(res["messages"]);
+      if (messages.length > 0) {
+        prependMessages(messages);
         // 스크롤 위치를 현재 위치만큼 유지
+
         console.log("messages + res");
         console.log(messages);
 
@@ -110,7 +111,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                senderId={msg.senderId ? msg.senderId : ""}
                 msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}

@@ -27,11 +27,19 @@ const request = async (
   }
 };
 
-export const updateMessage = async (workspaceId: string, tabId: string, messageId: number, message: string) => {
-  return request(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`, {
-    method: "PATCH",
-    body: JSON.stringify({ new_content: message }),
-  });
+export const updateMessage = async (
+  workspaceId: string,
+  tabId: string,
+  messageId: number,
+  message: string,
+) => {
+  return request(
+    `${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages/${messageId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ new_content: message }),
+    },
+  );
 };
 
 export const deleteMessage = async (
@@ -93,6 +101,7 @@ export const systemMessage = async (
 export async function sendDirectMessage(
   workspaceId: string,
   userIds: string[],
+  userId: string,
 ): Promise<{ tab_id: number }> {
   const accessToken = localStorage.getItem("access_token");
   if (!accessToken) throw new Error("로그인이 필요합니다.");
@@ -104,7 +113,7 @@ export async function sendDirectMessage(
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ user_ids: userIds }),
+    body: JSON.stringify({ user_ids: userIds, user_id: userId }),
   });
   if (res == null) {
     console.log("NOT REACH : sendDirectMessage");
