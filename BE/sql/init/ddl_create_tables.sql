@@ -71,7 +71,13 @@ CREATE TABLE `roles` (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(32) NOT NULL,
     workspace_id BIGINT NOT NULL,
-    permission BOOLEAN NOT NULL
+    announce BOOLEAN NOT NULL,
+    course BOOLEAN NOT NULL,
+    channel BOOLEAN NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    UNIQUE KEY uq_role (name, workspace_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `member_roles` (
