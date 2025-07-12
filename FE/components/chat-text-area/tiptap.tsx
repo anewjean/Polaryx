@@ -33,6 +33,7 @@ import { useFetchMessages } from "@/hooks/useFetchMessages";
 // 실험용
 import { jwtDecode } from "jwt-decode";
 import { Extension } from "@tiptap/core";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -233,8 +234,26 @@ const handleSend = async () => {
 };
 
   // 서버사이드에서는 아무것도 렌더링하지 않음
+  // 스켈레톤 이미지 (로딩중일 때 보여줌)
   if (!mounted) {
-    return <div className="chat-text-area">Loading...</div>;
+    return (
+    <div className="chat-text-area border border-gray-300 rounded-[7px]">
+      <input style={{ display: "none" }} />
+      {/* 툴바 스켈레톤 */}
+      <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
+        <div className="flex gap-2">
+          {/* 툴바 버튼 5개 정도 */}
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="w-9 h-9 rounded-md" />
+          ))}
+        </div>
+      </div>
+      {/* 에디터 스켈레톤 */}
+      <div className="editor-container flex px-[15px] py-[10px]">
+        <Skeleton className="h-6 w-[20%] rounded-md" />
+      </div>
+    </div>
+    ) 
   }
 
   if (!editor) {

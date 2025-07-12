@@ -9,6 +9,7 @@ interface Message {
   content: string;
   createdAt: string | undefined;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 interface MessageStore {
@@ -17,11 +18,11 @@ interface MessageStore {
   setMessage: (msg: string) => void;
 
   // 수정 버튼 누르면 수정 모드로 변경
-  updateMessage: (idx: number, msg: Message) => void;
+  updateMessage: (msgId: number, msg: string) => void;
 
   // 메시지 삭제
   deleteMessage: (id: number) => void;
-  
+
   // 메시지 전송 trigger
   sendFlag: boolean;
   setSendFlag: (flag: boolean) => void;
@@ -31,7 +32,7 @@ interface MessageStore {
   setMessages: (msg: Message[]) => void;
   appendMessage: (msg: Message) => void;
   prependMessages: (msg: Message[]) => void;
-  
+
   // file url 저장
   fileUrl: string | null;
   setFileUrl: (url: string | null) => void;
@@ -42,18 +43,17 @@ export const useMessageStore = create<MessageStore>((set) => ({
   setMessage: (msg) => set({ message: msg }),
 
   // 수정 버튼 누르면 수정 모드로 변경
-  updateMessage: (idx, msg) =>
+  updateMessage: (msgId, msg) =>
     set((state) => ({
-      messages: state.messages.map((m, i) => (i === idx ? msg : m)),
-    })),
-
+      messages: state.messages.map((m) => (m.msgId === msgId ? { ...m, content: msg } : m)),
+    })), // hack : 오류 발생할 수 있음
 
   // 메시지 삭제
   deleteMessage: (id) =>
     set((state) => ({
       messages: state.messages.filter((msg) => msg.msgId !== id),
     })),
-    
+
   // 메시지 전송 trigger
   sendFlag: false,
   setSendFlag: (flag) => set({ sendFlag: flag }),
@@ -62,9 +62,10 @@ export const useMessageStore = create<MessageStore>((set) => ({
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
   appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
-  prependMessages: (msgs) => set((state) => ({
-    messages: [...msgs, ...state.messages],
-  })),
+  prependMessages: (msgs) =>
+    set((state) => ({
+      messages: [...msgs, ...state.messages],
+    })),
 
   // file url 저장
   fileUrl: null,

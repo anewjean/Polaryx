@@ -4,6 +4,8 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useMyUserStore } from "@/store/myUserStore";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -63,6 +65,15 @@ export default function AuthCallbackPage() {
 
     getToken();
   }, [code, scope, prompt, errorParam, router]);
+
+  // 로그인한 유저 정보 store에 저장
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      const decoded = jwtDecode<{ user_id: string }>(token);
+      useMyUserStore.getState().setUserId(decoded.user_id);
+    }
+  }, []);
 
   // 실패 시 UI
   if (error) {
