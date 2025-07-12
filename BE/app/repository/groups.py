@@ -4,7 +4,6 @@ from app.domain.groups import Groups
 
 #   id INTEGER [pk, increment]
 #   name VARCHAR(32)
-#   description VARCHAR(255)        -> 이거 뭐임?
 #   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 #   updated_at TIMESTAMP 
 #   deleted_at TIMESTAMP
@@ -38,6 +37,19 @@ find_group_by_name = """
 SELECT * FROM groups WHERE name = %(group_name)s;
 """
 
+insert_group_member = """
+INSERT INTO group_members (
+    group_id,
+    user_id,
+    user_name
+)
+SELECT g.id          AS group_id,
+       %(user_id)s   AS user_id,
+       %(user_name)s AS user_name
+FROM groups g
+WHERE g.name = %(group_name)s;
+"""
+
 find_all_groups_by_id = """
 SELECT * FROM groups;
 """
@@ -67,3 +79,12 @@ class QueryRepo(AbstractQueryRepo):
             "group_id": group_id
         }
         return self.db.execute(find_all_groups_by_id, param)
+    
+    # 미완
+    def insert_member_by_group_name(self, data: dict):
+        params = {
+            "user_id": data["user_id"],
+            "group_name": data["group"],
+            "user_name": data["nickname"]
+        }
+        return self.db.execute(insert_group_member, params)

@@ -1,5 +1,11 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import List
+
+from app.service.users import UserService
+from app.service.groups import GroupsService
+
+from app.repository.roles import RolesRepository # 명훈 추가
+from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 
 from app.domain.workspace_member import WorkspaceMember
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
@@ -8,6 +14,11 @@ from app.schema.workspace_members.response import (
     WorkspaceMemberResponse,
     WorkspaceMemberSchema,
 )
+
+roles_repo = RolesRepository() # 명훈 추가
+member_roles_repo = MemberRolesRepository() # 명훈 추가
+user_service = UserService()
+groups_service = GroupsService()
 
 class WorkspaceMemberService:
     def __init__(self):
@@ -18,13 +29,19 @@ class WorkspaceMemberService:
         role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
         member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
 
-    def insert_workspace_members(self, data: dict):
+    def import_users(self, workspace_id, data: dict) -> dict:
         fail_count: int = 0
         fail_list = []
 
         # step 1.일단 이름이랑 email 받아와서,
         # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
         for i in data["users"]:
+            # ["email"]
+            # ["name"]
+            # ["role"]  -> role name? 
+            # ["group"] -> group name?  이 둘은 아직 처리하는 로직 없음.
+            # ["blog"]
+            # ["github"]
             print("i[email]", i["email"])
             target = user_service.find_user_by_email(i["email"])
             # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
@@ -38,7 +55,7 @@ class WorkspaceMemberService:
                 continue
 
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
-            uuid_obj1 = uuid.uuid4()
+            uuid_obj1 = uuid4()
             user_uuid = uuid_obj1.bytes
 
             target_data = {
@@ -52,7 +69,7 @@ class WorkspaceMemberService:
             # usertable에 넣어주기.
             user_service.create_user_in_usertable(target_data)
 
-            create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
+            # create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
 
             # 잘 들어갔는지 확인.
             target = user_service.find_user_by_email(target_data["user_email"])
@@ -67,10 +84,10 @@ class WorkspaceMemberService:
 
             target_user_id = target[0][0]
             print("target_user_id", target_user_id)
-            target_in_wm = workspace_member_service.get_member_by_user_id(target_user_id)
+            target_in_wm = self.get_member_by_user_id(target_user_id)
             print("target_in_wm", target_in_wm)
             if not target_in_wm:
-                uuid_obj2 = uuid.uuid4()
+                uuid_obj2 = uuid4()
                 wm_id = uuid_obj2.bytes
                 
                 target_data = {
@@ -79,11 +96,13 @@ class WorkspaceMemberService:
                     "email": target[0][2],
                     "workspace_id": int(workspace_id),
                     "id": wm_id,
-                    "image" : None,                
+                    "image" : None,
+                    "blog" : i["blog"],
+                    "github" : i["github"],
                 }
+                self.insert_workspace_member(target_data)
 
-                workspace_member_service.insert_workspace_member(target_data)
-                target_in_wm = workspace_member_service.get_member_by_user_id(target_user_id)
+                target_in_wm = self.get_member_by_user_id(target_user_id)
 
                 if not target_in_wm:
                     fail_count += 1
@@ -94,6 +113,16 @@ class WorkspaceMemberService:
             "fail_user_name": fail_list
         }
         return result
+
+    # 미완(group_id, user_id, user_name)
+    def insert_group_member(self, data: dict):
+        return groups_service.insert_member_by_group_name(data)
+        
+
+    # 미완
+    def insert_member_roles(self, user_id, role_name: str):
+        # 아마 role_service를 만든 이후에 작성하는게 좋을 듯.
+        return
 
     def insert_workspace_member(self, data: dict):
         workspace_member = self.workspace_member_repo.insert_workspace_member(data)
@@ -119,7 +148,6 @@ class WorkspaceMemberService:
     def get_member_by_workspace_id(self, workspace_id: int) -> List[tuple]:
         members_infos = self.workspace_member_repo.find_by_user_workspace_id(workspace_id)
         return members_infos
-
 
     def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
         user_id_bytes = user_id.bytes  # BINARY(16)에 맞게 변환

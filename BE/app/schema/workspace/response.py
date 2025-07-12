@@ -17,11 +17,10 @@ class InsertWorkspaceSchema(BaseModel):
     fail_user_name: List[str]
 
     @classmethod 
-    def from_row(cls, count, row: tuple) -> "InsertWorkspaceSchema":
-        success_count = count - len(row)
+    def from_dict(cls, dict: dict) -> "InsertWorkspaceSchema":
         return cls(
-            success_count=success_count,
-            fail_user_name=row
+            success_count=dict["success_cout"],
+            fail_user_name=["fail_user_name"]
         )
 
 
