@@ -13,17 +13,20 @@ export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
   const inputRef = useRef<HTMLInputElement>(null);
   const { setMemberList } = useMemberStore();
+
   // Alert 상태 관리
   const [alertInfo, setAlertInfo] = useState<{
     variant: "default" | "destructive";
     message: React.ReactNode;
   } | null>(null);
+
   useEffect(() => {
     if (alertInfo) {
       const timer = setTimeout(() => setAlertInfo(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [alertInfo]);
+
   const handleClick = () => {
     inputRef.current?.click();
   };
@@ -37,7 +40,7 @@ export function ExUpload() {
         icon: <Ban className="size-5" />,
       });
       return;
-    }
+    }  
 
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();
@@ -45,9 +48,11 @@ export function ExUpload() {
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(sheet);
+
     // 엑셀 헤더 file 검사
     const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
     const uploadedHeaders = json[0] as string[];
+
     ////////////////////////// 동작하지 않는 코드 //////////////////////////
     // const typos = detectTyposJaccard(uploadedHeaders);
     // if (typos.length > 0) {
@@ -70,6 +75,7 @@ export function ExUpload() {
     //   });
     //   return;
     // }
+
     // 형식에 맞지 않은 user를 제거
     const { users } = filterUsers(jsonData);
     const memberList = users.map((user) => ({
@@ -81,14 +87,16 @@ export function ExUpload() {
       github: user.github,
       workspace_id: workspaceId,
     }));
+
     // memberList를 store에 저장
     setMemberList(memberList);
+
     try {
-      const result = await createUsers(memberList, workspaceId);
+      const result = await createUsers(memberList);
       if (result.success_count === 0) {
         toast.error("등록에 실패했습니다", {
           icon: <Ban className="size-5" />,
-        });
+        });       
         return;
       }
       toast.success(`${result.success_count}명이 등록되었습니다`, {
@@ -100,6 +108,7 @@ export function ExUpload() {
       });
     }
   };
+
   return (
     <>
       <Button onClick={handleClick} variant="link" className="text-gray-200">
