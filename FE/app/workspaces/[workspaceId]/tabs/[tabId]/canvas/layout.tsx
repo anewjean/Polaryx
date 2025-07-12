@@ -1,5 +1,5 @@
-import "@/styles/globals.css";
-import "@/styles/prosemirror.css";
+import "@/styles/noble.module.css";
+import "@/styles/prosemirror.module.css";
 import 'katex/dist/katex.min.css';
 
 import type { Metadata, Viewport } from "next";
@@ -31,11 +31,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+  return (    
+        <Providers>{children}</Providers>      
   );
 }

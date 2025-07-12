@@ -1,6 +1,5 @@
 "use client";
 import "@/styles/globals.css";
-import "../styles/prosemirror.css";
 import { notoSansKr, lato } from "./ui/fonts";
 import { Toaster } from "sonner";
 
