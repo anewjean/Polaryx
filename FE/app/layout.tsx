@@ -1,5 +1,5 @@
 "use client";
-import "./globals.css";
+import "@/styles/globals.css";
 import { notoSansKr, lato } from "./ui/fonts";
 import { Toaster } from "sonner";
 

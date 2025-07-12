@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useFileStore } from "@/store/fileStore";
 import { useMessageStore } from "@/store/messageStore";
 import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
-
 export function useFilePreview(editor: any, fileInputRef: React.RefObject<HTMLInputElement>) {
   const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -12,7 +11,6 @@ export function useFilePreview(editor: any, fileInputRef: React.RefObject<HTMLIn
       reader.readAsDataURL(file);
     });
   };
-
   const handleFileSelect = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];

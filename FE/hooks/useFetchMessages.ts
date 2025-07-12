@@ -7,22 +7,27 @@ export function useFetchMessages(workspaceId: string, tabId: string) {
 
   useEffect(() => {
     async function fetch() {
-      const res = await getMessages(workspaceId, tabId);
-      //   setMessages(res.messages); // 서버 응답 구조에 따라
-      const messages = res.messages.map((msg: any) => ({
-        senderId: msg.senderId,
-        msgId: msg.msgId,
-        nickname: msg.nickname,
-        content: msg.content,
-        image: msg.image,
-        createdAt: msg.createdAt,
-        isUpdated: msg.isUpdated,
-        fileUrl: msg.fileUrl,
-      }));
-      setMessages(messages);
+      if (!workspaceId || !tabId) return;
+      try {
+        const res = await getMessages(workspaceId, tabId);
+        const messages = res.messages.map((msg: any) => ({
+          senderId: msg.senderId,
+          msgId: msg.id,
+          nickname: msg.nickname,
+          content: msg.content,
+          image: msg.image,
+          createdAt: msg.createdAt,
+          isUpdated: msg.isUpdated,
+          fileUrl: msg.fileUrl,
+        }));
+        setMessages(messages);
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+        setMessages([]);
+      }
     }
     fetch();
-  }, [workspaceId, tabId, setMessages]);
+  }, [workspaceId, tabId]);
 }
 
 export function useDeleteMessage() {

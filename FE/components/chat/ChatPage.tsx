@@ -3,6 +3,7 @@ import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { ChatProfile } from "./ChatProfile";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -26,8 +27,7 @@ export function ChatPage({
   workspaceId: string;
   tabId: string;
 }) {
-  const messages = useMessageStore((state) => state.messages);
-  const prependMessages = useMessageStore((state) => state.prependMessages);
+  const { messages, prependMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
@@ -79,9 +79,7 @@ export function ChatPage({
 
       console.log("oldestID:", oldestId);
       console.log("previousHeight:", previousHeight);
-      const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
-
-      console.log(res["messages"]);
+      console.log(messages);
 
       if (res["messages"].length >= 30) {
         prependMessages(res["messages"]);
@@ -158,7 +156,7 @@ export function ChatPage({
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                senderId={msg.senderId ? msg.senderId : ""}
                 msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}

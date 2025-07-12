@@ -50,14 +50,13 @@ export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextM
 
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
-
-      console.log("메시지 삭제 성공");
+      
     } catch (e) {
       console.log("메시지 삭제 실패:", e);
     }
   };
 
-  // 3) 메시지 수정 (미완성)
+  // 3) 메시지 수정
   const updateMessage = useMessageStore((s) => s.updateMessage);
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -70,8 +69,12 @@ export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextM
     <>
       <ContextMenuContent>
         <ContextMenuItem onClick={() => { setProfileUserId(userId); openProfile(); }}>프로필 보기</ContextMenuItem>
-        <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
-        <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
+        {myUserId === userId && (
+          <>
+            <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
+            <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
+          </>
+        )}        
       </ContextMenuContent>
       {/* 삭제 메시지 확인 다이얼로그 */}
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

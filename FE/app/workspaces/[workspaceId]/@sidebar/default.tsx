@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
+import { useTabStore } from "@/store/tabStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -35,10 +36,8 @@ import { getProfile, Profile } from "@/apis/profileApi";
 type SidebarProps = { width: number };
 
 export default function AppSidebar({ width }: SidebarProps) {
-  const router = useRouter();
-  const [userId, setUserId] = useState<string | null>(null);
-
   // URL에서 workspaceId, tabId 추출
+  const router = useRouter();
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
@@ -54,6 +53,8 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
   const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
@@ -62,6 +63,9 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 탭 생성 시 탭명 상태 관리
   const [tabName, setTabName] = useState("");
 
+  // 탭 목록 새로고침 필요 상태 관리
+  const { needsRefresh, resetRefresh } = useTabStore();
+
   // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
   const handleModalOpenChange = (isOpen: boolean, sectionId: string | null = null) => {
     setIsModalOpen(isOpen);
@@ -69,33 +73,38 @@ export default function AppSidebar({ width }: SidebarProps) {
     if (!isOpen) {
       setTabName("");
     }
-  };
+  };  
 
-  // 진입 시 유저 ID 획득
+  // 진입 시 워크스페이스, 탭, 프로필 정보 획득
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      setUserId(jwtDecode<{ user_id: string }>(token).user_id);
-    }
-  }, []);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+          const userId = jwtDecode<{ user_id: string }>(token).user_id;
 
-  // 진입 시 워크스페이스, 참여중인 탭, 프로필 정보 획득
-  useEffect(() => {
-    getWorkspaceName(workspaceId)
-      .then(setWorkspaceInfo)
-      .catch((error) => console.error("워크스페이스 정보 로딩 실패:", error));
-    getTabList(workspaceId)
-      .then(setTabList)
-      .catch((error) => console.error("탭 리스트 로딩 실패:", error));
-    if (userId) {
-      getProfile(workspaceId, userId)
-        .then(setProfile)
-        .catch((error) => console.error("프로필 로딩 실패:", error));
+          // 모든 데이터 요청 병렬로 시작
+          const promises = [getWorkspaceName(workspaceId), getTabList(workspaceId), getProfile(workspaceId, userId)];
+
+          const [workspace, tabs, profileData] = await Promise.all(promises);
+
+          setWorkspaceInfo(workspace as workspace);
+          setTabList(tabs as Tab[]);
+          setProfile(profileData as Profile);
+        } else {
+          router.replace("/");
+        }
+      } catch (error) {
+        console.error("데이터 로딩 실패:", error);
+      }
+    };
+
+    fetchData();
+
+    if (needsRefresh) {
+      resetRefresh(); // 상태 초기화
     }
-  }, [workspaceId, userId]);
-  ////////////////////////////////////
-  console.log({ tabList });
-  ///////////////////////////////////
+  }, [workspaceId, needsRefresh]);
 
   // 탭 추가 시 재 렌더링 후 해당 탭으로 이동
   async function handleAddTab(sectionId: string, tabName: string) {

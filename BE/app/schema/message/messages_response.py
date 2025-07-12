@@ -4,12 +4,13 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class MessageSchema(BaseModel):
     msgId: int
     tabId: int
-    senderId: uuid.UUID
+    senderId: str
     nickname: str
     image: Optional[str] = None
     content: str

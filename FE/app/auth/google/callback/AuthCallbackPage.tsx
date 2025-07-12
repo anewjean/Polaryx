@@ -55,6 +55,10 @@ export default function AuthCallbackPage() {
         }
 
         localStorage.setItem("access_token", accessToken);
+        
+        // 토큰에서 사용자 ID 추출하여 스토어에 저장
+        const decoded = jwtDecode<{ user_id: string }>(accessToken);
+        useMyUserStore.getState().setUserId(decoded.user_id);
 
         router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
       } catch (err: any) {
@@ -65,15 +69,6 @@ export default function AuthCallbackPage() {
 
     getToken();
   }, [code, scope, prompt, errorParam, router]);
-
-  // 로그인한 유저 정보 store에 저장
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      const decoded = jwtDecode<{ user_id: string }>(token);
-      useMyUserStore.getState().setUserId(decoded.user_id);
-    }
-  }, []);
 
   // 실패 시 UI
   if (error) {
