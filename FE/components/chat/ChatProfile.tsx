@@ -137,10 +137,14 @@ export function ChatProfile({
                   <FileDownload fileUrl={fileUrl} />
                 )}
                 <div
-                  className="message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  className="flex flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
                   <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
-                  {isUpdated && <span className="ml-2 text-xs text-gray-500">(편집됨)</span>}
-                  </div>
+                  {isUpdated ? (
+                    <span className="ml-2 text-xs text-gray-500" style={{ whiteSpace: "nowrap" }}>
+                      (편집됨)
+                    </span>
+                  ) : null}
+                </div>
               </>
             )}
           </div>
