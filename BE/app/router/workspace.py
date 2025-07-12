@@ -139,7 +139,7 @@ def create_member_roles(i, user_id: str):
     role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
     member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
 
-@router.get("/{workspace_id}/users")
+@router.get("/{workspace_id}/userinfo")
 async def create_users(request: Request):
     columns = workspace_member_service.get_member_by_workspace_columns()
     return columns

@@ -19,7 +19,7 @@ workspace_member_service = WorkspaceMemberService()
 async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: int):
     workspace_member = None
     print("******************* ws endpoint *******************")
-    print(tab_id)
+    # print(tab_id)
 
     await connection.connect(workspace_id, tab_id, websocket)
     try:
@@ -27,16 +27,12 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             print("************* in while **************")
             raw_data = await websocket.receive_text()
             print("************* raw_data **************")
-            print(raw_data)
+            # print(raw_data)
             data = json.loads(raw_data)
-            print(data)
             sender_id = (data.get("sender_id"))
-            print(sender_id)
             content = data.get("content")
-            print(content)
             # 추가
             file_data = data.get("file_url")
-            print(file_data)
 
 
             workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
@@ -51,22 +47,23 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             # [7]: wm.github
             # [8]: wm.blog
             
-            print(workspace_member)
             nickname = workspace_member[0][2]
-            print("nickname: ", nickname)
             image = workspace_member[0][4]
-            print(image)
+
+            message_id = await message_service.save_message(tab_id, sender_id, content, file_data)
+            print("message_id: ", message_id)
 
             payload = {
                 "file_url": file_data, # file_url 보내주기.
                 "content": content,
                 "nickname": nickname,
                 "image": image,
-                "created_at": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 추후 수정 요망
+                "createdAt": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 나중에 수정해주세요
+                "message_id": message_id,
+                "sender_id": sender_id
             }
             # print(payload)
 
-            message_id = await message_service.save_message(tab_id, sender_id, content, file_data) 
             
             # file_data_with_msg_id = {
             #     "message_id": message_id,

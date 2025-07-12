@@ -17,7 +17,7 @@ interface MessageStore {
   setMessage: (msg: string) => void;
 
   // 수정 버튼 누르면 수정 모드로 변경
-  updateMessage: (idx: number, msg: Message) => void;
+  updateMessage: (msgId: number, msg: string) => void;
 
   // 메시지 삭제
   deleteMessage: (id: number) => void;
@@ -42,10 +42,10 @@ export const useMessageStore = create<MessageStore>((set) => ({
   setMessage: (msg) => set({ message: msg }),
 
   // 수정 버튼 누르면 수정 모드로 변경
-  updateMessage: (idx, msg) =>
+  updateMessage: (msgId, msg) =>
     set((state) => ({
-      messages: state.messages.map((m, i) => (i === idx ? msg : m)),
-    })),
+      messages: state.messages.map((m) => (m.msgId === msgId ? { ...m, content: msg } : m)),
+    })), // hack : 오류 발생할 수 있음
 
   // 메시지 삭제
   deleteMessage: (id) =>

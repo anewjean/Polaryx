@@ -4,7 +4,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 
 // FE/apis/excelApi.ts
 export async function getWorkspaceColumns() {
-  const res = await fetchWithAuth(`${BASE}/api/workspaces/1/users`, {
+  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/1/userinfo`, {
     method: "GET",
   });
 
