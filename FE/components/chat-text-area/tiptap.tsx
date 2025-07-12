@@ -41,7 +41,7 @@ const CustomEnter = Extension.create({
   addKeyboardShortcuts() {
     return {
       "Shift-Enter": () => true,
-      "Enter": () => true,
+      Enter: () => true,
     };
   },
 });
@@ -105,55 +105,62 @@ export function TipTap() {
         Dropcursor,
         Image,
         Link.configure({
-          openOnClick: false,
+          openOnClick: true, // 링크 클릭 시 이동 가능
           autolink: true,
           defaultProtocol: "https",
           protocols: ["http", "https"],
           isAllowedUri: (url, ctx) => {
             try {
-              // construct URL
+              // URL 파싱
               const parsedUrl = url.includes(":")
                 ? new URL(url)
                 : new URL(`${ctx.defaultProtocol}://${url}`);
-              // use default validation
+
+              // 기본 검증 (XSS 방어 등) 통과하는지 확인
               if (!ctx.defaultValidate(parsedUrl.href)) {
                 return false;
               }
-              // disallowed protocols
+
+              // 금지 프로토콜 차단
               const disallowedProtocols = ["ftp", "file", "mailto"];
               const protocol = parsedUrl.protocol.replace(":", "");
               if (disallowedProtocols.includes(protocol)) {
                 return false;
               }
-              // only allow protocols specified in ctx.protocols
+
+              // 허용 프로토콜 검증
               const allowedProtocols = ctx.protocols.map((p) =>
                 typeof p === "string" ? p : p.scheme,
               );
               if (!allowedProtocols.includes(protocol)) {
                 return false;
               }
-              // disallowed domains
+
+              // 금지 도메인 차단
               const disallowedDomains = [
-                "example-phishing.com",
-                "malicious-site.net",
+                "example-phishing.com", // 예시 1
+                "malicious-site.net", // 예시 2
               ];
+
               const domain = parsedUrl.hostname;
               if (disallowedDomains.includes(domain)) {
                 return false;
               }
-              // all checks have passed
+
+              // 모든 검증 통과 시
               return true;
             } catch {
               return false;
             }
           },
+
+          // 오토 링크 처리 여부를 결정 (위랑 중복 아님)
           shouldAutoLink: (url) => {
             try {
-              // construct URL
               const parsedUrl = url.includes(":")
                 ? new URL(url)
                 : new URL(`https://${url}`);
-              // only auto-link if the domain is not in the disallowed list
+
               const disallowedDomains = [
                 "example-no-autolink.com",
                 "another-no-autolink.com",
@@ -214,46 +221,46 @@ export function TipTap() {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
 
-const handleSend = async () => {
-  let content = editor?.getHTML() || "";
+  const handleSend = async () => {
+    let content = editor?.getHTML() || "";
 
-  // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
-  let prev;
-  do {
-    prev = content;
-    content = content
-      .replace(/(?:<p>(?:<br>)?<\/p>)+$/g, "") // 빈 단락
-      .replace(/<li><p>(?:<br>)?<\/p><\/li>/g, "") // 빈 리스트 항목
-      .replace(/<br\s*\/?>/g, ""); // 남아있는 <br> 모두 제거
-  } while (content !== prev);
+    // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
+    let prev;
+    do {
+      prev = content;
+      content = content
+        .replace(/(?:<p>(?:<br>)?<\/p>)+$/g, "") // 빈 단락
+        .replace(/<li><p>(?:<br>)?<\/p><\/li>/g, "") // 빈 리스트 항목
+        .replace(/<br\s*\/?>/g, ""); // 남아있는 <br> 모두 제거
+    } while (content !== prev);
 
-  if (!content.trim()) return;
-  setMessage(content);
-  setSendFlag(true);
-  editor?.commands.clearContent();
-};
+    if (!content.trim()) return;
+    setMessage(content);
+    setSendFlag(true);
+    editor?.commands.clearContent();
+  };
 
   // 서버사이드에서는 아무것도 렌더링하지 않음
   // 스켈레톤 이미지 (로딩중일 때 보여줌)
   if (!mounted) {
     return (
-    <div className="chat-text-area border border-gray-300 rounded-[7px]">
-      <input style={{ display: "none" }} />
-      {/* 툴바 스켈레톤 */}
-      <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
-        <div className="flex gap-2">
-          {/* 툴바 버튼 5개 정도 */}
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="w-9 h-9 rounded-md" />
-          ))}
+      <div className="chat-text-area border border-gray-300 rounded-[7px]">
+        <input style={{ display: "none" }} />
+        {/* 툴바 스켈레톤 */}
+        <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
+          <div className="flex gap-2">
+            {/* 툴바 버튼 5개 정도 */}
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="w-9 h-9 rounded-md" />
+            ))}
+          </div>
+        </div>
+        {/* 에디터 스켈레톤 */}
+        <div className="editor-container flex px-[15px] py-[10px]">
+          <Skeleton className="h-6 w-[20%] rounded-md" />
         </div>
       </div>
-      {/* 에디터 스켈레톤 */}
-      <div className="editor-container flex px-[15px] py-[10px]">
-        <Skeleton className="h-6 w-[20%] rounded-md" />
-      </div>
-    </div>
-    ) 
+    );
   }
 
   if (!editor) {
@@ -289,7 +296,10 @@ const handleSend = async () => {
               event.preventDefault();
               if (event.shiftKey) {
                 // 리스트 안이면 새 리스트 항목, 아니면 새 단락
-                if (editor.isActive("bulletList") || editor.isActive("orderedList")) {
+                if (
+                  editor.isActive("bulletList") ||
+                  editor.isActive("orderedList")
+                ) {
                   editor.commands.splitListItem("listItem");
                 } else {
                   editor.commands.splitBlock();
