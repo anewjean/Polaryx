@@ -36,7 +36,11 @@ export function ChatHeader() {
                   className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
                 />
               )} */}
-              <p className="text-l">{tabInfo?.tab_name}</p>
+              {tabInfo?.tab_name ? (
+                <p className="text-l">{tabInfo?.tab_name}</p>
+              ) : (
+                <p className="w-40 h-7 rounded-lg bg-[#F4F4F4]"></p> // 스켈레톤
+              )}
             </div>
             <div className="flex flex-row items-center gap-0">
               <TabMembers />

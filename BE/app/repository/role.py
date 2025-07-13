@@ -1,5 +1,6 @@
 from app.util.database.db_factory import DBFactory
 from app.util.database.abstract_query_repo import AbstractQueryRepo
+
 from typing import List, Optional
 from datetime import datetime
 import logging
@@ -76,7 +77,6 @@ SELECT %(user_id)s   AS user_id,
 FROM roles r
 WHERE r.name = %(role_name)s;
 """
-
 
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):

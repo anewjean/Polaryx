@@ -11,10 +11,22 @@ import {
   CodeIcon,
 } from "lucide-react";
 import "./styles.scss";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CodeBlockIcon } from "../tiptap-icons/code-block-icon";
 
-const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () => void; addImage: () => void }) => {
+const ToolBar = ({
+  editor,
+  setLink,
+  addImage,
+}: {
+  editor: Editor;
+  setLink: () => void;
+  addImage: () => void;
+}) => {
   return (
     <div className="toolbar text-gray-500">
       <div className="itemBox">
@@ -62,7 +74,10 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <div onClick={setLink} className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}>
+            <div
+              onClick={setLink}
+              className={`toolbarBtn ${editor.isActive("link") ? "is-active" : ""}`}
+            >
               <LinkIcon className="w-4 h-4" />
             </div>
           </TooltipTrigger>
@@ -143,7 +158,10 @@ const ToolBar = ({ editor, setLink, addImage }: { editor: Editor; setLink: () =>
 
         <Tooltip>
           <TooltipTrigger>
-            <div onClick={addImage} className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}>
+            <div
+              onClick={addImage}
+              className={`toolbarBtn ${editor.isActive("image") ? "is-active" : ""}`}
+            >
               <HardDriveUploadIcon className="w-4 h-4" />
             </div>
           </TooltipTrigger>

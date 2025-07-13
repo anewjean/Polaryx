@@ -2,6 +2,7 @@ import json
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from app.service.websocket_manager import ConnectionManager
 from app.service.message import MessageService
@@ -57,7 +58,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "content": content,
                 "nickname": nickname,
                 "image": image,
-                "createdAt": str(datetime.now().isoformat()),    # 하드코딩으로 진행, 나중에 수정해주세요
+                "created_at": str(datetime.now(ZoneInfo("Asia/Seoul")).isoformat()),    # 하드코딩으로 진행, 나중에 수정해주세요
                 "message_id": message_id,
                 "sender_id": sender_id
             }
