@@ -154,7 +154,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     key="refresh_token",
                     value=jwt_refresh_token,
                     httponly=True,
-                    secure=False,
+                    secure=True,
                     samesite="None",
                     max_age= 60*REFRESH_TOKEN_EXPIRE_MINUTES
                 )
