@@ -40,7 +40,7 @@ class TabDetailInfo(BaseModel):
 
 
 class TabMember(BaseModel):
-    user_id: UUID
+    user_id: str
     nickname: str
     image: Optional[str]
     role: str
@@ -48,13 +48,8 @@ class TabMember(BaseModel):
 
     @classmethod
     def from_row(cls, row: tuple) -> Optional[TabMember]:
-        # print("user_id", row[0])
-        # print("nickname", row[1])
-        # print("image", row[2])
-        # print("role", row[3])
-        # print("groups", row[4])
         return cls(
-            user_id=row[0],
+            user_id=row[0].hex(),
             nickname=row[1],
             image=row[2],
             role=row[3],

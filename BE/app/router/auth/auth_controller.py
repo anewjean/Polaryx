@@ -79,7 +79,7 @@ async def reaccess(request: Request,
     else:
         raise HTTPException(status_code=401, detail="NOT CORRECT REFRESH TOKEN")
     
-
+# 소셜 로그인 화면 리다이렉션
 @router.get("/{provider}")
 def social_login(provider: Provider):
     print(f"social_login function called with provider: {provider}")
@@ -155,7 +155,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                     value=jwt_refresh_token,
                     httponly=True,
                     secure=True,
-                    samesite="None",
+                    samesite="None",                    
                     max_age= 60*REFRESH_TOKEN_EXPIRE_MINUTES
                 )
 
@@ -164,7 +164,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                 return result
             
 
-# 로그아웃도 하기
+# 로그아웃
 @router.delete("/logout")
 async def logout(request:Request, 
                  response:Response, 

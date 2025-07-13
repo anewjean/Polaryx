@@ -3,7 +3,7 @@ from typing import List
 
 from app.service.users import UserService
 from app.service.group import GroupsService
-from app.service.role import RolesService
+from app.service.role import RoleService
 
 from app.repository.role import QueryRepo as RolesRepository
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
@@ -19,7 +19,7 @@ from app.schema.workspace_members.response import (
 roles_repo = RolesRepository() # 명훈 추가
 user_service = UserService()
 groups_service = GroupsService()
-roles_service = RolesService()
+roles_service = RoleService()
 
 class WorkspaceMemberService:
     def __init__(self):
