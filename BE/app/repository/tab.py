@@ -33,7 +33,7 @@ WHERE workspace_id = %(workspace_id)s
 """
 
 find_tab = """
-SELECT 
+SELECT DISTINCT
   t.id,
   t.name,
   t.section_id,
@@ -45,12 +45,11 @@ LEFT JOIN sections s
  AND s.workspace_id = t.workspace_id
 WHERE t.workspace_id = %(workspace_id)s
   AND t.id = %(tab_id)s
-  AND t.deleted_at IS NULL
-GROUP BY tm.user_id;
+  AND t.deleted_at IS NULL;
 """
 
 find_tabs = """
-SELECT 
+SELECT DISTINCT
   t.id,
   t.name,
   t.section_id,
@@ -62,8 +61,7 @@ LEFT JOIN sections s
  AND s.workspace_id = t.workspace_id
 WHERE tm.workspace_id = %(workspace_id)s
   AND tm.user_id = %(user_id)s
-  AND t.deleted_at IS NULL
-GROUP BY t.id;
+  AND t.deleted_at IS NULL;
 """
 
 is_section_in_workspace = """

@@ -93,12 +93,12 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
             members = tab_service.get_tab_members(workspace_id, tab_id)
-            recipients = [str(uuid.UUID(bytes=row[0]))
+            recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
                           for row in members
                           if row[0] != uuid.UUID(sender_id).bytes
                           ]
             
-            recipients = [str(uuid.UUID(bytes=row[0])) for row in members]
+            #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
 
             push_service.send_push_to(recipients, {
                 "title": "New Message",
