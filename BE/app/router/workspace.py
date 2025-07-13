@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Request
 from app.core.security import verify_token_and_get_token_data
 from app.repository.sub_tabs import QueryRepo as SubTabRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
+
 from app.repository.role import QueryRepo as RoleRepository # 명훈 추가
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 from app.repository.tab import TabRepository
@@ -27,11 +28,41 @@ roles_repo = RoleRepository() # 명훈 추가
 member_roles_repo = MemberRolesRepository() # 명훈 추가
 user_service = UserService()
 
+@router.get("/{workspace_id}")
+async def get_workspace_tab(workspace_id: str,
+                            token_user_id_and_email = Depends(verify_token_and_get_token_data),
+                            ) -> list:
+
+    tab_member_datas = tab_repo.find_by_user_id(uuid.UUID(token_user_id_and_email["user_id"]).bytes)
+
+    result = []
+    for data in tab_member_datas:
+        tab_data = tab_repo.find_tabs_by_id(data["tab_id"])
+        sub_tab_data = sub_tab_repo.find_sub_tabs_by_tab_id(data["tab_id"])
+
+        result.append({
+            "id": data["tab_id"],
+            "name": tab_data["name"],
+            "section_id": tab_data["section_id"],
+            "sub_tab_data":{
+                "name":sub_tab_data["name"],
+            }
+        })
+
+    return result
+
 # 워크스페이스 정보 조회
 @router.get("/{workspace_id}/title", response_model=WorkspaceNameSchema)
 def get_workspace_info(workspace_id: int):
     row = workspace_service.get_workspace_info(workspace_id)
     return WorkspaceNameSchema.from_row(row)
+
+# 회원 등록(파일 임포트)
+@router.post("/{workspace_id}/users", response_model=InsertWorkspaceSchema)
+async def register_members(request: Request, workspace_id: int):
+    datas: dict = await request.json()
+    res = workspace_member_service.register_member(workspace_id, datas)
+    return InsertWorkspaceSchema.from_dict(res)
 
 @router.post("/{workspace_id}/users")
 async def create_users(request: Request, workspace_id):

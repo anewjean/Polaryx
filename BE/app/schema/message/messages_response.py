@@ -8,7 +8,7 @@ from uuid import UUID
 
 
 class MessageSchema(BaseModel):
-    id: int
+    msg_id: int
     tab_id: int
     sender_id: str
     nickname: str
@@ -23,7 +23,7 @@ class MessageSchema(BaseModel):
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
         return cls(
-            id=row[0],
+            msg_id=row[0],
             tab_id=row[1],
             sender_id=row[2].hex(),
             nickname=row[3],
