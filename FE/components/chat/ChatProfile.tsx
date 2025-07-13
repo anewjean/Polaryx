@@ -141,6 +141,7 @@ export function ChatProfile({
                 {fileUrl && !isImageFile(fileUrl) && (
                   <FileDownload fileUrl={fileUrl} />
                 )}
+
                 <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
                   <div
                     className="mr-2"

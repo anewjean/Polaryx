@@ -4,7 +4,9 @@ from fastapi import APIRouter, Depends, Request
 from app.core.security import verify_token_and_get_token_data
 from app.repository.sub_tabs import QueryRepo as SubTabRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
-from app.repository.role import QueryRepo as RolesRepository # 명훈 추가
+
+from app.repository.role import QueryRepo as RoleRepository # 명훈 추가
+
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 from app.repository.tab import TabRepository
 
@@ -23,9 +25,10 @@ workspace_mem_repo = WorkspaceMemRepo()
 tab_repo = TabRepository()
 sub_tab_repo = SubTabRepo()
 workspace_member_service = WorkspaceMemberService()
-roles_repo = RolesRepository() # 명훈 추가
+roles_repo = RoleRepository() # 명훈 추가
 member_roles_repo = MemberRolesRepository() # 명훈 추가
 user_service = UserService()
+
 
 @router.get("/{workspace_id}")
 async def get_workspace_tab(workspace_id: str,
@@ -147,6 +150,7 @@ def create_member_roles(i, user_id: str):
     role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
     member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
 
+# 프로필 필드 조회
 @router.get("/{workspace_id}/userinfo")
 async def get_user_columns(request: Request):
     columns = workspace_member_service.get_member_by_workspace_columns()
