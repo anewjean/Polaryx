@@ -1,0 +1,45 @@
+import { create } from 'zustand';
+import { Role } from '@/apis/roleApi';
+import { getRoles } from '@/apis/roleApi';
+
+
+interface RoleState {
+  roles: Role[];
+  loadingRoles: boolean;
+  workspaceId: string | null;
+  
+  // 역할 관련 액션
+  fetchRoles: (workspaceId: string) => Promise<void>;
+  setRoles: (roles: Role[]) => void;  
+  
+  // 워크스페이스 ID 설정
+  setWorkspaceId: (id: string) => void;
+}
+
+export const useRoleStore = create<RoleState>((set, get) => ({
+  roles: [],
+  loadingRoles: false,
+  workspaceId: null,
+  
+  // 역할 관련 액션
+  fetchRoles: async (workspaceId: string) => {
+    // 이미 같은 워크스페이스의 데이터가 있고 로딩 중이 아니면 다시 불러오지 않음
+    if (get().roles.length > 0 && get().workspaceId === workspaceId) {
+      return;
+    }
+    set({ loadingRoles: true });
+
+    try {
+      const roles = await getRoles(workspaceId);
+      set({ roles, workspaceId });
+    } catch (error) {
+      console.error('역할을 불러오는데 실패했습니다:', error);
+    } finally {
+      set({ loadingRoles: false });
+    }
+  },  
+  setRoles: (roles: Role[]) => set({ roles }),
+  
+  // 워크스페이스 ID 설정
+  setWorkspaceId: (id: string) => set({ workspaceId: id }),
+}));
