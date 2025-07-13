@@ -69,7 +69,7 @@ export const WebSocketClient = ({
 
     socket.onerror = (error) => {
       console.error("❗ WebSocket 에러 발생", error);
-      // UI에 에러 표시
+      // UI에 에러 표시 
     };
 
     socket.onclose = () => {
