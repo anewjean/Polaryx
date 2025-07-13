@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
 from app.core.exceptions import CustomHTTPException
 from app.core.exception_handlers import (
     custom_http_exception_handler,
@@ -22,7 +21,9 @@ from app.router import s3
 from app.router import tab
 from app.router import ws_message
 from app.router import direct_message
+from app.router import db
 from app.router import role
+
 
 load_dotenv()
 
@@ -43,6 +44,7 @@ app.include_router(router=workspace_members.router, prefix="/api")
 app.include_router(router=tab.router, prefix="/api")
 app.include_router(router=workspace.router, prefix="/api")
 app.include_router(router=direct_message.router, prefix="/api")
+app.include_router(router=db.router, prefix="/api")
 app.include_router(router=role.router, prefix="/api")
 
 # 예외 핸들러 등록

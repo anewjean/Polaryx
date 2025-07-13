@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request
 from app.core.security import verify_token_and_get_token_data
 from app.repository.sub_tabs import QueryRepo as SubTabRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
-from app.repository.role import QueryRepo as RolesRepository # 명훈 추가
+from app.repository.role import QueryRepo as RoleRepository # 명훈 추가
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 from app.repository.tab import TabRepository
 
