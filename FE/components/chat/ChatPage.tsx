@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
-// import { updateMessage } from "@/apis/messageApi";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
-// import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -98,9 +96,11 @@ export function ChatPage({
       if (new_messages!=null) {
         prependMessages(new_messages);
         isFetching.current = false;
+        // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
-          el.scrollTop = el.scrollHeight - previousHeight;
-          // el.scrollTop = el.scrollHeight;
+          const newHeight = el.scrollHeight;
+          const heightDiff = newHeight - previousHeight;
+          el.scrollTop = heightDiff;
         });
       }
     }
