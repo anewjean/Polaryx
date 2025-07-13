@@ -140,11 +140,16 @@ export function ChatProfile({
                 {fileUrl && !isImageFile(fileUrl) && (
                   <FileDownload fileUrl={fileUrl} />
                 )}
-                <div
-                  className="flex flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
-                  <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
+                <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  <div
+                    className="mr-2"
+                    dangerouslySetInnerHTML={{ __html: safeHTML }}
+                  />
                   {isUpdated ? (
-                    <span className="ml-2 text-xs text-gray-500" style={{ whiteSpace: "nowrap" }}>
+                    <span
+                      className="text-xs text-gray-500"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
                       (편집됨)
                     </span>
                   ) : null}

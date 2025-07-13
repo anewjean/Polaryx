@@ -258,6 +258,7 @@ export function TipTap() {
 
   const handleSend = async () => {
     let content = editor?.getHTML() || "";
+    console.log(content);
 
     // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
     let prev;
@@ -366,13 +367,17 @@ export function TipTap() {
               if (isComposingRef.current) return;
               event.preventDefault();
               if (event.shiftKey) {
-                // 리스트 안이면 새 리스트 항목, 아니면 새 단락
                 if (
+                  // 리스트 안이면 새 리스트 항목
                   editor.isActive("bulletList") ||
                   editor.isActive("orderedList")
                 ) {
                   editor.commands.splitListItem("listItem");
+                } else if (editor.isActive("codeBlock")) {
+                  // 코드블록 안이면 줄바꿈
+                  editor.commands.newlineInCode();
                 } else {
+                  // 아니면 새 단락
                   editor.commands.splitBlock();
                 }
               } else {
