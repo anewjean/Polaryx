@@ -35,9 +35,9 @@ export default function EditRole({
   // 역할과 그룹 정보를 전역 상태에서 가져오기
   const { roles, loadingRoles, fetchRoles } = useRoleStore();
 
-  // 역할 선택 상태 관리 (초기값은 현재 역할)
+  // 역할 선택 상태 관리 (초기값은 현재 역할)  
   const [selectedRoleId, setSelectedRoleId] = useState<string>(
-    currentRoleId || "",
+    currentRoleId ? String(currentRoleId) : "",
   );
 
   // 선택된 역할 이름 찾기
@@ -50,8 +50,11 @@ export default function EditRole({
     setIsModalOpen(isOpen);
 
     if (isOpen) {
-      fetchRoles(workspaceId);
-      setSelectedRoleId(currentRoleId || "");
+      fetchRoles(workspaceId);      
+
+      // currentRoleId가 유효한 값인지 확인하고 문자열로 변환
+      const safeRoleId = currentRoleId ? String(currentRoleId) : "";
+      setSelectedRoleId(safeRoleId);
     }
   };
 
@@ -92,12 +95,12 @@ export default function EditRole({
 
   return (
     <DialogModal
-      title="역할 설정"
+      title="역할 변경"
       open={isModalOpen}
       onOpenChange={handleModalOpenChange}
       trigger={triggerComponent}
     >
-      <div className="flex flex-col gap-6 py-4">
+      <div className="flex flex-col gap-6 py-4 pb-0">
         <div className="flex flex-col gap-3">
           {loadingRoles ? (
             <div className="py-4 text-center">역할을 불러오는 중입니다...</div>
@@ -105,12 +108,12 @@ export default function EditRole({
             <RadioGroup
               value={selectedRoleId}
               onValueChange={setSelectedRoleId}
-              className="flex flex-col space-y-2"
+              className="grid grid-cols-2 gap-2"
             >
               {roles.map((role) => (
                 <div
                   key={role.role_id}
-                  className="flex flex-wrap items-center space-x-2 rounded-md p-2 "
+                  className="flex items-center space-x-2"
                 >
                   <RadioGroupItem
                     value={String(role.role_id)}
@@ -125,16 +128,18 @@ export default function EditRole({
           )}
         </div>
 
-        <div className="flex justify-end gap-3 mt-4">
+        <div className="flex justify-between gap-3 mt-4">
           <Button
             variant="outline"
             onClick={() => handleModalOpenChange(false)}
+            className="flex-1"
           >
             취소
           </Button>
           <Button
             onClick={handleSaveRole}
             disabled={!selectedRoleId || selectedRoleId === currentRoleId}
+            className="flex-1"
           >
             설정
           </Button>

@@ -98,33 +98,18 @@ function getDummyRoles(workspaceId: string): Role[] {
   return dummyRoles;
 }
   
-
-// 역할별 권한 조회
-export const getRoleById = async (workspaceId: string, roleId: string) => {
-  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles/${roleId}`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
+// 역할 생성
+export const createRole = async (workspaceId: string, roleName: string, rolePermission: string[]) => {
+  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles`, {
+    method: "POST",
+    body: JSON.stringify({ role_name: roleName, role_permission: rolePermission }),
   });
-  if (res == null || !res.ok) throw new Error("역할 조회에 실패했습니다.");
+  if (res == null || !res.ok) throw new Error("역할 생성에 실패했습니다.");
   return res.json();
 };
 
-// 역할별 권한 생성
-export const createRole = async (
-  workspaceId: string,
-  roleName: string,
-  rolePermission: any,
-) => {
-  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles`, {
-    method: "POST",
-    body: JSON.stringify({
-      role_name: roleName,
-      role_permission: rolePermission,
-    }),
-  });
-};
 
-// 역할별 권한 수정
+// 역할 수정
 export const updateRole = async (
   workspaceId: string,
   roleName: string,
