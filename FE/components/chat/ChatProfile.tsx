@@ -21,6 +21,7 @@ interface ChatProfileProps {
   content: string;
   showProfile: boolean;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 function isImageFile(url: string) {
@@ -36,6 +37,7 @@ export function ChatProfile({
   content,
   showProfile,
   fileUrl,
+  isUpdated,
 }: ChatProfileProps) {
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -140,9 +142,14 @@ export function ChatProfile({
                   <FileDownload fileUrl={fileUrl} />
                 )}
                 <div
-                  className="message-content whitespace-pre-wrap break-words break-anywhere text-m"
-                  dangerouslySetInnerHTML={{ __html: safeHTML }}
-                />{" "}
+                  className="flex flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
+                  {isUpdated ? (
+                    <span className="ml-2 text-xs text-gray-500" style={{ whiteSpace: "nowrap" }}>
+                      (편집됨)
+                    </span>
+                  ) : null}
+                </div>
               </>
             )}
           </div>

@@ -134,6 +134,7 @@ export function ChatPage({
                 content={msg.content}
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
+                isUpdated={msg.isUpdated}
               />
             </React.Fragment>
           );
