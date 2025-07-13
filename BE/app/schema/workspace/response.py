@@ -19,8 +19,8 @@ class InsertWorkspaceSchema(BaseModel):
     @classmethod 
     def from_dict(cls, dict: dict) -> "InsertWorkspaceSchema":
         return cls(
-            success_count=dict["success_cout"],
-            fail_user_name=["fail_user_name"]
+            success_count=dict["success_count"],
+            fail_user_name=dict["fail_user_name"]
         )
 
 

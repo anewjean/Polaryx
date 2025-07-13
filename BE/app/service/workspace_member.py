@@ -3,8 +3,9 @@ from typing import List
 
 from app.service.users import UserService
 from app.service.group import GroupsService
+from app.service.role import RoleService
 
-from app.repository.role import RolesRepository
+from app.repository.role import QueryRepo as RolesRepository
 from app.repository.member_roles import MemberRolesRepository # 명훈 추가
 
 from app.domain.workspace_member import WorkspaceMember
@@ -16,23 +17,17 @@ from app.schema.workspace_members.response import (
 )
 
 roles_repo = RolesRepository() # 명훈 추가
-member_roles_repo = MemberRolesRepository() # 명훈 추가
 user_service = UserService()
 groups_service = GroupsService()
+roles_service = RoleService()
 
 class WorkspaceMemberService:
     def __init__(self):
         self.workspace_member_repo = WorkspaceMemberRepo()
 
-    def create_member_roles(i, user_id: str):
-        roles = roles_repo.get_all_roles()
-        role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
-        member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
-
     def import_users(self, workspace_id, data: dict) -> dict:
         fail_count: int = 0
         fail_list = []
-
         # step 1.일단 이름이랑 email 받아와서,
         # user 테이블에 겹치는 애들이 있는지 확인 -> email로만 확인해도 될 듯.
         for i in data["users"]:
@@ -42,6 +37,7 @@ class WorkspaceMemberService:
             # ["group"] -> group name?  이 둘은 아직 처리하는 로직 없음.
             # ["blog"]
             # ["github"]
+            print("i:" , i)
             print("i[email]", i["email"])
             target = user_service.find_user_by_email(i["email"])
             # email이 안겹친다면? user 테이블에 정보 추가 및 생성.
@@ -68,8 +64,6 @@ class WorkspaceMemberService:
             print("target_data", target_data["user_email"])
             # usertable에 넣어주기.
             user_service.create_user_in_usertable(target_data)
-
-            # create_member_roles(i, user_uuid) # hack: 이거 안될 수도 잇음.
 
             # 잘 들어갔는지 확인.
             target = user_service.find_user_by_email(target_data["user_email"])
@@ -107,6 +101,16 @@ class WorkspaceMemberService:
                 if not target_in_wm:
                     fail_count += 1
                     fail_list.append(i["name"])
+                    continue
+                
+                target_data = {
+                    "user_id": target[0][0],
+                    "nickname": target[0][1],
+                    "role" : i["role"],
+                    "group" : i["group"],
+                }
+                groups_service.insert_member_by_group_name(target_data)
+                roles_service.insert_member_roles(target_data)
 
         result = {
             "success_count": len(data["users"]) - fail_count,
