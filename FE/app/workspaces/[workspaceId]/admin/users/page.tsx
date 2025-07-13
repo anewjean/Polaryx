@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createUserColumns } from "./columns";
 import { UserTable } from "@/components/Administration/UserTable";
@@ -13,10 +13,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getUsers } from "@/apis/userApi";
-import { getRoles } from "@/apis/roleApi";
-import { getGroups } from "@/apis/groupApi";
-import { Role } from "@/apis/roleApi";
-import { Group } from "@/apis/groupApi";
 import { addUser } from "@/apis/userApi";
 import { Profile } from "@/apis/profileApi";
 import { useRouter } from "next/navigation";
@@ -25,8 +21,8 @@ import { CircleCheck, Ban } from "lucide-react";
 import { useRoleStore } from "@/store/roleStore";
 import { useGroupStore } from "@/store/groupStore";
 
-export default function UserTablePage() {
-  const router = useRouter();
+export default function UserTablePage() {  
+
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
@@ -44,28 +40,18 @@ export default function UserTablePage() {
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
 
   // 역할 정보를 전역 상태에서 가져오기
-  const { 
-    roles, 
-    loadingRoles, 
-    fetchRoles 
-  } = useRoleStore();
+  const { roles, loadingRoles, fetchRoles } = useRoleStore();
   
   // 그룹 정보를 전역 상태에서 가져오기
-  const {
-    groups,
-    loadingGroups,
-    fetchGroups
-  } = useGroupStore();
+  const { groups, loadingGroups, fetchGroups } = useGroupStore();
 
   // 회원 초대 폼 데이터 상태 관리 (초기값: 역할은 guest로 설정)
   const [form, setForm] = useState<{
     name: string;
     email: string;
-    role_id: string;
-    role_name: string;
-    group_id: string[] | null;
-    group_name: string[] | null;
-  }>({ name: "", email: "", role_id: "1", role_name: "", group_id: [], group_name: [] });
+    role_id: string;    
+    group_id: string[] | null;    
+  }>({ name: "", email: "", role_id: "1", group_id: [] });
 
   // 회원 초대 모달 표시 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,16 +66,14 @@ export default function UserTablePage() {
     
     // 모달이 닫힐 때 폼 초기화
     if (!isOpen) {
-      setForm({ name: "", email: "", role_id: "1", role_name: "", group_id: [], group_name: [] });
+      setForm({ name: "", email: "", role_id: "1", group_id: [] });
     }
   };
 
   // 진입 시 동작 함수
   useEffect(() => {
-    fetchUsers();
-    fetchRoles(workspaceId);
-    fetchGroups(workspaceId);
-  }, [workspaceId, router, fetchRoles, fetchGroups]);
+    fetchUsers();    
+  }, [workspaceId]);
 
   // 회원 목록 불러오기
   const fetchUsers = async () => {
@@ -103,9 +87,7 @@ export default function UserTablePage() {
     } finally {
       setLoadingUsers(false);
     }
-  };
-
-  // 역할과 그룹 목록은 useRoleStore에서 관리합니다.
+  };  
 
   // 회원 초대 함수
   const handleInviteUser = async () => {
@@ -184,8 +166,7 @@ export default function UserTablePage() {
                     const selectedRole = roles.find(role => String(role.role_id) === value);
                     setForm({
                       ...form,
-                      role_id: value,
-                      role_name: selectedRole?.role_name || ""
+                      role_id: value,                      
                     });
                   }}
                   className="flex flex-wrap"
@@ -220,15 +201,13 @@ export default function UserTablePage() {
                     if (value === "none") {
                       setForm({
                         ...form,
-                        group_id: [],
-                        group_name: []
+                        group_id: []
                       });
                     } else {
                       const selectedGroup = groups.find(group => String(group.group_id) === value);
                       setForm({
                         ...form,
                         group_id: [value],
-                        group_name: selectedGroup ? [selectedGroup.group_name] : []
                       });
                     }
                   }}

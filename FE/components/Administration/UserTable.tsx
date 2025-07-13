@@ -8,18 +8,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Profile } from "@/apis/profileApi";
 import { userColumns as defaultUserColumns } from "../../app/workspaces/[workspaceId]/admin/users/columns";
 import { getUsers } from "@/apis/userApi";
-import { useRouter } from "next/navigation";
 
 interface UserTableProps {
   onUsersLoaded?: (count: number) => void;
@@ -43,9 +34,7 @@ export function UserTable({ onUsersLoaded, onRefreshNeeded, userColumns }: UserT
       setIsLoading(false);
       
       // 사용자 수를 외부로 전달
-      if (onUsersLoaded) {
-        onUsersLoaded(users.length);
-      }
+      if (onUsersLoaded) { onUsersLoaded(users.length); }
     } catch (error) {
       console.error("유저 조회에 실패했습니다.", error);
       setIsLoading(false);
@@ -56,15 +45,11 @@ export function UserTable({ onUsersLoaded, onRefreshNeeded, userColumns }: UserT
   const refreshData = async () => {
     await fetchUsers();
     // 외부에서 전달받은 새로고침 함수가 있다면 호출
-    if (onRefreshNeeded) {
-      onRefreshNeeded();
-    }
+    if (onRefreshNeeded) { onRefreshNeeded(); }
   };
 
   // 컴포넌트 마운트 시 사용자 목록 불러오기
-  useEffect(() => {
-    refreshData();
-  }, [workspaceId]);
+  useEffect(() => { refreshData(); }, [workspaceId]);
 
   const data = users;
 
