@@ -40,7 +40,7 @@ export function ExUpload() {
         icon: <Ban className="size-5" />,
       });
       return;
-    }  
+    }
 
     // excel 파일을 읽어옴
     const data = await file.arrayBuffer();
@@ -92,11 +92,11 @@ export function ExUpload() {
     setMemberList(memberList);
 
     try {
-      const result = await createUsers(memberList);
+      const result = await createUsers(memberList, workspaceId);
       if (result.success_count === 0) {
         toast.error("등록에 실패했습니다", {
           icon: <Ban className="size-5" />,
-        });       
+        });
         return;
       }
       toast.success(`${result.success_count}명이 등록되었습니다`, {
@@ -115,7 +115,13 @@ export function ExUpload() {
         <FileSpreadsheet className="mr-0 h-4 w-4" />
         Import .xlsx
       </Button>
-      <input type="file" accept=".xlsx, .xls" onChange={handleFile} ref={inputRef} className="hidden" />
+      <input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={handleFile}
+        ref={inputRef}
+        className="hidden"
+      />
     </>
   );
 }

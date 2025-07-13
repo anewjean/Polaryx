@@ -125,30 +125,44 @@ function getDummyRoles(workspaceId: string): Role[] {
 
 // 역할별 권한 조회
 export const getRoleById = async (workspaceId: string, roleId: string) => {
-  return request(`http://${BASE}/api/workspaces/${workspaceId}/roles/${roleId}`, {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles/${roleId}`, {
     method: "GET",
   });
 };
 
 // 역할별 권한 생성
-export const createRole = async (workspaceId: string, roleName: string, rolePermission: any) => {
-  return request(`http://${BASE}/api/workspaces/${workspaceId}/roles`, {
+export const createRole = async (
+  workspaceId: string,
+  roleName: string,
+  rolePermission: any,
+) => {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "POST",
-    body: JSON.stringify({ role_name: roleName, role_permission: rolePermission }),
+    body: JSON.stringify({
+      role_name: roleName,
+      role_permission: rolePermission,
+    }),
   });
 };
 
 // 역할별 권한 수정
-export const updateRole = async (workspaceId: string, roleName: string, rolePermission: any) => {
-  return request(`http://${BASE}/api/workspaces/${workspaceId}/roles`, {
+export const updateRole = async (
+  workspaceId: string,
+  roleName: string,
+  rolePermission: any,
+) => {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "PATCH",
-    body: JSON.stringify({ role_name: roleName, role_permission: rolePermission }),
+    body: JSON.stringify({
+      role_name: roleName,
+      role_permission: rolePermission,
+    }),
   });
 };
 
 // 역할 삭제
 export const deleteRole = async (workspaceId: string, roleName: string) => {
-  return request(`http://${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
     method: "PATCH",
     body: JSON.stringify({ role_name: roleName }),
   });

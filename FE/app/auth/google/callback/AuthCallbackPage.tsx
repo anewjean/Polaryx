@@ -30,10 +30,9 @@ export default function AuthCallbackPage() {
         const res = await fetch(
           `${BASE}/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
-            credentials: "include", // refresh_token 받을 때 필요
+            credentials: "omit",
           },
         );
-
         if (errorParam) {
           // 추후 수정
           setError(errorParam === "not_found" ? "등록된 사용자가 아닙니다." : "알 수 없는 오류입니다.");
@@ -47,7 +46,7 @@ export default function AuthCallbackPage() {
         const workspaceId = data.workspace_id;
         const tabId = data.tab_id;
         const accessToken = data.access_token;
-
+        
         if (!accessToken) {
           setError("access_token이 없습니다.");
           setIsLoading(false);

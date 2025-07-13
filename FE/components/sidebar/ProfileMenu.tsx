@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { UserRoundCog, LogOut } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useProfileStore } from "@/store/profileStore";
-import { useState } from "react";
+import { useMyUserStore } from "@/store/myUserStore";
 
 interface ProfileMenuProps {
   logout: () => void;
@@ -21,18 +21,7 @@ interface ProfileMenuProps {
 
 export function ProfileMenu({ logout, router }: ProfileMenuProps) {
   const openProfile = useProfileStore((s) => s.openWithId);
-  const [myUserId, setMyUserId] = useState<string | null>(null);
-
-  // localStorage에서 직접 토큰을 읽어 userId를 설정
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      const decoded = jwtDecode<{ user_id: string }>(token);
-      const myUserId = decoded.user_id;
-      setMyUserId(myUserId);
-      console.log("myUserId", myUserId);
-    }
-  }, []);
+  const myUserId = useMyUserStore((s) => s.userId);
 
   return (
     <div className="flex flex-1 flex-col">

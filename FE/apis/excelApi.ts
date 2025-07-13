@@ -2,9 +2,18 @@ import { fetchWithAuth } from "./authApi";
 
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
+interface User {
+  email: string;
+  name: string;
+  role: string;
+  group?: string;
+  blog?: string;
+  github?: string;
+}
+
 // FE/apis/excelApi.ts
 export async function getWorkspaceColumns() {
-  const res = await fetchWithAuth(`http://${BASE}/api/workspaces/1/userinfo`, {
+  const res = await fetchWithAuth(`${BASE}/api/workspaces/1/userinfo`, {
     method: "GET",
   });
 
@@ -16,13 +25,19 @@ export async function getWorkspaceColumns() {
 }
 
 // users 테이블에 user 생성
-export async function createUsers(users: any[], workspaceId: string | number) {
-  // 예시: 여러 명을 한 번에 생성하는 API가 있다면
-  const res = await fetch(`${BASE}/api/workspaces/${workspaceId}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ users }),
-  });
+export async function createUsers(users: User[], workspaceId: string | number) {
+  const res = await fetchWithAuth(
+    `${BASE}/api/workspaces/${workspaceId}/users`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ users }),
+    },
+  );
+
+  if (res == null) {
+    throw new Error("인증 실패");
+  }
   if (!res.ok) throw new Error("유저 생성 실패");
   return res.json();
 }

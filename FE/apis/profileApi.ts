@@ -17,15 +17,17 @@ export interface Profile {
 }
 
 /* 프로필 조회 */
-export async function getProfile(workspaceId: string, targetId: string): Promise<Profile> {
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
-
-  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
+export async function getProfile(
+  workspaceId: string,
+  targetId: string,
+): Promise<Profile> {
+  const res = await fetchWithAuth(
+    `${BASE}/api/workspaces/${workspaceId}/members/${targetId}/profile`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
     },
   });    
   if (res == null || !res.ok) throw new Error("프로필 조회에 실패했습니다.");
@@ -33,10 +35,12 @@ export async function getProfile(workspaceId: string, targetId: string): Promise
 }
 
 /* 프로필 부분 수정 (PATCH) */
-export async function patchProfile(workspaceId: string, userId: string, payload: Partial<Profile>): Promise<Profile> {
+export async function patchProfile(
+  workspaceId: string,
+  userId: string,
+  payload: Partial<Profile>,
+): Promise<Profile> {
   console.log("API 테스트");
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
 
   const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/members/${userId}/profile`, {
     method: "PATCH",

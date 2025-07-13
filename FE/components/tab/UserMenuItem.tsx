@@ -13,13 +13,21 @@ export interface UserMenuItemProps {
   isSelected?: boolean;
 }
 
-export function UserMenuItem({ user, mode = "default", onClick, isSelected }: UserMenuItemProps) {
+export function UserMenuItem({
+  user,
+  mode = "default",
+  onClick,
+  isSelected,
+}: UserMenuItemProps) {
   return (
     <SidebarMenuItem key={user.user_id}>
       <SidebarMenuButton
-        className={clsx("py-8 px-4 hover:bg-gray-200 flex justify-between items-center rounded-none", {
-          "cursor-pointer": !!onClick,
-        })}
+        className={clsx(
+          "py-8 px-4 hover:bg-gray-200 flex justify-between items-center rounded-none",
+          {
+            "cursor-pointer": !!onClick,
+          },
+        )}
         onClick={onClick}
       >
         {/* 공통: 프로필 + 닉네임 + 역할 */}
@@ -30,8 +38,12 @@ export function UserMenuItem({ user, mode = "default", onClick, isSelected }: Us
               alt={user.nickname}
               className="w-[28px] aspect-square bg-gray-400 rounded-md"
             />
-            <span className="text-lg font-bold text-gray-800 truncate">{user.nickname}</span>
-            <span className="text-sm font-bold text-gray-400 truncate">{user.role}</span>
+            <span className="text-lg font-bold text-gray-800 truncate">
+              {user.nickname}
+            </span>
+            <span className="text-sm font-bold text-gray-400 truncate">
+              {user.role}
+            </span>
           </div>
 
           {/* default: DM 버튼 + Profile 버튼 */}
