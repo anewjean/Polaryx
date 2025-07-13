@@ -30,7 +30,7 @@ export default function AuthCallbackPage() {
         const res = await fetch(
           `${BASE}/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
-            credentials: "omit",
+            credentials: "include",
           },
         );
         if (errorParam) {

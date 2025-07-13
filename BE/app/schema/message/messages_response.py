@@ -14,7 +14,7 @@ class MessageSchema(BaseModel):
     nickname: str
     image: Optional[str] = None
     content: str
-    i_updated: bool
+    is_updated: bool
     created_at: datetime
     updated_at: datetime | None
     deleted_at: datetime | None
@@ -23,7 +23,7 @@ class MessageSchema(BaseModel):
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
         return cls(
-            id=row[0],
+            msg_id=row[0],
             tab_id=row[1],
             sender_id=row[2].hex(),
             nickname=row[3],

@@ -9,9 +9,7 @@ export async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {}
 ): Promise<Response | null> {
-  console.log("******** in FetchWithAuth ********");
-  console.log(input);
-  console.log(init["method"]);
+  console.log("******** in FetchWithAuth ", input, init["method"]);
   let accessToken = localStorage.getItem("access_token");
 
   if (!accessToken) {
@@ -24,8 +22,6 @@ export async function fetchWithAuth(
     ...init.headers,
     Authorization: `Bearer ${accessToken}`,
   };
-
-  console.log("authHeaders : "+{authHeaders})
 
   init = {
     ...init,

@@ -50,14 +50,26 @@ export function ChatPage({
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      console.log("oldestID:", oldestId);
-      console.log("previousHeight:", previousHeight);
+      // console.log("oldestID:", oldestId);
+      // console.log("old:", messages);
+      // console.log("previousHeight:", previousHeight);
       const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
-      console.log(res["messages"]);
+      // console.log(res["messages"]);
 
-      if (res["messages"].length >= 30) {
-        prependMessages(res["messages"]);
+      const new_messages = res.messages.map((msg: any) => ({
+        senderId: msg.sender_id,
+        msgId: msg.msg_id,
+        nickname: msg.nickname,
+        content: msg.content,
+        image: msg.image,
+        createdAt: msg.created_at,
+        isUpdated: msg.is_updated,
+        fileUrl: msg.file_url,
+      }));
+      
+      if (new_messages) {
+        prependMessages(new_messages);
         isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
@@ -122,14 +134,13 @@ export function ChatPage({
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
                 time={
-                  msg.createdAt
-                    ? new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
+                  msg.createdAt ? 
+                  new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
                         hour: "numeric",
                         minute: "2-digit",
                         hour12: true,
                       })
-                    : // .split(" ")[1]
-                      "now"
+                    : "now"
                 }
                 content={msg.content}
                 showProfile={showProfile}
