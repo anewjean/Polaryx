@@ -46,12 +46,11 @@ class DBRepository(AbstractQueryRepo):
             "DROP TABLE IF EXISTS member_roles",
             "DROP TABLE IF EXISTS roles",
             "DROP TABLE IF EXISTS group_members",
-            "DROP TABLE IF EXISTS groups",
+            "DROP TABLE IF EXISTS `groups`",
             "DROP TABLE IF EXISTS workspace_members",
             "DROP TABLE IF EXISTS workspaces",
             "DROP TABLE IF EXISTS refresh_tokens",
-            "DROP TABLE IF EXISTS users",
-            "SET FOREIGN_KEY_CHECKS = 1"
+            "DROP TABLE IF EXISTS users"
         ]
         
         for query in drop_queries:

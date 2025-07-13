@@ -105,11 +105,11 @@ INSERT INTO jungle_slam.refresh_tokens (id,user_id,token,user_name) VALUES
      (UNHEX('2A49505F1EAE4497884853841BBD9CBD'),UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2NjY2NhYWFhYWFhYWFhYmJiYWFhZWVhYWFhYWRkZGQiLCJlbWFpbCI6Imdoa3FoMDlAZ21haWwuY29tIiwiZXhwIjoxNzUxOTk0Njk0fQ.RRQM3h4L8k5aoA9CihRYOkA9GBVmsOzubfVoQY9Cs8s','박은채'),
      (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'),UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2NjY2NhYWFhYWFhYWFhYmJiYWFhZWVhYWFhYWRkZGQiLCJlbWFpbCI6Imdoa3FoMDlAZ21haWwuY29tIiwiZXhwIjoxNzUxOTk0Njk0fQ.RRQM3h4L8k5aoA9CihRYOkA9GBVmsOzubfVoQY9Cs8s', '김윤석');
 
-INSERT INTO jungle_slam.roles (name, workspace_id, announce, course, channel) VALUES
-     ('Admin',1,1,1,1),
-     ('Coach',1,1,1,1),
-     ('Jungler',1,0,0,1),
-     ('Guest',1,0,0,0);
+INSERT INTO jungle_slam.roles (name, workspace_id, admin, announce, course, channel) VALUES
+	('Admin',1,1,1,1,1),
+	('Coach',1,0,1,1,1),
+	('Jungler',1,0,0,0,1),
+	('Guest',1,0,0,0,0);
 
 INSERT INTO jungle_slam.sections (id,workspace_id,name) VALUES
      (1,1,'Announcements'),
@@ -307,7 +307,6 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),19,'안유진'),
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),20,'안유진'),
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),21,'안유진');
-
 
 INSERT INTO jungle_slam.tabs (name,workspace_id,section_id,url) VALUES
      ('정글 공지 채널',1,1,NULL),
