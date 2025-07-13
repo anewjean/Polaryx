@@ -34,7 +34,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://3.36.61.200:3000", "http://jungle-lms.site:3000"], 
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
 )
 app.include_router(router=ws_message.router, prefix="/api/ws")
 app.include_router(router=message.router, prefix="/api")
