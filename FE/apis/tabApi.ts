@@ -25,8 +25,10 @@ export interface Member {
   user_id: string;
   nickname: string;
   image?: string | null;
-  role: string;
-  groups?: string[] | [];
+  role_id?: number;
+  role_name: string;
+  group_id?: number[] | [];
+  group_name?: string[] | [];
 }
 
 /* 탭 이름 중복 확인 */
@@ -203,3 +205,4 @@ export async function postMemberList(workspaceId: string, tabId: string, userIds
     return res.json();
   }
 }
+

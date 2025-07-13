@@ -6,26 +6,14 @@ export interface Profile {
   user_id: string;
   workspace_id: number | null;
   nickname: string;
-  email: string;
-  // phone?: string | null;
+  email: string;    
   image?: string | null;
-  role: string | null;
-  groups: string[] | null;
+  role_id?: number | null;
+  role_name?: string | null;
+  group_id?: number[] | null;
+  group_name?: string[] | null;
   github?: string | null;
   blog?: string | null;
-}
-
-const dummyProfile: Profile = {
-  user_id: "none",
-  workspace_id: -1,
-  nickname: "none",
-  email: "none",
-  // phone?: string | null;
-  image: null,
-  role: "none",
-  groups: [],
-  github: "none",
-  blog: "none"
 }
 
 /* 프로필 조회 */
@@ -39,17 +27,9 @@ export async function getProfile(workspaceId: string, targetId: string): Promise
       Authorization: `Bearer ${accessToken}`,
       Accept: "application/json",
     },
-  });
-  if (res == null)
-  {
-    console.log("NOT REACH - getProfile");
-    return dummyProfile;
-  }
-  else{
-    // if (res.status === 401) throw new Error("세션이 만료되었습니다.");
-    if (!res.ok) throw new Error("프로필 조회에 실패했습니다.");
-    return res.json();
-  }
+  });    
+  if (res == null || !res.ok) throw new Error("프로필 조회에 실패했습니다.");
+  return res.json();
 }
 
 /* 프로필 부분 수정 (PATCH) */
@@ -67,14 +47,6 @@ export async function patchProfile(workspaceId: string, userId: string, payload:
     },
     body: JSON.stringify(payload),
   });
-  if (res == null)
-  {
-    console.log("NOT REACH - patchProfile");
-    return dummyProfile;
-  }
-  else {
-    // if (res.status === 401) throw new Error("세션이 만료되었습니다.");
-    if (!res.ok) throw new Error("프로필 수정에 실패했습니다.");
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("프로필 수정에 실패했습니다.");
+  return res.json();
 }
