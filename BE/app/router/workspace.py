@@ -36,7 +36,7 @@ async def register_members(request: Request, workspace_id: int):
 
 # 프로필 필드 조회
 @router.get("/{workspace_id}/userinfo")
-async def get_members(workspace_id: int, request: Request):
+async def get_user_columns(request: Request):
     columns = workspace_member_service.get_member_by_workspace_columns()
     return columns
 

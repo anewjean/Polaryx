@@ -12,9 +12,7 @@ class UserService:
 
         # 일단 email로 먼저 찾아내기.
         sql = UserRepo.get_sql("find_user_by_email")
-        print("Userservice sql", sql)
         result = db.execute(sql, params)
-        print("Userservice result", result)
 
         # 만약 email과 일치하는 회원이 없다면 바로 짤.
         if not result:

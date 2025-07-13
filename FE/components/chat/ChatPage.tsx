@@ -3,19 +3,29 @@ import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { ChatProfile } from "./ChatProfile";
+// import { ChatEditButton } from "./chatEditButton/chatEditButton";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
+// import { elementFromString } from "@tiptap/core";
 import { getMessages } from "@/apis/messageApi";
 
 // 채팅방 내 채팅
-export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: string }) {
-  const messages = useMessageStore((state) => state.messages);
-  const prependMessages = useMessageStore((state) => state.prependMessages);
+export function ChatPage({
+  workspaceId,
+  tabId,
+}: {
+  workspaceId: string;
+  tabId: string;
+}) {
+  const { messages, prependMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
 
+  // 초기 메시지 로드
+  useFetchMessages(workspaceId, tabId);
+
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
-    console.log("메세지 추가됐음.");
     const el = containerRef.current;
     if (!el) return;
     
@@ -34,7 +44,6 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
-    console.log("in handle scroll");
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
@@ -86,7 +95,12 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
           let showProfile = true;
 
-          if (prev && prev.nickname === msg.nickname && prev.createdAt && msg.createdAt) {
+          if (
+            prev &&
+            prev.nickname === msg.nickname &&
+            prev.createdAt &&
+            msg.createdAt
+          ) {
             const prevTime = new Date(prev.createdAt).getTime();
             const currTime = new Date(msg.createdAt).getTime();
             const diff = currTime - prevTime;
@@ -103,7 +117,7 @@ export function ChatPage({ workspaceId, tabId }: { workspaceId: string; tabId: s
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                senderId={msg.senderId ? msg.senderId : ""}
                 msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
