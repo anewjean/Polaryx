@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
+// import { updateMessage } from "@/apis/messageApi";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
+// import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
 // import { ChatEditButton } from "./chatEditButton/chatEditButton";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
@@ -27,7 +29,7 @@ export function ChatPage({
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    
+
     // 새로운 메시지가 추가되었는지 확인
     if (messages.length > prevMessageLengthRef.current) {
       // 가장 최근 메시지가 추가된 상황으로 판단
@@ -59,7 +61,6 @@ export function ChatPage({
 
         // 스크롤 위치를 현재 위치만큼 유지
         isFetching.current = false;
-        // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
           el.scrollTop = el.scrollHeight - previousHeight;
           // el.scrollTop = el.scrollHeight;
@@ -133,6 +134,7 @@ export function ChatPage({
                 content={msg.content}
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
+                isUpdated={msg.isUpdated}
               />
             </React.Fragment>
           );
