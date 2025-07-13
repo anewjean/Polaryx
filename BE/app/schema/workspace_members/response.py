@@ -15,7 +15,7 @@ class WorkspaceMemberSchema(BaseModel):
     @classmethod 
     def from_row(cls, row: tuple) -> "WorkspaceMemberSchema":
         return cls(
-            user_id=row[0].hex() if isinstance(row[0], bytes) else str(row[0]),
+            user_id=row[0].hex(),
             workspace_id=row[1],
             nickname=row[2],
             email=row[3],

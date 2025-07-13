@@ -2,13 +2,14 @@ import { ms } from "date-fns/locale";
 import { create } from "zustand";
 
 interface Message {
-  senderId: Buffer;
+  senderId: string;
   msgId: number | undefined;
   nickname: string;
   image: string;
   content: string;
   createdAt: string | undefined;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 interface MessageStore {

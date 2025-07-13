@@ -87,20 +87,18 @@ export const WebSocketClient = ({
       }
 
       const { user_id } = jwtDecode<JWTPayload>(token);
-      console.log("user_id", user_id);
 
       const payload = {
         sender_id: user_id,
         content: message,
         file_url: fileUrl,
       };
-      console.log("file_url", payload.file_url); //note: 나중에 지울 것
 
       useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
       setSendFlag(false); // 전송 후 플래그 초기화
     }
-  }, [sendFlag, message]);
+  }, [sendFlag, message, fileUrl, setSendFlag]);
 
   return <div>{/* 필요시 메시지 입력창/버튼 등 추가 */}</div>;
 };
