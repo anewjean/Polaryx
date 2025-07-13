@@ -97,7 +97,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             members = tab_service.get_tab_members(workspace_id, tab_id)
             recipients = [str(uuid.UUID(bytes=row[0]))
                           for row in members
-                          if row[0] != uuid.UUID(sender_id).bytes]
+                          if row[0] != uuid.UUID(sender_id).bytes
+                          ]
+            
+            recipients = [str(uuid.UUID(bytes=row[0])) for row in members]
 
             push_service.send_push_to(recipients, {
                 "title": "New Message",

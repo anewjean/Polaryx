@@ -6,7 +6,6 @@ from pywebpush import webpush, WebPushException
 from app.config.config import settings
 from app.repository.push_subscription import QueryRepo as PushRepo
 
-
 class PushService:
     def __init__(self):
         self.repo = PushRepo()
@@ -18,15 +17,23 @@ class PushService:
             "p256dh": subscription.get("keys", {}).get("p256dh"),
             "auth": subscription.get("keys", {}).get("auth"),
         }
+        print("[add_subscription]저장할 구독 정보:", data)
         self.repo.insert(data)
 
     def _send_to_subs(self, subs: List[Dict], data: Dict):
         for sub in subs:
+            if isinstance(sub, tuple):
+                endpoint, p256dh, auth = sub
+            else:
+                endpoint = sub.get("endpoint")
+                p256dh = sub.get("p256dh")
+                auth = sub.get("auth")
+
             info = {
-                "endpoint": sub["endpoint"],
+                "endpoint": endpoint,
                 "keys": {
-                    "p256dh": sub["p256dh"],
-                    "auth": sub["auth"],
+                    "p256dh": p256dh,
+                    "auth": auth,
                 },
             }
             try:
@@ -38,7 +45,7 @@ class PushService:
                 )
             except WebPushException as e:
                 print("Web push error:", repr(e))
-
+                  
 
     def send_push_to(self, user_ids: List[str], data: Dict):
         for user_id in user_ids:
