@@ -29,10 +29,12 @@ import { useFilePreview } from "@/hooks/useFilePreview";
 import { useParams } from "next/navigation";
 import { getTabInfo } from "@/apis/tabApi";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
+import { useTabInfoStore } from "@/store/tabStore";
 // import { Send } from "lucide-react";
 // 실험용
 import { jwtDecode } from "jwt-decode";
 import { Extension } from "@tiptap/core";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -49,8 +51,8 @@ export function TipTap() {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
-
-  const [tabName, setTabName] = useState<string>(""); // 탭 이름
+  const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
+  const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
   const [mounted, setMounted] = useState(false);
 
   // 클라이언트에서만 mounted = true
@@ -59,17 +61,10 @@ export function TipTap() {
   }, []);
 
   useEffect(() => {
-    if (!workspaceId || !tabId) return;
-
-    (async () => {
-      try {
-        const info = await getTabInfo(workspaceId, tabId);
-        setTabName(info.tab_name); // tab_name 불러오기
-      } catch (e) {
-        console.log("탭 정보 조회 실패:", e);
-      }
-    })();
-  }, [workspaceId, tabId]);
+    if (workspaceId && tabId) {
+      fetchTabInfo(workspaceId, tabId);
+    }
+  }, [workspaceId, tabId, fetchTabInfo]);
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } =
@@ -87,7 +82,7 @@ export function TipTap() {
         StarterKit, // 핵심 확장 모음
         Placeholder.configure({
           // placeholder가 뭐임?
-          placeholder: `${tabName}에 메시지 보내기`,
+          placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
         }),
         Document,
         Paragraph,
@@ -168,7 +163,7 @@ export function TipTap() {
       ],
       content: message,
     },
-    [tabName],
+    [tabInfo?.tab_name],
   );
 
   // 메시지 전송 후에도 채팅이 남아있는 문제 해결을 위한 초기화
@@ -233,8 +228,26 @@ const handleSend = async () => {
 };
 
   // 서버사이드에서는 아무것도 렌더링하지 않음
+  // 스켈레톤 이미지 (로딩중일 때 보여줌)
   if (!mounted) {
-    return <div className="chat-text-area">Loading...</div>;
+    return (
+    <div className="chat-text-area border border-gray-300 rounded-[7px]">
+      <input style={{ display: "none" }} />
+      {/* 툴바 스켈레톤 */}
+      <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
+        <div className="flex gap-2">
+          {/* 툴바 버튼 5개 정도 */}
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="w-9 h-9 rounded-md" />
+          ))}
+        </div>
+      </div>
+      {/* 에디터 스켈레톤 */}
+      <div className="editor-container flex px-[15px] py-[10px]">
+        <Skeleton className="h-6 w-[20%] rounded-md" />
+      </div>
+    </div>
+    ) 
   }
 
   if (!editor) {

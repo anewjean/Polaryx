@@ -87,10 +87,9 @@ export default function Page() {
       <Stars count={150} />
 
       {/* 기존 콘텐츠 레이어: 가운데 카드 */}
-      <div className="relative z-10 p-8 bg-black/50 backdrop-blur-md rounded-2xl flex flex-col items-center w-[30%]">
-        <img src="./logo.png" alt="SLAM Logo" className="w-58 mb-1 animate-spin spin-glow" />
-        <h1 className="text-4xl font-extrabold text-white mb-4 text-center">WELCOME SLAM!</h1>
-        <p className="text-lg text-gray-200 mb-10 text-center">SLAM에 오신 것을 환영합니다</p>
+      <div className="flex flex-col justify-end gap-20 relative z-10 p-8 bg-black/50 backdrop-blur-md rounded-2xl flex flex-col items-center w-[30%]">
+        {/* <img src="./logo.png" alt="SLAM Logo" className="w-58 mb-1 animate-spin spin-glow" /> */}
+        <h1 className="text-4xl font-extrabold text-white mb-4 text-center">Polaris</h1>        
         <LoginButton />
       </div>
     </div>
