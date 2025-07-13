@@ -1,0 +1,136 @@
+const BASE = process.env.NEXT_PUBLIC_BASE;
+
+import { fetchWithAuth } from "./authApi";
+import { Member } from "./tabApi";
+
+export interface Group {
+  group_id: number;
+  group_name: string;
+  members?: Member[];
+  non_members?: Member[];
+  role_id?: number;
+  role_name?: string;  
+}
+
+// 그룹 조회
+export const getGroups = async (workspaceId: string): Promise<Group[]> => {
+    // const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles`, {
+    //     method: "GET",
+    //     headers: { Accept: "application/json" },
+    // });
+
+    // if (res && res.ok) {
+    //     return res.json();
+    // }
+
+    /////////////////// 일단 더미 데이터 반환/////////////////////////
+    return getDummyGroups(workspaceId);
+}
+
+// 더미 그룹 데이터 생성 함수
+function getDummyGroups(workspaceId: string): Group[] {
+  const workspaceIdNum = parseInt(workspaceId) || 1;
+  
+  // 더미 멤버 생성
+  const dummyMembers: Member[] = [
+    {
+      user_id: "user1",
+      nickname: "김관리자",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Felix",
+      role_id: 1,
+      role_name: "admin",
+      groups: ["개발팀", "기획팀"]
+    },
+    {
+      user_id: "user2",
+      nickname: "이사용자",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka",
+      role_id: 2,
+      role_name: "member",
+      groups: ["개발팀"]
+    },
+    {
+      user_id: "user3",
+      nickname: "박멤버",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Dusty",
+      role_id: 2,
+      role_name: "member",
+      groups: ["디자인팀"]
+    },
+    {
+      user_id: "user4",
+      nickname: "최사용자",
+      image: null,
+      role_id: 2,
+      role_name: "member",
+      groups: []
+    },
+    {
+      user_id: "user5",
+      nickname: "정개발자",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie",
+      role_id: 2,
+      role_name: "member",
+      groups: ["개발팀"]
+    },
+    {
+      user_id: "user6",
+      nickname: "조디자이너",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Mia",
+      role_id: 2,
+      role_name: "member",
+      groups: ["디자인팀"]
+    },
+    {
+      user_id: "user7",
+      nickname: "임기획자",
+      image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Sophie",
+      role_id: 2,
+      role_name: "member",
+      groups: ["기획팀"]
+    }
+  ];
+  
+  const dummyGroups: Group[] = [
+    {
+      group_id: 1,
+      group_name: "개발팀",
+      members: [dummyMembers[0], dummyMembers[1], dummyMembers[4]],
+      non_members: [dummyMembers[2], dummyMembers[3], dummyMembers[5], dummyMembers[6]],
+      role_id: 1,
+      role_name: "admin"
+    },
+    {
+      group_id: 2,
+      group_name: "디자인팀",
+      members: [dummyMembers[2], dummyMembers[5]],
+      non_members: [dummyMembers[0], dummyMembers[1], dummyMembers[3], dummyMembers[4], dummyMembers[6]],
+      role_name: "member"
+    },
+    {
+      group_id: 3,
+      group_name: "기획팀",
+      members: [dummyMembers[0], dummyMembers[6]],
+      non_members: [dummyMembers[1], dummyMembers[2], dummyMembers[3], dummyMembers[4], dummyMembers[5]],
+      role_name: "admin"
+    },
+    {
+      group_id: 4,
+      group_name: "마케팅팀",
+      members: [],
+      non_members: [dummyMembers[0], dummyMembers[1], dummyMembers[2], dummyMembers[3], dummyMembers[4], dummyMembers[5], dummyMembers[6]],
+      role_name: "member"
+    },
+    {
+      group_id: 5,
+      group_name: "인사팀",
+      members: [],
+      non_members: [dummyMembers[0], dummyMembers[1], dummyMembers[2], dummyMembers[3], dummyMembers[4], dummyMembers[5], dummyMembers[6]],
+      role_name: "member"
+    }
+  ];
+  
+  return dummyGroups;
+}
+  
+
