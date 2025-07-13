@@ -5,7 +5,6 @@ import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 // import { useMessageProfileStore } from "@/store/messageProfileStore";
 import { ChatProfile } from "./ChatProfile";
-import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -96,7 +95,7 @@ export function ChatPage({
         fileUrl: msg.file_url,
       }));
       
-      if (new_messages) {
+      if (new_messages!=null) {
         prependMessages(new_messages);
         isFetching.current = false;
         requestAnimationFrame(() => {

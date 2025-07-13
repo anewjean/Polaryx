@@ -10,7 +10,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
-import { jwtDecode } from "jwt-decode";
 
 interface ChatProfileProps {
   senderId: string;

@@ -23,7 +23,7 @@ workspace_mem_repo = WorkspaceMemRepo()
 tab_repo = TabRepository()
 sub_tab_repo = SubTabRepo()
 workspace_member_service = WorkspaceMemberService()
-roles_repo = RolesRepository() # 명훈 추가
+roles_repo = RoleRepository() # 명훈 추가
 member_roles_repo = MemberRolesRepository() # 명훈 추가
 user_service = UserService()
 

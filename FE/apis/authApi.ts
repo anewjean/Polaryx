@@ -9,7 +9,6 @@ export async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {}
 ): Promise<Response | null> {
-  console.log("******** in FetchWithAuth ", input, init["method"]);
   let accessToken = localStorage.getItem("access_token");
 
   if (!accessToken) {

@@ -32,7 +32,6 @@ const request = async (
 // 역할 리스트 조회
 export const getRoles = async (workspaceId: string) => {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
-  return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "GET",
   });
 };
@@ -76,7 +75,6 @@ export const updateRole = async (
 
 // 역할 삭제
 export const deleteRole = async (workspaceId: string, roleName: string) => {
-  return request(`${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
     method: "PATCH",
     body: JSON.stringify({ role_name: roleName }),
