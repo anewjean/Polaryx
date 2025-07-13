@@ -68,7 +68,9 @@ export function ChatProfile({
   return (
     <ContextMenu>
       <ContextMenuTrigger>
-        <div className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}>
+        <div
+          className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}
+        >
           {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
           {showProfile ? (
             <div className="relative">
@@ -101,8 +103,7 @@ export function ChatProfile({
             {isEditMode ? (
               <>
                 {showProfile && (
-                  <div className="flex items-baseline space-x-1 mb-1">
-                  </div>
+                  <div className="flex items-baseline space-x-1 mb-1"></div>
                 )}
                 <ChatEditTiptap
                   initialContent={editContent}
@@ -136,11 +137,16 @@ export function ChatProfile({
                 {fileUrl && !isImageFile(fileUrl) && (
                   <FileDownload fileUrl={fileUrl} />
                 )}
-                <div
-                  className="flex flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
-                  <div dangerouslySetInnerHTML={{ __html: safeHTML }} />
+                <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  <div
+                    className="mr-2"
+                    dangerouslySetInnerHTML={{ __html: safeHTML }}
+                  />
                   {isUpdated ? (
-                    <span className="ml-2 text-xs text-gray-500" style={{ whiteSpace: "nowrap" }}>
+                    <span
+                      className="text-xs text-gray-500"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
                       (편집됨)
                     </span>
                   ) : null}
