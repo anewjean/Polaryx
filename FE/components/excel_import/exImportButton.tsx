@@ -7,7 +7,7 @@ import { createUsers } from "@/apis/excelApi";
 import { detectTyposJaccard } from "./detectTyposJaccard";
 import { useMemberStore } from "@/store/memberStore";
 import { toast } from "sonner";
-import { CircleCheck, Ban } from "lucide-react";
+import { CircleCheck, Ban, FileSpreadsheet } from "lucide-react";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
@@ -111,8 +111,9 @@ export function ExUpload() {
 
   return (
     <>
-      <Button onClick={handleClick} variant="link" className="text-gray-200">
-        회원등록
+      <Button onClick={handleClick} variant="outline">
+        <FileSpreadsheet className="mr-0 h-4 w-4" />
+        Import .xlsx
       </Button>
       <input type="file" accept=".xlsx, .xls" onChange={handleFile} ref={inputRef} className="hidden" />
     </>

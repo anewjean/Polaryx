@@ -4,10 +4,12 @@ import { create } from "zustand";
 interface Member {
   email: string;
   name: string;
-  role: string;
-  group: string;
-  github: string;
-  blog: string;
+  role_id: number;
+  role_name: string;
+  group_name?: string[];
+  group_id?: number[];
+  github?: string;
+  blog?: string;
   workspace_id: string;
 }
 
