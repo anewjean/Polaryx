@@ -13,17 +13,20 @@ export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
   const inputRef = useRef<HTMLInputElement>(null);
   const { setMemberList } = useMemberStore();
+
   // Alert 상태 관리
   const [alertInfo, setAlertInfo] = useState<{
     variant: "default" | "destructive";
     message: React.ReactNode;
   } | null>(null);
+
   useEffect(() => {
     if (alertInfo) {
       const timer = setTimeout(() => setAlertInfo(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [alertInfo]);
+
   const handleClick = () => {
     inputRef.current?.click();
   };
@@ -45,9 +48,11 @@ export function ExUpload() {
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(sheet);
+
     // 엑셀 헤더 file 검사
     const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
     const uploadedHeaders = json[0] as string[];
+
     ////////////////////////// 동작하지 않는 코드 //////////////////////////
     // const typos = detectTyposJaccard(uploadedHeaders);
     // if (typos.length > 0) {
@@ -70,6 +75,7 @@ export function ExUpload() {
     //   });
     //   return;
     // }
+
     // 형식에 맞지 않은 user를 제거
     const { users } = filterUsers(jsonData);
     const memberList = users.map((user) => ({
@@ -81,8 +87,10 @@ export function ExUpload() {
       github: user.github,
       workspace_id: workspaceId,
     }));
+
     // memberList를 store에 저장
     setMemberList(memberList);
+
     try {
       const result = await createUsers(memberList, workspaceId);
       if (result.success_count === 0) {
@@ -100,12 +108,19 @@ export function ExUpload() {
       });
     }
   };
+
   return (
     <>
       <Button onClick={handleClick} variant="link" className="text-gray-200">
         회원등록
       </Button>
-      <input type="file" accept=".xlsx, .xls" onChange={handleFile} ref={inputRef} className="hidden" />
+      <input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={handleFile}
+        ref={inputRef}
+        className="hidden"
+      />
     </>
   );
 }

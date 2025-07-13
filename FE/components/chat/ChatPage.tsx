@@ -3,6 +3,7 @@ import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
 import { ChatProfile } from "./ChatProfile";
+import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -26,8 +27,7 @@ export function ChatPage({
   workspaceId: string;
   tabId: string;
 }) {
-  const messages = useMessageStore((state) => state.messages);
-  const prependMessages = useMessageStore((state) => state.prependMessages);
+  const { messages, prependMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
@@ -70,21 +70,32 @@ export function ChatPage({
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
-    console.log("in handle scroll");
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      console.log("oldestID:", oldestId);
-      console.log("previousHeight:", previousHeight);
+      // console.log("oldestID:", oldestId);
+      // console.log("old:", messages);
+      // console.log("previousHeight:", previousHeight);
       const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
-      console.log(res["messages"]);
+      // console.log(res["messages"]);
 
-      if (res["messages"].length >= 30) {
-        prependMessages(res["messages"]);
+      const new_messages = res.messages.map((msg: any) => ({
+        senderId: msg.sender_id,
+        msgId: msg.msg_id,
+        nickname: msg.nickname,
+        content: msg.content,
+        image: msg.image,
+        createdAt: msg.created_at,
+        isUpdated: msg.is_updated,
+        fileUrl: msg.file_url,
+      }));
+      
+      if (new_messages) {
+        prependMessages(new_messages);
         isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
@@ -158,19 +169,18 @@ export function ChatPage({
 
               {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : Buffer.from("")}
+                senderId={msg.senderId ? msg.senderId : ""}
                 msgId={msg.msgId ? msg.msgId : 0}
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
                 time={
-                  msg.createdAt
-                    ? new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
+                  msg.createdAt ? 
+                  new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
                         hour: "numeric",
                         minute: "2-digit",
                         hour12: true,
                       })
-                    : // .split(" ")[1]
-                      "now"
+                    : "now"
                 }
                 content={msg.content}
                 showProfile={showProfile}

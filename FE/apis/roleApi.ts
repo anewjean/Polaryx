@@ -2,7 +2,10 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 
 import { fetchWithAuth } from "./authApi";
 
-const request = async (path: string, options: RequestInit = {}): Promise<any> => {
+const request = async (
+  path: string,
+  options: RequestInit = {},
+): Promise<any> => {
   const response = await fetchWithAuth(path, {
     headers: { "Content-Type": "application/json" },
     ...options,
@@ -29,6 +32,7 @@ const request = async (path: string, options: RequestInit = {}): Promise<any> =>
 // 역할 리스트 조회
 export const getRoles = async (workspaceId: string) => {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "GET",
   });
 };
@@ -41,23 +45,38 @@ export const getRoleById = async (workspaceId: string, roleId: string) => {
 };
 
 // 역할별 권한 생성
-export const createRole = async (workspaceId: string, roleName: string, rolePermission: any) => {
+export const createRole = async (
+  workspaceId: string,
+  roleName: string,
+  rolePermission: any,
+) => {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "POST",
-    body: JSON.stringify({ role_name: roleName, role_permission: rolePermission }),
+    body: JSON.stringify({
+      role_name: roleName,
+      role_permission: rolePermission,
+    }),
   });
 };
 
 // 역할별 권한 수정
-export const updateRole = async (workspaceId: string, roleName: string, rolePermission: any) => {
+export const updateRole = async (
+  workspaceId: string,
+  roleName: string,
+  rolePermission: any,
+) => {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles`, {
     method: "PATCH",
-    body: JSON.stringify({ role_name: roleName, role_permission: rolePermission }),
+    body: JSON.stringify({
+      role_name: roleName,
+      role_permission: rolePermission,
+    }),
   });
 };
 
 // 역할 삭제
 export const deleteRole = async (workspaceId: string, roleName: string) => {
+  return request(`${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
   return request(`${BASE}/api/workspaces/${workspaceId}/roles/delete`, {
     method: "PATCH",
     body: JSON.stringify({ role_name: roleName }),

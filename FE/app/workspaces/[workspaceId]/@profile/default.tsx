@@ -14,7 +14,7 @@ import { useProfileStore } from "@/store/profileStore";
 import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
-import { is } from "date-fns/locale";
+import { useMyUserStore } from "@/store/myUserStore";
 
 type ProfileProps = { targetId?: string };
 
@@ -22,22 +22,10 @@ export default function ProfilePage() {
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
-
-  // accessToken에 있는 userId 추출
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) throw new Error("로그인이 필요합니다.");
-  const userId = jwtDecode<{ user_id: string }>(accessToken).user_id;
+  const myUserId = useMyUserStore((s) => s.userId);
 
   // store에서 targetId 가져오기
-  const { isOpen, userId: bufferTargetId, setClose } = useProfileStore();
-
-  const targetId = bufferTargetId // bufferTargetId가 존재하면
-    ? bufferTargetId.toString("hex") // hex로
-    : userId; // 아니면 내 userId 사용
-
-  useEffect(() => {
-    getProfile(workspaceId, targetId).then(setProfile).catch(console.error);
-  }, [bufferTargetId, isOpen]);
+  const { isOpen, userId: bufferTargetId } = useProfileStore();
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -80,11 +68,11 @@ export default function ProfilePage() {
   // 프로필 조회 (페이지 렌더 후 바로 실행 (userId 변경 시 재 실행))
   useEffect(() => {
     (async () => {
-      if (userId === null) {
+      if (bufferTargetId === null) {
         return;
       }
       try {
-        const profile = await getProfile(workspaceId, targetId ?? userId);
+        const profile = await getProfile(workspaceId, bufferTargetId);
         setProfile(profile);
         setForm({
           nickname: profile.nickname,
@@ -96,14 +84,16 @@ export default function ProfilePage() {
         console.error("프로필 조회 실패:", error);
       }
     })();
-  }, [userId, targetId]);
+  }, [bufferTargetId, isModalOpen]);
 
   // 프로필 수정
   const saveChange = async () => {
     if (!profile) return;
     setSaving(true);
     try {
-      const payload: Partial<Omit<Profile, "user_id" | "email" | "workspace_id" | "role" | "groups">> = {
+      const payload: Partial<
+        Omit<Profile, "user_id" | "email" | "workspace_id" | "role" | "groups">
+      > = {
         nickname: form.nickname,
         // phone: form.phone ?? null,
         github: form.github ?? null,
@@ -113,7 +103,11 @@ export default function ProfilePage() {
       if (selectedFile && preview) {
         payload.image = preview;
       }
-      const updatedProfile = await patchProfile(workspaceId, userId, payload);
+      const updatedProfile = await patchProfile(
+        workspaceId,
+        myUserId!,
+        payload,
+      );
       setProfile(updatedProfile);
       setIsModalOpen(false);
     } catch (error) {
@@ -144,9 +138,14 @@ export default function ProfilePage() {
     >
       {/* 헤더 (프로필과 닫기 버튼) */}
       <div className="flex flex-row w-full">
-        <h1 className="flex flex-1 items-center justify-start text-xl font-bold">Profile</h1>
-        <button className="flex flex-1 items-center justify-end text-sm">
-          <X size={20} onClick={close} />
+        <h1 className="flex flex-1 items-center justify-start text-xl font-bold">
+          Profile
+        </h1>
+        <button
+          className="flex flex-1 items-center justify-end text-sm"
+          onClick={close}
+        >
+          <X size={20} />
         </button>
       </div>
       {/* 프로필 이미지 */}
@@ -159,13 +158,17 @@ export default function ProfilePage() {
       </div>
       {/* 사용자 이름과 역할 */}
       <div className="flex w-full items-end justify-between gap-2">
-        <h1 className="flex-1 min-w-0 justify-start text-xl font-bold truncate">{profile?.nickname}</h1>
-        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">{profile?.role}</h1>
+        <h1 className="flex-1 min-w-0 justify-start text-xl font-bold truncate">
+          {profile?.nickname}
+        </h1>
+        <h1 className="flex-shrink-0 justify-end text-md font-bold text-gray-500">
+          {profile?.role}
+        </h1>
       </div>
       {/* 버튼 (메시지, 편집) */}
       <div className="flex w-full min-w-0 items-center justify-center">
         {/* 타인 프로필: DM 버튼 / 본인 프로필: 편집 버튼 / */}
-        {targetId ? (
+        {myUserId !== bufferTargetId ? (
           <Button
             variant="outline"
             size="sm"
@@ -175,131 +178,160 @@ export default function ProfilePage() {
             <span className="truncate">Direct Message</span>
           </Button>
         ) : (
-          <CardModal
-            trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
-              >
-                <SquarePen size={24} />
-                <span className="truncate">Edit Profile</span>
-              </Button>
-            }
-            title="Edit your profile"
-            open={isModalOpen}
-            onOpenChange={setIsModalOpen}
-          >
-            {/* CardModal 내용: 프로필 편집 폼 */}
-            <form
-              className="flex flex-col gap-5"
-              onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                saveChange();
-              }}
+          <div className="flex flex-1 flex-row gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
             >
-              <div className="flex flex-row gap-5">
-                {/* 프로필 이미지 */}
-                <div className="flex flex-col justify-between h-full w-[185px] gap-2">
-                  <img
-                    src={preview || profile?.image || "/user_default.png"}
-                    alt="profile_image"
-                    className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
-                  />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      fileInputRef.current?.click();
-                    }}
-                  >
-                    Change
-                  </Button>
-                </div>
-                {/* 프로필 정보 */}
-                <div className="flex flex-col w-full gap-2">
-                  <div className="flex flex-col gap-4">
-                    {/* 필수 필드1: 역할 */}
-                    <div className="flex flex-col">
-                      <label className="font-semibold">Role*</label>
-                      <span className="w-full font-normal">{profile?.role}</span>
-                    </div>
-                    {/* 필수 필드2: 이메일 */}
-                    <div className="flex flex-col">
-                      <label className="font-semibold">Email*</label>
-                      <span className="w-full font-normal">{profile?.email}</span>
-                    </div>
-                    {/* 필수 필드3: 닉네임 */}
-                    <div>
-                      <label className="font-semibold">Nickname*</label>
-                      <Input
-                        type="text"
-                        value={form.nickname}
-                        onChange={(e) => setForm({ ...form, nickname: e.target.value })}
-                        className="w-full border rounded px-2 py-1 font-normal"
-                      />
+              <Mail size={24} />
+              <span className="truncate">Direct Message</span>
+            </Button>
+            <CardModal
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+                >
+                  <SquarePen size={24} />
+                  <span className="truncate">Edit Profile</span>
+                </Button>
+              }
+              title="Edit your profile"
+              open={isModalOpen}
+              onOpenChange={setIsModalOpen}
+            >
+              {/* CardModal 내용: 프로필 편집 폼 */}
+              <form
+                className="flex flex-col gap-5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  saveChange();
+                }}
+              >
+                <div className="flex flex-row gap-5">
+                  {/* 프로필 이미지 */}
+                  <div className="flex flex-col justify-between h-full w-[185px] gap-2">
+                    <img
+                      src={preview || profile?.image || "/user_default.png"}
+                      alt="profile_image"
+                      className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fileInputRef.current?.click();
+                      }}
+                    >
+                      Change
+                    </Button>
+                  </div>
+                  {/* 프로필 정보 */}
+                  <div className="flex flex-col w-full gap-2">
+                    <div className="flex flex-col gap-4">
+                      {/* 필수 필드1: 역할 */}
+                      <div className="flex flex-col">
+                        <label className="font-semibold">Role*</label>
+                        <span className="w-full font-normal">
+                          {profile?.role}
+                        </span>
+                      </div>
+                      {/* 필수 필드2: 이메일 */}
+                      <div className="flex flex-col">
+                        <label className="font-semibold">Email*</label>
+                        <span className="w-full font-normal">
+                          {profile?.email}
+                        </span>
+                      </div>
+                      {/* 필수 필드3: 닉네임 */}
+                      <div>
+                        <label className="font-semibold">Nickname*</label>
+                        <Input
+                          type="text"
+                          value={form.nickname}
+                          onChange={(e) =>
+                            setForm({ ...form, nickname: e.target.value })
+                          }
+                          className="w-full border rounded px-2 py-1 font-normal"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar-thin">
-                {/* 추가 필드1: 연락처 */}
-                {/* <label className="font-semibold">
-                  Phone
-                  <Input
-                    type="text"
-                    placeholder=""
-                    defaultValue={profile?.phone ?? ""}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full border rounded px-2 py-1 font-normal"
-                  />
-                </label> */}
-                {/* 추가 필드2: github */}
-                <label className="font-semibold">
-                  Github
-                  <Input
-                    type="text"
-                    value={form.github}
-                    onChange={(e) => setForm({ ...form, github: e.target.value })}
-                    className="w-full border rounded px-2 py-1 font-normal"
-                  />
-                </label>
-                {/* 추가 필드3: blog */}
-                <label className="font-semibold">
-                  Blog
-                  <Input
-                    type="text"
-                    value={form.blog}
-                    onChange={(e) => setForm({ ...form, blog: e.target.value })}
-                    className="w-full border rounded px-2 py-1 font-normal"
-                  />
-                </label>
-              </div>
-              <CardFooter className="flex sticky bottom-0 justify-end p-0">
-                <Button type="submit" variant="default" disabled={saving || !form.nickname} className="w-full">
-                  {saving ? "Saving..." : "Save Changes"}
-                </Button>
-              </CardFooter>
-            </form>
-          </CardModal>
+                <div className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar-thin">
+                  {/* 추가 필드1: 연락처 */}
+                  {/* <label className="font-semibold">
+                    Phone
+                    <Input
+                      type="text"
+                      placeholder=""
+                      defaultValue={profile?.phone ?? ""}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      className="w-full border rounded px-2 py-1 font-normal"
+                    />
+                  </label> */}
+                  {/* 추가 필드2: github */}
+                  <label className="font-semibold">
+                    Github
+                    <Input
+                      type="text"
+                      value={form.github}
+                      onChange={(e) =>
+                        setForm({ ...form, github: e.target.value })
+                      }
+                      className="w-full border rounded px-2 py-1 font-normal"
+                    />
+                  </label>
+                  {/* 추가 필드3: blog */}
+                  <label className="font-semibold">
+                    Blog
+                    <Input
+                      type="text"
+                      value={form.blog}
+                      onChange={(e) =>
+                        setForm({ ...form, blog: e.target.value })
+                      }
+                      className="w-full border rounded px-2 py-1 font-normal"
+                    />
+                  </label>
+                </div>
+                <CardFooter className="flex sticky bottom-0 justify-end p-0">
+                  <Button
+                    type="submit"
+                    variant="default"
+                    disabled={saving || !form.nickname}
+                    className="w-full"
+                  >
+                    {saving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </CardFooter>
+              </form>
+            </CardModal>
+          </div>
         )}
       </div>
       {/* 구분선 */}
       <Separator />
       {/* 이메일 */}
       <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
-        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Email address*</span>
-        <span className="flex-1 min-w-0 text-md truncate">{profile?.email}</span>
+        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">
+          Email address*
+        </span>
+        <span className="flex-1 min-w-0 text-md truncate">
+          {profile?.email}
+        </span>
       </div>
       {/* 전화번호 */}
       {/* <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
@@ -308,17 +340,27 @@ export default function ProfilePage() {
       </div> */}
       {/* github */}
       <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
-        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Github</span>
-        <span className="flex-1 min-w-0 text-md truncate">{profile?.github ?? ""}</span>
+        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">
+          Github
+        </span>
+        <span className="flex-1 min-w-0 text-md truncate">
+          {profile?.github ?? ""}
+        </span>
       </div>
       {/* blog */}
       <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
-        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Blog</span>
-        <span className="flex-1 min-w-0 text-md truncate">{profile?.blog ?? ""}</span>
+        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">
+          Blog
+        </span>
+        <span className="flex-1 min-w-0 text-md truncate">
+          {profile?.blog ?? ""}
+        </span>
       </div>
       {/* 소속 그룹 */}
       <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1">
-        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">Groups</span>
+        <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">
+          Groups
+        </span>
         <div className="flex-1 min-w-0 text-md">
           <ul className="list-disc list-inside pl-1">
             {profile?.groups?.map((group) => (

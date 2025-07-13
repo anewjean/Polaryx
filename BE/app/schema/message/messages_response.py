@@ -4,35 +4,36 @@ from pydantic import BaseModel
 from typing import List
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class MessageSchema(BaseModel):
-    msgId: int
-    tabId: int
-    senderId: uuid.UUID
+    msg_id: int
+    tab_id: int
+    sender_id: str
     nickname: str
     image: Optional[str] = None
     content: str
-    isUpdated: bool
-    createdAt: datetime
-    updatedAt: datetime | None
-    deletedAt: datetime | None
-    fileUrl: Optional[str] = None
+    is_updated: bool
+    created_at: datetime
+    updated_at: datetime | None
+    deleted_at: datetime | None
+    file_url: Optional[str] = None
 
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
         return cls(
-            msgId=row[0],
-            tabId=row[1],
-            senderId=row[2],
+            msg_id=row[0],
+            tab_id=row[1],
+            sender_id=row[2].hex(),
             nickname=row[3],
             image=row[4] or "",
             content=row[5],
-            isUpdated=row[6],
-            createdAt=row[7],
-            updatedAt=row[8],
-            deletedAt=row[9],
-            fileUrl=row[10] if len(row) > 10 else None,
+            is_updated=row[6],
+            created_at=row[7],
+            updated_at=row[8],
+            deleted_at=row[9],
+            file_url=row[10] if len(row) > 10 else None,
         )
 
 

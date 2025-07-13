@@ -1,12 +1,26 @@
 import { MessageCircle, StickyNote } from "lucide-react";
 import { TabMembers } from "@/components/modal/TabMembers";
+import { useTabInfoStore } from "@/store/tabStore";
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
+import { getTabInfo } from "@/apis/tabApi";
 
-interface ChatHeaderProps {
-  sectionId: number;
-  tabName: string;
-}
+export function ChatHeader() {
+  // 파라미터에서 workspaceId와 tabId 추출
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  const tabId = params.tabId as string;
 
-export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
+  // 탭 정보 가져오기
+  const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
+  const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
+
+  useEffect(() => {
+    if (workspaceId && tabId) {
+      fetchTabInfo(workspaceId, tabId);
+    }
+  }, [workspaceId, tabId, fetchTabInfo]);
+
   return (
     <div>
       <div className="sticky top-0 bg-white">
@@ -20,8 +34,8 @@ export function ChatHeader({ sectionId, tabName }: ChatHeaderProps) {
                   className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
                 />
               )} */}
-              {tabName ? (
-                <p className="text-l">{tabName}</p>
+              {tabInfo?.tab_name ? (
+                <p className="text-l">{tabInfo?.tab_name}</p>
               ) : (
                 <p className="w-40 h-7 rounded-lg bg-[#F4F4F4]"></p> // 스켈레톤
               )}
