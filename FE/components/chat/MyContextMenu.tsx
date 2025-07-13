@@ -15,70 +15,67 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { EditInput } from "./EditInput";
+import { useParams } from "next/navigation";
+import { useMyUserStore } from "@/store/myUserStore";
 
 interface MyContextMenuProps {
-  // workspaceId: number;
-  // tapId: number;
   messageId: number;
+  userId: string; // 작성자 id 추가
+  content: string; // 메시지 내용 prop 추가
+  onEdit: () => void; // 편집 모드 진입 함수 prop 추가
 }
 
-// 추후 수정 : workspaceId, tabId 추가해야 함. 우선은 하드 코딩으로 진행함
-export function MyContextMenu({ messageId }: MyContextMenuProps) {
-  // 1) 프로필 보기
-  const openProfile = useProfileStore((s) => s.setOpen);
-  // const params = useParams();
+export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextMenuProps) {
+  // 내 userId 추출
+  const myUserId = useMyUserStore((s) => s.userId);
+  
+  // workspace id, tab id 추출
+  const params = useParams();
+  const workspaceId = params.workspaceId;
+  const tabId = params.tabId;
 
-  // params.workspaceID;
-  // params.tabID;
+  // 1) 프로필 보기
+  const setProfileUserId = useProfileStore((s) => s.setUserId);
+  const openProfile = useProfileStore((s) => s.setOpen);
 
   // 2) 메시지 삭제
   const removeMessage = useMessageStore((s) => s.deleteMessage);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleDelete = async () => {
-    console.log("handleDelete 들어옴");
-    try {
+    try {  
       // 2-1) 백엔드 API 호출
-      await deleteMessageApi("1", "1", messageId); // 추후 수정 22
+      await deleteMessageApi(workspaceId as string, tabId as string, messageId);
 
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
-
-      console.log("메시지 삭제 성공");
+      
     } catch (e) {
-      console.error("메시지 삭제 실패:", e);
+      console.log("메시지 삭제 실패:", e);
     }
   };
 
-  // 3) 메시지 수정 (미완성)
+  // 3) 메시지 수정
   const updateMessage = useMessageStore((s) => s.updateMessage);
-  const handleEdit = async () => {
-    const newContent = prompt("수정할 메시지를 입력하세요:");
-    if (newContent === null) return; // 사용자가 취소를 선택하면 아무 작업도 하지 않음
 
-    try {
-      // 3-1) 백엔드 API 호출
-      await updateMessageApi(messageId, newContent);
-
-      // 3-2) 로컬 store 에서 메시지 업데이트
-      // updateMessage(messageId, { id: messageId, content: newContent });
-
-      console.log("메시지 수정 성공");
-    } catch (e) {
-      console.error("메시지 수정 실패:", e);
-    }
+  const [isEditMode, setIsEditMode] = useState(false);
+  // handleEdit 함수는 상위에서 내려온 onEdit을 호출
+  const handleEdit = () => {
+    onEdit();
   };
 
   return (
     <>
-      {/* 우클릭시 메뉴 박스 */}
       <ContextMenuContent>
-        <ContextMenuItem onClick={openProfile}>프로필 보기</ContextMenuItem>
-
-        <ContextMenuItem>메시지 편집</ContextMenuItem>
-
-        <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
+        <ContextMenuItem onClick={() => { setProfileUserId(userId); openProfile(); }}>프로필 보기</ContextMenuItem>
+        {myUserId === userId && (
+          <>
+            <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
+            <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
+          </>
+        )}        
       </ContextMenuContent>
-
       {/* 삭제 메시지 확인 다이얼로그 */}
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <AlertDialogContent>

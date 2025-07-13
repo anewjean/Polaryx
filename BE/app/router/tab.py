@@ -24,8 +24,7 @@ def create_tab(workspace_id: int, tab_data: CreateTabRequest, user_info: Dict = 
     user_id = user_info.get("user_id")
     tab_name = tab_data.tab_name
     section_id = tab_data.section_id
-    subsection_id = tab_data.subsection_id
-    rows = service.create_tab([user_id], workspace_id, tab_name, section_id, subsection_id)
+    rows = service.create_tab([user_id], workspace_id, tab_name, section_id)
     return CreateTabResponse.from_row(rows[0])
 
 # 참여중인 탭 리스트 조회
@@ -59,9 +58,9 @@ def invite_members(workspace_id: int, tab_id: int, user_ids: InviteRequest):
     rows = service.invite_members(workspace_id, tab_id, user_ids.user_ids)
     return TabInvitation.from_rows(rows)
 
-# 탭에 그룹 초대
-@router.post("/{workspace_id}/tabs/{tab_id}/groups")
-async def invite_member_to_tab(
+# 탭에 그룹 초대(미완)
+@router.post("/{workspace_id}/tabs/{tab_id}/groups/{group_id}")
+async def invite_group_to_tab(
             workspace_id: int,
             tab_id: int,
             group_id: int,
@@ -75,3 +74,15 @@ async def invite_member_to_tab(
     #######################################################
 
     return
+
+# 탭 나가기
+@router.patch("/{workspace_id}/tabs/{tab_id}/out")
+async def exit_tab(workspace_id: int, tab_id: int, user_ids: InviteRequest):  # user_ids는 똑같이 리스트를 쓰므로 일단 inviteRequest 사용.
+    await service.exit_tab(workspace_id, tab_id, user_ids.user_ids)           # 리턴값은 없음. 그냥 웹소켓으로 쏴버렸으니까.
+    return 
+
+# 탭 내 멤버/그룹 검색(미완, 시작도 안함)
+@router.get("/{workspace_id}/tabs/{tab_id}/search", response_model=TabInvitation)
+def search_members(workspace_id: int, tab_id: int, user_ids: InviteRequest):
+    rows = service.get_tab_members(workspace_id, tab_id, user_ids.user_ids)
+    return TabInvitation.from_rows(rows)

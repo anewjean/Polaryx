@@ -1,9 +1,11 @@
 "use client";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useMyUserStore } from "@/store/myUserStore";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -26,7 +28,7 @@ export default function AuthCallbackPage() {
     const getToken = async () => {
       try {
         const res = await fetch(
-          `http://${BASE}/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
+          `${BASE}/api/auth/google/callback?code=${code}&scope=${scope}&prompt=${prompt}`,
           {
             credentials: "include", // refresh_token 받을 때 필요
           },
@@ -53,10 +55,12 @@ export default function AuthCallbackPage() {
         }
 
         localStorage.setItem("access_token", accessToken);
+        
+        // 토큰에서 사용자 ID 추출하여 스토어에 저장
+        const decoded = jwtDecode<{ user_id: string }>(accessToken);
+        useMyUserStore.getState().setUserId(decoded.user_id);
 
-        setTimeout(() => {
-          router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
-        }, 1500);
+        router.replace(`/workspaces/${workspaceId}/tabs/${tabId}`);
       } catch (err: any) {
         setError("인증 처리 중 오류: " + err.message);
         setIsLoading(false);

@@ -4,37 +4,49 @@ from uuid import UUID
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.message import Message, MessageUpdateType
+from datetime import datetime
+from fastapi import HTTPException
 
 insert_message = """
 INSERT INTO messages (
     tab_id,
     sender_id,
-    content
+    content,
+    url
 )
 VALUES (
     %(tab_id)s,
     %(sender_id)s,
-    %(content)s
+    %(content)s,
+    %(url)s
 );
 """
 
 update_message = """
 UPDATE messages
 SET 
-    content = %(content)s,
-    is_updated = TRUE
-WHERE id = %(id)s;
+    content = %(new_content)s,
+    is_updated = 1
+WHERE id = %(message_id)s
+  AND sender_id = %(current_user_id)s -- 권한 검증
+  AND deleted_at IS NULL;
 """
 
 delete_message = """
 UPDATE messages
 SET 
     deleted_at = %(deleted_at)s
-WHERE id = %(id)s;
+WHERE id = %(message_id)s
+  AND sender_id = %(current_user_id)s
+  AND deleted_at IS NULL;
 """
 
 find_message = """
-SELECT * FROM messages WHERE id = %(id)s;
+SELECT 
+    id, tab_id, sender_id, content, 
+    is_updated, created_at, updated_at, deleted_at, url
+FROM messages 
+WHERE id = %(id)s;
 """
 
 find_all_messages = """
@@ -48,7 +60,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
@@ -68,7 +81,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
@@ -89,7 +103,8 @@ SELECT
     m.is_updated,
     m.created_at,
     m.updated_at,
-    m.deleted_at
+    m.deleted_at,
+    m.url
 FROM messages m
 JOIN workspace_members wm
 ON m.sender_id = wm.user_id
@@ -148,23 +163,39 @@ class QueryRepo(AbstractQueryRepo):
         params = {
             "tab_id": message.tab_id,
             "sender_id": sender_id_bytes,
-            "content": message.content
+            "content": message.content,
+            "url": message.file_url
         }
         return self.db.execute(insert_message, params)
     
-    def update(self, message: Message):
-        if message.update_type == MessageUpdateType.MODIFY:
-            params = {
-                "id": str(message.id), 
-                "content": message.content
-            }
-            return self.db.execute(update_message, params)
-        if message.update_type == MessageUpdateType.DELETE:
-            params = {
-                "id": str(message.id),
-                "deleted_at": message.deleted_at
-            }
-            return self.db.execute(delete_message, params)
+    def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
+        params = {
+            "message_id": message_id, 
+            "new_content": new_content,
+            "current_user_id": UUID(current_user_id).bytes
+        }
+        result = self.db.execute(update_message, params)
+        
+        if result["rowcount"] == 0:
+            raise HTTPException(
+            status_code=403, 
+            detail="메시지 수정 권한이 없거나 메시지를 찾을 수 없습니다"
+        )
+        return result
+
+    def delete_message_by_id(self, message_id: int, current_user_id: str):
+        params = {
+            "message_id": message_id,
+            "deleted_at": datetime.now(),
+            "current_user_id": UUID(current_user_id).bytes  # 권한 검증용
+        }
+        result = self.db.execute(delete_message, params)
+        if result["rowcount"] == 0:
+            raise HTTPException(
+            status_code=403, 
+            detail="메시지 삭제 권한이 없거나 메시지를 찾을 수 없습니다"
+        )
+        return result["rowcount"]
     
     def delete_all(self):
         print("delete_all_message")

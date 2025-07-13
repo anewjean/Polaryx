@@ -1,0 +1,18 @@
+{
+    "folders": [
+      { "path": "." },     // 루트 (BE + FE 폴더가 보임)
+      { "path": "FE" },    // FE를 별도 프로젝트처럼
+      { "path": "BE" }     // BE를 별도 프로젝트처럼
+    ],
+    "settings": {
+      // TS/JS 언어 서비스는 FE 하위 tsconfig.json 사용
+      "typescript.tsdk": "FE/node_modules/typescript/lib",
+      "typescript.enablePromptUseWorkspaceTsdk": true,
+      "eslint.workingDirectories": [
+        { "mode": "auto" }
+      ],
+      // 터미널 자동 CWD를 FE 폴더로
+      "terminal.integrated.cwd": "${workspaceFolder}/"
+    }
+  }
+  
