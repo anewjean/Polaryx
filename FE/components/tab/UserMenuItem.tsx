@@ -42,11 +42,15 @@ export function UserMenuItem({
         <div className="flex flex-row w-full justify-between items-center">
           <div className="flex items-end gap-2">
             <img
+              onClick={() => openProfile(user.user_id)}
               src={user.image || "/user_default.png"}
               alt={user.nickname}
-              className="w-[28px] aspect-square bg-gray-400 rounded-md object-cover"
+              className="w-[28px] aspect-square bg-gray-400 rounded-md object-cover cursor-pointer"
             />
-            <span className="text-lg font-bold text-gray-800 truncate">
+            <span
+              onClick={() => openProfile(user.user_id)}
+              className="text-lg font-bold text-gray-800 truncate cursor-pointer hover:underline"
+            >
               {user.nickname}
             </span>
             <span className="text-sm font-bold text-gray-400 truncate">
@@ -61,6 +65,7 @@ export function UserMenuItem({
                 onClick={() => createDM(user.user_id)}
                 variant="ghost"
                 size="icon"
+                className="cursor-pointer"
               >
                 <AtSign className="size-6 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>
@@ -68,6 +73,7 @@ export function UserMenuItem({
                 onClick={() => openProfile(user.user_id)}
                 variant="ghost"
                 size="icon"
+                className="cursor-pointer"
               >
                 <SquareUserRound className="size-6.5 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>

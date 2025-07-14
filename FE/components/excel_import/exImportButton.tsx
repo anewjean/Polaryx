@@ -111,7 +111,11 @@ export function ExUpload() {
 
   return (
     <>
-      <Button onClick={handleClick} variant="link" className="text-gray-200">
+      <Button
+        onClick={handleClick}
+        variant="link"
+        className="text-gray-200 cursor-pointer"
+      >
         회원등록
       </Button>
       <input

@@ -176,7 +176,7 @@ export default function ProfilePage() {
             }}
             variant="outline"
             size="sm"
-            className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+            className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
           >
             <Mail size={24} />
             <span className="truncate">Direct Message</span>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
               }}
               variant="outline"
               size="sm"
-              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
             >
               <Mail size={24} />
               <span className="truncate">Direct Message</span>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+                  className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
                 >
                   <SquarePen size={24} />
                   <span className="truncate">Edit Profile</span>
