@@ -3,6 +3,15 @@ from fastapi.responses import RedirectResponse
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from app.core.exceptions import CustomHTTPException
+from app.core.exception_handlers import (
+    custom_http_exception_handler,
+    http_exception_handler,
+    validation_exception_handler,
+    general_exception_handler
+)
 
 from app.router import message
 from app.router.auth import auth_controller as auth
@@ -14,6 +23,8 @@ from app.router import ws_message
 from app.router import direct_message
 from app.router import push
 from app.router import notification
+from app.router import db
+from app.router import role
 
 
 load_dotenv()
@@ -25,7 +36,7 @@ app.add_middleware(
     allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://3.36.61.200:3000", "http://jungle-lms.site:3000"], 
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["Authorization", "Content-Type", "Accept"],
     max_age=0
 )
 app.include_router(router=ws_message.router, prefix="/api/ws")
@@ -39,6 +50,14 @@ app.include_router(router=workspace_members.router, prefix="/api")
 app.include_router(router=tab.router, prefix="/api")
 app.include_router(router=workspace.router, prefix="/api")
 app.include_router(router=direct_message.router, prefix="/api")
+app.include_router(router=db.router, prefix="/api")
+app.include_router(router=role.router, prefix="/api")
+
+# 예외 핸들러 등록
+app.add_exception_handler(CustomHTTPException, custom_http_exception_handler)
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 
 

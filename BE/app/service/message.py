@@ -32,6 +32,7 @@ class MessageService:
         # message = Message.from_row(row)
         # message.modify(new_content)
         affected_rows = self.message_repo.update_message_content(message_id, new_content, current_user_id)
+        
         if affected_rows == 0:
             raise ValueError(f"메시지 ID {message_id}를 찾을 수 없습니다")
         return affected_rows

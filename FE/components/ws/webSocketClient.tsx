@@ -56,6 +56,7 @@ export const WebSocketClient = ({
           fileUrl: file_url, // file_url -> fileUrl로 변환
           senderId: rawMsg.sender_id,
           msgId: rawMsg.message_id,
+          createdAt: rawMsg.created_at,
         };
 
         useMessageStore.getState().appendMessage(msg);
