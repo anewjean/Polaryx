@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -15,30 +14,16 @@ import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
 import { useMyUserStore } from "@/store/myUserStore";
-import { sendDirectMessage } from "@/apis/messageApi";
-import { useTabStore } from "@/store/tabStore";
-import { useRouter } from "next/navigation";
+import { useCreateDM } from "@/hooks/createDM";
 
 export default function ProfilePage() {
+  // DM방 생성
+  const createDM = useCreateDM();
+
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const myUserId = useMyUserStore((s) => s.userId);
-
-  // DM 생성 이벤트 핸들러
-  const refreshTabs = useTabStore((s) => s.refreshTabs);
-  const router = useRouter();
-
-  const createDM = async (userIds: string[], userId: string) => {
-    try {
-      const res = await sendDirectMessage(workspaceId, userIds, userId);
-      console.log("DM 생성 응답:", res);
-      refreshTabs(); // 탭 새로고침 상태 업데이트
-      router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
-    } catch (error) {
-      console.error("DM 생성 중 오류:", error);
-    }
-  };
 
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId } = useProfileStore();
@@ -187,10 +172,7 @@ export default function ProfilePage() {
         {myUserId !== bufferTargetId ? (
           <Button
             onClick={() => {
-              if (myUserId && bufferTargetId) {
-                const uniqueUserIds = new Set([myUserId, bufferTargetId]);
-                createDM(Array.from(uniqueUserIds), myUserId);
-              }
+              if (bufferTargetId) createDM(bufferTargetId);
             }}
             variant="outline"
             size="sm"
@@ -203,10 +185,7 @@ export default function ProfilePage() {
           <div className="flex flex-1 flex-row gap-2">
             <Button
               onClick={() => {
-                if (myUserId && bufferTargetId) {
-                  const uniqueUserIds = new Set([myUserId, bufferTargetId]);
-                  createDM(Array.from(uniqueUserIds), myUserId);
-                }
+                if (bufferTargetId) createDM(bufferTargetId);
               }}
               variant="outline"
               size="sm"
