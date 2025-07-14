@@ -6,11 +6,14 @@ import { useMyUserStore } from "@/store/myUserStore";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 
+import { usePush } from "@/hooks/usePush";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  usePush();
   // app/layout.tsx에서 useEffect 사용
   useEffect(() => {
     const token = localStorage.getItem("access_token");
