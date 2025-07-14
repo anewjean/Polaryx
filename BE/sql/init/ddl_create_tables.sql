@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    UNIQUE KEY uq_role (id, name, workspace_id)
+    UNIQUE KEY uq_role (id, workspace_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `member_roles` (
