@@ -205,7 +205,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                         </SidebarMenuItem>
                       }
                     >
-                      {/* DialogModal 내용: 프로필 편집 폼 */}
+                      {/* DialogModal 내용: 탭 생성 폼 */}
                       <div className="flex flex-col gap-2">
                         <h1>Name</h1>
                         <Input
