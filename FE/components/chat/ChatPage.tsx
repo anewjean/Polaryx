@@ -5,6 +5,7 @@ import { ShowDate } from "./ShowDate";
 import { ChatProfile } from "./ChatProfile";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SSEListener } from "../sse/SSEListener";
 
 function SkeletonChat() {
   return (
@@ -92,7 +93,7 @@ export function ChatPage({
         isUpdated: msg.is_updated,
         fileUrl: msg.file_url,
       }));
-      
+
       if (new_messages!=null) {
         prependMessages(new_messages);
         isFetching.current = false;
@@ -134,6 +135,7 @@ export function ChatPage({
         handleScroll(event);
       }}
     >
+      <SSEListener />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}

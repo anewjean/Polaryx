@@ -5,6 +5,8 @@ from app.schema.tab.response import TabInfo, TabDetailInfo, TabMember, TabInvita
 from app.service.tab import TabService
 from app.core.security import verify_token_and_get_token_data
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
+from app.router.sse import send_sse_notification
+import asyncio
 
 router = APIRouter(prefix="/workspaces")
 service = TabService()
@@ -54,8 +56,19 @@ def get_available_tab_members(workspace_id: int, tab_id: int):
 
 # 탭 인원 초대
 @router.post("/{workspace_id}/tabs/{tab_id}/members", response_model=TabInvitation)
-def invite_members(workspace_id: int, tab_id: int, user_ids: InviteRequest):
+async def invite_members(workspace_id: int, tab_id: int, user_ids: InviteRequest):
     rows = service.invite_members(workspace_id, tab_id, user_ids.user_ids)
+
+    # SSE 알림 전송 (초대된 유저 목록 포함)
+    payload = {
+        "type": "invited_to_tab",
+        "tab_id": tab_id,
+        "user_ids": user_ids.user_ids,
+        "message": "새 탭에 초대됨",
+    }
+
+    asyncio.create_task(send_sse_notification(str(workspace_id), payload))
+
     return TabInvitation.from_rows(rows)
 
 # 탭에 그룹 초대(미완)

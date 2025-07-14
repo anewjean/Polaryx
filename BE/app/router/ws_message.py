@@ -12,6 +12,7 @@ from app.service.push import PushService
 from app.service.tab import TabService
 
 from app.service.notification import NotificationService
+from app.router.sse import send_sse_notification
 
 import uuid
 import re
@@ -81,6 +82,19 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "message_id": message_id,
                 "sender_id": sender_id
             }
+            # SSE 알림 전송
+            await send_sse_notification(
+                str(workspace_id),
+                {
+                "type": "new_message",
+                "tab_id": tab_id,
+                "content": content,
+                "nickname": nickname,
+                "image": image,
+                "message_id": message_id,
+                "sender_id": sender_id
+                }
+            )
             # print(payload)
 
             
