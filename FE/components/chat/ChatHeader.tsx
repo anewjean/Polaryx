@@ -4,6 +4,8 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { getTabInfo } from "@/apis/tabApi";
+import { Button } from "../ui/button";
+import { LogOut } from "lucide-react";
 
 export function ChatHeader() {
   // 파라미터에서 workspaceId와 tabId 추출
@@ -23,7 +25,7 @@ export function ChatHeader() {
 
   return (
     <div>
-      <div className="sticky top-0 bg-white">
+      <div className="sticky top-0 bg-white shadow-sm z-1">
         <div className="flex items-center h-[50px] px-[17px]">
           <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
             <div className="flex items-center">
@@ -34,21 +36,30 @@ export function ChatHeader() {
                   className="w-[24px] h-[24px] mr-[8px] rounded-md bg-gray-400 object-cover"
                 />
               )} */}
-              <p className="text-l">{tabInfo?.tab_name}</p>
+              {tabInfo?.tab_name ? (
+                <p className="text-l">{tabInfo?.tab_name}</p>
+              ) : (
+                <p className="w-40 h-7 rounded-lg bg-[#F4F4F4]"></p> // 스켈레톤
+              )}
             </div>
-            <TabMembers />
+            <div className="flex flex-row items-center gap-0">
+              <TabMembers />
+              <Button variant="ghost" size="icon" className="flex items-center gap-1 px-7 hover:bg-gray-200">
+                <LogOut size={28} />
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="flex items-center h-[38px] px-[16px] border-b-2 gap-0">
-          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
+        <div className="flex items-center h-[38px] px-[12px] border-b-1 gap-0">
+          <div className="flex flex-fit items-center p-[6px] px-[10px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
             <MessageCircle className="w-[16px] mr-[4px]" />
             <p className="text-center text-s-bold">Message</p>
           </div>
-          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
+          <div className="flex flex-fit items-center p-[6px] px-[10px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md">
             <StickyNote className="w-[16px] mr-[4px]" />
             <p className="text-center text-s-bold">Canvas</p>
           </div>
-          <div className="flex flex-fit items-center p-[6px] px-[6px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md"></div>
+          <div className="flex flex-fit items-center p-[6px] px-[10px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md"></div>
         </div>
       </div>
     </div>

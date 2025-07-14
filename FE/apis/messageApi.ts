@@ -1,6 +1,6 @@
-const BASE = process.env.NEXT_PUBLIC_BASE;
-
 import { fetchWithAuth } from "./authApi";
+
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
 const request = async (
   path: string,
@@ -70,7 +70,6 @@ export const getMessages = async (
     `${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/messages`,
   );
 
-  console.log("************ get Messages ***********");
   // beforeId가 있을 경우 쿼리로 추가
   if (beforeId !== undefined) {
     url.searchParams.append("before_id", beforeId.toString());

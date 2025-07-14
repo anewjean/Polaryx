@@ -67,3 +67,4 @@ class RoleService:
         except Exception as e:
             logging.error(f"역할 삭제 서비스 오류 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
             raise InternalServerException("역할을 삭제하는 중 오류가 발생했습니다")
+
