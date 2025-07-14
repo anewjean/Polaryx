@@ -4,7 +4,7 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from typing import List, Optional
 from datetime import datetime
 import logging
-
+from uuid import UUID
 
 select_roles = """
 select id, name from roles;
@@ -63,6 +63,20 @@ UPDATE roles
 SET deleted_at = %(deleted_at)s
 WHERE id = %(id)s 
   AND workspace_id = %(workspace_id)s 
+"""
+
+find_member_by_ws_id_user_id = """
+SELECT * FROM member_roles mr
+JOIN roles r ON mr.role_id = r.id
+WHERE r.workspace_id = %(workspace_id)s 
+  AND mr.user_id = %(user_id)s;
+"""
+
+delete_member_roles = """
+DELETE mr FROM member_roles mr
+JOIN roles r ON mr.role_id = r.id
+WHERE r.workspace_id = %(workspace_id)s 
+  AND mr.user_id = %(user_id)s;
 """
 
 insert_member_roles = """
@@ -205,3 +219,13 @@ class QueryRepo(AbstractQueryRepo):
         except Exception as e:
             logging.error(f"역할 삭제 실패 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
             raise Exception(f"역할을 삭제할 수 없습니다: {e}")
+
+    # 미완
+    def delete_mem_role(self, user_id: UUID.bytes, workspace_id: int):
+        params = {
+            "user_id": user_id,
+            "workspace_id": workspace_id
+        }
+        find_res = self.db.execute(find_member_by_ws_id_user_id, params)
+        del_res = self.db.execute(delete_member_roles, params)
+        return len(find_res) == del_res["rowcount"]

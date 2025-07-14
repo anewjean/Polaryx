@@ -3,7 +3,12 @@
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
-import { getTabInfo, getMemberList, getPossibleMemberList, Member } from "@/apis/tabApi";
+import {
+  getTabInfo,
+  getMemberList,
+  getPossibleMemberList,
+  Member,
+} from "@/apis/tabApi";
 import { useEffect, useState } from "react";
 import { TabMembersModal } from "@/components/modal/TabMembersModal";
 import { PossibleMembersModal } from "@/components/modal/PossibleMembersModal";
@@ -14,8 +19,6 @@ export function TabMembers() {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
-
-
 
   // 멤버 리스트 상태 관리
   const [tabMembers, setTabMembers] = useState<Member[]>([]);
@@ -62,7 +65,7 @@ export function TabMembers() {
           <Button
             variant="ghost"
             size="icon"
-            className="flex items-center gap-1 px-7 hover:bg-gray-200"
+            className="flex items-center gap-1 px-7 hover:bg-gray-200 cursor-pointer"
             onClick={handleOpenMembersModal}
           >
             <Users size={28} />

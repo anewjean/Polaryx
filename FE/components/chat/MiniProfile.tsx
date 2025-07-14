@@ -1,12 +1,7 @@
 import { HoverCardContent } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import { useProfileStore } from "@/store/profileStore";
-import { useTabStore } from "@/store/tabStore";
-import { sendDirectMessage } from "@/apis/messageApi";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useMyUserStore } from "@/store/myUserStore";
+import { useCreateDM } from "@/hooks/createDM";
 
 interface MiniProfileProps {
   senderId: string;
@@ -15,29 +10,11 @@ interface MiniProfileProps {
 }
 
 export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
-  // URL에서 workspaceId 추출
-  const router = useRouter();
-  const params = useParams();
-  const workspaceId = params.workspaceId as string;
+  // DM방 생성
+  const createDM = useCreateDM();
 
   // 프로필
   const openProfile = useProfileStore((s) => s.openWithId);
-  const refreshTabs = useTabStore((s) => s.refreshTabs);
-
-  // // 현재 유저 ID 상태 관리
-  const userId = useMyUserStore((s) => s.userId);
-
-  // DM 생성 이벤트 핸들러
-  const createDM = async (userIds: string[], userId: string) => {
-    try {
-      const res = await sendDirectMessage(workspaceId, userIds, userId);
-      console.log("DM 생성 응답:", res);
-      refreshTabs(); // 탭 새로고침 상태 업데이트
-      router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
-    } catch (error) {
-      console.error("DM 생성 중 오류:", error);
-    }
-  };
 
   return (
     <div>
@@ -59,12 +36,7 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
               className="cursor-pointer"
               variant="outline"
               size="sm"
-              onClick={() => {
-                if (userId) {
-                  const uniqueUserIds = new Set([userId, senderId]);
-                  createDM(Array.from(uniqueUserIds), userId);
-                }
-              }}
+              onClick={() => createDM(senderId)}
             >
               <div className="text-s-bold">DM</div>
             </Button>

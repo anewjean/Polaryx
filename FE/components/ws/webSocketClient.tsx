@@ -3,12 +3,17 @@
 const BASE = process.env.NEXT_PUBLIC_BASE;
 const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
+
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { jwtDecode } from "jwt-decode";
 
 interface JWTPayload {
   user_id: string;
+}
+
+function stripTags(html: string): string {
+  return html.replace(/<[^>]+>/g, "");
 }
 
 export const WebSocketClient = ({
@@ -42,6 +47,7 @@ export const WebSocketClient = ({
     socket.onmessage = (event) => {
       try {
         const rawMsg = JSON.parse(event.data);
+        console.log("받은 메시지:", rawMsg); // 전체 메시지 로그
 
         // file_url을 fileUrl로 변환하고 원본 제거
         const { file_url, ...msgWithoutFileUrl } = rawMsg;
@@ -54,6 +60,29 @@ export const WebSocketClient = ({
         };
 
         useMessageStore.getState().appendMessage(msg);
+         console.log("알림 메시지 내용:", msg.content);
+
+         const token = localStorage.getItem("access_token");
+         if (!token) return;
+
+         const { user_id } = jwtDecode<JWTPayload>(token);
+             //  내가 보낸 메시지면 알림 안 띄움
+       if (
+            rawMsg.sender_id === user_id
+          ) {
+            console.log("내 메시지이면서 현재 채널이면 알림 생략");
+            return;
+          }
+      
+
+    //     console.log("알림 메시지 내용", msg.content)
+    //     if (Notification.permission === "granted") {
+    //       new Notification("새 메시지 도착", {
+    //         body: stripTags(msg.content) || "파일이 전송되었습니다.",
+    //         icon: "/icon.png",
+    //     });
+    // }
+
       } catch {
         console.warn("Invalid message format: ", event.data);
       }
@@ -61,7 +90,7 @@ export const WebSocketClient = ({
 
     socket.onerror = (error) => {
       console.error("❗ WebSocket 에러 발생", error);
-      // UI에 에러 표시
+      // UI에 에러 표시 
     };
 
     socket.onclose = () => {

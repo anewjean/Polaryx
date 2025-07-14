@@ -153,7 +153,6 @@ CREATE TABLE IF NOT EXISTS `canvases` (
 
 CREATE TABLE IF NOT EXISTS `notifications` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32) NOT NULL,
     receiver_id BINARY(16) NOT NULL,
     sender_id BINARY(16) NOT NULL,
     tab_id BIGINT NOT NULL,
