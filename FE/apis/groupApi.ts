@@ -39,7 +39,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Felix",
       role_id: 1,
       role_name: "admin",
-      groups: ["개발팀", "기획팀"]
+      group_name: ["개발팀", "기획팀"]
     },
     {
       user_id: "user2",
@@ -47,7 +47,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Aneka",
       role_id: 2,
       role_name: "member",
-      groups: ["개발팀"]
+      group_name: ["개발팀"]
     },
     {
       user_id: "user3",
@@ -55,7 +55,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Dusty",
       role_id: 2,
       role_name: "member",
-      groups: ["디자인팀"]
+      group_name: ["디자인팀"]
     },
     {
       user_id: "user4",
@@ -63,7 +63,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: null,
       role_id: 2,
       role_name: "member",
-      groups: []
+      group_name: []
     },
     {
       user_id: "user5",
@@ -71,7 +71,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie",
       role_id: 2,
       role_name: "member",
-      groups: ["개발팀"]
+      group_name: ["개발팀"]
     },
     {
       user_id: "user6",
@@ -79,7 +79,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Mia",
       role_id: 2,
       role_name: "member",
-      groups: ["디자인팀"]
+      group_name: ["디자인팀"]
     },
     {
       user_id: "user7",
@@ -87,7 +87,7 @@ function getDummyGroups(workspaceId: string): Group[] {
       image: "https://api.dicebear.com/7.x/adventurer/svg?seed=Sophie",
       role_id: 2,
       role_name: "member",
-      groups: ["기획팀"]
+      group_name: ["기획팀"]
     }
   ];
   
