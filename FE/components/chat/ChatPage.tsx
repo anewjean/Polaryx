@@ -94,7 +94,7 @@ export function ChatPage({
         fileUrl: msg.file_url,
       }));
 
-      if (new_messages!=null) {
+      if (new_messages != null) {
         prependMessages(new_messages);
         isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
@@ -142,9 +142,10 @@ export function ChatPage({
       <div className="text-m min-h-0 pl-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
-          const todayKey = dayStart(msg.createdAt!);
-          const prevKey = prev ? dayStart(prev.createdAt!) : null;
-          const showDateHeader = prevKey === null || todayKey !== prevKey;
+          const todayKey = msg.createdAt ? dayStart(msg.createdAt) : null;
+          const prevKey = prev?.createdAt ? dayStart(prev.createdAt) : null;
+          const showDateHeader =
+            todayKey !== null && (prevKey === null || todayKey !== prevKey);
 
           let showProfile = true;
 
@@ -166,7 +167,7 @@ export function ChatPage({
           return (
             <React.Fragment key={msg.msgId}>
               {/* 날짜 헤더 : sticky 추가 */}
-              {showDateHeader && <ShowDate timestamp={todayKey} />}
+              {showDateHeader && todayKey && <ShowDate timestamp={todayKey} />}
 
               {/* 각각의 채팅 */}
               <ChatProfile
@@ -175,13 +176,13 @@ export function ChatPage({
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
                 time={
-                  msg.createdAt ? 
-                  new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
+                  msg.createdAt
+                    ? new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
                         hour: "numeric",
                         minute: "2-digit",
                         hour12: true,
                       })
-                    : "now"
+                    : " "
                 }
                 content={msg.content}
                 showProfile={showProfile}
