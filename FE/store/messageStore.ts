@@ -35,6 +35,11 @@ interface MessageStore {
   // file url 저장
   fileUrl: string | null;
   setFileUrl: (url: string | null) => void;
+
+  updateUserProfile: (
+    userId: string,
+    updates: { nickname?: string; image?: string },
+  ) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -44,7 +49,9 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // 수정 버튼 누르면 수정 모드로 변경
   updateMessage: (msgId, msg) =>
     set((state) => ({
-      messages: state.messages.map((m) => (m.msgId === msgId ? { ...m, content: msg } : m)),
+      messages: state.messages.map((m) =>
+        m.msgId === msgId ? { ...m, content: msg } : m,
+      ),
     })), // hack : 오류 발생할 수 있음
 
   // 메시지 삭제
@@ -60,7 +67,8 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // List에 메시지 추가
   messages: [],
   setMessages: (msg) => set({ messages: msg }),
-  appendMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  appendMessage: (msg) =>
+    set((state) => ({ messages: [...state.messages, msg] })),
   prependMessages: (msgs) =>
     set((state) => ({
       messages: [...msgs, ...state.messages],
@@ -69,4 +77,18 @@ export const useMessageStore = create<MessageStore>((set) => ({
   // file url 저장
   fileUrl: null,
   setFileUrl: (url) => set({ fileUrl: url }),
+
+  updateUserProfile: (userId, updates) => {
+    set((state) => ({
+      messages: state.messages.map((msg) =>
+        msg.senderId === userId
+          ? {
+              ...msg,
+              ...(updates.nickname && { nickname: updates.nickname }),
+              ...(updates.image && { image: updates.image }),
+            }
+          : msg,
+      ),
+    }));
+  },
 }));

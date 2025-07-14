@@ -16,6 +16,7 @@ import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
 import { useMyUserStore } from "@/store/myUserStore";
 import { useProfileImageUpload } from "@/hooks/useProfileImageUpload";
+import { useMessageStore } from "@/store/messageStore";
 
 type ProfileProps = { targetId?: string };
 
@@ -28,6 +29,7 @@ export default function ProfilePage() {
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId } = useProfileStore();
   const { uploadToS3 } = useProfileImageUpload();
+  const updateUserProfile = useMessageStore((s) => s.updateUserProfile);
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -93,6 +95,7 @@ export default function ProfilePage() {
     if (!profile) return;
     setSaving(true);
     try {
+      const currentImageSrc = profile.image;
       const payload: Partial<
         Omit<Profile, "user_id" | "email" | "workspace_id" | "role" | "groups">
       > = {
@@ -100,18 +103,27 @@ export default function ProfilePage() {
         // phone: form.phone ?? null,
         github: form.github ?? null,
         blog: form.blog ?? null,
-        image: preview ?? null,
+        image: preview || currentImageSrc,
       };
-      if (selectedFile && preview) {
-        payload.image = preview;
-      }
+
       const updatedProfile = await patchProfile(
         workspaceId,
         myUserId!,
         payload,
       );
+
       setProfile(updatedProfile);
       setIsModalOpen(false);
+
+      const profileUpdates: { nickname: string; image?: string } = {
+        nickname: form.nickname,
+      };
+
+      if (preview) {
+        profileUpdates.image = preview;
+      }
+
+      updateUserProfile(myUserId!, profileUpdates); // myUserId가 없으면 error 날 거임. refactoring 필요함
     } catch (error) {
       console.error(error);
       alert("프로필 수정에 실패했습니다.");
