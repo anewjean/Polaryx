@@ -15,6 +15,7 @@ import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
 import { useMyUserStore } from "@/store/myUserStore";
+import { useProfileImageUpload } from "@/hooks/useProfileImageUpload";
 
 type ProfileProps = { targetId?: string };
 
@@ -26,6 +27,7 @@ export default function ProfilePage() {
 
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId } = useProfileStore();
+  const { uploadToS3 } = useProfileImageUpload();
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -122,13 +124,16 @@ export default function ProfilePage() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 256 * 1024) {
-      alert("이미지 크기는 256KB 이하만 가능합니다.");
+
+    setSelectedFile(file);
+
+    // S3에 업로드하고 URL 받아서 미리보기 업데이트
+    const imageUrl = await uploadToS3(file);
+    if (!imageUrl) {
+      alert("이미지 업로드에 실패했습니다.");
       return;
     }
-    setSelectedFile(file);
-    const base64 = await convertFileToBase64(file);
-    setPreview(base64);
+    setPreview(imageUrl);
   };
 
   return (

@@ -67,7 +67,8 @@ UPDATE workspace_members
 SET
     nickname = COALESCE(%(nickname)s, nickname),
     github  = COALESCE(%(github)s, github),
-    blog    = COALESCE(%(blog)s, blog)    
+    blog    = COALESCE(%(blog)s, blog),
+    image   = COALESCE(%(image)s, image)
 WHERE user_id = %(user_id)s
   AND deleted_at IS NULL;
 """
