@@ -12,11 +12,11 @@ export interface Tab {
 }
 
 export interface Member {
-  user_id: string;
+  user_id?: string;
   nickname: string;
   image?: string | null;
   role_id?: number;
-  role_name: string;
+  role_name?: string;
   group_id?: number[] | [];
   group_name?: string[] | [];
 }

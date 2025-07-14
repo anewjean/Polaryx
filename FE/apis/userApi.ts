@@ -6,14 +6,14 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 /* 워크스페이스 유저 조회 */
 export async function getUsers(workspaceId: string): Promise<Profile[]> {  
 
-    const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/users`, {
-        method: "GET",
-        headers: { Accept: "application/json" },
-    });
+    // const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/users`, {
+    //     method: "GET",
+    //     headers: { Accept: "application/json" },
+    // });
 
-    if (res && res.ok) {
-        return res.json();
-    }
+    // if (res && res.ok) {
+    //     return res.json();
+    // }
 
     /////////////////// 일단 더미 데이터 반환/////////////////////////
     return getDummyUsers(workspaceId);
