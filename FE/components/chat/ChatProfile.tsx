@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
+import { useProfileStore } from "@/store/profileStore";
 
 interface ChatProfileProps {
   senderId: string;
@@ -41,6 +42,9 @@ export function ChatProfile({
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
 
+  // 프로필
+  const openProfile = useProfileStore((s) => s.openWithId);
+
   const safeHTML = DOMPurify.sanitize(content, {
     FORBID_TAGS: ["img"], // 👈 img 태그 완전 제거
   });
@@ -66,7 +70,7 @@ export function ChatProfile({
   // 메시지 취소 핸들러
   const handleCancel = () => {
     setIsEditMode(false);
-  };  
+  };
 
   return (
     <ContextMenu>
@@ -79,7 +83,10 @@ export function ChatProfile({
             <div className="relative">
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <button className="w-[40px] mr-[8px] cursor-pointer">
+                  <button
+                    onClick={() => openProfile(senderId)}
+                    className="w-[40px] mr-[8px] cursor-pointer"
+                  >
                     <img
                       src={imgSrc}
                       className="w-[40px] h-[40px] mt-1 rounded-lg object-cover bg-gray-400"
@@ -120,7 +127,10 @@ export function ChatProfile({
                   <div className="flex items-baseline space-x-1">
                     <HoverCard>
                       <HoverCardTrigger asChild>
-                        <span className="text-m-bold cursor-pointer hover:underline">
+                        <span
+                          onClick={() => openProfile(senderId)}
+                          className="text-m-bold cursor-pointer hover:underline"
+                        >
                           {nickname}
                         </span>
                       </HoverCardTrigger>
@@ -162,11 +172,11 @@ export function ChatProfile({
       </ContextMenuTrigger>
 
       <MyContextMenu
-          messageId={msgId}
-          userId={senderId}
-          content={editContent}
-          onEdit={() => setIsEditMode(true)}
-        />
+        messageId={msgId}
+        userId={senderId}
+        content={editContent}
+        onEdit={() => setIsEditMode(true)}
+      />
     </ContextMenu>
   );
 }
