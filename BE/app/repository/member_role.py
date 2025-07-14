@@ -5,7 +5,7 @@ insert_member_roles = """
 insert into member_roles (user_id, user_name, role_id) values (%s, %s, %s);
 """
 
-class MemberRolesRepository(AbstractQueryRepo):
+class MemberRoleRepository(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)

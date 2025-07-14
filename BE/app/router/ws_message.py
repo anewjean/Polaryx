@@ -106,7 +106,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #     await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
-            members = tab_service.get_tab_members(workspace_id, tab_id)
+            members = await tab_service.get_tab_members(workspace_id, tab_id)
             #members = workspace_member_service.get_members_by_workspace_id(workspace_id)
             recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
                           for row in members
@@ -114,14 +114,13 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                           ]
             
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
-
-            push_service.send_push_to(recipients, {
+            await push_service.send_push_to(recipients, {
                 "title": "New Message",
                 "body": f"{nickname}: {clean_content}"
             })
 
             for receiver in recipients:
-                notification_service.create_notification(
+                await notification_service.create_notification(
                     receiver_id= receiver,
                     sender_id=sender_id,
                     tab_id=tab_id,
@@ -129,7 +128,6 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     type=1,
                     content=clean_content,
                 )
-    
     except WebSocketDisconnect:
         print("********* except *********")
         # await connection.broadcast(workspace_id, tab_id, f"#{nickname}님이 나갔습니다.")
