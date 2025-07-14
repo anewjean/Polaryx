@@ -54,7 +54,7 @@ export function UserMenuItem({
               {user.nickname}
             </span>
             <span className="text-sm font-bold text-gray-400 truncate">
-              {user.role}
+              {user.role_name}
             </span>
           </div>
 
