@@ -62,8 +62,6 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "message_id": message_id,
                 "sender_id": sender_id
             }
-            # print(payload)
-
             
             # file_data_with_msg_id = {
             #     "message_id": message_id,

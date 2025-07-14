@@ -8,6 +8,7 @@ from app.core.exceptions import (
     InternalServerException
 )
 
+from uuid import UUID
 
 class RoleService:
     def __init__(self):
@@ -68,3 +69,7 @@ class RoleService:
             logging.error(f"역할 삭제 서비스 오류 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
             raise InternalServerException("역할을 삭제하는 중 오류가 발생했습니다")
 
+    # 미완
+    def delete_member_roles(self, user_id: str, workspace_id: int) -> bool:
+        result = self.repo.delete_mem_role(UUID(user_id).bytes, workspace_id)
+        return result

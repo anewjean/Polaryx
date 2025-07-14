@@ -1,6 +1,8 @@
 version: "3"
 services:
   frontend:
+    env_file:
+      - .envf
     image: 897729099078.dkr.ecr.ap-northeast-2.amazonaws.com/slam-server-front:latest
     ports:
       - "3000:3000"
@@ -8,7 +10,7 @@ services:
 
   backend:
     env_file:
-      - .env
+      - .envb
     image: 897729099078.dkr.ecr.ap-northeast-2.amazonaws.com/slam-server:latest
     ports:
       - "8000:8000"
