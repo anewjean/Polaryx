@@ -224,7 +224,7 @@ export default function ProfilePage() {
                     <img
                       src={preview || profile?.image || "/user_default.png"}
                       alt="profile_image"
-                      className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+                      className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden object-cover"
                     />
                     <input
                       type="file"
