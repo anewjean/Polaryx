@@ -33,7 +33,7 @@ WHERE workspace_id = %(workspace_id)s
 """
 
 find_tab = """
-SELECT DISTINCT
+SELECT
   t.id,
   t.name,
   t.section_id,
@@ -118,9 +118,10 @@ VALUES (%(tab_name)s, %(workspace_id)s, %(section_id)s);
 """
 
 insert_tab_members = """
-INSERT INTO tab_members 
-    (workspace_id, user_id, tab_id)
-VALUES (%(workspace_id)s, %(user_id)s, %(tab_id)s);
+INSERT INTO tab_members (workspace_id, user_id, tab_id, user_name)
+SELECT %(workspace_id)s, %(user_id)s, %(tab_id)s, wm.nickname
+FROM workspace_members wm
+WHERE wm.user_id = %(user_id)s AND wm.workspace_id = %(workspace_id)s;
 """
 
 # 미완

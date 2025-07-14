@@ -62,13 +62,11 @@ CREATE TABLE IF NOT EXISTS `group_members` (
     user_id BINARY(16) NOT NULL,
     user_name VARCHAR(32) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT NULL,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
     UNIQUE KEY uq_group_user (group_id, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `roles` (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER NOT NULL,
     name VARCHAR(32) NOT NULL,
     workspace_id INTEGER NOT NULL,
     admin BOOLEAN NOT NULL,
@@ -78,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL,
-    UNIQUE KEY uq_role (name, workspace_id)
+    UNIQUE KEY uq_role (id, workspace_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `member_roles` (
@@ -91,8 +89,7 @@ CREATE TABLE IF NOT EXISTS `member_roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `sections` (
-    uid INTEGER AUTO_INCREMENT PRIMARY KEY,
-    id INTEGER,
+    id INTEGER NOT NULL,
     workspace_id INTEGER NOT NULL,
     name VARCHAR(64) NOT NULL,
     UNIQUE KEY uq_section (id, workspace_id, name)
