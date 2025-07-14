@@ -40,7 +40,7 @@ class TabService:
     def find_by_unique_key(self, workspace_id: int, tab_name: str, section_id: int):
         return self.repo.find_by_uq(workspace_id, tab_name, section_id)
 
-    def get_tab_members(self, workspace_id: int, tab_id: int): 
+    async def get_tab_members(self, workspace_id: int, tab_id: int): 
         return self.repo.find_members(workspace_id, tab_id)
 
     def get_available_tab_members(self, workspace_id: int, tab_id: int):
