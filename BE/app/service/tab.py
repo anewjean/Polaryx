@@ -26,7 +26,7 @@ class TabService:
         rows = self.find_by_unique_key(workspace_id, tab_name, section_id)
         tab_id = rows[0][0]
         self.invite_members(workspace_id, tab_id, user_ids)
-        return rows
+        return rows[0]
 
     def insert_tab(self, workspace_id: int, tab_name: str, section_id: int):
         return self.repo.insert(workspace_id, tab_name, section_id)
