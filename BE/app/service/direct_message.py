@@ -8,10 +8,17 @@ class DMService:
         self.repo = DMRepository()
         self.tab_service = TabService()
 
-    def get_tab(self, user_ids: List, workspace_id: int, tab_name: str, section_id: int):
-        tab = self.tab_service.find_by_unique_key(workspace_id, tab_name, section_id)
-        if tab:
-            return tab
+    def get_tab(self, creator_id: str, user_ids: List[str], workspace_id: int, tab_name: str, section_id: int):
+        # 멤버 구성으로 이미 생성된 방 찾기
+        tabs = self.tab_service.find_tabs(workspace_id, creator_id)
+        for tab_info in tabs:
+            tab_id = tab_info[0]
+            section_id = tab_info[2]
+            members = self.tab_service.get_tab_members(workspace_id, tab_id)
+            if section_id == 4 and set(member[0].hex() for member in members) == set(user_ids):
+                return tab_info
+
+        # 방이 없다면 생성하기    
         return self.tab_service.create_tab(user_ids, workspace_id, tab_name, section_id)
 
     def find_member_names(self, user_ids: List) -> Dict[str, str]:

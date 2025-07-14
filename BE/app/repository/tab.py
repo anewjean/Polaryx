@@ -33,7 +33,7 @@ WHERE workspace_id = %(workspace_id)s
 """
 
 find_tab = """
-SELECT DISTINCT
+SELECT
   t.id,
   t.name,
   t.section_id,
