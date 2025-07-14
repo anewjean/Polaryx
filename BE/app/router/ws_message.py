@@ -58,12 +58,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "content": content,
                 "nickname": nickname,
                 "image": image,
-                "created_at": str(datetime.now(ZoneInfo("Asia/Seoul")).isoformat()),    # 하드코딩으로 진행, 나중에 수정해주세요
+                "created_at": str(datetime.now(ZoneInfo("Asia/Seoul")).isoformat()),
                 "message_id": message_id,
                 "sender_id": sender_id
             }
-            # print(payload)
-
             
             # file_data_with_msg_id = {
             #     "message_id": message_id,
