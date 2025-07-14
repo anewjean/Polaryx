@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { EllipsisVertical, KeyRound } from "lucide-react"
+import { EllipsisVertical, KeyRound, Trash2, SquarePen, UsersRound } from "lucide-react"
 import { EditRoleDialog } from "./EditRoleDialog"
 
 export type OnGroupUpdated = () => void;
@@ -40,10 +40,22 @@ export function ActionMenu({ group, onRefresh }: ActionMenuProps) {
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="start" side="bottom" alignOffset={4} sideOffset={4}>
+          <DropdownMenuItem>
+            <SquarePen className="mr-2 h-4 w-4" />
+            <span>이름 수정</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UsersRound className="mr-2 h-4 w-4" />
+            <span>회원 추가/삭제</span>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsEditRoleDialogOpen(true)}>
             <KeyRound className="mr-2 h-4 w-4" />
             <span>역할 수정</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem variant="destructive">
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>그룹 삭제</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -39,7 +39,7 @@ export function ActionMenu({ userId, userName, roleId, onUserUpdated }: ActionMe
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">            
+        <DropdownMenuContent align="start" side="bottom" alignOffset={4} sideOffset={4}>            
           <DropdownMenuItem>
             <SquareUserRound className="h-4 w-4 mr-2" />
             프로필 보기
@@ -66,7 +66,7 @@ export function ActionMenu({ userId, userName, roleId, onUserUpdated }: ActionMe
             onClick={() => setIsDeleteDialogOpen(true)}
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            삭제
+            회원 삭제
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

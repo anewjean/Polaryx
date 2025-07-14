@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { EllipsisVertical, KeyRound, Trash2 } from "lucide-react"
+import { EllipsisVertical, KeyRound, Trash2, SquarePen, UsersRound } from "lucide-react"
 
 // 절대 경로로 임포트
 import { DeleteRoleDialog } from "@/components/Administration/RoleActions/DeleteRoleDialog"
@@ -34,17 +34,21 @@ export function ActionMenu({ role, onRoleUpdated }: ActionMenuProps) {
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">            
+        <DropdownMenuContent align="start" side="bottom" alignOffset={4} sideOffset={4}>            
           <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
-            <KeyRound className="h-4 w-4 mr-2" />
-            역할 수정
+            <SquarePen className="h-4 w-4 mr-2" />
+            이름/권한 수정
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
+            <UsersRound className="h-4 w-4 mr-2" />
+            회원 추가/삭제
           </DropdownMenuItem>
           <DropdownMenuItem 
             onClick={() => setIsDeleteDialogOpen(true)}
             className="text-destructive focus:text-destructive"
           >
             <Trash2 className="h-4 w-4 mr-2" />
-            삭제
+            역할 삭제
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
