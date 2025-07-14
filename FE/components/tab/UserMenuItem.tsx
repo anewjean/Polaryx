@@ -5,6 +5,8 @@ import { Plus, CircleCheck, Mail, SquareUserRound, AtSign } from "lucide-react";
 import clsx from "clsx";
 import { Member } from "@/apis/tabApi";
 import { Button } from "@/components/ui/button";
+import { useProfileStore } from "@/store/profileStore";
+import { useCreateDM } from "@/hooks/createDM";
 
 export interface UserMenuItemProps {
   user: Member;
@@ -19,6 +21,12 @@ export function UserMenuItem({
   onClick,
   isSelected,
 }: UserMenuItemProps) {
+  // DM방 생성
+  const createDM = useCreateDM();
+
+  // 프로필
+  const openProfile = useProfileStore((s) => s.openWithId);
+
   return (
     <SidebarMenuItem key={user.user_id}>
       <SidebarMenuButton
@@ -34,11 +42,15 @@ export function UserMenuItem({
         <div className="flex flex-row w-full justify-between items-center">
           <div className="flex items-end gap-2">
             <img
+              onClick={() => openProfile(user.user_id)}
               src={user.image || "/user_default.png"}
               alt={user.nickname}
-              className="w-[28px] aspect-square bg-gray-400 rounded-md object-cover"
+              className="w-[28px] aspect-square bg-gray-400 rounded-md object-cover cursor-pointer"
             />
-            <span className="text-lg font-bold text-gray-800 truncate">
+            <span
+              onClick={() => openProfile(user.user_id)}
+              className="text-lg font-bold text-gray-800 truncate cursor-pointer hover:underline"
+            >
               {user.nickname}
             </span>
             <span className="text-sm font-bold text-gray-400 truncate">
@@ -49,10 +61,20 @@ export function UserMenuItem({
           {/* default: DM 버튼 + Profile 버튼 */}
           {mode === "default" && (
             <div className="flex flex-row items-center gap-2 text-gray-400">
-              <Button variant="ghost" size="icon">
+              <Button
+                onClick={() => createDM(user.user_id)}
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer"
+              >
                 <AtSign className="size-6 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button
+                onClick={() => openProfile(user.user_id)}
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer"
+              >
                 <SquareUserRound className="size-6.5 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>
             </div>
