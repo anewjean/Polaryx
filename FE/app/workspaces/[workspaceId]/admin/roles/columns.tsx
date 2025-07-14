@@ -2,20 +2,20 @@
  
 import { ColumnDef } from "@tanstack/react-table"
 import { Member } from "@/apis/tabApi"
-import { Button } from "@/components/ui/button"
 import { Role } from "@/apis/roleApi"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { EllipsisVertical, SquareUserRound, Mail, KeyRound, Trash2, UserRound } from "lucide-react"
- 
+import { Badge } from "@/components/ui/badge"
+import { ActionMenu } from "@/components/Administration/RoleActions/ActionMenu"
+
+// 권한 ID와 표시 이름 매핑
+const permissionLabels: Record<string, string> = {
+  "admin": "Admin",
+  "announce": "Announcements",
+  "course": "Courses",
+  "channel": "Channels",
+  "dm": "Direct Message"
+}
+
 export const roleColumns: ColumnDef<Role>[] = [
-  
   {
     accessorKey: "role_name",
     header: "Role",
@@ -52,8 +52,16 @@ export const roleColumns: ColumnDef<Role>[] = [
       const permissions = row.getValue("permissions") as string[];
 
       return (
-        <div className="max-w-[300px] truncate" title={permissions.join(", ")}>
-          {permissions.join(", ")}
+        <div className="flex flex-wrap gap-1 max-w-[300px]">
+          {permissions.map((permission) => (
+            <Badge 
+              key={permission} 
+              variant="outline"
+              className="bg-gray-100 text-gray-800"
+            >
+              {permissionLabels[permission] || permission}
+            </Badge>
+          ))}
         </div>
       );
     }
@@ -65,20 +73,7 @@ export const roleColumns: ColumnDef<Role>[] = [
     cell: ({ row }) => {
       const role = row.original;
       
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">              
-              <EllipsisVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">            
-            <DropdownMenuItem><KeyRound className="h-4 w-4" />Edit Role</DropdownMenuItem>
-            <DropdownMenuItem><UserRound className="h-4 w-4" />Edit Members</DropdownMenuItem>                        
-            <DropdownMenuItem variant="destructive"><Trash2 className="h-4 w-4" />Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      return <ActionMenu role={role} onRoleUpdated={() => window.location.reload()} />;
     },
   }
 ]

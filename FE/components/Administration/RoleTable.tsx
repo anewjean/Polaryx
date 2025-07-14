@@ -1,56 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Role } from "@/apis/roleApi";
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { roleColumns } from "../../app/workspaces/[workspaceId]/admin/roles/columns";
-import { getRoles } from "@/apis/roleApi";
-import { useRouter } from "next/navigation";
+import { useRoleStore } from "@/store/roleStore";
 
 interface RoleTableProps {
   onRolesLoaded?: (count: number) => void;
+  onRefreshNeeded?: () => void;
 }
 
-export function RoleTable({ onRolesLoaded }: RoleTableProps = {}) {
+export function RoleTable({ onRolesLoaded, onRefreshNeeded }: RoleTableProps = {}) {
   const params = useParams();
-  const workspaceId = params.workspaceId;
+  const workspaceId = params.workspaceId as string;
 
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // 전역 상태에서 역할 데이터 가져오기
+  const { roles, loadingRoles, fetchRoles } = useRoleStore();
 
+  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        setIsLoading(true);
-        const roles = await getRoles(workspaceId as string);
-        setRoles(roles);
-        setIsLoading(false);
-        
-        // 역할 수를 외부로 전달
-        if (onRolesLoaded) {
-          onRolesLoaded(roles.length);
-        }
-      } catch (error) {
-        console.error("역할 조회에 실패했습니다.", error);
-        setIsLoading(false);
-      }
-    };
-    fetchRoles();
-  }, [workspaceId, onRolesLoaded]);
+    // 역할 데이터 불러오기
+    fetchRoles(workspaceId);
+  }, [workspaceId, fetchRoles]);
+
+  // 역할 수를 외부로 전달
+  useEffect(() => {
+    if (onRolesLoaded && roles.length > 0) {
+      onRolesLoaded(roles.length);
+    }
+  }, [roles, onRolesLoaded]);  
 
   const data = roles;
 
@@ -60,10 +39,10 @@ export function RoleTable({ onRolesLoaded }: RoleTableProps = {}) {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  if (isLoading) {
+  if (loadingRoles && roles.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>로딩중...</p>
+      <div className="flex items-center justify-center h-24">
+        <p>역할 정보를 불러오는 중...</p>
       </div>
     );
   }
