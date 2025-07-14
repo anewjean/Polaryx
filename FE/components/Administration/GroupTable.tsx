@@ -1,25 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Group } from "@/apis/groupApi";
+import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { useGroupStore } from "@/store/groupStore";
 import { groupColumns } from "../../app/workspaces/[workspaceId]/admin/groups/columns";
-import { getGroups } from "@/apis/groupApi";
-import { useRouter } from "next/navigation";
 
 interface GroupTableProps {
   onGroupsLoaded?: (count: number) => void;
@@ -27,30 +12,28 @@ interface GroupTableProps {
 
 export function GroupTable({ onGroupsLoaded }: GroupTableProps = {}) {
   const params = useParams();
-  const workspaceId = params.workspaceId;
+  const workspaceId = params.workspaceId as string;
 
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Zustand 스토어에서 그룹 데이터 가져오기
+  const { groups, loadingGroups, fetchGroups } = useGroupStore();
 
+  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        setIsLoading(true);
-        const groups = await getGroups(workspaceId as string);
-        setGroups(groups);
-        setIsLoading(false);
-        
-        // 그룹 수를 외부로 전달
-        if (onGroupsLoaded) {
-          onGroupsLoaded(groups.length);
-        }
-      } catch (error) {
-        console.error("그룹 조회에 실패했습니다.", error);
-        setIsLoading(false);
-      }
-    };
-    fetchGroups();
-  }, [workspaceId, onGroupsLoaded]);
+    // 그룹 데이터 불러오기
+    fetchGroups(workspaceId);
+  }, [workspaceId, fetchGroups]);
+
+  // 그룹 수를 외부로 전달
+  useEffect(() => {
+    if (onGroupsLoaded && groups.length > 0) {
+      onGroupsLoaded(groups.length);
+    }
+  }, [groups, onGroupsLoaded]);
+  
+  // 외부에서 새로고침 요청 시 호출될 함수
+  const handleRefresh = () => {
+    fetchGroups(workspaceId);
+  };
 
   const data = groups;
 
@@ -59,11 +42,17 @@ export function GroupTable({ onGroupsLoaded }: GroupTableProps = {}) {
     columns: groupColumns,
     getCoreRowModel: getCoreRowModel(),
   });
+  
+  // 액션 메뉴에 새로고침 함수 전달을 위한 컨텍스트 설정
+  const tableContextWithRefresh = {
+    table,
+    onRefresh: handleRefresh
+  };
 
-  if (isLoading) {
+  if (loadingGroups && groups.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p>로딩중...</p>
+      <div className="flex items-center justify-center h-24">
+        <p>그룹 정보를 불러오는 중...</p>
       </div>
     );
   }
