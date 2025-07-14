@@ -5,6 +5,12 @@ import { Plus, CircleCheck, Mail, SquareUserRound, AtSign } from "lucide-react";
 import clsx from "clsx";
 import { Member } from "@/apis/tabApi";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useProfileStore } from "@/store/profileStore";
+import { useTabStore } from "@/store/tabStore";
+import { useMyUserStore } from "@/store/myUserStore";
+import { sendDirectMessage } from "@/apis/messageApi";
 
 export interface UserMenuItemProps {
   user: Member;
@@ -19,6 +25,29 @@ export function UserMenuItem({
   onClick,
   isSelected,
 }: UserMenuItemProps) {
+  // URL에서 workspaceId 추출
+  const router = useRouter();
+  const params = useParams();
+  const workspaceId = params.workspaceId as string;
+  // 프로필
+  const openProfile = useProfileStore((s) => s.openWithId);
+  const refreshTabs = useTabStore((s) => s.refreshTabs);
+
+  // 현재 유저 ID 상태 관리
+  const userId = useMyUserStore((s) => s.userId);
+
+  // DM 생성 이벤트 핸들러
+  const createDM = async (userIds: string[], userId: string) => {
+    try {
+      const res = await sendDirectMessage(workspaceId, userIds, userId);
+      console.log("DM 생성 응답:", res);
+      refreshTabs(); // 탭 새로고침 상태 업데이트
+      router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
+    } catch (error) {
+      console.error("DM 생성 중 오류:", error);
+    }
+  };
+
   return (
     <SidebarMenuItem key={user.user_id}>
       <SidebarMenuButton
@@ -49,10 +78,23 @@ export function UserMenuItem({
           {/* default: DM 버튼 + Profile 버튼 */}
           {mode === "default" && (
             <div className="flex flex-row items-center gap-2 text-gray-400">
-              <Button variant="ghost" size="icon">
+              <Button
+                onClick={() => {
+                  if (userId) {
+                    const uniqueUserIds = new Set([userId, user.user_id]);
+                    createDM(Array.from(uniqueUserIds), userId);
+                  }
+                }}
+                variant="ghost"
+                size="icon"
+              >
                 <AtSign className="size-6 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>
-              <Button variant="ghost" size="icon">
+              <Button
+                onClick={() => openProfile(user.user_id)}
+                variant="ghost"
+                size="icon"
+              >
                 <SquareUserRound className="size-6.5 aspect-square text-gray-400 hover:text-gray-600" />
               </Button>
             </div>

@@ -24,7 +24,7 @@ export function MiniProfile({ senderId, imgSrc, nickname }: MiniProfileProps) {
   const openProfile = useProfileStore((s) => s.openWithId);
   const refreshTabs = useTabStore((s) => s.refreshTabs);
 
-  // // 현재 유저 ID 상태 관리
+  // 현재 유저 ID 상태 관리
   const userId = useMyUserStore((s) => s.userId);
 
   // DM 생성 이벤트 핸들러

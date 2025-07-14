@@ -15,14 +15,30 @@ import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
 import { CardFooter } from "@/components/ui/card";
 import { convertFileToBase64 } from "@/utils/fileUtils";
 import { useMyUserStore } from "@/store/myUserStore";
-
-type ProfileProps = { targetId?: string };
+import { sendDirectMessage } from "@/apis/messageApi";
+import { useTabStore } from "@/store/tabStore";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const myUserId = useMyUserStore((s) => s.userId);
+
+  // DM 생성 이벤트 핸들러
+  const refreshTabs = useTabStore((s) => s.refreshTabs);
+  const router = useRouter();
+
+  const createDM = async (userIds: string[], userId: string) => {
+    try {
+      const res = await sendDirectMessage(workspaceId, userIds, userId);
+      console.log("DM 생성 응답:", res);
+      refreshTabs(); // 탭 새로고침 상태 업데이트
+      router.replace(`/workspaces/${workspaceId}/tabs/${res.tab_id}`);
+    } catch (error) {
+      console.error("DM 생성 중 오류:", error);
+    }
+  };
 
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId } = useProfileStore();
@@ -170,6 +186,12 @@ export default function ProfilePage() {
         {/* 타인 프로필: DM 버튼 / 본인 프로필: 편집 버튼 / */}
         {myUserId !== bufferTargetId ? (
           <Button
+            onClick={() => {
+              if (myUserId && bufferTargetId) {
+                const uniqueUserIds = new Set([myUserId, bufferTargetId]);
+                createDM(Array.from(uniqueUserIds), myUserId);
+              }
+            }}
             variant="outline"
             size="sm"
             className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
@@ -180,6 +202,12 @@ export default function ProfilePage() {
         ) : (
           <div className="flex flex-1 flex-row gap-2">
             <Button
+              onClick={() => {
+                if (myUserId && bufferTargetId) {
+                  const uniqueUserIds = new Set([myUserId, bufferTargetId]);
+                  createDM(Array.from(uniqueUserIds), myUserId);
+                }
+              }}
               variant="outline"
               size="sm"
               className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
