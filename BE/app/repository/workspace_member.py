@@ -58,7 +58,6 @@ LEFT JOIN group_members gm ON wm.user_id = gm.user_id
 LEFT JOIN `groups` g ON gm.group_id = g.id
 WHERE wm.user_id = %(user_id)s
   AND wm.deleted_at IS NULL
-  AND gm.deleted_at IS NULL
 GROUP BY wm.user_id, wm.workspace_id, wm.nickname, wm.email, wm.image, r.name, wm.github, wm.blog;
 """
 
