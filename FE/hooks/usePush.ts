@@ -19,28 +19,30 @@ function urlBase64ToUint8Array(base64String: string) {
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string | undefined;
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
-export function usePush() {
-  useEffect(() => {
-    if (!PUBLIC_KEY || !BASE) return;
-    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      return;
-    }
-    Notification.requestPermission().then(async perm => {
-      if (perm !== 'granted') return;
-      const reg = await navigator.serviceWorker.register('/sw.js');
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
-      });
-      const token = localStorage.getItem('access_token');
-      if (!token) return;
 
-      const { user_id } = jwtDecode<{ user_id: string }>(token);
-      await fetch(`${BASE}/api/push/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, subscription: sub }),
+  export function usePush() {
+    useEffect(() => {
+      if (!PUBLIC_KEY || !BASE) return;
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        return;
+      }
+      Notification.requestPermission().then(async perm => {
+        if (perm !== 'granted') return;
+        const reg = await navigator.serviceWorker.register('/sw.js');
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
+        });
+        const token = localStorage.getItem('access_token');
+        if (!token) return;        // token이 없으면 중단
+
+        const { user_id } = jwtDecode<{ user_id: string }>(token);
+        await fetch(`${BASE}/api/push/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id, subscription: sub }),
+        });
       });
-    });
-  }, []);
-}
+    }, []);                        // 한 번만 실행
+  }
+

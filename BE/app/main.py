@@ -26,6 +26,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    max_age=0
 )
 app.include_router(router=ws_message.router, prefix="/api/ws")
 app.include_router(router=message.router, prefix="/api")

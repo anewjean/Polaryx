@@ -66,19 +66,21 @@ export const WebSocketClient = ({
 
          const { user_id } = jwtDecode<JWTPayload>(token);
              //  내가 보낸 메시지면 알림 안 띄움
-        if (rawMsg.sender_id === user_id) {
-          console.log("내 메시지 알림 생략");
-          return;
-        }
+       if (
+            rawMsg.sender_id === user_id
+          ) {
+            console.log("내 메시지이면서 현재 채널이면 알림 생략");
+            return;
+          }
       
 
-        console.log("알림 메시지 내용", msg.content)
-        if (Notification.permission === "granted") {
-          new Notification("새 메시지 도착", {
-            body: stripTags(msg.content) || "파일이 전송되었습니다.",
-            icon: "/icon.png",
-        });
-    }
+    //     console.log("알림 메시지 내용", msg.content)
+    //     if (Notification.permission === "granted") {
+    //       new Notification("새 메시지 도착", {
+    //         body: stripTags(msg.content) || "파일이 전송되었습니다.",
+    //         icon: "/icon.png",
+    //     });
+    // }
 
       } catch {
         console.warn("Invalid message format: ", event.data);

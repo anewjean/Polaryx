@@ -13,7 +13,13 @@ INSERT INTO push_subscriptions (
 """
 
 find_all_subscriptions = """
-SELECT endpoint, p256dh, auth FROM push_subscriptions;
+SELECT
+    LOWER(HEX(user_id)) AS user_id,
+    endpoint,
+    p256dh,
+    auth
+FROM push_subscriptions;
+
 """
 
 find_by_user = """
