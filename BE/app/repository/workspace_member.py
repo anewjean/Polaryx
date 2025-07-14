@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
@@ -50,7 +51,8 @@ SELECT
     r.name AS role,
     GROUP_CONCAT(DISTINCT g.name),
     wm.github,
-    wm.blog
+    wm.blog,
+    wm.id
 FROM workspace_members wm
 LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
 LEFT JOIN roles r ON mr.role_id = r.id
@@ -94,6 +96,14 @@ JOIN member_roles mr ON mr.user_id = wm.user_id
 JOIN roles r ON r.id = mr.role_id
 WHERE wm.workspace_id = %(workspace_id)s
 AND wm.deleted_at IS NULL;
+"""
+
+delete_wm_by_id = """
+UPDATE workspace_members
+SET 
+    deleted_at = %(deleted_at)s
+WHERE id = %(workspace_members_id)s
+  AND deleted_at IS NULL;
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -141,3 +151,9 @@ class QueryRepo(AbstractQueryRepo):
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
     
+    def delete_wm_by_id(self, id):
+        params = {
+            "workspace_members_id": id,
+            "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat()
+        }
+        return self.db.execute(delete_wm_by_id, params)

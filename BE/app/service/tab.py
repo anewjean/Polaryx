@@ -40,7 +40,7 @@ class TabService:
     def find_by_unique_key(self, workspace_id: int, tab_name: str, section_id: int):
         return self.repo.find_by_uq(workspace_id, tab_name, section_id)
 
-    def get_tab_members(self, workspace_id: int, tab_id: int): 
+    async def get_tab_members(self, workspace_id: int, tab_id: int): 
         return self.repo.find_members(workspace_id, tab_id)
 
     def get_available_tab_members(self, workspace_id: int, tab_id: int):
@@ -52,13 +52,13 @@ class TabService:
     async def exit_tab(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         users = self.repo.exit_members(workspace_id, tab_id, user_ids)
         users.sort()
-        print("in exit_tab, user_names: ", users)
         for user in users:
+            print("in exit_tab, user_names: ", user[0])
             # [0]: nickname, [1]: user_id, [2]: tab_name
             await connection.broadcast(workspace_id, tab_id, f"<p style='color: gray'>{user[0]}님이 {user[2]}에서 나갔습니다.</p>")
             await message_service.save_message(tab_id, 
                                                UUID(user[1]), 
                                                f"<p style='color: gray'>{user[0]}님이 {user[2]}에서 나갔습니다.</p>", 
                                                None)
-        return
+        return len(users)
     
