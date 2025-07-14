@@ -9,9 +9,6 @@ export async function fetchWithAuth(
   input: RequestInfo,
   init: RequestInit = {}
 ): Promise<Response | null> {
-  console.log("******** in FetchWithAuth ********");
-  console.log(input);
-  console.log(init["method"]);
   let accessToken = localStorage.getItem("access_token");
 
   if (!accessToken) {
@@ -25,8 +22,6 @@ export async function fetchWithAuth(
     Authorization: `Bearer ${accessToken}`,
   };
 
-  console.log("authHeaders : "+{authHeaders})
-
   init = {
     ...init,
     headers: authHeaders,
@@ -38,11 +33,14 @@ export async function fetchWithAuth(
 
   // 만약 토큰 만료 등으로 실패하면
   if (res.status === 401) {
+    console.log("401 fetch auth")
     try {
       const errBody = await res.clone().json();
-      const detail = errBody?.detail;
-
+      console.log("401 fetch auth", errBody)
+      const detail = errBody?.message;
+      
       if (detail === "EXPIRED TOKEN") {
+        console.log("401 fetch auth, EXPIRED TOKEN")
         const newAccessToken = await reissueAccessToken("EXPIRED TOKEN");
 
         if (!newAccessToken) {
@@ -73,8 +71,8 @@ export async function fetchWithAuth(
         return null;
       }
     } catch (e) {
+      console.log("401 fetch auth, err", e)
       console.error(input," json parse 실패", e);
-      // window.location.href = "/";
       return null;
     }
   }

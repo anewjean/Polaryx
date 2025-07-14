@@ -10,7 +10,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
-import { jwtDecode } from "jwt-decode";
 
 interface ChatProfileProps {
   senderId: string;
@@ -21,6 +20,7 @@ interface ChatProfileProps {
   content: string;
   showProfile: boolean;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 function isImageFile(url: string) {
@@ -36,6 +36,7 @@ export function ChatProfile({
   content,
   showProfile,
   fileUrl,
+  isUpdated,
 }: ChatProfileProps) {
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -139,10 +140,21 @@ export function ChatProfile({
                 {fileUrl && !isImageFile(fileUrl) && (
                   <FileDownload fileUrl={fileUrl} />
                 )}
-                <div
-                  className="message-content whitespace-pre-wrap break-words break-anywhere text-m"
-                  dangerouslySetInnerHTML={{ __html: safeHTML }}
-                />{" "}
+
+                <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
+                  <div
+                    className="mr-2"
+                    dangerouslySetInnerHTML={{ __html: safeHTML }}
+                  />
+                  {isUpdated ? (
+                    <span
+                      className="text-xs text-gray-500"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      (편집됨)
+                    </span>
+                  ) : null}
+                </div>
               </>
             )}
           </div>

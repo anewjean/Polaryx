@@ -9,6 +9,7 @@ interface Message {
   content: string;
   createdAt: string | undefined;
   fileUrl: string | null;
+  isUpdated: number;
 }
 
 interface MessageStore {

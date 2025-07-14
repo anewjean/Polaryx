@@ -26,7 +26,7 @@ update_message = """
 UPDATE messages
 SET 
     content = %(new_content)s,
-    is_updated = TRUE
+    is_updated = 1
 WHERE id = %(message_id)s
   AND sender_id = %(current_user_id)s -- 권한 검증
   AND deleted_at IS NULL;

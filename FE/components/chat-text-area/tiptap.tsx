@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./styles.scss";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -19,7 +19,6 @@ import Text from "@tiptap/extension-text";
 import Strike from "@tiptap/extension-strike";
 import Link from "@tiptap/extension-link";
 import { EditorContent, useEditor } from "@tiptap/react";
-import React, { useCallback } from "react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
 // import { useMessageProfileStore } from "@/store/messageProfileStore";
@@ -35,6 +34,15 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { jwtDecode } from "jwt-decode";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -42,7 +50,7 @@ const CustomEnter = Extension.create({
   addKeyboardShortcuts() {
     return {
       "Shift-Enter": () => true,
-      "Enter": () => true,
+      Enter: () => true,
     };
   },
 });
@@ -54,6 +62,11 @@ export function TipTap() {
   const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
   const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
   const [mounted, setMounted] = useState(false);
+
+  // 링크 다이얼로그 상태
+  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
+  const [linkText, setLinkText] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
 
   // 클라이언트에서만 mounted = true
   useEffect(() => {
@@ -69,11 +82,11 @@ export function TipTap() {
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } =
     useMessageStore();
-  // const { addProfile } = useMessageProfileStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
   // 중복 전송 방지 플래그.
+
   const editor = useEditor(
     {
       // immediatelyRender: false 제거해도 됨
@@ -99,55 +112,62 @@ export function TipTap() {
         Dropcursor,
         Image,
         Link.configure({
-          openOnClick: false,
+          openOnClick: true, // 링크 클릭 시 이동 가능
           autolink: true,
           defaultProtocol: "https",
           protocols: ["http", "https"],
           isAllowedUri: (url, ctx) => {
             try {
-              // construct URL
+              // URL 파싱
               const parsedUrl = url.includes(":")
                 ? new URL(url)
                 : new URL(`${ctx.defaultProtocol}://${url}`);
-              // use default validation
+
+              // 기본 검증 (XSS 방어 등) 통과하는지 확인
               if (!ctx.defaultValidate(parsedUrl.href)) {
                 return false;
               }
-              // disallowed protocols
+
+              // 금지 프로토콜 차단
               const disallowedProtocols = ["ftp", "file", "mailto"];
               const protocol = parsedUrl.protocol.replace(":", "");
               if (disallowedProtocols.includes(protocol)) {
                 return false;
               }
-              // only allow protocols specified in ctx.protocols
+
+              // 허용 프로토콜 검증
               const allowedProtocols = ctx.protocols.map((p) =>
                 typeof p === "string" ? p : p.scheme,
               );
               if (!allowedProtocols.includes(protocol)) {
                 return false;
               }
-              // disallowed domains
+
+              // 금지 도메인 차단
               const disallowedDomains = [
-                "example-phishing.com",
-                "malicious-site.net",
+                "example-phishing.com", // 예시 1
+                "malicious-site.net", // 예시 2
               ];
+
               const domain = parsedUrl.hostname;
               if (disallowedDomains.includes(domain)) {
                 return false;
               }
-              // all checks have passed
+
+              // 모든 검증 통과 시
               return true;
             } catch {
               return false;
             }
           },
+
+          // 오토 링크 처리 여부를 결정 (위랑 중복 아님)
           shouldAutoLink: (url) => {
             try {
-              // construct URL
               const parsedUrl = url.includes(":")
                 ? new URL(url)
                 : new URL(`https://${url}`);
-              // only auto-link if the domain is not in the disallowed list
+
               const disallowedDomains = [
                 "example-no-autolink.com",
                 "another-no-autolink.com",
@@ -174,31 +194,59 @@ export function TipTap() {
     }
   }, [tabId, editor]);
 
+  // 링크 다이얼로그 열기
+  const openLinkDialog = useCallback(() => {
+    if (!editor) return;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, " ") || "";
+    const previousUrl = editor.getAttributes("link").href || "";
+    setLinkText(selectedText);
+    setLinkUrl(previousUrl);
+    setIsLinkDialogOpen(true);
+  }, [editor]);
+
   const setLink = useCallback(() => {
     if (!editor) return;
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
-    // cancelled
-    if (url === null) {
+
+    // 기존 링크 해제
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+
+    // 빈 URL이면 그냥 닫기
+    if (linkUrl === "") {
+      setIsLinkDialogOpen(false);
       return;
     }
-    // empty
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-    // update link
-    try {
+
+    // 프로토콜이 없으면 https:// 붙이기
+    const href = /^https?:\/\//.test(linkUrl) ? linkUrl : `https://${linkUrl}`;
+    const { from, to } = editor.state.selection;
+
+    // 선택 영역이 있으면 대체, 없으면 삽입
+    if (from !== to) {
       editor
         .chain()
         .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
+        .deleteRange({ from, to })
+        .insertContentAt(from, {
+          type: "text",
+          text: linkText,
+          marks: [{ type: "link", attrs: { href } }],
+        })
         .run();
-    } catch (e) {
-      alert((e as Error).message);
+    } else {
+      editor
+        .chain()
+        .focus()
+        .insertContentAt(from, {
+          type: "text",
+          text: linkText,
+          marks: [{ type: "link", attrs: { href } }],
+        })
+        .run();
     }
-  }, [editor]);
+
+    setIsLinkDialogOpen(false);
+  }, [editor, linkText, linkUrl]);
 
   const { handleFileSelect } = useFilePreview(
     editor,
@@ -208,46 +256,47 @@ export function TipTap() {
     fileInputRef.current?.click(); // 숨겨진 input 클릭
   }, []);
 
-const handleSend = async () => {
-  let content = editor?.getHTML() || "";
+  const handleSend = async () => {
+    let content = editor?.getHTML() || "";
+    console.log(content);
 
-  // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
-  let prev;
-  do {
-    prev = content;
-    content = content
-      .replace(/(?:<p>(?:<br>)?<\/p>)+$/g, "") // 빈 단락
-      .replace(/<li><p>(?:<br>)?<\/p><\/li>/g, "") // 빈 리스트 항목
-      .replace(/<br\s*\/?>/g, ""); // 남아있는 <br> 모두 제거
-  } while (content !== prev);
+    // 빈 <p></p>, <p><br></p>, <li><p></p></li>, <li><p><br></p></li> 반복적으로 제거
+    let prev;
+    do {
+      prev = content;
+      content = content
+        .replace(/(?:<p>(?:<br>)?<\/p>)+$/g, "") // 빈 단락
+        .replace(/<li><p>(?:<br>)?<\/p><\/li>/g, "") // 빈 리스트 항목
+        .replace(/<br\s*\/?>/g, ""); // 남아있는 <br> 모두 제거
+    } while (content !== prev);
 
-  if (!content.trim()) return;
-  setMessage(content);
-  setSendFlag(true);
-  editor?.commands.clearContent();
-};
+    if (!content.trim()) return;
+    setMessage(content);
+    setSendFlag(true);
+    editor?.commands.clearContent();
+  };
 
   // 서버사이드에서는 아무것도 렌더링하지 않음
   // 스켈레톤 이미지 (로딩중일 때 보여줌)
   if (!mounted) {
     return (
-    <div className="chat-text-area border border-gray-300 rounded-[7px]">
-      <input style={{ display: "none" }} />
-      {/* 툴바 스켈레톤 */}
-      <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
-        <div className="flex gap-2">
-          {/* 툴바 버튼 5개 정도 */}
-          {[...Array(5)].map((_, i) => (
-            <Skeleton key={i} className="w-9 h-9 rounded-md" />
-          ))}
+      <div className="chat-text-area border border-gray-300 rounded-[7px]">
+        <input style={{ display: "none" }} />
+        {/* 툴바 스켈레톤 */}
+        <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
+          <div className="flex gap-2">
+            {/* 툴바 버튼 5개 정도 */}
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="w-9 h-9 rounded-md" />
+            ))}
+          </div>
+        </div>
+        {/* 에디터 스켈레톤 */}
+        <div className="editor-container flex px-[15px] py-[10px]">
+          <Skeleton className="h-6 w-[20%] rounded-md" />
         </div>
       </div>
-      {/* 에디터 스켈레톤 */}
-      <div className="editor-container flex px-[15px] py-[10px]">
-        <Skeleton className="h-6 w-[20%] rounded-md" />
-      </div>
-    </div>
-    ) 
+    );
   }
 
   if (!editor) {
@@ -263,8 +312,44 @@ const handleSend = async () => {
         style={{ display: "none" }}
       />
       <div className="toolbar-container rounded-t-[7px]">
-        <ToolBar editor={editor} setLink={setLink} addImage={addImage} />
+        <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
       </div>
+
+      {/* 링크 추가 다이얼로그 */}
+      <AlertDialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl mb-2">
+              링크 추가
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-2">
+            <>
+              <p className="text-m-bold">텍스트</p>
+              <input
+                type="text"
+                className="border rounded-md px-2 py-1.5 mb-2"
+                value={linkText}
+                onChange={(e) => setLinkText(e.target.value)}
+              />
+            </>
+            <>
+              <p className="text-m-bold">링크</p>
+              <input
+                type="text"
+                className="border rounded-md px-2 py-1.5"
+                value={linkUrl}
+                onChange={(e) => setLinkUrl(e.target.value)}
+              />
+            </>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction onClick={setLink}>저장</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="editor-container flex">
         <EditorContent
           editor={editor}
@@ -282,10 +367,17 @@ const handleSend = async () => {
               if (isComposingRef.current) return;
               event.preventDefault();
               if (event.shiftKey) {
-                // 리스트 안이면 새 리스트 항목, 아니면 새 단락
-                if (editor.isActive("bulletList") || editor.isActive("orderedList")) {
+                if (
+                  // 리스트 안이면 새 리스트 항목
+                  editor.isActive("bulletList") ||
+                  editor.isActive("orderedList")
+                ) {
                   editor.commands.splitListItem("listItem");
+                } else if (editor.isActive("codeBlock")) {
+                  // 코드블록 안이면 줄바꿈
+                  editor.commands.newlineInCode();
                 } else {
+                  // 아니면 새 단락
                   editor.commands.splitBlock();
                 }
               } else {

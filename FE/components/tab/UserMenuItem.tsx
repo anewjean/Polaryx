@@ -36,7 +36,7 @@ export function UserMenuItem({
             <img
               src={user.image || "/user_default.png"}
               alt={user.nickname}
-              className="w-[28px] aspect-square bg-gray-400 rounded-md"
+              className="w-[28px] aspect-square bg-gray-400 rounded-md object-cover"
             />
             <span className="text-lg font-bold text-gray-800 truncate">
               {user.nickname}

@@ -133,7 +133,7 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             # 이건 개선 해야 하는 곳.
             # 회원 목록에 없다면, 관리자 문의 페이지로 이동시켜야 함.
             if not user_INdb:
-                print("Failed")
+                print("auth_callback, Failed")
                 raise HTTPException(status_code=400, detail="User is not in DB")
             ########################################
             
@@ -149,13 +149,13 @@ async def auth_callback(provider: Provider, code: str, response:Response):
                       }
                 
                 TokenSerive.save_refresh_token_to_db(res_data)
-                print("REFRESH_TOKEN_EXPIRE_MINUTES: ", REFRESH_TOKEN_EXPIRE_MINUTES)
+                print("auth_callback, REFRESH_TOKEN_EXPIRE_MINUTES: ", REFRESH_TOKEN_EXPIRE_MINUTES)
                 response.set_cookie(
                     key="refresh_token",
                     value=jwt_refresh_token,
                     httponly=True,
                     secure=True,
-                    samesite="None",                    
+                    samesite="None",
                     max_age= 60*REFRESH_TOKEN_EXPIRE_MINUTES
                 )
 

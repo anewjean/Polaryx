@@ -8,10 +8,10 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-    id, user_id, workspace_id, nickname, email, image
+    id, user_id, workspace_id, nickname, email
 )
 VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s, default
+    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s
 );
 """
 
@@ -89,6 +89,14 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'workspace_members';
 """
 
+find_nickname_email_image_by_workspace_id = """
+SELECT wm.nickname, wm.email, wm.image, r.name FROM workspace_members wm
+JOIN member_roles mr ON mr.user_id = wm.user_id
+JOIN roles r ON r.id = mr.role_id
+WHERE wm.workspace_id = %(workspace_id)s
+AND wm.deleted_at IS NULL;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -120,6 +128,16 @@ class QueryRepo(AbstractQueryRepo):
             "user_id": user_id
         }
         return self.db.execute(find_member_by_user_id, param)
+    
+    def find_by_user_workspace_id(self, workspace_id: int) -> WorkspaceMember:
+        param = {
+            "workspace_id": workspace_id
+        }
+        # [0]: nickname
+        # [1]: email
+        # [2]: image
+        # [3]: role_name
+        return self.db.execute(find_nickname_email_image_by_workspace_id, param)
 
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
