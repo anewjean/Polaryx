@@ -11,21 +11,14 @@ export interface Tab {
   members?: Member[] | null;
 }
 
-const dummyTab: Tab = {
-  tab_id: -1,
-  tab_name: "none",
-  section_id: -1,
-  section_name: "none",
-  members_count: null,
-  members: null,
-};
-
 export interface Member {
   user_id: string;
   nickname: string;
   image?: string | null;
-  role: string;
-  groups?: string[] | [];
+  role_id?: number;
+  role_name: string;
+  group_id?: number[] | [];
+  group_name?: string[] | [];
 }
 
 /* 탭 이름 중복 확인 */
@@ -43,13 +36,8 @@ export async function checkTabName(
       },
     },
   );
-  if (res == null) {
-    console.log("NOT REACH - checkTabName");
-    return false;
-  } else {
-    if (!res.ok) throw new Error("탭 이름 중복 확인 실패");
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("탭 이름 중복 확인 실패");
+  return res.json();
 }
 
 /* 탭 정보(이름, 인원 수) 조회 */
@@ -67,15 +55,8 @@ export async function getTabInfo(
     },
   );
 
-  if (res == null) {
-    console.log("NOT REACH - getTabInfo");
-    return dummyTab;
-  } else {
-    if (!res.ok) {
-      console.error(`탭 정보 조회 실패: ${res.status}`);
-    }
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("탭 정보 조회 실패");
+  return res.json();
 }
 
 /* 탭 리스트 조회 */
@@ -90,15 +71,8 @@ export async function getTabList(workspaceId: string): Promise<Tab[]> {
     },
   );
 
-  if (res == null) {
-    return [];
-  } else {
-    if (!res.ok) {
-      console.error(`탭 리스트 조회 실패: ${res.status}`);
-    }
-
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("탭 리스트 조회 실패");
+  return res.json();
 }
 
 /* 탭 추가 (섹션 타입, 탭 이름, 참여자 id 필요) */
@@ -123,13 +97,8 @@ export async function createTab(
     },
   );
 
-  if (res == null) {
-    console.log("NOT REACH - createTab");
-    return dummyTab;
-  } else {
-    if (!res.ok) throw new Error("탭 추가 실패");
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("탭 추가 실패");
+  return res.json();
 }
 
 /* 탭 참여 인원 조회 */
@@ -146,13 +115,9 @@ export async function getMemberList(
       },
     },
   );
-  if (res == null) {
-    console.log("NOT REACH - getMemberList");
-    return [];
-  } else {
-    if (!res.ok) throw new Error("탭 참여 인원 조회 실패");
-    return res.json();
-  }
+  if (res == null) return [];
+  if (!res.ok) throw new Error("탭 참여 인원 조회 실패");
+  return res.json();
 }
 
 /* 탭 참여 가능 인원 조회 */
@@ -169,13 +134,9 @@ export async function getPossibleMemberList(
       },
     },
   );
-  if (res == null) {
-    console.log("NOT REACH - getPossibleMemberList");
-    return [];
-  } else {
-    if (!res.ok) throw new Error("탭 참여 가능 인원 조회 실패");
-    return res.json();
-  }
+  if (res == null) return [];
+  if (!res.ok) throw new Error("탭 참여 가능 인원 조회 실패");
+  return res.json();
 }
 
 /* 탭 인원 초대 */
@@ -195,11 +156,6 @@ export async function postMemberList(
       body: JSON.stringify({ user_ids: userIds }),
     },
   );
-  if (res == null) {
-    console.log("NOT REACH - postMemberList");
-    return [];
-  } else {
-    if (!res.ok) throw new Error("탭 참여 인원 추가 실패");
-    return res.json();
-  }
+  if (res == null || !res.ok) throw new Error("탭 참여 인원 추가 실패");
+  return res.json();
 }
