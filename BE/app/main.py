@@ -26,7 +26,7 @@ from app.router import notification
 from app.router import db
 from app.router import role
 from app.router import group
-
+from app.router import sse  # SSE
 
 load_dotenv()
 
@@ -54,6 +54,7 @@ app.include_router(router=workspace.router, prefix="/api")
 app.include_router(router=direct_message.router, prefix="/api")
 app.include_router(router=db.router, prefix="/api")
 app.include_router(router=role.router, prefix="/api")
+app.include_router(router=sse.router, prefix="/api")
 
 # 예외 핸들러 등록
 app.add_exception_handler(CustomHTTPException, custom_http_exception_handler)

@@ -124,6 +124,17 @@ VALUE (
 );
 """
 
+bulk_insert_member_roles = """
+INSERT INTO member_roles (
+    user_id, role_id, user_name
+)
+SELECT %(user_id)s   AS user_id,
+       %(user_name)s AS user_name,
+       r.id          AS role_id
+FROM roles r
+WHERE r.name = %(role_name)s;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -132,11 +143,14 @@ class QueryRepo(AbstractQueryRepo):
     def get_all_roles(self):
         return self.db.execute(select_roles)
 
+    def bulk_insert_member_roles(self, member_roles_list: list):
+        return self.db.execute_many(bulk_insert_member_roles, member_roles_list)
+
     def insert_member_roles(self, data: dict):
         params = {
             "user_id": data["user_id"],
             "user_name": data["nickname"],
-            "role_id": data["role_id"]
+            "role_name": data["role"]
         }
         return self.db.execute(insert_member_roles, params)
     

@@ -9,11 +9,25 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-    id, user_id, workspace_id, nickname, email
+    id, user_id, workspace_id, nickname, email, github, blog
 )
-VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s
-);
+SELECT 
+    %(id)s AS id,
+    u.id AS user_id,
+    %(workspace_id)s AS workspace_id,
+    %(nickname)s AS nickname,
+    %(email)s AS email,
+    %(github)s AS github,
+    %(blog)s AS blog
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM workspace_members wm 
+    WHERE wm.user_id = u.id 
+      AND wm.workspace_id = %(workspace_id)s
+      AND wm.deleted_at IS NULL
+  );
 """
 
 update_workspace_member = """
@@ -117,8 +131,8 @@ class QueryRepo(AbstractQueryRepo):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
 
-    def insert_workspace_member(self, data: dict):
-        return self.db.execute(insert_workspace_member, data)
+    def bulk_insert_workspace_member(self, data: dict):
+        return self.db.execute_many(insert_workspace_member, data)
 
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {
