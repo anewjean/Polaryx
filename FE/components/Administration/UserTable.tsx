@@ -1,55 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Profile } from "@/apis/profileApi";
+import { toast } from "sonner";
+import { Ban } from "lucide-react";
+import { useUserStore } from "@/store/userStore";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Profile } from "@/apis/profileApi";
 import { userColumns as defaultUserColumns } from "../../app/workspaces/[workspaceId]/admin/users/columns";
-import { getUsers } from "@/apis/userApi";
 
 interface UserTableProps {
   onUsersLoaded?: (count: number) => void;
-  onRefreshNeeded?: () => void;
   userColumns?: ColumnDef<Profile>[];
+  onRefreshNeeded?: () => void;
 }
 
-export function UserTable({ onUsersLoaded, onRefreshNeeded, userColumns }: UserTableProps = {}) {
+export function UserTable({ onUsersLoaded, userColumns, onRefreshNeeded }: UserTableProps = {}) {
   const params = useParams();
-  const workspaceId = params.workspaceId;
+  const workspaceId = params.workspaceId as string;
 
+  // userStore에서 상태와 함수 가져오기
+  const { users: storeUsers, loadingUsers, fetchUsers: fetchUsersFromStore, triggerRefresh } = useUserStore();
+  
+  // 로컬 상태 (필요한 경우)
   const [users, setUsers] = useState<Profile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 사용자 목록 업데이트 (스토어 데이터 -> 로컬 상태)
+  useEffect(() => {
+    if (storeUsers && storeUsers[workspaceId]) {
+      setUsers(storeUsers[workspaceId]);
+      if (onUsersLoaded) {
+        onUsersLoaded(storeUsers[workspaceId].length);
+      }
+    }
+  }, [storeUsers, workspaceId, onUsersLoaded]);
+
   // 사용자 목록 불러오기 함수
-  const fetchUsers = async () => {
+  const loadUsers = async () => {
     try {
       setIsLoading(true);
-      const users = await getUsers(workspaceId as string);
-      setUsers(users);
+      await fetchUsersFromStore(workspaceId);
       setIsLoading(false);
-      
-      // 사용자 수를 외부로 전달
-      if (onUsersLoaded) { onUsersLoaded(users.length); }
     } catch (error) {
       console.error("유저 조회에 실패했습니다.", error);
       setIsLoading(false);
     }
   };
 
-  // 사용자 목록을 새로고칠 때 외부 함수도 호출
+  // 사용자 목록을 새로고침하는 함수
   const refreshData = async () => {
-    await fetchUsers();
-    // 외부에서 전달받은 새로고침 함수가 있다면 호출
-    if (onRefreshNeeded) { onRefreshNeeded(); }
+    await loadUsers();
+    if (onRefreshNeeded) {
+      onRefreshNeeded();
+    }
   };
 
   // 컴포넌트 마운트 시 사용자 목록 불러오기
-  useEffect(() => { refreshData(); }, [workspaceId]);
+  useEffect(() => { 
+    refreshData(); 
+  }, [workspaceId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const data = users;
 

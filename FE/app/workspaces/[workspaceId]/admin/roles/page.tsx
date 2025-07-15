@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { createRole } from "@/apis/roleApi";
+import { useRoleStore } from "@/store/roleStore";
 
 export default function RoleTablePage() {
   // URL에서 workspaceId 추출
@@ -23,10 +24,12 @@ export default function RoleTablePage() {
     setRoleCount(count);
   };
 
-  // 새로고침 트리거 상태 관리
-  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);  
+  // 전역 상태의 새로고침 트리거 가져오기
+  const { refreshTrigger, triggerRefresh } = useRoleStore();
+  
+  // 새로고침 트리거 함수
   const handleRefreshNeeded = () => {
-    setRefreshTrigger(prev => prev + 1); // 새로고침 트리거
+    triggerRefresh(); // 전역 상태의 새로고침 트리거 업데이트
   };
 
   // 사용 가능한 권한 목록
@@ -130,7 +133,7 @@ export default function RoleTablePage() {
         handleModalOpenChange(false);
 
         // 새로고침 트리거
-        handleRefreshNeeded();
+        triggerRefresh();
       } else {
         toast.error("역할 생성에 실패했습니다", {
           icon: <Ban className="size-5" />,
@@ -190,7 +193,7 @@ export default function RoleTablePage() {
                             checked === true,
                           )
                         }
-                        disabled={permission.id === "direct_message"} // direct_message는 비활성화
+                        disabled={permission.id === "dm"} // dm은 항상 포함되므로 비활성화
                       />
                       <Label htmlFor={`permission-${permission.id}`}>
                         {permission.name}
@@ -225,7 +228,8 @@ export default function RoleTablePage() {
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <RoleTable 
           onRolesLoaded={handleRolesLoaded} 
-          key={refreshTrigger} // 새로고침 트리거가 변경되면 컴포넌트 재렌더링
+          key={refreshTrigger} // 전역 상태의 새로고침 트리거가 변경되면 컴포넌트 재렌더링
+          onRefreshNeeded={handleRefreshNeeded}
         />
       </div>
     </div>

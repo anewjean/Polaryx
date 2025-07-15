@@ -17,27 +17,16 @@ export default function GroupTablePage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // 전역 상태에서 그룹 데이터 가져오기
-  const { groups, fetchGroups } = useGroupStore();
-  
-  // 컴포넌트 마운트 시 그룹 데이터 불러오기
-  useEffect(() => {
-    fetchGroups(workspaceId);
-  }, [workspaceId, fetchGroups]);
-  
-  // 그룹 수 업데이트
-  useEffect(() => {
-    if (groups.length > 0) {
-      setGroupCount(groups.length);
-    }
-  }, [groups]);
+  const { fetchGroups, refreshTrigger: globalRefreshTrigger } = useGroupStore();
 
   const handleGroupsLoaded = (count: number) => {
     setGroupCount(count);
   };
   
+  // 그룹 목록 새로고침 함수
   const handleRefresh = () => {
-    fetchGroups(workspaceId);
-    setRefreshTrigger(prev => prev + 1);
+    // 전역 상태의 새로고침 트리거 업데이트
+    useGroupStore.getState().triggerRefresh();
   };
 
   return (
@@ -60,7 +49,8 @@ export default function GroupTablePage() {
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <GroupTable 
           onGroupsLoaded={handleGroupsLoaded} 
-          key={refreshTrigger} // 새로고침 트리거 변경 시 컴포넌트 재렌더링
+          key={globalRefreshTrigger} 
+          onRefreshNeeded={handleRefresh}
         />
       </div>
     </div>

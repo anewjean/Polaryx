@@ -8,14 +8,25 @@ import { groupColumns } from "../../app/workspaces/[workspaceId]/admin/groups/co
 
 interface GroupTableProps {
   onGroupsLoaded?: (count: number) => void;
+  onRefreshNeeded?: () => void;
 }
 
-export function GroupTable({ onGroupsLoaded }: GroupTableProps = {}) {
+export function GroupTable({ onGroupsLoaded, onRefreshNeeded }: GroupTableProps = {}) {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
 
   // Zustand 스토어에서 그룹 데이터 가져오기
   const { groups, loadingGroups, fetchGroups } = useGroupStore();
+  
+  // 외부에서 새로고침 요청 시 호출될 함수
+  const handleRefresh = () => {
+    fetchGroups(workspaceId);
+    
+    // 외부에 새로고침 요청 전달
+    if (onRefreshNeeded) {
+      onRefreshNeeded();
+    }
+  };
 
   // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
@@ -29,11 +40,6 @@ export function GroupTable({ onGroupsLoaded }: GroupTableProps = {}) {
       onGroupsLoaded(groups.length);
     }
   }, [groups, onGroupsLoaded]);
-  
-  // 외부에서 새로고침 요청 시 호출될 함수
-  const handleRefresh = () => {
-    fetchGroups(workspaceId);
-  };
 
   const data = groups;
 
