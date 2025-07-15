@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Gothic+Coding:wght@400;700&family=Noto+Serif+KR&family=Zen+Antique+Soft&display=swap");
 @layer theme, base, components, utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -46,6 +47,10 @@
 }
 
 :root {
+  --font-gowun-dodum: "Gowun Dodum", sans-serif;
+  --font-nanum-gothic-coding: "Nanum Gothic Coding", monospace;
+  --font-noto-serif-kr: "Noto Serif KR", serif;
+  --font-tinos: "Tinos", serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -126,14 +131,21 @@
 
 /* font 관련 설정 */
 
+/* 한글일 경우 강제로 Noto Sans KR */
+:lang(ko) {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+}
+
 /* 영어만 있을 경우 Lato로 */
 :lang(en) {
   font-family: var(--font-lato), sans-serif;
 }
 
-/* 한글일 경우 강제로 Noto Sans KR */
-:lang(ko) {
-  font-family: var(--font-noto-sans-kr), sans-serif;
+/* 로고 글씨체 */
+.zen-antique-soft-regular {
+  font-family: "Zen Antique Soft", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 /* italic 설정 */
