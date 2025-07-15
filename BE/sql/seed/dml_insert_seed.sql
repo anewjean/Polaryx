@@ -22,8 +22,7 @@ INSERT INTO jungle_slam.group_members (group_id,user_id,user_name) VALUES
     (4, UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), '이찬석'),
     (1, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채'),
     (2, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채'),
-    (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채'),
-    ;
+    (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채');
 
 INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_name, created_at) VALUES
      (2, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '질문이 있습니다', 0, '박은채', '2024-07-08 07:20:16'),
@@ -278,7 +277,7 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'박은채','ghkqh09@gmail.com','google','116758020634952483923',1),
      (UNHEX('CEF6C2175C1711F0A8650242AC110002'),'유윤선코치님','uuu@gmail.com','local',NULL,1),
      (UNHEX('E662D0245C8511F0A8650242AC110002'),'손채민','sonchaemin89@gmail.com','local',NULL,1),
-     (UNHEX('E2EB5DE9609D11F0A5420242AC110002'),'김민중','91minjung@gmail.com','google',1);
+     (UNHEX('E2EB5DE9609D11F0A5420242AC110002'),'김민중','91minjung@gmail.com','google', NULL, 1);
 
 INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,email,image,github,blog) VALUES
     (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', NULL, NULL, NULL),
@@ -299,7 +298,7 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
     (UNHEX('E0DBC45F5C1711F0A8650242AC110002'), UNHEX('CEF6C2175C1711F0A8650242AC110002'), 1, '유윤선코치님', 'uuu@gmail.com', 'https://velog.velcdn.com/images/seeh_h/post/a83a9cf0-2365-4946-9d0d-96ec782c4c86/image.png', NULL, NULL),
     (UNHEX('E7159E115C8511F0A8650242AC110002'), UNHEX('E662D0245C8511F0A8650242AC110002'), 1, '손채민', 'sonchaemin89@gmail.com', NULL, NULL, NULL),
     (UNHEX('F11E8FC75C1411F0A6350242AC110002'), UNHEX('8430DCCE5C1411F0A6350242AC110002'), 1, '이동석코치님', 'dongseok@gmail.com', 'https://upload.wikimedia.org/wikipedia/commons/5/5a/SOL%EC%BA%90%EB%A6%AD%ED%84%B0.png', NULL, NULL),
-    (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com');
+    (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com', NULL, NULL, NULL);
 
 INSERT INTO jungle_slam.workspaces (name) VALUES
      ('정글'),

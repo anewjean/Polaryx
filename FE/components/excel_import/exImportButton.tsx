@@ -49,11 +49,20 @@ export function ExUpload() {
     const sheet = workbook.Sheets[sheetName];
     const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-    // 엑셀 헤더 file 검사
-    const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    const uploadedHeaders = json[0] as string[];
+    const groupData = jsonData
+      .map((row: any) => row["group"])
+      .filter((group) => group !== undefined && group !== null && group !== "")
+      .flatMap((group) => group.toString().split(",")) // 쉼표로 분리
+      .map((group) => group.trim()) // 앞뒤 공백 제거
+      .filter((group) => group !== ""); // 빈 문자열 제거
+
+    const uniqueGroups = [...new Set(groupData)]; // 중복 제거
 
     ////////////////////////// 동작하지 않는 코드 //////////////////////////
+    // 엑셀 헤더 file 검사
+    // const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    // const uploadedHeaders = json[0] as string[];
+
     // const typos = detectTyposJaccard(uploadedHeaders);
     // if (typos.length > 0) {
     //   setAlertInfo({
@@ -82,7 +91,13 @@ export function ExUpload() {
       email: user.email,
       name: user.name,
       role: user.role,
-      group: user.group,
+      group: user.group
+        ? user.group
+            .toString()
+            .split(",")
+            .map((g: string) => g.trim())
+            .filter((g: string) => g !== "")
+        : [],
       blog: user.blog,
       github: user.github,
       workspace_id: workspaceId,
@@ -92,7 +107,7 @@ export function ExUpload() {
     setMemberList(memberList);
 
     try {
-      const result = await createUsers(memberList, workspaceId);
+      const result = await createUsers(memberList, uniqueGroups, workspaceId);
       if (result.success_count === 0) {
         toast.error("등록에 실패했습니다", {
           icon: <Ban className="size-5" />,
