@@ -65,17 +65,22 @@ WHERE id = %(id)s
   AND workspace_id = %(workspace_id)s 
 """
 
-insert_member_roles = """
+bulk_insert_member_roles = """
 INSERT INTO member_roles (
-    user_id,
-    user_name,
-    role_id
+    user_id, role_id, user_name
 )
-SELECT %(user_id)s   AS user_id,
-       %(user_name)s AS user_name,
-       r.id          AS role_id
-FROM roles r
-WHERE r.name = %(role_name)s;
+SELECT 
+    u.id AS user_id,
+    %(role_id)s AS role_id,
+    %(name)s AS user_name
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM member_roles mr 
+    WHERE mr.user_id = u.id 
+      AND mr.role_id = %(role_id)s
+  );
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -86,13 +91,8 @@ class QueryRepo(AbstractQueryRepo):
     def get_all_roles(self):
         return self.db.execute(select_roles)
 
-    def insert_member_roles(self, data: dict):
-        params = {
-            "user_id": data["user_id"],
-            "user_name": data["nickname"],
-            "role_name": data["role"]
-        }
-        return self.db.execute(insert_member_roles, params)
+    def bulk_insert_member_roles(self, member_roles_list: list):
+        return self.db.execute_many(bulk_insert_member_roles, member_roles_list)
     
     def find_all(self, workspace_id: int):
         try:

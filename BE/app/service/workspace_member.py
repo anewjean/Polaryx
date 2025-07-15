@@ -20,7 +20,7 @@ from app.schema.workspace_members.response import (
 roles_repo = RolesRepository() # 명훈 추가
 user_service = UserService()
 groups_service = GroupsService()
-roles_service = RoleService()
+role_service = RoleService()
 
 class WorkspaceMemberService:
     def __init__(self):
@@ -32,13 +32,18 @@ class WorkspaceMemberService:
         
         # 사용자 생성
         # user_service.create_users_bulk(data, workspace_id)
-        self.insert_workspace_member(data, workspace_id)
 
-        # 그룹 생성 및 멤버 추가
+        # # 워크스페이스 멤버 생성
+        # self.insert_workspace_member(data, workspace_id)
+
+        # # 그룹 생성 및 멤버 추가
         # insert_groups = groups_service.make_group(data["groups"], workspace_id)
         # groups_service.insert_group_member(data, insert_groups)
 
+        # 역할 생성
+        role_service.insert_member_roles_bulk(data)
 
+        #--------------------------------
         # groups_service.insert_member_by_group_name(data["groups"])
         # for user_data in data["users"]:
         #     print(workspace_id, user_data)
@@ -126,7 +131,7 @@ class WorkspaceMemberService:
         #             "group" : i["group"],
         #         }
         #         groups_service.insert_member_by_group_name(target_data)
-        #         roles_service.insert_member_roles(target_data)
+        #         .insert_member_roles(target_data)
 
         # result = {
         #     "success_count": len(data["users"]) - fail_count,
@@ -156,13 +161,12 @@ class WorkspaceMemberService:
             })
         workspace_member = self.workspace_member_repo.bulk_insert_workspace_member(workspace_member_list)
         return workspace_member
+    # test
     
     def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
         user_id_bytes = id.bytes if isinstance(id, UUID) else id  
         workspace_member = self.workspace_member_repo.find_by_user_id(user_id_bytes)
         return workspace_member
-    
-    # 사용할만한 게 여기까지 인듯?
 
     def get_member_by_email(self, email: str) -> WorkspaceMember:
         workspace_member = self.workspace_member_repo.find_by_email(email)

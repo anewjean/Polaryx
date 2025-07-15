@@ -62,13 +62,7 @@ def get_workspace_info(workspace_id: int):
 async def register_members(request: Request, workspace_id: int):
     datas: dict = await request.json()
     res = workspace_member_service.import_users(workspace_id, datas)
-    return InsertWorkspaceSchema.from_dict(res)
-
-
-def create_member_roles(i, user_id: str):
-    roles = roles_repo.get_all_roles()
-    role_id = next((r[0] for r in roles if r[1] == i["role"]), None)
-    member_roles_repo.insert_member_roles(user_id, i["name"], role_id)
+    return InsertWorkspaceSchema.from_dict(res) # hack : 여기서 오류 남
 
 # 프로필 필드 조회
 @router.get("/{workspace_id}/userinfo")
