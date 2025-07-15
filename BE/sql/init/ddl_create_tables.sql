@@ -103,8 +103,7 @@ CREATE TABLE IF NOT EXISTS `tabs` (
     url VARCHAR(256) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
-    deleted_at TIMESTAMP NULL DEFAULT NULL,
-    UNIQUE KEY uq_tab (workspace_id, section_id, name)
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `messages` (
@@ -154,7 +153,6 @@ CREATE TABLE IF NOT EXISTS `canvases` (
 
 CREATE TABLE IF NOT EXISTS `notifications` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(32) NOT NULL,
     receiver_id BINARY(16) NOT NULL,
     sender_id BINARY(16) NOT NULL,
     tab_id BIGINT NOT NULL,

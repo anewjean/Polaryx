@@ -9,7 +9,7 @@ class NotificationService:
     def __init__(self):
         self.repo = NotificationRepo()
 
-    def create_notification(self, receiver_id: str, sender_id: str, tab_id: int, message_id: int, type: int, content: str):
+    async def create_notification(self, receiver_id: str, sender_id: str, tab_id: int, message_id: int, type: int, content: str):
         data = {
             "receiver_id": uuid.UUID(receiver_id).bytes,
             "sender_id": uuid.UUID(sender_id).bytes,
