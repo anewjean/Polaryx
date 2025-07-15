@@ -55,7 +55,7 @@ export function DeleteRoleDialog({ roleId, roleName, isOpen, setIsOpen, onDelete
         <AlertDialogHeader>
           <AlertDialogTitle>역할 삭제</AlertDialogTitle>
           <AlertDialogDescription>
-            '{roleName}' 역할을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+            &apos;{roleName}&apos; 역할을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
