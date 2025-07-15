@@ -13,11 +13,11 @@ class DMService:
         tabs = self.tab_service.find_tabs(workspace_id, creator_id)
         for tab_info in tabs:
             tab_id = tab_info[0]
-            section_id = tab_info[2]
+            tmp_section_id = tab_info[2]
             members = self.tab_service.get_tab_members(workspace_id, tab_id)
-            if section_id == 4 and set(member[0].hex() for member in members) == set(user_ids):
+            if tmp_section_id == 4 and set(member[0].hex() for member in members) == set(user_ids):
                 return tab_info
-
+        
         # 방이 없다면 생성하기    
         return self.tab_service.create_tab(user_ids, workspace_id, tab_name, section_id)
 
