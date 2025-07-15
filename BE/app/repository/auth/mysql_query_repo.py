@@ -3,7 +3,7 @@ from app.util.database.db_factory import DBFactory
 
 insert_user = """
 INSERT INTO users (id, name, email, provider, workspace_id)
-                      VALUE(%(id)s, %(user_name)s, %(user_email)s, %(provider)s, %(workspace_id)s);
+                      VALUE(%(id)s, %(name)s, %(email)s, %(provider)s, %(workspace_id)s);
 """
 
 find_all_user = """
@@ -62,3 +62,6 @@ class QueryRepo(AbstractQueryRepo):
         self.queries["update_user_id_in_workspace_members"] = update_user_id_in_workspace_members
         self.queries["insert_user"] = insert_user
         self.queries["remove_refresh_token_by_id"] = remove_refresh_token_by_id
+
+    def bulk_insert_users(self, user_list: list):
+        return self.db.execute_many(insert_user, user_list)
