@@ -30,7 +30,6 @@ class Role:
             PermissionType.CHANNEL if row[6] else None
         ]
         if len(row) < 11:
-            print("len row < 12")
             return cls(
                 id=row[0],
                 name=row[1],
@@ -43,7 +42,6 @@ class Role:
                 group_names=None
             )
         else:
-            print("len row > 12")
             return cls(
                 id=row[0],
                 name=row[1],

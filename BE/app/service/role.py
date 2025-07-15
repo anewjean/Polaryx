@@ -27,7 +27,7 @@ class RoleService:
 
     def find(self, workspace_id: int, user_id: UUID.bytes) -> Role:
         try:
-            row = self.repo.find(workspace_id, user_id)
+            row = self.repo.find_by_user_id(workspace_id, user_id)
             return Role.from_row(row)
         except ValueError as e:
             raise NotFoundException(f"역할을 찾을 수 없습니다 - user_id: {user_id}")

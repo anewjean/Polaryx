@@ -149,7 +149,23 @@ class QueryRepo(AbstractQueryRepo):
             logging.error(f"역할 목록 조회 실패 - workspace_id: {workspace_id}, error: {e}")
             raise Exception(f"역할 목록을 조회할 수 없습니다: {e}")
 
-    def find(self, workspace_id: int, user_id: UUID.bytes) -> Optional[tuple]:
+    def find(self, workspace_id: int, role_id: int) -> Optional[tuple]:
+        param = {
+            "workspace_id": workspace_id,
+            "id": role_id
+        }
+        try:
+            result = self.db.execute(select_role_by_id, param)
+            if not result:
+                raise ValueError(f"역할을 찾을 수 없습니다 - user_id: {role_id}, workspace_id: {workspace_id}")
+            return result[0]
+        except ValueError:
+            raise
+        except Exception as e:
+            logging.error(f"역할 조회 실패 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
+            raise Exception(f"역할을 조회할 수 없습니다: {e}")
+
+    def find_by_user_id(self, workspace_id: int, user_id: UUID.bytes) -> Optional[tuple]:
         param = {
             "workspace_id": workspace_id,
             "user_id": user_id

@@ -7,7 +7,7 @@ class CreateRoleRequest(BaseModel):
     
     
 class ModifyRoleRequest(BaseModel):
-    name: str
+    role_name: str
     permissions: List
     
     

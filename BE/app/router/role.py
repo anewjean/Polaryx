@@ -36,7 +36,8 @@ async def delete_role(workspace_id: int, role_id: int):
     return {"message": "역할이 성공적으로 삭제되었습니다"}
 
 # 역할별 권한 수정
-@router.patch("/{workspace_id}/roles/{role_id}/edit", response_model=RoleResponse)
+@router.patch("/{workspace_id}/roles/{role_id}/edit", response_model=bool)
 async def modify_role(workspace_id: int, role_id: int, dto: ModifyRoleRequest):
-    role = role_service.modify(workspace_id, role_id, dto.name, dto.permissions)
-    return RoleResponse.from_domain(role)
+    role = role_service.modify(workspace_id, role_id, dto.role_name, dto.permissions)
+    return role.name == dto.role_name
+    # return RoleResponse.from_domain(role)
