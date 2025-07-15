@@ -5,9 +5,10 @@ from app.service.users import UserService
 from app.service.group import GroupsService
 
 from app.service.role import RoleService
+from app.service.tab import TabService
 
 from app.repository.role import QueryRepo as RolesRepository
-from app.repository.member_roles import MemberRolesRepository # 명훈 추가
+from app.repository.member_role import MemberRoleRepository # 명훈 추가
 
 from app.domain.workspace_member import WorkspaceMember
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
@@ -17,9 +18,10 @@ from app.schema.workspace_members.response import (
     WorkspaceMemberSchema,
 )
 
-roles_repo = RolesRepository() # 명훈 추가
+tab_service = TabService()
+role_repo = RolesRepository() # 명훈 추가
 user_service = UserService()
-groups_service = GroupsService()
+group_service = GroupsService()
 role_service = RoleService()
 
 class WorkspaceMemberService:
@@ -37,8 +39,8 @@ class WorkspaceMemberService:
         self.insert_workspace_member(data, workspace_id)
 
         # 그룹 생성 및 멤버 추가
-        insert_groups = groups_service.make_group(data["groups"], workspace_id)
-        groups_service.insert_group_member(data, insert_groups)
+        insert_groups = group_service.make_group(data["groups"], workspace_id)
+        group_service.insert_group_member(data, insert_groups)
 
         # 역할 생성
         role_service.insert_member_roles_bulk(data)
@@ -90,3 +92,25 @@ class WorkspaceMemberService:
         updated_rows = self.workspace_member_repo.find_by_user_id(user_id_bytes)
         updated_member = WorkspaceMemberSchema.from_row(updated_rows[0])
         return WorkspaceMemberResponse(workspace_member=updated_member)
+    
+    # 미완
+    def edit_member_role(self, workspace_id: int, user_id: str) -> bool:
+        # 일단 전해받은 유저 아이디, 롤 아이디, 워크스페이스 아이디.
+        # 이걸로 member_roles 테이블 접근해서 role 아이디 바꿔주면 되겠네.
+        # -> 만약 전해받은 role아이디가 현재 role_id와 같다면? = false
+        # -> 성공적으로 변경되었을 경우만 true?
+
+        return 
+    
+    async def delete_member(self, workspace_id: int, user_id: str) -> bool:
+        tabs_data = tab_service.find_tabs(workspace_id, user_id)
+        for tab_data in tabs_data:
+            print("in delete_member, tab_id: ", tab_data[0])
+            await tab_service.exit_tab(workspace_id, tab_data[0], [user_id])
+        rows = self.workspace_member_repo.find_by_user_id(UUID(user_id).bytes)
+        for row in rows:
+            if workspace_id==row[1] :
+                self.workspace_member_repo.delete_wm_by_id(row[9])
+        res_mem_roles = role_service.delete_member_roles(user_id, workspace_id)
+        res_grp_mem = group_service.delete_grp_mem_by_ws_id(user_id, workspace_id)
+        return res_grp_mem and res_mem_roles

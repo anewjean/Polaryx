@@ -5,8 +5,8 @@ from app.core.security import verify_token_and_get_token_data
 from app.repository.sub_tabs import QueryRepo as SubTabRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
 
-from app.repository.role import QueryRepo as RoleRepository # 명훈 추가
-from app.repository.member_roles import MemberRolesRepository # 명훈 추가
+from app.repository.role import QueryRepo as RoleRepository
+from app.repository.member_role import MemberRoleRepository
 from app.repository.tab import TabRepository
 
 from app.service.users import UserService
@@ -24,8 +24,8 @@ workspace_mem_repo = WorkspaceMemRepo()
 tab_repo = TabRepository()
 sub_tab_repo = SubTabRepo()
 workspace_member_service = WorkspaceMemberService()
-roles_repo = RoleRepository() # 명훈 추가
-member_roles_repo = MemberRolesRepository() # 명훈 추가
+roles_repo = RoleRepository()
+member_roles_repo = MemberRoleRepository()
 user_service = UserService()
 
 @router.get("/{workspace_id}")
@@ -76,7 +76,7 @@ async def get_members(workspace_id: int, token_user_id_and_email = Depends(verif
     rows = workspace_member_service.get_member_by_workspace_id(workspace_id)
     return WorkspaceMembersSchema.from_row(rows)
 
-# 회원 등록(개별) - 미완.
+# 회원 등록(개별) - 미완 -> 수정해야됨.
 @router.post("/{workspace_id}/users/single", response_model=InsertWorkspaceSchema)
 async def register_member(workspace_id: int, request: Request):#, token_user_id_and_email = Depends(verify_token_and_get_token_data)):
     user: dict = await request.json()
@@ -88,3 +88,20 @@ async def register_member(workspace_id: int, request: Request):#, token_user_id_
     res = workspace_member_service.import_users(workspace_id, data)
     print("in register_member, res: ", res)
     return InsertWorkspaceSchema.from_dict(res)
+
+# 회원 역할 수정(개별) - 미완. ("nickname: string, email: string, role_id: string, group_id: string[ ]")
+@router.patch("/{workspace_id}/users/{user_id}/role", response_model=bool)
+async def edit_member_role(workspace_id: int, user_id: str, request: Request):#, token_user_id_and_email = Depends(verify_token_and_get_token_data)):
+    data: dict = await request.json()
+    print("in edit_member_role, user: ", data)
+    res = workspace_member_service.edit_member_role(workspace_id, user_id, data["rold_id"])
+    print("in edit_member_role, res: ", res)
+    return res
+
+# 회원 삭제(개별) - 미완.
+# 워크스페이스에서 방출시키는거임
+@router.patch("/{workspace_id}/users/{user_id}/delete", response_model=bool)
+async def delete_member(workspace_id: int, user_id: str):#, token_user_id_and_email = Depends(verify_token_and_get_token_data)):
+    res = await workspace_member_service.delete_member(workspace_id, user_id)
+    print("in delete_member, res: ", res)
+    return res

@@ -12,6 +12,9 @@ env:
   AWS_REGION: "ap-northeast-2"
   BE_ECR_REPOSITORY: "slam-server"
   FE_ECR_REPOSITORY: "slam-server-front"
+  NEXT_PUBLIC_BASE: "https://jungle-lms.site"
+  NEXT_PUBLIC_WS: "wss://jungle-lms.site"
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: "BNreSJUzEIIAWG-qnlzRvYepD_svGLY6PJtNO4F6O8Vu9Ev_bMZK5albJ2OJCBOkn2-9bJcTIpx_4Z02YSEarwU"
 
 jobs:
   ci-cd:
@@ -63,18 +66,17 @@ jobs:
           BE_ECR_REPOSITORY: ${{ env.BE_ECR_REPOSITORY }}
           FE_ECR_REPOSITORY: ${{ env.FE_ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
-        run: |
+        run: |          
           docker build --no-cache \
-            --build-arg NEXT_PUBLIC_BASE=https://jungle-lms.site \
-            --build-arg NEXT_PUBLIC_WS=wss://jungle-lms.site \
-            -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
+          --build-arg NEXT_PUBLIC_BASE=${{ env.NEXT_PUBLIC_BASE }} \
+          --build-arg NEXT_PUBLIC_WS=${{ env.NEXT_PUBLIC_WS }} \
+          --build-arg NEXT_PUBLIC_VAPID_PUBLIC_KEY=${{ env.NEXT_PUBLIC_VAPID_PUBLIC_KEY }} \
+          -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG \
+          -t $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest ./FE
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$FE_ECR_REPOSITORY:latest
 
           docker build --no-cache \
-          --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-          --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
           -t $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG \
           -t $ECR_REGISTRY/$BE_ECR_REPOSITORY:latest ./BE
           docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG

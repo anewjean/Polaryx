@@ -7,21 +7,13 @@ from app.schema.workspace_members.response import (
     WorkspaceMemberSchema,
 )
 
-groups_repo = GroupsRepo()
-
 class GroupsService:
     def __init__(self):
         self.groups_repo = GroupsRepo()
 
-    # 수정하고 있는 상황 note : delete
-    # def get_all_group_names(self):
-    #     group_names = groups_repo.get_all_group_names()
-    #     return [group_name[0] for group_name in group_names]
-
     def make_group(self, group_names: List[str], workspace_id: int) -> dict:
         # 1번만 조회: id, name 둘 다 가져오기
         existing_groups = groups_repo.get_all_groups_with_id()  # [(id, name), ...]
-        print("in make_group, existing_groups: ", existing_groups) # note : delete
         # 기존 그룹 이름 목록 + 매핑 정보 동시 생성
         existing_group_names = set()
         group_name_to_id = {}
@@ -35,7 +27,6 @@ class GroupsService:
             if group_name not in existing_group_names:  # set 조회 O(1)
                 new_group_id = groups_repo.make_group(group_name, workspace_id)
                 group_name_to_id[group_name] = new_group_id
-        print("in make_group, group_name_to_id: ", group_name_to_id) # note : delete
         return group_name_to_id
 
     def insert_group_member(self, data: dict, insert_groups: dict):        
@@ -59,3 +50,10 @@ class GroupsService:
                     groups_repo.insert_group_member(member_data)
         
         return {"success": "그룹 멤버 추가 완료"}
+
+    def insert_member_by_group_name(self, data: dict):
+        return self.groups_repo.insert_member_by_group_name(data)
+    
+    def delete_grp_mem_by_ws_id(self, user_id: str, workspace_id: int) -> bool:
+        target_user_id = UUID(user_id).bytes
+        return self.groups_repo.delete_member(target_user_id, workspace_id)
