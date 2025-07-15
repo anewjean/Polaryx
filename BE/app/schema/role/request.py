@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import List
 
 class CreateRoleRequest(BaseModel):
-    name: str
+    role_name: str
     permissions: List
     
     

@@ -24,16 +24,21 @@ async def get_roles(workspace_id: int):
     return [RoleResponse.from_domain(role) for role in roles]
 
 # 역할별 권한 생성
-@router.post("/{workspace_id}/roles", response_model=RoleResponse)
+@router.post("/{workspace_id}/roles", response_model=bool)
 async def create_role(workspace_id: int, dto: CreateRoleRequest):
-    role = role_service.create(workspace_id, dto.name, dto.permissions)
-    return RoleResponse.from_domain(role)
+    role = role_service.create(workspace_id, dto.role_name, dto.permissions)
+    print("create_role: ", role.name, dto.role_name)
+    return role.name == dto.role_name
+    # return RoleResponse.from_domain(role)
 
 # 역할별 권한 삭제
-@router.delete("/{workspace_id}/roles/{role_id}")
+@router.patch("/{workspace_id}/roles/{role_id}/delete")
 async def delete_role(workspace_id: int, role_id: int):
-    role_service.delete(workspace_id, role_id)
-    return {"message": "역할이 성공적으로 삭제되었습니다"}
+    res = role_service.delete(workspace_id, role_id)
+    if res["rowcount"] == 1:
+        return True
+    return False
+    # return {"message": "역할이 성공적으로 삭제되었습니다"}
 
 # 역할별 권한 수정
 @router.patch("/{workspace_id}/roles/{role_id}/edit", response_model=bool)

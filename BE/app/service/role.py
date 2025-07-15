@@ -62,7 +62,7 @@ class RoleService:
 
     def delete(self, workspace_id: int, role_id: int) -> None:
         try:
-            self.repo.delete(workspace_id, role_id)
+            return self.repo.delete(workspace_id, role_id)
         except ValueError as e:
             raise NotFoundException(f"삭제할 역할을 찾을 수 없습니다 - role_id: {role_id}")
         except Exception as e:
