@@ -331,7 +331,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <img
                     src={profile?.image || "/user_default.png"}
                     alt="profile_image"
-                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
+                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden object-cover"
                   />
                   {/* 사용자 정보 */}
                   <div
