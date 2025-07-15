@@ -8,8 +8,8 @@ from app.domain.role import Role
 class RoleResponse(BaseModel):
     role_id: int
     role_name: str
-    user_names: list[str]
-    group_names: list[str]
+    user_names: list[str] | None
+    group_names: list[str] | None
     permissions: List[str]
     
     @staticmethod

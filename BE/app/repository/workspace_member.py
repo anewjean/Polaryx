@@ -156,14 +156,11 @@ class QueryRepo(AbstractQueryRepo):
                 "user_id": res_datas[i][0]
             }
             group_datas = self.db.execute(find_groups_name_id_by_workspace_id, params)
-            print("find_by_user_workspace_id, group_datas: ", group_datas)
             target_gid = []
             target_gname = []
             for id_name in group_datas:
-                print("find_by_user_workspace_id, id_name: ", id_name[0], id_name[1])
                 target_gid.append(id_name[0])
                 target_gname.append(id_name[1])
-            print("find_by_user_workspace_id, target_gid: ", target_gid, target_gname)
             res_datas[i].append(target_gid)
             res_datas[i].append(target_gname)
 

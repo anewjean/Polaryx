@@ -29,7 +29,8 @@ class Role:
             PermissionType.COURSE if row[5] else None, 
             PermissionType.CHANNEL if row[6] else None
         ]
-        if len(row) < 12:
+        if len(row) < 11:
+            print("len row < 12")
             return cls(
                 id=row[0],
                 name=row[1],
@@ -37,9 +38,12 @@ class Role:
                 permissions=[p for p in permissions if p],
                 created_at=row[7],
                 updated_at=row[8],
-                deleted_at=row[9]
+                deleted_at=row[9],
+                user_names=None,
+                group_names=None
             )
         else:
+            print("len row > 12")
             return cls(
                 id=row[0],
                 name=row[1],

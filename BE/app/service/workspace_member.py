@@ -154,7 +154,6 @@ class WorkspaceMemberService:
   
     def get_member_by_workspace_id(self, workspace_id: int) -> List[list]:
         members_infos = self.workspace_member_repo.find_by_user_workspace_id(workspace_id)
-        print("get_member_by_workspace_id, members: ", members_infos)
         return members_infos
 
     def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
