@@ -18,9 +18,17 @@ export function RoleTable({ onRolesLoaded, onRefreshNeeded }: RoleTableProps = {
   // 전역 상태에서 역할 데이터 가져오기
   const { roles, loadingRoles, fetchRoles } = useRoleStore();
 
-  // 컴포넌트 마운트 시 데이터 가져오기
+  // 외부에서 새로고침 요청 시 호출될 함수
+  const handleRefresh = () => {
+    fetchRoles(workspaceId);
+    
+    // 외부에 새로고침 요청 전달
+    if (onRefreshNeeded) {
+      onRefreshNeeded();
+    }
+  };
+
   useEffect(() => {
-    // 역할 데이터 불러오기
     fetchRoles(workspaceId);
   }, [workspaceId, fetchRoles]);
 

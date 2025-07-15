@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getUsers } from "@/apis/userApi";
 import { addUser } from "@/apis/userApi";
 import { Profile } from "@/apis/profileApi";
 import { useRouter } from "next/navigation";
@@ -26,6 +25,7 @@ import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 import { useRoleStore } from "@/store/roleStore";
 import { useGroupStore } from "@/store/groupStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function UserTablePage() {
   // URL에서 workspaceId 추출
@@ -38,11 +38,8 @@ export default function UserTablePage() {
     setUserCount(count);
   };
 
-  // 회원 목록 상태 관리
-  const [users, setUsers] = useState<Profile[]>([]);
-
-  // 회원 목록 로딩 상태 관리
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  // userStore에서 상태와 함수 가져오기
+  const { users, loadingUsers, fetchUsers, triggerRefresh, refreshTrigger } = useUserStore();
 
   // 역할 정보를 전역 상태에서 가져오기
   const { roles, loadingRoles, fetchRoles } = useRoleStore();
@@ -75,26 +72,12 @@ export default function UserTablePage() {
     }
   };
 
-  // 진입 시 동작 함수
+  // 컴포넌트 마운트 시 데이터 로드
   useEffect(() => {
-    fetchUsers();
-  }, [workspaceId]);
-
-  // 회원 목록 불러오기
-  const fetchUsers = async () => {
-    setLoadingUsers(true);
-    try {
-      const usersData = await getUsers(workspaceId);
-      setUsers(usersData);
-    } catch (error) {
-      console.error("회원 목록을 불러오는데 실패했습니다:", error);
-      toast.error("회원 목록을 불러오는데 실패했습니다", {
-        icon: <Ban className="size-5" />,
-      });
-    } finally {
-      setLoadingUsers(false);
+    if (workspaceId) {
+      fetchUsers(workspaceId);
     }
-  };
+  }, [workspaceId, fetchUsers]);
 
   // 회원 초대 함수
   const handleInviteUser = async () => {
@@ -114,7 +97,8 @@ export default function UserTablePage() {
 
       if (result) {
         handleModalOpenChange(false);
-        fetchUsers();
+        // 전역 상태의 새로고침 트리거 업데이트
+        triggerRefresh(workspaceId);
         toast.success("회원이 등록되었습니다", {
           icon: <CircleCheck className="size-5" />,
         });
@@ -283,8 +267,8 @@ export default function UserTablePage() {
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <UserTable
           onUsersLoaded={handleUsersLoaded}
-          onRefreshNeeded={fetchUsers}
-          userColumns={createUserColumns(fetchUsers)}
+          key={refreshTrigger?.[workspaceId] || 0} // 전역 상태의 새로고침 트리거 사용
+          userColumns={createUserColumns(() => triggerRefresh(workspaceId))}
         />
       </div>
     </div>
