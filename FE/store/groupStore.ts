@@ -27,7 +27,16 @@ export const useGroupStore = create<GroupState>((set, get) => ({
     set({ loadingGroups: true });
     try {
       const groups = await getGroups(workspaceId);
-      set({ groups, workspaceId });
+      console.log("API 응답 데이터:", groups);
+      
+      // user_names 필드가 없는 경우 빈 배열로 초기화
+      const processedGroups = groups.map(group => ({
+        ...group,
+        user_names: group.user_names || []
+      }));
+      
+      console.log("처리된 그룹 데이터:", processedGroups);
+      set({ groups: processedGroups, workspaceId });
     } catch (error) {
       console.error("그룹을 불러오는데 실패했습니다:", error);
     } finally {

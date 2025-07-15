@@ -41,12 +41,16 @@ export function GroupTable({ onGroupsLoaded, onRefreshNeeded }: GroupTableProps 
     }
   }, [groups, onGroupsLoaded]);
 
+  // 데이터 디버깅
+  console.log("그룹 데이터:", groups);
+  
   const data = groups;
 
   const table = useReactTable({
     data,
     columns: groupColumns,
     getCoreRowModel: getCoreRowModel(),
+    debugTable: true, // 테이블 디버깅 활성화
   });
   
   // 액션 메뉴에 새로고침 함수 전달을 위한 컨텍스트 설정
