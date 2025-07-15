@@ -44,8 +44,8 @@ def get_tab(workspace_id: int, tab_id: int):
 
 # 탭 참여 인원 조회
 @router.get("/{workspace_id}/tabs/{tab_id}/members", response_model=List[TabMember])
-async def get_tab_members(workspace_id: int, tab_id: int):
-    rows = await service.get_tab_members(workspace_id, tab_id)
+def get_tab_members(workspace_id: int, tab_id: int):
+    rows = service.get_tab_members(workspace_id, tab_id)
     return [TabMember.from_row(row) for row in rows]
 
 # 탭 참여 가능 인원 조회

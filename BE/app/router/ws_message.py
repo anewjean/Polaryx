@@ -106,7 +106,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #     await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
-            members = await tab_service.get_tab_members(workspace_id, tab_id)
+            members = tab_service.get_tab_members(workspace_id, tab_id)
             #members = workspace_member_service.get_members_by_workspace_id(workspace_id)
             # recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
             #               for row in members
