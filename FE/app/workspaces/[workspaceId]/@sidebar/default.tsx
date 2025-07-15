@@ -105,14 +105,6 @@ export default function AppSidebar({ width }: SidebarProps) {
   const invitedTabs = useMessageStore((s) => s.invitedTabs);
   const clearInvited = useMessageStore((s) => s.clearInvitedTab);
 
-  // 읽지 않은 수 & 클리어 함수 가져오기
-  const unread = useMessageStore((s) => s.unreadCounts);
-  const clearUnread = useMessageStore((s) => s.clearUnread);
-
-  // 새 탭 추가
-  const invitedTabs = useMessageStore((s) => s.invitedTabs);
-  const clearInvited = useMessageStore((s) => s.clearInvitedTab);
-
   // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득 
   useEffect(() => {
     const fetchData = async () => {
