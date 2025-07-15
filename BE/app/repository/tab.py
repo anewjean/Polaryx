@@ -167,6 +167,24 @@ FROM workspace_members wm
 WHERE wm.user_id = %(user_id)s AND wm.workspace_id = %(workspace_id)s;
 """
 
+insert_tab_group_members = """
+INSERT INTO tab_members (workspace_id, tab_id, user_id, user_name)
+SELECT
+  %(workspace_id)s AS workspace_id,
+  %(tab_id)s AS tab_id,
+  gm.user_id,
+  gm.user_name
+FROM
+  group_members gm
+LEFT JOIN tab_members tm
+  ON tm.workspace_id = %(workspace_id)s
+  AND tm.tab_id = %(tab_id)s
+  AND tm.user_id = gm.user_id
+WHERE
+  gm.group_id = %(group_id)s
+  AND tm.id IS NULL;
+"""
+
 # 미완
 exit_tab_members_by_id = """
 DELETE FROM tab_members 
@@ -310,6 +328,17 @@ class TabRepository(AbstractQueryRepo):
             count = self.execute(count_group_members, group_id)
             res[i].append(count[0][0])
         return res
+    
+    # 미완
+    def insert_group_members(self, workspace_id: int, tab_id: int, group_ids: List[str]):
+        for group_id in group_ids:
+          params = {
+              "workspace_id": workspace_id,
+              "tab_id": tab_id,
+              "group_id": int(group_id)
+          }
+          res = self.execute(insert_tab_group_members, params)
+          return res["rowcount"]
 
     def insert_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         for user_id in user_ids:
