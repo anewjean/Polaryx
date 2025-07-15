@@ -11,15 +11,11 @@ from app.domain.groups import Groups
 make_group = """
 INSERT INTO groups (
     name,
-    description,
-    updated_at,
-    deleted_at,
+    workspace_id
 )
 VALUES (
     %(group_name)s,
-    %(group_description)s,
-    NULL,
-    NULL,
+    %(workspace_id)s
 );
 """
 
@@ -33,21 +29,33 @@ find_group_by_id = """
 SELECT * FROM groups WHERE id = %(group_id)s;
 """
 
+get_all_groups_with_id = """
+SELECT id, name FROM groups 
+WHERE deleted_at IS NULL;
+"""
+
 find_group_by_name = """
 SELECT * FROM groups WHERE name = %(group_name)s;
 """
 
-insert_group_member = """
+insert_group_member_query = """
 INSERT INTO group_members (
     group_id,
     user_id,
     user_name
 )
-SELECT g.id          AS group_id,
-       %(user_id)s   AS user_id,
-       %(user_name)s AS user_name
-FROM groups g
-WHERE g.name = %(group_name)s;
+SELECT
+    %(group_id)s AS group_id,
+    u.id         AS user_id,
+    u.name       AS user_name
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1
+    FROM group_members gm
+    WHERE gm.group_id = %(group_id)s
+      AND gm.user_id = u.id
+);
 """
 
 find_all_groups_by_id = """
@@ -59,9 +67,26 @@ class QueryRepo(AbstractQueryRepo):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
 
-    def make_group(self, group_name_and_group_desc: dict):
-        return self.db.execute(make_group, group_name_and_group_desc)
+    # 수정중
+    def get_all_groups_with_id(self):
+        return self.db.execute(get_all_groups_with_id)
+
+    def make_group(self, group_name: str, workspace_id: int):
+        params = {
+            "group_name": group_name,
+            "workspace_id": workspace_id
+        }
+        result = self.db.execute(make_group, params)
+        return result['lastrowid']
+
+    def insert_group_member(self, data: dict):
+        params = {
+            "email": data["email"],
+            "group_id": data["group_id"]
+        }
+        return self.db.execute(insert_group_member_query, params)
     
+    # 윤석 작성
     def find_group_by_id(self, group_id: int) -> Groups:
         param = {
             "group_id": group_id
@@ -79,11 +104,3 @@ class QueryRepo(AbstractQueryRepo):
             "group_id": group_id
         }
         return self.db.execute(find_all_groups_by_id, param)
-    
-    def insert_member_by_group_name(self, data: dict):
-        params = {
-            "user_id": data["user_id"],
-            "group_name": data["group"],
-            "user_name": data["nickname"]
-        }
-        return self.db.execute(insert_group_member, params)
