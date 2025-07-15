@@ -6,14 +6,15 @@ from app.schema.workspace_members.response import (
     WorkspaceMemberResponse,
     WorkspaceMemberSchema,
 )
+groups_repo = GroupsRepo()
 
 class GroupsService:
     def __init__(self):
-        self.groups_repo = GroupsRepo()
+        self.groups_repo = groups_repo
 
     def make_group(self, group_names: List[str], workspace_id: int) -> dict:
         # 1번만 조회: id, name 둘 다 가져오기
-        existing_groups = groups_repo.get_all_groups_with_id()  # [(id, name), ...]
+        existing_groups = self.groups_repo.get_all_groups_with_id()  # [(id, name), ...]
         # 기존 그룹 이름 목록 + 매핑 정보 동시 생성
         existing_group_names = set()
         group_name_to_id = {}
