@@ -91,11 +91,18 @@ WHERE TABLE_NAME = 'workspace_members';
 """
 
 find_nickname_email_image_by_workspace_id = """
-SELECT wm.nickname, wm.email, wm.image, r.name FROM workspace_members wm
+SELECT wm.user_id, wm.nickname, wm.email, wm.image, r.id, r.name FROM workspace_members wm
 JOIN member_roles mr ON mr.user_id = wm.user_id
 JOIN roles r ON r.id = mr.role_id
 WHERE wm.workspace_id = %(workspace_id)s
 AND wm.deleted_at IS NULL;
+"""
+
+find_groups_name_id_by_workspace_id = """
+SELECT g.id, g.name FROM groups g
+JOIN group_members gm ON gm.group_id = g.id
+WHERE gm.user_id = %(user_id)s
+AND gm.deleted_at IS NULL;
 """
 
 delete_wm_by_id = """
@@ -138,15 +145,30 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_member_by_user_id, param)
     
-    def find_by_user_workspace_id(self, workspace_id: int) -> WorkspaceMember:
+    def find_by_user_workspace_id(self, workspace_id: int):
         param = {
             "workspace_id": workspace_id
         }
-        # [0]: nickname
-        # [1]: email
-        # [2]: image
-        # [3]: role_name
-        return self.db.execute(find_nickname_email_image_by_workspace_id, param)
+        res_datas = self.db.execute(find_nickname_email_image_by_workspace_id, param)
+
+        for i in range(0, len(res_datas)):
+            res_datas[i] = list(res_datas[i])
+            params = {
+                "user_id": res_datas[i][0]
+            }
+            group_datas = self.db.execute(find_groups_name_id_by_workspace_id, params)
+            print("find_by_user_workspace_id, group_datas: ", group_datas)
+            target_gid = []
+            target_gname = []
+            for id_name in group_datas:
+                print("find_by_user_workspace_id, id_name: ", id_name[0], id_name[1])
+                target_gid.append(id_name[0])
+                target_gname.append(id_name[1])
+            print("find_by_user_workspace_id, target_gid: ", target_gid, target_gname)
+            res_datas[i].append(target_gid)
+            res_datas[i].append(target_gname)
+
+        return res_datas
 
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)

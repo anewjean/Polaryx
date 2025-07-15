@@ -85,11 +85,11 @@ INSERT INTO member_roles (
     user_name,
     role_id
 )
-SELECT %(user_id)s   AS user_id,
-       %(user_name)s AS user_name,
-       r.id          AS role_id
-FROM roles r
-WHERE r.name = %(role_name)s;
+VALUE (
+    %(user_id)s,
+    %(user_name)s,
+    %(role_id)s
+);
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -104,7 +104,7 @@ class QueryRepo(AbstractQueryRepo):
         params = {
             "user_id": data["user_id"],
             "user_name": data["nickname"],
-            "role_name": data["role"]
+            "role_id": data["role_id"]
         }
         return self.db.execute(insert_member_roles, params)
     
