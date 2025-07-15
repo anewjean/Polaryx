@@ -29,8 +29,11 @@ class WorkspaceMemberService:
         self.workspace_member_repo = WorkspaceMemberRepo()
 
     def import_users(self, workspace_id, data: dict) -> dict:
-        fail_count = 0
-        fail_list = []
+
+        if data["users"] == []:
+            return {
+                "success_count": 0
+            }
         
         # 사용자 생성
         user_service.create_users_bulk(data, workspace_id)
