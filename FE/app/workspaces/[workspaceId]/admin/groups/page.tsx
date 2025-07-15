@@ -57,7 +57,7 @@ export default function GroupTablePage() {
           />                   
         </div>
       </div>
-      <div className="flex flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <GroupTable 
           onGroupsLoaded={handleGroupsLoaded} 
           key={refreshTrigger} // 새로고침 트리거 변경 시 컴포넌트 재렌더링

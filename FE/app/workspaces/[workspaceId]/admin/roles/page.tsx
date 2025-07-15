@@ -222,7 +222,7 @@ export default function RoleTablePage() {
           </DialogModal>
         </div>
       </div>
-      <div className="flex flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <RoleTable 
           onRolesLoaded={handleRolesLoaded} 
           key={refreshTrigger} // 새로고침 트리거가 변경되면 컴포넌트 재렌더링

@@ -11,7 +11,13 @@ import { DialogModal } from "@/components/modal/DialogModal";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getUsers } from "@/apis/userApi";
 import { addUser } from "@/apis/userApi";
 import { Profile } from "@/apis/profileApi";
@@ -21,27 +27,26 @@ import { CircleCheck, Ban } from "lucide-react";
 import { useRoleStore } from "@/store/roleStore";
 import { useGroupStore } from "@/store/groupStore";
 
-export default function UserTablePage() {  
-
+export default function UserTablePage() {
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
 
   // 회원 수 상태 관리 및 테이블 상단에 표시
-  const [userCount, setUserCount] = useState<number>(0);    
+  const [userCount, setUserCount] = useState<number>(0);
   const handleUsersLoaded = (count: number) => {
     setUserCount(count);
   };
 
   // 회원 목록 상태 관리
-  const [users, setUsers] = useState<Profile[]>([]);  
+  const [users, setUsers] = useState<Profile[]>([]);
 
   // 회원 목록 로딩 상태 관리
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
 
   // 역할 정보를 전역 상태에서 가져오기
   const { roles, loadingRoles, fetchRoles } = useRoleStore();
-  
+
   // 그룹 정보를 전역 상태에서 가져오기
   const { groups, loadingGroups, fetchGroups } = useGroupStore();
 
@@ -49,21 +54,21 @@ export default function UserTablePage() {
   const [form, setForm] = useState<{
     name: string;
     email: string;
-    role_id: string;    
-    group_id: string[] | null;    
+    role_id: string;
+    group_id: string[] | null;
   }>({ name: "", email: "", role_id: "1", group_id: [] });
 
   // 회원 초대 모달 표시 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
-    
+
     // 모달이 열릴 때 역할과 그룹 목록 불러오기
     if (isOpen) {
       fetchRoles(workspaceId);
       fetchGroups(workspaceId);
     }
-    
+
     // 모달이 닫힐 때 폼 초기화
     if (!isOpen) {
       setForm({ name: "", email: "", role_id: "1", group_id: [] });
@@ -72,7 +77,7 @@ export default function UserTablePage() {
 
   // 진입 시 동작 함수
   useEffect(() => {
-    fetchUsers();    
+    fetchUsers();
   }, [workspaceId]);
 
   // 회원 목록 불러오기
@@ -83,11 +88,13 @@ export default function UserTablePage() {
       setUsers(usersData);
     } catch (error) {
       console.error("회원 목록을 불러오는데 실패했습니다:", error);
-      toast.error("회원 목록을 불러오는데 실패했습니다", { icon: <Ban className="size-5" /> });
+      toast.error("회원 목록을 불러오는데 실패했습니다", {
+        icon: <Ban className="size-5" />,
+      });
     } finally {
       setLoadingUsers(false);
     }
-  };  
+  };
 
   // 회원 초대 함수
   const handleInviteUser = async () => {
@@ -97,24 +104,26 @@ export default function UserTablePage() {
         nickname: form.name,
         email: form.email,
         role_id: parseInt(form.role_id),
-        group_id: form.group_id && form.group_id.length > 0 ? form.group_id.map(id => parseInt(id)) : [],
+        group_id:
+          form.group_id && form.group_id.length > 0
+            ? form.group_id.map((id) => parseInt(id))
+            : [],
       };
 
       const result = await addUser(workspaceId, payload);
-      
-      if (result) {        
+
+      if (result) {
         handleModalOpenChange(false);
         fetchUsers();
         toast.success("회원이 등록되었습니다", {
           icon: <CircleCheck className="size-5" />,
         });
-      }
-      else {
+      } else {
         toast.error("회원 등록에 실패했습니다", {
           icon: <Ban className="size-5" />,
         });
       }
-    } catch (error) {      
+    } catch (error) {
       toast.error("회원 등록에 실패했습니다", {
         icon: <Ban className="size-5" />,
       });
@@ -163,10 +172,12 @@ export default function UserTablePage() {
                 <RadioGroup
                   value={String(form.role_id)}
                   onValueChange={(value) => {
-                    const selectedRole = roles.find(role => String(role.role_id) === value);
+                    const selectedRole = roles.find(
+                      (role) => String(role.role_id) === value,
+                    );
                     setForm({
                       ...form,
-                      role_id: value,                      
+                      role_id: value,
                     });
                   }}
                   className="flex flex-wrap"
@@ -196,15 +207,21 @@ export default function UserTablePage() {
               <div className="flex flex-col gap-3">
                 <h1>그룹</h1>
                 <Select
-                  value={form.group_id && form.group_id.length > 0 ? form.group_id[0] : undefined}
+                  value={
+                    form.group_id && form.group_id.length > 0
+                      ? form.group_id[0]
+                      : undefined
+                  }
                   onValueChange={(value) => {
                     if (value === "none") {
                       setForm({
                         ...form,
-                        group_id: []
+                        group_id: [],
                       });
                     } else {
-                      const selectedGroup = groups.find(group => String(group.group_id) === value);
+                      const selectedGroup = groups.find(
+                        (group) => String(group.group_id) === value,
+                      );
                       setForm({
                         ...form,
                         group_id: [value],
@@ -222,9 +239,7 @@ export default function UserTablePage() {
                       </SelectItem>
                     ) : (
                       <>
-                        <SelectItem value="none">
-                          - 선택 안함 -
-                        </SelectItem>
+                        <SelectItem value="none">- 선택 안함 -</SelectItem>
                         {groups.map((group) => (
                           <SelectItem
                             key={group.group_id}
@@ -265,9 +280,9 @@ export default function UserTablePage() {
           <ExUpload />
         </div>
       </div>
-      <div className="flex flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin">
-        <UserTable 
-          onUsersLoaded={handleUsersLoaded} 
+      <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
+        <UserTable
+          onUsersLoaded={handleUsersLoaded}
           onRefreshNeeded={fetchUsers}
           userColumns={createUserColumns(fetchUsers)}
         />
