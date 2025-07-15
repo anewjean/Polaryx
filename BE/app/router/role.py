@@ -13,6 +13,7 @@ role_service = RoleService()
 @router.get("/{workspace_id}/roles", response_model=List[RoleResponse])
 async def get_roles(workspace_id: int):
     roles = role_service.find_all(workspace_id)
+    print("\n\nget_roles, roles: ", roles)
     return [RoleResponse.from_domain(role) for role in roles]
 
 # 역할별 권한 조회
@@ -28,7 +29,7 @@ async def create_role(workspace_id: int, dto: CreateRoleRequest):
     return RoleResponse.from_domain(role)
 
 # 역할별 권한 수정
-@router.patch("/{workspace_id}/roles/{role_id}", response_model=RoleResponse)
+@router.patch("/{workspace_id}/roles/{role_id}/edit", response_model=RoleResponse)
 async def modify_role(workspace_id: int, role_id: int, dto: ModifyRoleRequest):
     role = role_service.modify(workspace_id, role_id, dto.name, dto.permissions)
     return RoleResponse.from_domain(role)

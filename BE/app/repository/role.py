@@ -11,9 +11,19 @@ select id, name from roles;
 """
 
 select_all_roles = """
-SELECT * FROM roles 
+SELECT * FROM roles
 WHERE workspace_id = %(workspace_id)s
   AND deleted_at IS NULL;
+"""
+
+select_all_member_roles = """
+SELECT wm.nickname, g.name FROM member_roles mr
+JOIN workspace_members wm ON wm.user_id = mr.user_id
+JOIN group_members gm ON gm.user_id = mr.user_id
+JOIN groups g ON g.id = gm.group_id
+WHERE wm.workspace_id = %(workspace_id)s
+  AND mr.role_id = %(role_id)s
+  AND wm.deleted_at IS NULL;
 """
 
 select_role_by_id = """
@@ -85,11 +95,11 @@ INSERT INTO member_roles (
     user_name,
     role_id
 )
-SELECT %(user_id)s   AS user_id,
-       %(user_name)s AS user_name,
-       r.id          AS role_id
-FROM roles r
-WHERE r.name = %(role_name)s;
+VALUE (
+    %(user_id)s,
+    %(user_name)s,
+    %(role_id)s
+);
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -104,13 +114,28 @@ class QueryRepo(AbstractQueryRepo):
         params = {
             "user_id": data["user_id"],
             "user_name": data["nickname"],
-            "role_name": data["role"]
+            "role_id": data["role_id"]
         }
         return self.db.execute(insert_member_roles, params)
     
     def find_all(self, workspace_id: int):
         try:
             result = self.db.execute(select_all_roles, {"workspace_id": workspace_id})
+            for i in range(0, len(result)):
+                result[i] = list(result[i])
+                user_names = []
+                group_names = []
+                params = {
+                    "workspace_id": workspace_id,
+                    "role_id": result[i][0]
+                }
+                names_group_names = self.db.execute(select_all_member_roles, params)
+                for name_groupname in names_group_names:
+                    user_names.append(name_groupname[0])
+                    group_names.append(name_groupname[1])
+                result[i].append(list(set(user_names)))
+                result[i].append(list(set(group_names)))
+                print("\n\nfind_all, result: ", result)
             return result if result else []
         except Exception as e:
             logging.error(f"역할 목록 조회 실패 - workspace_id: {workspace_id}, error: {e}")
