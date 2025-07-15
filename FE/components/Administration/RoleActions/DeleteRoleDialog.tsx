@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { deleteUser } from "@/apis/userApi"
+import { deleteRole } from "@/apis/roleApi"
 import { toast } from "sonner"
 import { CircleCheck, Ban } from "lucide-react"
 import {
@@ -14,54 +14,48 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { OnUserUpdated } from "./ActionMenu"
+import { OnRoleUpdated } from "./ActionMenu"
 
-export interface DeleteUserDialogProps {
-  userId: string;
-  userName: string;
+export interface DeleteRoleDialogProps {
+  roleId: string;
+  roleName: string;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  onDeleteSuccess?: OnUserUpdated;
+  onDeleteSuccess?: OnRoleUpdated;
 }
 
-export function DeleteUserDialog({ userId, userName, isOpen, setIsOpen, onDeleteSuccess }: DeleteUserDialogProps) {
+export function DeleteRoleDialog({ roleId, roleName, isOpen, setIsOpen, onDeleteSuccess }: DeleteRoleDialogProps) {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   
   const handleDelete = async () => {
     try {
-      const result = await deleteUser(workspaceId, userId);
+      const result = await deleteRole(workspaceId, roleId);
       
       if (result) {
-        toast.success("사용자가 삭제되었습니다", {
+        toast.success("역할이 삭제되었습니다", {
           icon: <CircleCheck className="size-5" />,
-        });
-        
-        // 삭제 후 목록 새로고침
-        if (onDeleteSuccess) {
-          onDeleteSuccess();
-        }
-      } else {
-        toast.error("사용자 삭제에 실패했습니다", {
-          icon: <Ban className="size-5" />,
-        });
-      }
+        })};      
+      
+      if (onDeleteSuccess) {
+        onDeleteSuccess();
+      };
     } catch (error) {      
-      toast.error("사용자 삭제에 실패했습니다", {
+      toast.error("역할 삭제에 실패했습니다", {
         icon: <Ban className="size-5" />,
       });
     } finally {
       setIsOpen(false);
     }
-  };
-  
+  }
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>회원 삭제</AlertDialogTitle>
+          <AlertDialogTitle>역할 삭제</AlertDialogTitle>
           <AlertDialogDescription>
-            {userName}를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+            '{roleName}' 역할을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -72,3 +66,4 @@ export function DeleteUserDialog({ userId, userName, isOpen, setIsOpen, onDelete
     </AlertDialog>
   );
 }
+
