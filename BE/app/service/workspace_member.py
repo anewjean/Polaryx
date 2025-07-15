@@ -30,11 +30,15 @@ class WorkspaceMemberService:
         fail_count = 0
         fail_list = []
         
-        user_service.create_user(data, workspace_id)
+        # 사용자 생성
+        # user_service.create_users_bulk(data, workspace_id)
+        self.insert_workspace_member(data, workspace_id)
 
         # 그룹 생성 및 멤버 추가
-        insert_groups = groups_service.make_group(data["groups"], workspace_id)
-        groups_service.insert_group_member(data, insert_groups)
+        # insert_groups = groups_service.make_group(data["groups"], workspace_id)
+        # groups_service.insert_group_member(data, insert_groups)
+
+
         # groups_service.insert_member_by_group_name(data["groups"])
         # for user_data in data["users"]:
         #     print(workspace_id, user_data)
@@ -139,8 +143,18 @@ class WorkspaceMemberService:
     #     # 아마 role_service를 만든 이후에 작성하는게 좋을 듯.
     #     return
 
-    def insert_workspace_member(self, data: dict):
-        workspace_member = self.workspace_member_repo.insert_workspace_member(data)
+    def insert_workspace_member(self, data: dict, workspace_id: int):
+        workspace_member_list = []
+        for workspace_member_data in data["users"]:
+            workspace_member_list.append({
+                "nickname": workspace_member_data["name"],
+                "email": workspace_member_data["email"],
+                "workspace_id": workspace_id,
+                "id": uuid4().bytes,
+                "blog": workspace_member_data["blog"],
+                "github": workspace_member_data["github"],
+            })
+        workspace_member = self.workspace_member_repo.bulk_insert_workspace_member(workspace_member_list)
         return workspace_member
     
     def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
