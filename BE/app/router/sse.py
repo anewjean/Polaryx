@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 import asyncio
+from asyncio import CancelledError
 import json
 from typing import Dict, Set
 
@@ -18,14 +19,19 @@ async def event_generator(request: Request, workspace_id: str):
 
     try:
         while True:
-            # 클라이언트가 연결을 끊으면 루프 종료
-            if await request.is_disconnected():
-                break
+            try:
+                # 클라이언트가 연결을 끊으면 루프 종료
+                if await request.is_disconnected():
+                    print("연결 끊을게요")
+                    break
 
-            data = await queue.get()
-            # payload['type'] 을 event 이름으로 쓰고, data: 에 JSON을 실어서 보냄
-            yield f"event: {data['type']}\n"
-            yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+                data = await queue.get()
+                # payload['type'] 을 event 이름으로 쓰고, data: 에 JSON을 실어서 보냄
+                yield f"event: {data['type']}\n"
+                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+            except CancelledError:
+                print("클라이언트가 연결 끊음")
+                raise
     finally:
         # 연결 종료 시 해당 워크스페이스의 큐에서 제거
         subscribers[workspace_id].remove(queue)
