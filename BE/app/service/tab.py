@@ -46,6 +46,12 @@ class TabService:
     def get_available_tab_members(self, workspace_id: int, tab_id: int):
         return self.repo.find_non_members(workspace_id, tab_id)
 
+    def get_tab_groups(self, workspace_id: int, tab_id: int):
+        return self.repo.find_tab_groups(workspace_id, tab_id)
+
+    def get_available_groups(self, workspace_id: int, tab_id: int):
+        return self.repo.find_available_groups(workspace_id, tab_id)
+    
     def invite_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         return self.repo.insert_members(workspace_id, tab_id, user_ids)
     

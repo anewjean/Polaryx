@@ -112,6 +112,49 @@ WHERE wm.workspace_id = %(workspace_id)s
 GROUP BY wm.user_id, wm.nickname, wm.image, r.name;
 """
 
+find_tab_groups = """
+SELECT
+  g.id, g.name
+FROM
+  group_members gm
+LEFT JOIN tab_members tm
+  ON gm.user_id = tm.user_id AND tm.tab_id = %(tab_id)s
+JOIN groups g ON g.id = gm.group_id
+GROUP BY
+  gm.group_id
+HAVING
+  COUNT(DISTINCT gm.user_id) = COUNT(DISTINCT tm.user_id);
+"""
+
+find_available_groups = """
+SELECT
+  g.id, g.name
+FROM
+  group_members gm
+LEFT JOIN tab_members tm
+  ON gm.user_id = tm.user_id AND tm.tab_id = %(tab_id)s
+JOIN groups g ON g.id = gm.group_id
+GROUP BY
+  gm.group_id
+HAVING
+  COUNT(DISTINCT gm.user_id) > COUNT(DISTINCT tm.user_id);
+"""
+
+find_groups_role_name = """
+SELECT
+  r.name
+FROM
+  roles r
+JOIN member_roles mr ON r.id = mr.role_id
+JOIN group_members gm ON mr.user_id = gm.user_id
+WHERE gm.group_id = %(group_id)s;
+"""
+
+count_group_members = """
+SELECT COUNT(*) FROM group_members
+WHERE group_id = %(group_id)s;
+"""
+
 insert_tab = """
 INSERT INTO tabs (name, workspace_id, section_id)
 VALUES (%(tab_name)s, %(workspace_id)s, %(section_id)s);
@@ -225,6 +268,48 @@ class TabRepository(AbstractQueryRepo):
             "tab_id": tab_id
         }
         return self.execute(find_non_members, param)
+    
+    def find_tab_groups(self, workspace_id: int, tab_id: int):
+        param = {
+            "workspace_id": workspace_id,
+            "tab_id": tab_id
+        }
+        res = self.execute(find_tab_groups, param)
+        for i in range(0, len(res)):
+            res[i] = list(res[i])
+            group_id = {"group_id":res[i][0]}
+            res_role_names = self.execute(find_groups_role_name, group_id)
+            role_names = []
+            for role_name in res_role_names:
+                role_names.append(role_name[0])
+            if len(set(role_names)) == 1:
+                res[i].append(role_names[0])
+            else:
+                res[i].append("MIXED")
+            count = self.execute(count_group_members, group_id)
+            res[i].append(count[0][0])
+        return res
+    
+    def find_available_groups(self, workspace_id: int, tab_id: int):
+        param = {
+            "workspace_id": workspace_id,
+            "tab_id": tab_id
+        }
+        res = self.execute(find_available_groups, param)
+        for i in range(0, len(res)):
+            res[i] = list(res[i])
+            group_id = {"group_id":res[i][0]}
+            res_role_names = self.execute(find_groups_role_name, group_id)
+            role_names = []
+            for role_name in res_role_names:
+                role_names.append(role_name[0])
+            if len(set(role_names)) == 1:
+                res[i].append(role_names[0])
+            else:
+                res[i].append("MIXED")
+            count = self.execute(count_group_members, group_id)
+            res[i].append(count[0][0])
+        return res
 
     def insert_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         for user_id in user_ids:

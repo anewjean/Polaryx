@@ -96,7 +96,7 @@ async def register_member(workspace_id: int, request: Request):#, token_user_id_
 async def edit_member_role(workspace_id: int, user_id: str, request: Request):#, token_user_id_and_email = Depends(verify_token_and_get_token_data)):
     data: dict = await request.json()
     print("in edit_member_role, user: ", data)
-    res = workspace_member_service.edit_member_role(workspace_id, user_id, data["rold_id"])
+    res = workspace_member_service.edit_member_role(workspace_id, user_id, data["role_id"])
     print("in edit_member_role, res: ", res)
     return res
 

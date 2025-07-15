@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from typing import List, Dict
 from app.schema.tab.request import CreateTabRequest, InviteRequest
-from app.schema.tab.response import TabInfo, TabDetailInfo, TabMember, TabInvitation, CreateTabResponse
+from app.schema.tab.response import TabInfo, TabDetailInfo, TabMember, TabInvitation, CreateTabResponse, TabGroupMember
 from app.service.tab import TabService
 from app.core.security import verify_token_and_get_token_data
 from app.repository.workspace_member import QueryRepo as WorkspaceMemRepo
@@ -57,6 +57,18 @@ def get_available_tab_members(workspace_id: int, tab_id: int):
 def invite_members(workspace_id: int, tab_id: int, user_ids: InviteRequest):
     rows = service.invite_members(workspace_id, tab_id, user_ids.user_ids)
     return TabInvitation.from_rows(rows)
+
+# 탭 참여 그룹 조회
+@router.get("/{workspace_id}/tabs/{tab_id}/groups", response_model=List[TabGroupMember])
+def participated_tab_groups(workspace_id: int, tab_id: int):
+    rows = service.get_tab_groups(workspace_id, tab_id)
+    return [TabGroupMember.from_row(row) for row in rows]
+
+# 탭 참여 가능 그룹 조회
+@router.get("/{workspace_id}/tabs/{tab_id}/non-groups", response_model=List[TabGroupMember])
+def available_tab_groups(workspace_id: int, tab_id: int):
+    rows = service.get_available_groups(workspace_id, tab_id)
+    return [TabGroupMember.from_row(row) for row in rows]
 
 # 탭에 그룹 초대(미완)
 @router.post("/{workspace_id}/tabs/{tab_id}/groups/{group_id}")
