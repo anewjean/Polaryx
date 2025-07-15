@@ -1,68 +1,62 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { createGroupColumns } from "../../app/workspaces/[workspaceId]/admin/groups/columns";
 import { useGroupStore } from "@/store/groupStore";
-import { groupColumns } from "../../app/workspaces/[workspaceId]/admin/groups/columns";
+import { Group } from "@/apis/groupApi";
 
 interface GroupTableProps {
+  columns?: ColumnDef<Group>[];
   onGroupsLoaded?: (count: number) => void;
-  onRefreshNeeded?: () => void;
 }
 
-export function GroupTable({ onGroupsLoaded, onRefreshNeeded }: GroupTableProps = {}) {
+export function GroupTable({ columns, onGroupsLoaded }: GroupTableProps = {}) {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
 
   // Zustand 스토어에서 그룹 데이터 가져오기
-  const { groups, loadingGroups, fetchGroups } = useGroupStore();
+  const { groups, fetchGroups } = useGroupStore();
+
+  // 로컬 상태 - 로딩 상태만 관리
+  const [isLoading, setIsLoading] = useState(true);
   
-  // 외부에서 새로고침 요청 시 호출될 함수
-  const handleRefresh = () => {
-    fetchGroups(workspaceId);
-    
-    // 외부에 새로고침 요청 전달
-    if (onRefreshNeeded) {
-      onRefreshNeeded();
+  // 그룹 목록 불러오기 함수
+  const loadGroups = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await fetchGroups(workspaceId);
+      setIsLoading(false);
+    } catch (error) {      
+      setIsLoading(false);
     }
-  };
+  }, [fetchGroups, workspaceId]);
 
   // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    // 그룹 데이터 불러오기
-    fetchGroups(workspaceId);
-  }, [workspaceId, fetchGroups]);
-
-  // 그룹 수를 외부로 전달
-  useEffect(() => {
-    if (onGroupsLoaded && groups.length > 0) {
-      onGroupsLoaded(groups.length);
-    }
-  }, [groups, onGroupsLoaded]);
-
-  // 데이터 디버깅
-  console.log("그룹 데이터:", groups);
+    loadGroups();
+  }, [loadGroups]);
   
-  const data = groups;
+  // 그룹 데이터가 변경되면 콜백 호출
+  useEffect(() => {
+    if (groups?.[workspaceId] && onGroupsLoaded) {
+      onGroupsLoaded(groups[workspaceId].length);
+    }
+  }, [groups, onGroupsLoaded]);  
+  
+  const data = groups?.[workspaceId] || [];
 
   const table = useReactTable({
     data,
-    columns: groupColumns,
+    columns: columns || createGroupColumns(),
     getCoreRowModel: getCoreRowModel(),
-    debugTable: true, // 테이블 디버깅 활성화
   });
   
-  // 액션 메뉴에 새로고침 함수 전달을 위한 컨텍스트 설정
-  const tableContextWithRefresh = {
-    table,
-    onRefresh: handleRefresh
-  };
-
-  if (loadingGroups && groups.length === 0) {
+  if (isLoading && (!groups?.[workspaceId] || groups[workspaceId].length === 0)) {
     return (
-      <div className="flex items-center justify-center h-24">
-        <p>그룹 정보를 불러오는 중...</p>
+      <div className="flex flex-1 mt-30 items-start justify-center h-screen">
+        <p>로딩중...</p>
       </div>
     );
   }

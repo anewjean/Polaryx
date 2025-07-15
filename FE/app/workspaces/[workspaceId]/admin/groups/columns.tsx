@@ -5,7 +5,7 @@ import { Group } from "@/apis/groupApi";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ActionMenu } from "@/components/Administration/GroupActions/ActionMenu"
  
-export const groupColumns: ColumnDef<Group>[] = [
+export const createGroupColumns = (onRefreshNeeded?: () => void): ColumnDef<Group>[] => [
   {
     id: "actions",
     header: () => <div className="text-left pl-2">Actions</div>,
@@ -17,7 +17,7 @@ export const groupColumns: ColumnDef<Group>[] = [
         <div className="flex justify-start pl-2 w-full overflow-hidden">
           <ActionMenu 
             group={group} 
-            onRefresh={() => {}} // 페이지에서 전달받을 예정
+            onRefresh={onRefreshNeeded || (() => {})} // 페이지에서 전달받은 새로고침 함수 사용
           />
         </div>
       );
@@ -36,7 +36,7 @@ export const groupColumns: ColumnDef<Group>[] = [
               {group_name}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{group_name}</p>
           </TooltipContent>
         </Tooltip>
@@ -57,7 +57,7 @@ export const groupColumns: ColumnDef<Group>[] = [
               {role}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{role}</p>
           </TooltipContent>
         </Tooltip>
@@ -105,11 +105,9 @@ export const groupColumns: ColumnDef<Group>[] = [
               {user_names.join(", ")}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
-            <div className="flex flex-col gap-1">
-              {user_names.map((name, index) => (
-                <span key={index}>{name}</span>
-              ))}
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
+            <div className="flex flex-wrap gap-1">
+              <span>{user_names.join(", ")}</span>
             </div>
           </TooltipContent>
         </Tooltip>
