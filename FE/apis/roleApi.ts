@@ -17,17 +17,19 @@ export interface Role {
 
 // 역할 조회
 export const getRoles = async (workspaceId: string): Promise<Role[]> => {
-  // const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles`, {
-  //     method: "GET",
-  //     headers: { Accept: "application/json" },
-  // });
+  const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/roles`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+  });
 
-  // if (res && res.ok) {
-  //     return res.json();
-  // }
+  if (res && res.ok) {
+      return res.json();
+  } else {
+      throw new Error("역할 조회에 실패했습니다.");
+  }
 
   /////////////////// 일단 더미 데이터 반환/////////////////////////
-  return getDummyRoles(workspaceId);
+  // return getDummyRoles(workspaceId);
 };
 
 // 더미 역할 데이터 생성 함수
