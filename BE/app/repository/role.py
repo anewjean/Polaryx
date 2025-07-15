@@ -17,13 +17,27 @@ WHERE workspace_id = %(workspace_id)s
 """
 
 select_all_member_roles = """
-SELECT wm.nickname, g.name FROM member_roles mr
+SELECT wm.nickname FROM member_roles mr
 JOIN workspace_members wm ON wm.user_id = mr.user_id
 JOIN group_members gm ON gm.user_id = mr.user_id
 JOIN groups g ON g.id = gm.group_id
 WHERE wm.workspace_id = %(workspace_id)s
   AND mr.role_id = %(role_id)s
   AND wm.deleted_at IS NULL;
+"""
+
+select_specific_group_name = """
+SELECT
+  g.name
+FROM
+  group_members gm
+JOIN groups g ON g.id = gm.group_id
+LEFT JOIN member_roles mr
+  ON gm.user_id = mr.user_id AND mr.role_id = %(role_id)s
+GROUP BY
+  gm.group_id
+HAVING
+  COUNT(DISTINCT gm.user_id) = COUNT(DISTINCT mr.user_id);
 """
 
 select_role_by_id = """
@@ -126,24 +140,29 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(insert_member_roles, params)
     
+    # 수정해야함
     def find_all(self, workspace_id: int):
         try:
             result = self.db.execute(select_all_roles, {"workspace_id": workspace_id})
             for i in range(0, len(result)):
                 result[i] = list(result[i])
                 user_names = []
-                group_names = []
+                group_names=[]
                 params = {
                     "workspace_id": workspace_id,
                     "role_id": result[i][0]
                 }
-                names_group_names = self.db.execute(select_all_member_roles, params)
-                for name_groupname in names_group_names:
-                    user_names.append(name_groupname[0])
-                    group_names.append(name_groupname[1])
+                user_names_data = self.db.execute(select_all_member_roles, params)
+                for name in user_names_data:
+                    user_names.append(name[0])
                 result[i].append(list(set(user_names)))
-                result[i].append(list(set(group_names)))
+                group_names_data = self.db.execute(select_specific_group_name, params)                
+                for group in group_names_data:
+                    group_names.append(group[0])
+                result[i].append(group_names)
+                # for result[i][]
                 print("\n\nfind_all, result: ", result)
+
             return result if result else []
         except Exception as e:
             logging.error(f"역할 목록 조회 실패 - workspace_id: {workspace_id}, error: {e}")

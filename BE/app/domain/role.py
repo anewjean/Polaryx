@@ -5,6 +5,7 @@ from typing import List, Optional
 from datetime import datetime
 
 class PermissionType(str, Enum):
+    ADMIN = "admin"
     ANNOUNCE = "announce"
     COURSE = "course"
     CHANNEL = "channel"
@@ -25,6 +26,7 @@ class Role:
     @classmethod
     def from_row(cls, row) -> Role:
         permissions = [
+            PermissionType.ADMIN if row[3] else None,
             PermissionType.ANNOUNCE if row[4] else None,
             PermissionType.COURSE if row[5] else None, 
             PermissionType.CHANNEL if row[6] else None

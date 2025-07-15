@@ -195,7 +195,7 @@ class QueryRepo(AbstractQueryRepo):
         if edit_target_mr_ids == []:
             return True
         res_num = 0
-        for mr_id in edit_target_mr_ids[0]:
-            edit = self.db.execute(edit_role_by_group, {"member_roles_id": mr_id, "role_id": role_id})
+        for mr_id in edit_target_mr_ids:
+            edit = self.db.execute(edit_role_by_group, {"member_roles_id": mr_id[0], "role_id": role_id})
             res_num += edit["rowcount"]
         return len(edit_target_mr_ids) == res_num
