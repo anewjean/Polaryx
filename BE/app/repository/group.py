@@ -1,6 +1,7 @@
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.groups import Groups
+from typing import List
 
 from uuid import UUID
 from zoneinfo import ZoneInfo
@@ -58,6 +59,20 @@ find_all_groups_by_id = """
 SELECT * FROM groups;
 """
 
+find_all_groups_by_wid = """
+SELECT id, name FROM groups
+WHERE workspace_id = %(workspace_id)s;
+"""
+
+find_all_group_members_by_wid = """
+SELECT wm.nickname, r.id, r.name FROM group_members gm
+JOIN workspace_members wm ON wm.user_id = gm.user_id
+JOIN member_roles mr ON mr.user_id = gm.user_id
+JOIN roles r ON r.id = mr.role_id
+WHERE wm.workspace_id = %(workspace_id)s
+AND gm.group_id = %(group_id)s;
+"""
+
 find_del_target_by_id = """
 SELECT gm.id FROM group_members gm
 JOIN groups g ON gm.group_id = g.id
@@ -102,6 +117,38 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_groups_by_id, param)
     
+    # 미완
+    def find_all_groups_and_members(self, workspace_id: int) -> List[list]:
+        param = {
+            "workspace_id": workspace_id
+        }
+        # group_id: string
+        # group_name: string
+        # user_names: string [ ]
+        # role_id : int
+        # role_name: string
+        group_datas = self.db.execute(find_all_groups_by_wid, param)
+        for i in range(0, len(group_datas)):
+            user_names = []
+            role_id = []
+            role_name = []
+            group_datas[i] = list(group_datas[i])
+            params = {
+                "group_id": group_datas[i][0],
+                "workspace_id": workspace_id
+            }
+            grp_mems_data = self.db.execute(find_all_group_members_by_wid, params)  
+            for data in grp_mems_data:
+                user_names.append(data[0])
+                role_id.append(data[1])
+                role_name.append(data[2])
+            group_datas[i].append(user_names)
+            group_datas[i].append(role_id)
+            group_datas[i].append(role_name)
+        print("\n\nfind_all_groups_and_members, group_datas: ", group_datas)
+        return group_datas
+
+
     # 미완
     def insert_member_by_group_id(self, data: dict):
         params = {

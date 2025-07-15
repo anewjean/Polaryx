@@ -76,10 +76,11 @@ async def get_user_columns(request: Request):
     return columns
 
 # 회원 리스트 조회
-@router.get("/{workspace_id}/users", response_model=WorkspaceMembersSchema)
+@router.get("/{workspace_id}/users", response_model=list)
 async def get_members(workspace_id: int, token_user_id_and_email = Depends(verify_token_and_get_token_data)):
     rows = workspace_member_service.get_member_by_workspace_id(workspace_id)
-    return WorkspaceMembersSchema.from_row(rows)
+    res = WorkspaceMembersSchema.from_row(rows)
+    return res.mem_infos
 
 # 회원 등록(개별) - 미완 -> 수정해야됨.
 @router.post("/{workspace_id}/users/single")

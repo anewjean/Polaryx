@@ -41,7 +41,7 @@ class WorkspaceMembersSchema(BaseModel):
     @classmethod 
     def from_row(cls, rows: List[list]) -> "WorkspaceMembersSchema":
         return cls(
-            mem_infos=[
+            mem_infos = [
                 MemberInfo(
                     user_id= UUID(bytes=row[0]).hex,
                     nickname= row[1],
