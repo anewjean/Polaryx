@@ -185,3 +185,8 @@ class WorkspaceMemberService:
         res_mem_roles = role_service.delete_member_roles(user_id, workspace_id)
         res_grp_mem = group_service.delete_grp_mem_by_ws_id(user_id, workspace_id)
         return res_grp_mem and res_mem_roles
+    
+    
+    def search_members(self, workspace_id: int, keyword: str) -> List[tuple]:
+        rows = self.workspace_member_repo.search_members(workspace_id, keyword)
+        return rows

@@ -19,6 +19,22 @@ export async function getUsers(workspaceId: string): Promise<Profile[]> {
     return getDummyUsers(workspaceId);
 }
 
+export async function searchUsers(workspaceId: string, keyword: string): Promise<Profile[]> {
+  const res = await fetchWithAuth(
+    `${BASE}/api/workspaces/${workspaceId}/members/search?q=${encodeURIComponent(keyword)}`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
+
+  if (res && res.ok) {
+    return res.json();
+  }
+  return [];
+}
+
+
 // 더미 유저 데이터 생성 함수
 function getDummyUsers(workspaceId: string): Profile[] {
   const workspaceIdNum = parseInt(workspaceId) || 1;

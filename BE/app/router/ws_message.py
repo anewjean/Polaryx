@@ -99,16 +99,18 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             # if row[0] != uuid.UUID(sender_id).bytes
             #           ]
                 
+            sender_uuid = uuid.UUID(sender_id)
             recipients = [
-                str(uuid.UUID(bytes=row[0]))  # 자신의 user_id를 문자열로 변환
-                for row in members
-                if str(uuid.UUID(bytes=row[0])) != sender_id
-            ]
-            
+            str(uuid.UUID(bytes=row[0]))
+            for row in members
+            if uuid.UUID(bytes=row[0]) != sender_uuid
+                ]
+
             print("보내는 사람 UUID:", sender_id)
             print("푸시 대상:", recipients)
             
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
+            
             await push_service.send_push_to(recipients, {
                 "title": "New Message",
                 "body": f"{nickname}: {clean_content}",

@@ -19,3 +19,9 @@ def update_profile(workspace_id: int, user_id: str, payload: UpdateWorkspaceMemb
     uuid_obj = UUID(user_id)
     response = service.update_profile_by_user_id(uuid_obj, payload)
     return response.workspace_member
+
+#검색  
+@router.get("/{workspace_id}/members/search", response_model=list[WorkspaceMemberSchema])
+def search_members(workspace_id: int, q: str):
+    rows = service.search_members(workspace_id, q)
+    return [WorkspaceMemberSchema.from_row(row) for row in rows]
