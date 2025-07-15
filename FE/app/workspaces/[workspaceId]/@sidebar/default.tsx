@@ -248,9 +248,16 @@ export default function AppSidebar({ width }: SidebarProps) {
                               onClick={() => {
                                 clearUnread(tab.tab_id);
                                 clearInvited(tab.tab_id);
-                                router.push(
-                                  `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
-                                );
+                                // sectionId가 2인 경우 캔버스 페이지로 직접 라우팅
+                                if (Number(section.id) === 2) {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}/canvases/231bae03622f80679bfcfc9b96a0ff03`,
+                                  );
+                                } else {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
+                                  );
+                                }
                               }}
                             >
                               <span className="truncate">{tab.tab_name}</span>
