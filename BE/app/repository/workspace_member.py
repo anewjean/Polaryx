@@ -106,6 +106,7 @@ WHERE id = %(workspace_members_id)s
   AND deleted_at IS NULL;
 """
 
+#검색
 search_workspace_members = """
 SELECT
     wm.user_id,

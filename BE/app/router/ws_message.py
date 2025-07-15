@@ -91,6 +91,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
             members = await tab_service.get_tab_members(workspace_id, tab_id)
+            
             #members = workspace_member_service.get_members_by_workspace_id(workspace_id)[]
             
             
