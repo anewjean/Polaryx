@@ -82,9 +82,19 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
   appendMessage: (msg) =>
     set((state) => ({ messages: [...state.messages, msg] })),
   prependMessages: (msgs) =>
-    set((state) => ({
-      messages: [...msgs, ...state.messages],
-    })),
+    set((state) => {
+      // msgId를 기준으로 중복 제거
+      const uniqueMessages = msgs.filter(
+        (newMsg) =>
+          !state.messages.some(
+            (existingMsg) => existingMsg.msgId === newMsg.msgId,
+          ),
+      );
+
+      return {
+        messages: [...uniqueMessages, ...state.messages],
+      };
+    }),
 
   // file url 저장
   fileUrl: null,
