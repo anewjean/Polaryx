@@ -19,10 +19,11 @@ export function RoleTable({ onRolesLoaded, onRefreshNeeded }: RoleTableProps = {
   const { roles, loadingRoles, fetchRoles } = useRoleStore();
 
   // 외부에서 새로고침 요청 시 호출될 함수
-  const handleRefresh = () => {
-    fetchRoles(workspaceId);
+  const handleRefresh = async () => {
+    // 데이터 로딩이 완료될 때까지 기다림
+    await fetchRoles(workspaceId);
     
-    // 외부에 새로고침 요청 전달
+    // 데이터 로딩 후 외부에 새로고침 요청 전달
     if (onRefreshNeeded) {
       onRefreshNeeded();
     }

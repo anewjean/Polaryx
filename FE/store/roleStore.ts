@@ -32,16 +32,12 @@ export const useRoleStore = create<RoleState>((set, get) => ({
       
       // user_names, group_name, permissions 필드가 없는 경우 빈 배열로 초기화하고 DM 권한 추가
       const processedRoles = roles.map(role => {
-        // permissions 처리: 빈 배열이면 초기화하고 DM 권한 추가
         let permissions = role.permissions || [];
-        if (!permissions.includes("dm") && !permissions.includes("DM")) {
-          permissions = [...permissions, "DM"];
-        }
-        
+                
         return {
           ...role,
           user_names: role.user_names || [],
-          group_name: role.group_name || [],
+          group_names: role.group_names || [],
           permissions: permissions
         };
       });

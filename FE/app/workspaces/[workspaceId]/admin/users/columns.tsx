@@ -38,9 +38,9 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
       return (
         <div className="flex items-center justify-start w-full overflow-hidden">
           <img 
-            src={imageUrl} 
+            src={imageUrl || "/user_default.png"} 
             alt="프로필 이미지" 
-            className="h-10 w-10 rounded-full object-cover"
+            className="h-10 w-10 bg-gray-400 rounded-sm object-cover"
           />
         </div>
       ); 
