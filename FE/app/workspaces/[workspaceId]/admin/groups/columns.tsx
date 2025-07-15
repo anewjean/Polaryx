@@ -3,7 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Group } from "@/apis/groupApi";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Member } from "@/apis/tabApi"
 import { ActionMenu } from "@/components/Administration/GroupActions/ActionMenu"
  
 export const groupColumns: ColumnDef<Group>[] = [
@@ -66,13 +65,14 @@ export const groupColumns: ColumnDef<Group>[] = [
     }
   },
   {
-    accessorKey: "members",
+    accessorKey: "user_names",
     id: "members_count",
     header: "Members Count",
     size: 1.5,
     cell: ({ row }) => {     
-      const members = row.getValue("members") as Member[];
-      const membersCount = members ? members.length : 0;
+      // user_names 필드에 직접 접근
+      const user_names = row.original.user_names as string[] || [];
+      const membersCount = user_names ? user_names.length : 0;
 
       return (
         <div className="flex flex-row truncate pl-10 w-full">
@@ -82,23 +82,35 @@ export const groupColumns: ColumnDef<Group>[] = [
     }
   },
   {
-    accessorKey: "members",
+    accessorKey: "user_names",
     id: "members_list",
     header: "Members",
     size: 4.5,
     cell: ({ row }) => {     
-      const members = row.getValue("members") as Member[];      
-      const nicknames = members ? members.map(member => member.nickname) : [];
+      // 디버깅용 로그 추가
+      console.log("Row data:", row.original);
+      
+      // user_names 필드에 직접 접근
+      const user_names = row.original.user_names as string[] || [];
+      
+      // 데이터가 없으면 빈 배열 사용
+      if (!user_names || user_names.length === 0) {
+        return <div className="text-gray-400">회원 없음</div>;
+      }
 
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row truncate justify-start w-full">
-              {nicknames.join(", ")}
+              {user_names.join(", ")}
             </div>
           </TooltipTrigger>
           <TooltipContent side="top" align="start" sideOffset={5}>
-            <p>{nicknames.join(", ")}</p>
+            <div className="flex flex-col gap-1">
+              {user_names.map((name, index) => (
+                <span key={index}>{name}</span>
+              ))}
+            </div>
           </TooltipContent>
         </Tooltip>
       );

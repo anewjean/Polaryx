@@ -89,9 +89,9 @@ export default function RoleTablePage() {
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
 
-    // 모달이 닫힐 때 폼 초기화 (direct_message는 항상 포함)
+    // 모달이 닫힐 때 폼 초기화 
     if (!isOpen) {
-      setForm({ roleName: "", permissions: ["dm"] });
+      setForm({ roleName: "", permissions: [""] });
     }
   };
 

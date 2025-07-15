@@ -39,12 +39,16 @@ export function RoleTable({ onRolesLoaded, onRefreshNeeded }: RoleTableProps = {
     }
   }, [roles, onRolesLoaded]);  
 
+  // 데이터 디버깅
+  console.log("역할 테이블 데이터:", roles);
+  
   const data = roles;
 
   const table = useReactTable({
     data,
     columns: roleColumns,
     getCoreRowModel: getCoreRowModel(),
+    debugTable: true, // 테이블 디버깅 활성화
   });
 
   if (loadingRoles && roles.length === 0) {

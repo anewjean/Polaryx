@@ -59,27 +59,40 @@ export const roleColumns: ColumnDef<Role>[] = [
     header: "Permissions",
     size: 3, 
     cell: ({ row }) => {     
-      const permissions = row.getValue("permissions") as string[];
-
+      // 기본 permissions 가져오기 - row.original을 통해 직접 접근
+      let permissions = row.original.permissions as string[] || [];
+      
+      // DM 권한이 없으면 추가
+      if (!permissions.includes("dm")) {
+        permissions = [...permissions, "direct message"];
+      }
+      
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row flex-wrap gap-1 w-full overflow-hidden">
-              {permissions.map((permission, index) => (
-                <span
-                  key={index}
-                  className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
-                >
-                  {permission}
-                </span>
-              ))}
+              {permissions.length > 0 ? (
+                permissions.map((permission, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+                  >
+                    {permission}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-400">없음</span>
+              )}
             </div>
           </TooltipTrigger>
           <TooltipContent side="top" align="start" sideOffset={5}>
             <div className="flex flex-col gap-1">
-              {permissions.map((permission, index) => (
-                <span key={index}>{permission}</span>
-              ))}
+              {permissions.length > 0 ? 
+                permissions.map((permission, index) => (
+                  <span key={index}>{permission}</span>
+                )) : 
+                <span className="text-gray-400">없음</span>
+              }
             </div>
           </TooltipContent>
         </Tooltip>
@@ -87,24 +100,28 @@ export const roleColumns: ColumnDef<Role>[] = [
     }
   },
   {
-    accessorKey: "group_name",
+    accessorKey: "group_names",
     header: "Groups",
     size: 2, 
     cell: ({ row }) => {     
-      const group_nameArray = row.getValue("group_name") as string[];      
+      // group_name 필드에 직접 접근
+      const group_nameArray = row.original.group_names as string[] || [];
 
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row truncate text-start w-full">
-              {group_nameArray.join(", ")}
+              {group_nameArray.length > 0 ? group_nameArray.join(", ") : "없음"}
             </div>
           </TooltipTrigger>
           <TooltipContent side="top" align="start" sideOffset={5}>
             <div className="flex flex-col gap-1">
-              {group_nameArray.map((group, index) => (
-                <span key={index}>{group}</span>
-              ))}
+              {group_nameArray.length > 0 ? 
+                group_nameArray.map((group, index) => (
+                  <span key={index}>{group}</span>
+                )) : 
+                <span className="text-gray-400">없음</span>
+              }
             </div>
           </TooltipContent>
         </Tooltip>
@@ -112,25 +129,33 @@ export const roleColumns: ColumnDef<Role>[] = [
     }
   },
   {
-    accessorKey: "members",
+    accessorKey: "user_names",
     header: "Members",
     size: 2.5, 
     cell: ({ row }) => {     
-      const members = row.getValue("members") as Member[];
-      const nicknames = members ? members.map(member => member.nickname) : [];
+      // user_names 필드에 직접 접근
+      const user_names = row.original.user_names as string[] || [];
+      
+      // 데이터가 없으면 빈 배열 사용
+      if (!user_names || user_names.length === 0) {
+        return <div className="text-gray-400">회원 없음</div>;
+      }
 
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row truncate justify-start w-full">
-              {nicknames.join(", ")}
+              {user_names.length > 0 ? user_names.join(", ") : "없음"}
             </div>
           </TooltipTrigger>
           <TooltipContent side="top" align="start" sideOffset={5}>
             <div className="flex flex-col gap-1">
-              {nicknames.map((nickname, index) => (
-                <span key={index}>{nickname}</span>
-              ))}
+              {user_names.length > 0 ? 
+                user_names.map((user_name, index) => (
+                  <span key={index}>{user_name}</span>
+                )) : 
+                <span className="text-gray-400">없음</span>
+              }
             </div>
           </TooltipContent>
         </Tooltip>
