@@ -72,10 +72,8 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 탭 생성 모달 상태 관리 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 섹션 상태 관리 (열림/닫힘, 섹션 ID)
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
-    null,
-  );
+  // 섹션 상태 관리 (Add Tab 버튼 선택 시 해당 섹션 정보 저장)
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
   const { openSections, toggleSection } = useSectionStore();
