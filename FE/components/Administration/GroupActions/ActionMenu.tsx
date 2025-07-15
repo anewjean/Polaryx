@@ -35,8 +35,7 @@ export function ActionMenu({ group, onRefresh }: ActionMenuProps) {
       {/* 액션 메뉴 */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">메뉴 열기</span>
+          <Button variant="ghost" className="h-8 w-8 p-0">            
             <EllipsisVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

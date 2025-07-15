@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { RoleTable } from "@/components/Administration/RoleTable";
 import { Button } from "@/components/ui/button";
 import { Plus, CircleCheck, Ban } from "lucide-react";
@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { createRole } from "@/apis/roleApi";
+import { createRoleColumns } from "./columns";
+import { useRoleStore } from "@/store/roleStore";
 
 export default function RoleTablePage() {
   // URL에서 workspaceId 추출
@@ -23,61 +25,35 @@ export default function RoleTablePage() {
     setRoleCount(count);
   };
 
-  // 새로고침 트리거 상태 관리
-  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);  
-  const handleRefreshNeeded = () => {
-    setRefreshTrigger(prev => prev + 1); // 새로고침 트리거
-  };
+  // 전역 상태의 새로고침 트리거 가져오기
+  const { refreshTrigger, triggerRefresh } = useRoleStore();
 
   // 사용 가능한 권한 목록
   const availablePermissions = [
     { 
       id: "admin", 
-      name: (
-        <>
-          <span className="font-bold">Admin:</span> 회원, 그룹, 역할을 관리할 수 있습니다
-        </>
-      ) 
+      name: ( <><span className="font-bold">Admin:</span> 회원, 그룹, 역할을 관리할 수 있습니다</> ) 
     },
     { 
       id: "announce", 
-      name: (
-        <>
-          <span className="font-bold">Announcements:</span> 탭을 생성할 수 있습니다
-        </>
-      ) 
+      name: (<><span className="font-bold">Announcements:</span> 탭을 생성할 수 있습니다</> ) 
     },
     {
       id: "course",
-      name: (
-        <>
-          <span className="font-bold">Courses:</span> 탭을 생성하고, 학습 자료를 게시할 수 있습니다
-        </>
-      )
+      name: (<><span className="font-bold">Courses:</span> 탭을 생성하고, 학습 자료를 게시할 수 있습니다</> )
     },
     { 
       id: "channel", 
-      name: (
-        <>
-          <span className="font-bold">Channels:</span> 탭을 생성할 수 있습니다
-        </>
-      ) 
+      name: (<><span className="font-bold">Channels:</span> 탭을 생성할 수 있습니다</> ) 
     },
     { 
       id: "dm", 
-      name: (
-        <>
-          <span className="font-bold">Direct Message:</span> 메시지를 보낼 수 있습니다
-        </>
-      ) 
+      name: (<><span className="font-bold">Direct Message:</span> 메시지를 보낼 수 있습니다</> ) 
     },
   ];
 
-  // 역할 생성 폼 데이터 상태 관리
-  const [form, setForm] = useState<{
-    roleName: string;
-    permissions: string[];
-  }>({ roleName: "", permissions: ["dm"] }); // direct_message는 기본 선택
+  // 역할 생성 폼 데이터 상태 관리 (direct_message는 기본 선택)
+  const [form, setForm] = useState<{ roleName: string; permissions: string[]; }>({ roleName: "", permissions: ["dm"] }); 
 
   // 역할 생성 모달 표시 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,30 +62,26 @@ export default function RoleTablePage() {
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
 
-    // 모달이 닫힐 때 폼 초기화 (direct_message는 항상 포함)
+    // 모달이 닫힐 때 폼 초기화 
     if (!isOpen) {
-      setForm({ roleName: "", permissions: ["dm"] });
+      setForm({ roleName: "", permissions: [""] });
     }
   };
 
-  // 권한 체크박스 변경 핸들러
-  const handlePermissionChange = (permissionId: string, checked: boolean) => {
-    // dm는 항상 선택된 상태로 유지
+  // 권한 체크박스 변경 핸들러 (dm은 항상 선택된 상태로 유지)
+  const handlePermissionChange = (permissionId: string, checked: boolean) => {    
     if (permissionId === "dm") return;
 
-    if (checked) {
-      // 권한 추가
-      setForm({
-        ...form,
-        permissions: [...form.permissions, permissionId],
-      });
-    } else {
-      // 권한 제거
-      setForm({
-        ...form,
-        permissions: form.permissions.filter((id) => id !== permissionId),
-      });
+    if (checked) { setForm({ ...form, permissions: [...form.permissions, permissionId], });
+    } else { setForm({ ...form, permissions: form.permissions.filter((id) => id !== permissionId) });
     }
+  };
+
+  // 에러 토스트 표시 함수
+  const showErrorToast = () => {
+    toast.error("역할 생성에 실패했습니다", {
+      icon: <Ban className="size-5" />,
+    });
   };
 
   // 역할 생성 함수
@@ -117,29 +89,19 @@ export default function RoleTablePage() {
     try {
       // dm를 제외한 권한 배열 생성
       const permissionsToSend = form.permissions.filter((p) => p !== "dm");
-      const result = await createRole(
-        workspaceId,
-        form.roleName,
-        permissionsToSend,
-      );
+      const result = await createRole(workspaceId, form.roleName, permissionsToSend);
 
       if (result) {
         toast.success("역할이 생성되었습니다", {
           icon: <CircleCheck className="size-5" />,
         });
-        handleModalOpenChange(false);
-
-        // 새로고침 트리거
-        handleRefreshNeeded();
+        handleModalOpenChange(false);        
+        triggerRefresh(workspaceId);
       } else {
-        toast.error("역할 생성에 실패했습니다", {
-          icon: <Ban className="size-5" />,
-        });
+        showErrorToast();
       }
     } catch (error) {
-      toast.error("역할 생성에 실패했습니다", {
-        icon: <Ban className="size-5" />,
-      });
+      showErrorToast();
     }
   };
 
@@ -190,7 +152,7 @@ export default function RoleTablePage() {
                             checked === true,
                           )
                         }
-                        disabled={permission.id === "direct_message"} // direct_message는 비활성화
+                        disabled={permission.id === "dm"} // dm은 항상 포함되므로 비활성화
                       />
                       <Label htmlFor={`permission-${permission.id}`}>
                         {permission.name}
@@ -225,7 +187,8 @@ export default function RoleTablePage() {
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <RoleTable 
           onRolesLoaded={handleRolesLoaded} 
-          key={refreshTrigger} // 새로고침 트리거가 변경되면 컴포넌트 재렌더링
+          key={refreshTrigger?.[workspaceId] || 0} // 전역 상태의 새로고침 트리거가 변경되면 컴포넌트 재렌더링
+          columns={createRoleColumns(() => triggerRefresh(workspaceId))}
         />
       </div>
     </div>

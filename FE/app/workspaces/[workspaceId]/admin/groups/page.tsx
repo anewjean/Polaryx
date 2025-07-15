@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CreateGroupDialog } from "@/components/Administration/GroupActions/CreateGroupDialog";
 import { useGroupStore } from "@/store/groupStore";
+import { createGroupColumns } from "./columns";
 
 export default function GroupTablePage() {
   const params = useParams();
@@ -14,30 +15,12 @@ export default function GroupTablePage() {
   
   const [groupCount, setGroupCount] = useState<number>(0);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // 전역 상태에서 그룹 데이터 가져오기
-  const { groups, fetchGroups } = useGroupStore();
-  
-  // 컴포넌트 마운트 시 그룹 데이터 불러오기
-  useEffect(() => {
-    fetchGroups(workspaceId);
-  }, [workspaceId, fetchGroups]);
-  
-  // 그룹 수 업데이트
-  useEffect(() => {
-    if (groups.length > 0) {
-      setGroupCount(groups.length);
-    }
-  }, [groups]);
+  const { triggerRefresh, refreshTrigger } = useGroupStore();
 
   const handleGroupsLoaded = (count: number) => {
     setGroupCount(count);
-  };
-  
-  const handleRefresh = () => {
-    fetchGroups(workspaceId);
-    setRefreshTrigger(prev => prev + 1);
   };
 
   return (
@@ -48,7 +31,7 @@ export default function GroupTablePage() {
           <CreateGroupDialog 
             isOpen={isCreateDialogOpen}
             setIsOpen={setIsCreateDialogOpen}
-            onCreateSuccess={handleRefresh}
+            onCreateSuccess={() => triggerRefresh(workspaceId)}
             trigger={
               <Button variant="outline" onClick={() => setIsCreateDialogOpen(true)}>
                 <Plus className="h-4 w-4" />새 그룹 만들기
@@ -60,7 +43,8 @@ export default function GroupTablePage() {
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
         <GroupTable 
           onGroupsLoaded={handleGroupsLoaded} 
-          key={refreshTrigger} // 새로고침 트리거 변경 시 컴포넌트 재렌더링
+          key={refreshTrigger?.[workspaceId] || 0} 
+          columns={createGroupColumns(() => triggerRefresh(workspaceId))}
         />
       </div>
     </div>

@@ -12,6 +12,7 @@ from app.service.push import PushService
 from app.service.tab import TabService
 
 from app.service.notification import NotificationService
+from app.router.sse import send_sse_notification
 
 import uuid
 import re
@@ -81,6 +82,21 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 "message_id": message_id,
                 "sender_id": sender_id
             }
+            # SSE 알림 전송
+            await send_sse_notification(
+                str(workspace_id),
+                {
+                "type": "new_message",
+                "tab_id": tab_id,
+                "content": content,
+                "nickname": nickname,
+                "image": image,
+                "message_id": message_id,
+                "sender_id": sender_id
+                }
+            )
+            # print(payload)
+
             
             # file_data_with_msg_id = {
             #     "message_id": message_id,
@@ -90,17 +106,29 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #     await message_service.save_file_to_db(file_data_with_msg_id)
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
-            members = await tab_service.get_tab_members(workspace_id, tab_id)
+            members = tab_service.get_tab_members(workspace_id, tab_id)
+            tab_info = tab_service.find_tab(workspace_id, tab_id)
+            tab_name = tab_info[0][1]
             #members = workspace_member_service.get_members_by_workspace_id(workspace_id)
-            recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
-                          for row in members
-                          if row[0] != uuid.UUID(sender_id).bytes
-                          ]
+            # recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
+            #               for row in members
+            #               if row[0] != uuid.UUID(sender_id).bytes
+            #               ]
+            sender_uuid = uuid.UUID(sender_id)
+            recipients = [
+            str(uuid.UUID(bytes=row[0]))
+            for row in members
+            if uuid.UUID(bytes=row[0]) != sender_uuid
+             ]
+
+            print("보내는 uuid", sender_id)
+            print("푸시 아이디", recipients)
             
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
             await push_service.send_push_to(recipients, {
-                "title": "New Message",
-                "body": f"{nickname}: {clean_content}"
+                "title": tab_name,
+                "body": f"{nickname}: {clean_content}",
+                "url": f"/workspaces/{workspace_id}/tabs/{tab_id}"
             })
 
             for receiver in recipients:

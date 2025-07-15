@@ -9,6 +9,7 @@ export interface Group {
   members?: Member[];
   non_members?: Member[];
   members_count?: number;  
+  user_names?: string[];
   role_id?: number;
   role_name?: string;  
 }

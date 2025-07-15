@@ -118,23 +118,23 @@ export function EditRoleDialog({ role, isOpen, setIsOpen, onEditSuccess }: EditR
     try {
       // dm를 제외한 권한 배열 생성
       const permissionsToSend = form.permissions.filter((p) => p !== "dm");
-      await updateRole(
-        workspaceId,
-        String(role.role_id),
-        permissionsToSend,
-      );
+      const result = await updateRole(workspaceId, String(role.role_id), permissionsToSend);
+      if (result) {
+        toast.success("역할이 수정되었습니다", {
+          icon: <CircleCheck className="size-5" />,
+        });
+        handleModalOpenChange(false);
 
-      toast.success("역할이 수정되었습니다", {
-        icon: <CircleCheck className="size-5" />,
-      });
-      handleModalOpenChange(false);
-
-      // 수정 후 목록 새로고침
-      if (onEditSuccess) {
-        onEditSuccess();
+        // 수정 후 목록 새로고침
+        if (onEditSuccess) {
+          onEditSuccess();
+        }
+      } else {
+        toast.error("역할 수정에 실패했습니다", {
+          icon: <Ban className="size-5" />,
+        });
       }
-    } catch (error) {
-      console.error("역할 수정 중 오류 발생:", error);
+    } catch (error) {      
       toast.error("역할 수정에 실패했습니다", {
         icon: <Ban className="size-5" />,
       });
