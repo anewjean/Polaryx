@@ -101,8 +101,7 @@ AND wm.deleted_at IS NULL;
 find_groups_name_id_by_workspace_id = """
 SELECT g.id, g.name FROM groups g
 JOIN group_members gm ON gm.group_id = g.id
-WHERE gm.user_id = %(user_id)s
-AND gm.deleted_at IS NULL;
+WHERE gm.user_id = %(user_id)s;
 """
 
 delete_wm_by_id = """

@@ -13,6 +13,7 @@ role_service = RoleService()
 @router.get("/{workspace_id}/roles", response_model=List[RoleResponse])
 async def get_roles(workspace_id: int):
     roles = role_service.find_all(workspace_id)
+    print("\n\nget_roles, roles: ", roles)
     return [RoleResponse.from_domain(role) for role in roles]
 
 # 역할별 권한 조회
