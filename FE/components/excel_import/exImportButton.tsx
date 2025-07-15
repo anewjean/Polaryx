@@ -56,11 +56,7 @@ export function ExUpload() {
       .map((group) => group.trim()) // 앞뒤 공백 제거
       .filter((group) => group !== ""); // 빈 문자열 제거
 
-    console.log("groupData", groupData); // note : delete
-
     const uniqueGroups = [...new Set(groupData)]; // 중복 제거
-
-    console.log("uniqueGroups", uniqueGroups); // note : delete
 
     ////////////////////////// 동작하지 않는 코드 //////////////////////////
     // 엑셀 헤더 file 검사
