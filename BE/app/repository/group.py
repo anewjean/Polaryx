@@ -91,6 +91,21 @@ WHERE g.workspace_id = %(workspace_id)s
   AND gm.deleted_at IS NULL;
 """
 
+edit_role_target = """
+SELECT mr.id
+FROM group_members gm 
+JOIN member_roles mr ON mr.user_id = gm.user_id
+WHERE gm.group_id = %(group_id)s
+  AND mr.role_id != %(role_id)s;
+"""
+
+edit_role_by_group = """
+UPDATE member_roles
+SET 
+    role_id = %(role_id)s
+WHERE id = %(member_roles_id)s;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -169,3 +184,19 @@ class QueryRepo(AbstractQueryRepo):
         del_res = self.db.execute(delete_wm_by_id, params)
         res_num = del_res["rowcount"]
         return target_num == res_num
+    
+
+    def edit_group_role(self, workspace_id: int, group_id: int, role_id: int) -> bool:
+        params = {
+            "workspace_id": workspace_id,
+            "group_id": group_id,
+            "role_id": role_id
+        }
+        edit_target_mr_ids = self.db.execute(edit_role_target, params)
+        if edit_target_mr_ids == []:
+            return True
+        res_num = 0
+        for mr_id in edit_target_mr_ids[0]:
+            edit = self.db.execute(edit_role_by_group, {"member_roles_id": mr_id, "role_id": role_id})
+            res_num += edit["rowcount"]
+        return len(edit_target_mr_ids) == res_num

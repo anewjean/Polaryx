@@ -23,6 +23,8 @@ class GroupsService:
                 res[i][4] = "MIXED"
         return res
 
+    def edit_group_role(self, workspace_id: int, group_id: int, role_id: int):
+        return self.groups_repo.edit_group_role(workspace_id, group_id, role_id)
 
     def insert_member_by_group_id(self, data: dict):
         return self.groups_repo.insert_member_by_group_id(data)
