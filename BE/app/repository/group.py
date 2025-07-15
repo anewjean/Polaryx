@@ -160,7 +160,6 @@ class QueryRepo(AbstractQueryRepo):
             group_datas[i].append(user_names)
             group_datas[i].append(role_id)
             group_datas[i].append(role_name)
-        print("\n\nfind_all_groups_and_members, group_datas: ", group_datas)
         return group_datas
 
 

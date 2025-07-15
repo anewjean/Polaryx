@@ -33,6 +33,14 @@ WHERE id = %(id)s
   AND deleted_at IS NULL;
 """
 
+select_role_by_user_id = """
+SELECT r.* FROM roles r
+JOIN member_roles mr ON r.id = mr.role_id
+WHERE mr.user_id = %(user_id)s 
+  AND r.workspace_id = %(workspace_id)s
+  AND deleted_at IS NULL;
+"""
+
 select_role_by_name = """
 SELECT * FROM roles
 WHERE name = %(name)s 
@@ -149,12 +157,28 @@ class QueryRepo(AbstractQueryRepo):
         try:
             result = self.db.execute(select_role_by_id, param)
             if not result:
-                raise ValueError(f"역할을 찾을 수 없습니다 - role_id: {role_id}, workspace_id: {workspace_id}")
+                raise ValueError(f"역할을 찾을 수 없습니다 - user_id: {role_id}, workspace_id: {workspace_id}")
             return result[0]
         except ValueError:
             raise
         except Exception as e:
             logging.error(f"역할 조회 실패 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
+            raise Exception(f"역할을 조회할 수 없습니다: {e}")
+
+    def find_by_user_id(self, workspace_id: int, user_id: UUID.bytes) -> Optional[tuple]:
+        param = {
+            "workspace_id": workspace_id,
+            "user_id": user_id
+        }
+        try:
+            result = self.db.execute(select_role_by_user_id, param)
+            if not result:
+                raise ValueError(f"역할을 찾을 수 없습니다 - user_id: {user_id}, workspace_id: {workspace_id}")
+            return result[0]
+        except ValueError:
+            raise
+        except Exception as e:
+            logging.error(f"역할 조회 실패 - role_id: {user_id}, workspace_id: {workspace_id}, error: {e}")
             raise Exception(f"역할을 조회할 수 없습니다: {e}")
 
     def find_by_name(self, workspace_id: int, role_name: str) -> Optional[tuple]:
