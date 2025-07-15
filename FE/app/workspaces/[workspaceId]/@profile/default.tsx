@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -19,8 +18,12 @@ import { useProfileImageUpload } from "@/hooks/useProfileImageUpload";
 import { useMessageStore } from "@/store/messageStore";
 
 type ProfileProps = { targetId?: string };
+import { useCreateDM } from "@/hooks/createDM";
 
 export default function ProfilePage() {
+  // DM방 생성
+  const createDM = useCreateDM();
+
   // URL에서 workspaceId 추출
   const params = useParams();
   const workspaceId = params.workspaceId as string;
@@ -187,9 +190,12 @@ export default function ProfilePage() {
         {/* 타인 프로필: DM 버튼 / 본인 프로필: 편집 버튼 / */}
         {myUserId !== bufferTargetId ? (
           <Button
+            onClick={() => {
+              if (bufferTargetId) createDM(bufferTargetId);
+            }}
             variant="outline"
             size="sm"
-            className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+            className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
           >
             <Mail size={24} />
             <span className="truncate">Direct Message</span>
@@ -197,9 +203,12 @@ export default function ProfilePage() {
         ) : (
           <div className="flex flex-1 flex-row gap-2">
             <Button
+              onClick={() => {
+                if (bufferTargetId) createDM(bufferTargetId);
+              }}
               variant="outline"
               size="sm"
-              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+              className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
             >
               <Mail size={24} />
               <span className="truncate">Direct Message</span>
@@ -209,7 +218,7 @@ export default function ProfilePage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex flex-1 min-w-0 items-center justify-start text-md font-bold"
+                  className="flex flex-1 min-w-0 items-center justify-start text-md font-bold cursor-pointer"
                 >
                   <SquarePen size={24} />
                   <span className="truncate">Edit Profile</span>
@@ -234,7 +243,7 @@ export default function ProfilePage() {
                     <img
                       src={preview || profile?.image || "/user_default.png"}
                       alt="profile_image"
-                      className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden"
+                      className="h-full aspect-square bg-gray-200 rounded-2xl overflow-hidden object-cover"
                     />
                     <input
                       type="file"

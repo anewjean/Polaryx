@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
@@ -8,11 +9,25 @@ from app.domain.workspace_member import WorkspaceMember
 
 insert_workspace_member = """
 INSERT INTO workspace_members (
-    id, user_id, workspace_id, nickname, email
+    id, user_id, workspace_id, nickname, email, github, blog
 )
-VALUES (
-    %(id)s, %(user_id)s, %(workspace_id)s, %(nickname)s, %(email)s
-);
+SELECT 
+    %(id)s AS id,
+    u.id AS user_id,
+    %(workspace_id)s AS workspace_id,
+    %(nickname)s AS nickname,
+    %(email)s AS email,
+    %(github)s AS github,
+    %(blog)s AS blog
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM workspace_members wm 
+    WHERE wm.user_id = u.id 
+      AND wm.workspace_id = %(workspace_id)s
+      AND wm.deleted_at IS NULL
+  );
 """
 
 update_workspace_member = """
@@ -50,7 +65,8 @@ SELECT
     r.name AS role,
     GROUP_CONCAT(DISTINCT g.name),
     wm.github,
-    wm.blog
+    wm.blog,
+    wm.id
 FROM workspace_members wm
 LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
 LEFT JOIN roles r ON mr.role_id = r.id
@@ -96,13 +112,21 @@ WHERE wm.workspace_id = %(workspace_id)s
 AND wm.deleted_at IS NULL;
 """
 
+delete_wm_by_id = """
+UPDATE workspace_members
+SET 
+    deleted_at = %(deleted_at)s
+WHERE id = %(workspace_members_id)s
+  AND deleted_at IS NULL;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
         super().__init__(db)
 
-    def insert_workspace_member(self, data: dict):
-        return self.db.execute(insert_workspace_member, data)
+    def bulk_insert_workspace_member(self, data: dict):
+        return self.db.execute_many(insert_workspace_member, data)
 
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {
@@ -141,3 +165,9 @@ class QueryRepo(AbstractQueryRepo):
     def find_by_workspace_columns(self):
         return self.db.execute(find_member_by_workspace_columns)
     
+    def delete_wm_by_id(self, id):
+        params = {
+            "workspace_members_id": id,
+            "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat()
+        }
+        return self.db.execute(delete_wm_by_id, params)

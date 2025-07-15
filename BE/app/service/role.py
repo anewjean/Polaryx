@@ -8,13 +8,38 @@ from app.core.exceptions import (
     InternalServerException
 )
 
+from uuid import UUID
 
 class RoleService:
     def __init__(self):
         self.repo = RolesRepo()
 
-    def insert_member_roles(self, data: dict):
-        return self.repo.insert_member_roles(data)
+    def insert_member_roles_bulk(self, data: dict):
+        # 1. 모든 role 정보 가져오기 (role_id, role_name)
+        roles_data = self.repo.get_all_roles()  # [(1, 'Admin'), (2, 'Guest'), ...]
+        
+        # 2. role_name -> role_id 매핑 딕셔너리 생성
+        role_name_to_id = {role_name: role_id for role_id, role_name in roles_data}
+        
+        # 3. bulk insert용 데이터 리스트 생성
+        member_roles_list = []
+        for user_data in data["users"]:
+            email = user_data["email"]
+            name = user_data["name"] 
+            role_name = user_data["role"]
+            
+            # role_name으로 role_id 찾기
+            if role_name in role_name_to_id:
+                role_id = role_name_to_id[role_name]
+                member_roles_list.append({
+                    "email": email,
+                    "role_id": role_id,
+                    "name": name
+                })
+            else:
+                print(f"Unknown role: {role_name} for user: {email}")
+        
+        return self.repo.bulk_insert_member_roles(member_roles_list)
 
     def find_all(self, workspace_id: int) -> List[Role]:
         try:
@@ -68,3 +93,7 @@ class RoleService:
             logging.error(f"역할 삭제 서비스 오류 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
             raise InternalServerException("역할을 삭제하는 중 오류가 발생했습니다")
 
+    # 미완
+    def delete_member_roles(self, user_id: str, workspace_id: int) -> bool:
+        result = self.repo.delete_mem_role(UUID(user_id).bytes, workspace_id)
+        return result

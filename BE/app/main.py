@@ -21,9 +21,11 @@ from app.router import s3
 from app.router import tab
 from app.router import ws_message
 from app.router import direct_message
+from app.router import push
+from app.router import notification
 from app.router import db
 from app.router import role
-
+from app.router import sse  # SSE
 
 load_dotenv()
 
@@ -35,17 +37,22 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["Authorization", "Content-Type", "Accept"],
+    max_age=0
 )
 app.include_router(router=ws_message.router, prefix="/api/ws")
 app.include_router(router=message.router, prefix="/api")
 app.include_router(router=auth.router, prefix="/api")
 app.include_router(router=s3.router, prefix="/api")
+app.include_router(router=push.router, prefix="/api")
+app.include_router(router=notification.router, prefix="/api")
+
 app.include_router(router=workspace_members.router, prefix="/api")
 app.include_router(router=tab.router, prefix="/api")
 app.include_router(router=workspace.router, prefix="/api")
 app.include_router(router=direct_message.router, prefix="/api")
 app.include_router(router=db.router, prefix="/api")
 app.include_router(router=role.router, prefix="/api")
+app.include_router(router=sse.router, prefix="/api")
 
 # 예외 핸들러 등록
 app.add_exception_handler(CustomHTTPException, custom_http_exception_handler)

@@ -4,7 +4,7 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from typing import List, Optional
 from datetime import datetime
 import logging
-
+from uuid import UUID
 
 select_roles = """
 select id, name from roles;
@@ -65,17 +65,36 @@ WHERE id = %(id)s
   AND workspace_id = %(workspace_id)s 
 """
 
-insert_member_roles = """
+find_member_by_ws_id_user_id = """
+SELECT * FROM member_roles mr
+JOIN roles r ON mr.role_id = r.id
+WHERE r.workspace_id = %(workspace_id)s 
+  AND mr.user_id = %(user_id)s;
+"""
+
+delete_member_roles = """
+DELETE mr FROM member_roles mr
+JOIN roles r ON mr.role_id = r.id
+WHERE r.workspace_id = %(workspace_id)s 
+  AND mr.user_id = %(user_id)s;
+"""
+
+bulk_insert_member_roles = """
 INSERT INTO member_roles (
-    user_id,
-    user_name,
-    role_id
+    user_id, role_id, user_name
 )
-SELECT %(user_id)s   AS user_id,
-       %(user_name)s AS user_name,
-       r.id          AS role_id
-FROM roles r
-WHERE r.name = %(role_name)s;
+SELECT 
+    u.id AS user_id,
+    %(role_id)s AS role_id,
+    %(name)s AS user_name
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM member_roles mr 
+    WHERE mr.user_id = u.id 
+      AND mr.role_id = %(role_id)s
+  );
 """
 
 class QueryRepo(AbstractQueryRepo):
@@ -86,13 +105,8 @@ class QueryRepo(AbstractQueryRepo):
     def get_all_roles(self):
         return self.db.execute(select_roles)
 
-    def insert_member_roles(self, data: dict):
-        params = {
-            "user_id": data["user_id"],
-            "user_name": data["nickname"],
-            "role_name": data["role"]
-        }
-        return self.db.execute(insert_member_roles, params)
+    def bulk_insert_member_roles(self, member_roles_list: list):
+        return self.db.execute_many(bulk_insert_member_roles, member_roles_list)
     
     def find_all(self, workspace_id: int):
         try:
@@ -205,3 +219,13 @@ class QueryRepo(AbstractQueryRepo):
         except Exception as e:
             logging.error(f"역할 삭제 실패 - role_id: {role_id}, workspace_id: {workspace_id}, error: {e}")
             raise Exception(f"역할을 삭제할 수 없습니다: {e}")
+
+    # 미완
+    def delete_mem_role(self, user_id: UUID.bytes, workspace_id: int):
+        params = {
+            "user_id": user_id,
+            "workspace_id": workspace_id
+        }
+        find_res = self.db.execute(find_member_by_ws_id_user_id, params)
+        del_res = self.db.execute(delete_member_roles, params)
+        return len(find_res) == del_res["rowcount"]
