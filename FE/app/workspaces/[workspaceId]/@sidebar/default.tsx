@@ -113,7 +113,7 @@ export default function AppSidebar({ width }: SidebarProps) {
   const invitedTabs = useMessageStore((s) => s.invitedTabs);
   const clearInvited = useMessageStore((s) => s.clearInvitedTab);
 
-  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득
+  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득 
   useEffect(() => {
     const fetchData = async () => {
       try {
