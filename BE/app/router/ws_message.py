@@ -91,16 +91,28 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
             
             members = await tab_service.get_tab_members(workspace_id, tab_id)
-            #members = workspace_member_service.get_members_by_workspace_id(workspace_id)
-            recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
-                          for row in members
-                          if row[0] != uuid.UUID(sender_id).bytes
-                          ]
+            #members = workspace_member_service.get_members_by_workspace_id(workspace_id)[]
+            
+            
+            # recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
+            # for row in members
+            # if row[0] != uuid.UUID(sender_id).bytes
+            #           ]
+                
+            recipients = [
+                str(uuid.UUID(bytes=row[0]))  # 자신의 user_id를 문자열로 변환
+                for row in members
+                if str(uuid.UUID(bytes=row[0])) != sender_id
+            ]
+            
+            print("보내는 사람 UUID:", sender_id)
+            print("푸시 대상:", recipients)
             
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
             await push_service.send_push_to(recipients, {
                 "title": "New Message",
-                "body": f"{nickname}: {clean_content}"
+                "body": f"{nickname}: {clean_content}",
+                "url": f"/workspaces/{workspace_id}/tabs/{tab_id}"
             })
 
             for receiver in recipients:

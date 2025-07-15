@@ -11,13 +11,17 @@ self.addEventListener('push', function(event) {
 
 
 self.addEventListener('notificationclick', function(event) {
+  const data = event.notification.data;  // ← payload에서 url 꺼냄
   event.notification.close();
-  event.waitUntil(clients.matchAll({ type: 'window' }).then(function(clientList) {
-    if (clientList.length > 0) {
-      return clientList[0].focus();
-    }
-    return clients.openWindow('/');
-  }));
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(function(clientList) {
+      if (clientList.length > 0) {
+        return clientList[0].navigate(data.url).then(client => client.focus());
+      }
+      return clients.openWindow(data.url || '/');
+    })
+  );
 });
+
 
 
