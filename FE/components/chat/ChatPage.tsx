@@ -5,6 +5,7 @@ import { ShowDate } from "./ShowDate";
 import { ChatProfile } from "./ChatProfile";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SSEListener } from "../sse/SSEListener";
 
 function SkeletonChat() {
   return (
@@ -92,8 +93,8 @@ export function ChatPage({
         isUpdated: msg.is_updated,
         fileUrl: msg.file_url,
       }));
-      
-      if (new_messages!=null) {
+
+      if (new_messages != null) {
         prependMessages(new_messages);
         isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
@@ -134,15 +135,17 @@ export function ChatPage({
         handleScroll(event);
       }}
     >
+      <SSEListener />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
 
       {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 pl-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
-          const todayKey = dayStart(msg.createdAt!);
-          const prevKey = prev ? dayStart(prev.createdAt!) : null;
-          const showDateHeader = prevKey === null || todayKey !== prevKey;
+          const todayKey = msg.createdAt ? dayStart(msg.createdAt) : null;
+          const prevKey = prev?.createdAt ? dayStart(prev.createdAt) : null;
+          const showDateHeader =
+            todayKey !== null && (prevKey === null || todayKey !== prevKey);
 
           let showProfile = true;
 
@@ -164,7 +167,7 @@ export function ChatPage({
           return (
             <React.Fragment key={msg.msgId}>
               {/* 날짜 헤더 : sticky 추가 */}
-              {showDateHeader && <ShowDate timestamp={todayKey} />}
+              {showDateHeader && todayKey && <ShowDate timestamp={todayKey} />}
 
               {/* 각각의 채팅 */}
               <ChatProfile
@@ -173,13 +176,13 @@ export function ChatPage({
                 imgSrc={msg.image ? msg.image : "/user_default.png"}
                 nickname={msg.nickname}
                 time={
-                  msg.createdAt ? 
-                  new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
+                  msg.createdAt
+                    ? new Date(msg.createdAt).toLocaleTimeString("ko-KR", {
                         hour: "numeric",
                         minute: "2-digit",
                         hour12: true,
                       })
-                    : "now"
+                    : " "
                 }
                 content={msg.content}
                 showProfile={showProfile}
