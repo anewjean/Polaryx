@@ -129,17 +129,13 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
-      className="flex-1 min-h-0 overflow-y-auto"
-      style={{
-        height: "580px",
-      }}
       onScroll={(event) => {
         handleScroll(event);
       }}
     >
       <SSEListener />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
-      <div className="text-m min-h-0 pl-5 w-full">
+      <div className="text-m pl-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = msg.createdAt ? dayStart(msg.createdAt) : null;
