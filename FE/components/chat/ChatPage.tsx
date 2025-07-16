@@ -40,7 +40,22 @@ export function ChatPage({
       console.log("first loading")
       await getMessages(workspaceId, tabId, undefined)
         .then((res) => {
-          if (res.messages.length) setMessages(res.messages);
+          console.log("Before setMessages", res.messages)
+          
+          if (res.messages.length) {
+            const new_messages = res.messages.map((msg: any) => ({
+              senderId: msg.sender_id,
+              msgId: msg.msg_id,
+              nickname: msg.nickname,
+              content: msg.content,
+              image: msg.image,
+              createdAt: msg.created_at,
+              isUpdated: msg.is_updated,
+              fileUrl: msg.file_url,
+            }));
+            setMessages(new_messages);
+          }
+          console.log("After setMessages", useMessageStore.getState().messages)
         })
         .finally(() => {
           setIsLoading(false);
@@ -75,8 +90,8 @@ export function ChatPage({
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      // console.log("oldestID:", oldestId);
-      // console.log("old:", messages);
+      console.log("oldestID:", oldestId);
+      console.log("old:", messages);
       // console.log("previousHeight:", previousHeight);
       const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
@@ -95,13 +110,17 @@ export function ChatPage({
 
       if (new_messages != null) {
         prependMessages(new_messages);
-        isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
-          const newHeight = el.scrollHeight;
-          const heightDiff = newHeight - previousHeight;
-          el.scrollTop = heightDiff;
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              const newHeight = el.scrollHeight;
+              const heightDiff = newHeight - previousHeight;
+              el.scrollTop = heightDiff;
+            });
+          }, 0);
         });
+        isFetching.current = false;
       }
     }
   };
