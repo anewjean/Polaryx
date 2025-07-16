@@ -23,9 +23,11 @@ function SkeletonChat() {
 export function ChatPage({
   workspaceId,
   tabId,
+  className = "",
 }: {
   workspaceId: string;
   tabId: string;
+  className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -148,6 +150,7 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
+      className={`flex-1 min-h-0 overflow-y-auto scrollbar-thin ${className}`}
       onScroll={(event) => {
         handleScroll(event);
       }}
