@@ -54,8 +54,22 @@ class TabMember(BaseModel):
             image=row[2],
             role=row[3],
             groups=row[4].split(",") if row[4] is not None else []
-        )
+        )    
 
+class TabGroupMember(BaseModel):
+    group_id: str
+    group_name: str
+    role_name: str
+    group_members_count: int
+
+    @classmethod
+    def from_row(cls, row: list) -> TabGroupMember:
+        return cls(
+            group_id=str(row[0]),
+            group_name=row[1],
+            role_name=row[2],
+            group_members_count=row[3]
+        )
 
 class TabInvitation(BaseModel):
     members_count: int
