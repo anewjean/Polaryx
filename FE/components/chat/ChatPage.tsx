@@ -37,6 +37,7 @@ export function ChatPage({
   // 최초 메시지 불러오기 + 로딩 해제
   useEffect(() => {
     (async () => {
+      console.log("first loading")
       await getMessages(workspaceId, tabId, undefined)
         .then((res) => {
           if (res.messages.length) prependMessages(res.messages);
@@ -55,9 +56,6 @@ export function ChatPage({
     const el = containerRef.current;
     if (!el) return;
 
-    // 최초 30개의 메세지에 대해서만 가장 하단으로 스크롤 내려가게
-    // + 새 채팅 쳤을 때, 가장 하단으로
-    // 둘의 공통점은? message[-1] 이 변했을 경우
     requestAnimationFrame(() => {
       el.scrollTop = el.scrollHeight;
     });
@@ -70,6 +68,7 @@ export function ChatPage({
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
+    console.log("handleScroll")
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
@@ -130,15 +129,17 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
-      className="flex-1 min-h-0 overflow-y-auto"
+      className="flex-1 min-h-0"
+      style={{
+        height: "580px",
+        overflowY: "auto"
+      }}
       onScroll={(event) => {
         handleScroll(event);
       }}
     >
       <SSEListener />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
-
-      {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
       <div className="text-m min-h-0 pl-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
