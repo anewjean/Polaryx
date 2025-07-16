@@ -9,6 +9,8 @@ import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
 import { useTabStore } from "@/store/tabStore";
+import { useMyUserStore } from "@/store/myUserStore";
+import { useMyPermissionsStore } from "@/store/myPermissionsStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -65,13 +67,14 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 프로필 상태 관리
   const [profile, setProfile] = useState<Profile | null>(null);
 
-  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
+  // 권한 스토어에서 권한 확인 함수 가져오기
+  const { hasPermission, fetchPermissions } = useMyPermissionsStore();
+
+  // 탭 생성 모달 상태 관리 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
-    null,
-  );
+  // 섹션 상태 관리 (Add Tab 버튼 선택 시 해당 섹션 정보 저장)
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
   const { openSections, toggleSection } = useSectionStore();
@@ -102,7 +105,7 @@ export default function AppSidebar({ width }: SidebarProps) {
   const invitedTabs = useMessageStore((s) => s.invitedTabs);
   const clearInvited = useMessageStore((s) => s.clearInvitedTab);
 
-  // 진입 시 워크스페이스, 탭, 프로필 정보 획득
+  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -122,6 +125,9 @@ export default function AppSidebar({ width }: SidebarProps) {
           setWorkspaceInfo(workspace as workspace);
           setTabList(tabs as Tab[]);
           setProfile(profileData as Profile);
+          
+          // 권한 정보 가져오기
+          fetchPermissions(workspaceId);
         } else {
           router.replace("/");
         }
@@ -160,13 +166,13 @@ export default function AppSidebar({ width }: SidebarProps) {
     }
   }
 
-  // 섹션 id별 섹션명과 아이콘
+  // 섹션 id별 섹션명과 아이콘, 권한 키
   const sectionType = [
-    { id: "1", label: "Announcements", icon: Megaphone },
-    { id: "2", label: "Courses", icon: Landmark },
-    { id: "3", label: "Channels", icon: Users },
-    { id: "4", label: "Direct Messages", icon: Mail },
-  ];
+    { id: "1", label: "Announcements", icon: Megaphone, permissionKey: "announce" },
+    { id: "2", label: "Courses", icon: Landmark, permissionKey: "course" },
+    { id: "3", label: "Channels", icon: Users, permissionKey: "channel" },
+    { id: "4", label: "Direct Messages", icon: Mail, permissionKey: "dm" },
+  ];  
 
   return (
     <SidebarProvider>
@@ -242,9 +248,16 @@ export default function AppSidebar({ width }: SidebarProps) {
                               onClick={() => {
                                 clearUnread(tab.tab_id);
                                 clearInvited(tab.tab_id);
-                                router.push(
-                                  `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
-                                );
+                                // sectionId가 2인 경우 캔버스 페이지로 직접 라우팅
+                                if (Number(section.id) === 2) {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}/canvases/231bae03622f80679bfcfc9b96a0ff03`,
+                                  );
+                                } else {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
+                                  );
+                                }
                               }}
                             >
                               <span className="truncate">{tab.tab_name}</span>
@@ -257,15 +270,16 @@ export default function AppSidebar({ width }: SidebarProps) {
                           </SidebarMenuItem>
                         );
                       })}
-                    {/* 탭 추가 모달 팝업 내용 */}
-                    <DialogModal
-                      title="Create a Tab"
-                      defaultOpen={false}
-                      open={isModalOpen}
-                      onOpenChange={(isOpen) =>
-                        handleModalOpenChange(isOpen, section.id.toString())
-                      }
-                      trigger={
+                    {/* 탭 추가 모달 팝업 내용 - 권한에 따라 표시 */}
+                    {(section.permissionKey === "dm" || (section.permissionKey && hasPermission(workspaceId, section.permissionKey))) && (
+                      <DialogModal
+                        title="Create a Tab"
+                        defaultOpen={false}
+                        open={isModalOpen}
+                        onOpenChange={(isOpen) =>
+                          handleModalOpenChange(isOpen, section.id.toString())
+                        }
+                        trigger={
                         <SidebarMenuItem>
                           <SidebarMenuButton
                             asChild
@@ -314,6 +328,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                         </div>
                       </div>
                     </DialogModal>
+                    )}
                   </SidebarMenu>
                 </SidebarGroupContent>
               )}
@@ -350,7 +365,7 @@ export default function AppSidebar({ width }: SidebarProps) {
             </PopoverTrigger>
             <PopoverContent
               side="right"
-              sideOffset={12}
+              sideOffset={17}
               className="flex overflow-hidden bg-gray-700 rounded-md w-48"
             >
               <ProfileMenu logout={logout} router={router} />

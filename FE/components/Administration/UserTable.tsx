@@ -1,82 +1,60 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { Profile } from "@/apis/profileApi";
-import { toast } from "sonner";
-import { Ban } from "lucide-react";
+import { useReactTable, getCoreRowModel, ColumnDef, flexRender } from "@tanstack/react-table";
 import { useUserStore } from "@/store/userStore";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { Profile } from "@/apis/profileApi";
 import { userColumns as defaultUserColumns } from "../../app/workspaces/[workspaceId]/admin/users/columns";
 
 interface UserTableProps {
   onUsersLoaded?: (count: number) => void;
-  userColumns?: ColumnDef<Profile>[];
-  onRefreshNeeded?: () => void;
+  columns?: ColumnDef<Profile>[];
 }
 
-export function UserTable({ onUsersLoaded, userColumns, onRefreshNeeded }: UserTableProps = {}) {
+export function UserTable({ onUsersLoaded, columns }: UserTableProps = {}) {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
 
   // userStore에서 상태와 함수 가져오기
-  const { users: storeUsers, loadingUsers, fetchUsers: fetchUsersFromStore, triggerRefresh } = useUserStore();
+  const { users, fetchUsers } = useUserStore();
   
-  // 로컬 상태 (필요한 경우)
-  const [users, setUsers] = useState<Profile[]>([]);
+  // 로컬 상태 - 로딩 상태만 관리
   const [isLoading, setIsLoading] = useState(true);
 
-  // 사용자 목록 업데이트 (스토어 데이터 -> 로컬 상태)
-  useEffect(() => {
-    if (storeUsers && storeUsers[workspaceId]) {
-      setUsers(storeUsers[workspaceId]);
-      if (onUsersLoaded) {
-        onUsersLoaded(storeUsers[workspaceId].length);
-      }
-    }
-  }, [storeUsers, workspaceId, onUsersLoaded]);
-
   // 사용자 목록 불러오기 함수
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       setIsLoading(true);
-      await fetchUsersFromStore(workspaceId);
+      await fetchUsers(workspaceId);
       setIsLoading(false);
-    } catch (error) {
-      console.error("유저 조회에 실패했습니다.", error);
+    } catch (error) {      
       setIsLoading(false);
     }
-  };
-
-  // 사용자 목록을 새로고침하는 함수
-  const refreshData = async () => {
-    await loadUsers();
-    if (onRefreshNeeded) {
-      onRefreshNeeded();
-    }
-  };
+  }, [fetchUsers, workspaceId]);
 
   // 컴포넌트 마운트 시 사용자 목록 불러오기
-  useEffect(() => { 
-    refreshData(); 
-  }, [workspaceId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {     
+    loadUsers().finally(() => {
+      // 사용자 목록 로드 완료 시 콜백 호출
+    if (users?.[workspaceId] && onUsersLoaded) {
+      onUsersLoaded(users[workspaceId].length);
+    }
+    });
+  }, [workspaceId, users]);
 
-  const data = users;
+  // 전역 상태에서 현재 워크스페이스의 사용자 데이터 가져오기
+  const data = users?.[workspaceId] || [];
 
   const table = useReactTable({
     data,
-    columns: userColumns || defaultUserColumns,
+    columns: columns || defaultUserColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex flex-1 mt-30 items-start justify-center h-screen">
         <p>로딩중...</p>
       </div>
     );
@@ -147,7 +125,7 @@ export function UserTable({ onUsersLoaded, userColumns, onRefreshNeeded }: UserT
               ))
             ) : (
               <tr>
-                <td colSpan={(userColumns || defaultUserColumns).length} className="h-24 text-center">
+                <td colSpan={(columns || defaultUserColumns).length} className="h-24 text-center">
                   회원이 없습니다.
                 </td>
               </tr>

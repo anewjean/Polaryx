@@ -38,9 +38,9 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
       return (
         <div className="flex items-center justify-start w-full overflow-hidden">
           <img 
-            src={imageUrl} 
+            src={imageUrl || "/user_default.png"} 
             alt="프로필 이미지" 
-            className="h-10 w-10 rounded-full object-cover"
+            className="h-10 w-10 bg-gray-400 rounded-sm object-cover"
           />
         </div>
       ); 
@@ -60,7 +60,7 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
               {nickname}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{nickname}</p>
           </TooltipContent>
         </Tooltip>
@@ -81,7 +81,7 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
               {email}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{email}</p>
           </TooltipContent>
         </Tooltip>
@@ -102,7 +102,7 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
               {role}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{role}</p>
           </TooltipContent>
         </Tooltip>
@@ -124,12 +124,10 @@ export const createUserColumns = (onUserUpdated?: OnUserUpdated): ColumnDef<Prof
               {groupsText}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
-            <div className="flex flex-col gap-1">
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
+            <div className="flex flex-wrap gap-1">
               {groups && groups.length > 0 ? (
-                groups.map((group, index) => (
-                  <span key={index}>{group}</span>
-                ))
+                <span>{groupsText}</span>
               ) : (
                 <span>그룹 없음</span>
               )}

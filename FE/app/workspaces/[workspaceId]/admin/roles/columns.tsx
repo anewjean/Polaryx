@@ -16,7 +16,11 @@ const permissionLabels: Record<string, string> = {
   "dm": "Direct Message"
 }
 
-export const roleColumns: ColumnDef<Role>[] = [
+// 새로고침 함수 타입 정의
+type OnRoleUpdated = () => void;
+
+// 함수형으로 변경하여 새로고침 함수를 받을 수 있도록 함
+export const createRoleColumns = (onRoleUpdated?: OnRoleUpdated): ColumnDef<Role>[] => [
   {
     id: "actions",
     header: () => <div className="text-left pl-2">Actions</div>,
@@ -28,7 +32,7 @@ export const roleColumns: ColumnDef<Role>[] = [
         <div className="flex justify-start pl-2 w-full overflow-hidden">
           <ActionMenu 
             role={role} 
-            onRoleUpdated={() => window.location.reload()} 
+            onRoleUpdated={onRoleUpdated} 
           />
         </div>
       );
@@ -47,7 +51,7 @@ export const roleColumns: ColumnDef<Role>[] = [
               {role_name}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
             <p>{role_name}</p>
           </TooltipContent>
         </Tooltip>
@@ -81,17 +85,15 @@ export const roleColumns: ColumnDef<Role>[] = [
                   </span>
                 ))
               ) : (
-                <span className="text-gray-400">없음</span>
+                <span className="text-gray-400">-</span>
               )}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
-            <div className="flex flex-col gap-1">
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
+            <div className="flex flex-wrap gap-1">
               {permissions.length > 0 ? 
-                permissions.map((permission, index) => (
-                  <span key={index}>{permission}</span>
-                )) : 
-                <span className="text-gray-400">없음</span>
+                <span>{permissions.join(", ")}</span> : 
+                <span>-</span>
               }
             </div>
           </TooltipContent>
@@ -111,16 +113,14 @@ export const roleColumns: ColumnDef<Role>[] = [
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row truncate text-start w-full">
-              {group_nameArray.length > 0 ? group_nameArray.join(", ") : "없음"}
+              {group_nameArray.length > 0 ? group_nameArray.join(", ") : "-"}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
-            <div className="flex flex-col gap-1">
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
+            <div className="flex flex-wrap gap-1">
               {group_nameArray.length > 0 ? 
-                group_nameArray.map((group, index) => (
-                  <span key={index}>{group}</span>
-                )) : 
-                <span className="text-gray-400">없음</span>
+                <span>{group_nameArray.join(", ")}</span> : 
+                <span>-</span>
               }
             </div>
           </TooltipContent>
@@ -138,23 +138,21 @@ export const roleColumns: ColumnDef<Role>[] = [
       
       // 데이터가 없으면 빈 배열 사용
       if (!user_names || user_names.length === 0) {
-        return <div className="text-gray-400">회원 없음</div>;
+        return <div>-</div>;
       }
 
       return (
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex flex-row truncate justify-start w-full">
-              {user_names.length > 0 ? user_names.join(", ") : "없음"}
+              {user_names.length > 0 ? user_names.join(", ") : "-"}
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" align="start" sideOffset={5}>
-            <div className="flex flex-col gap-1">
+          <TooltipContent side="top" align="start" sideOffset={5} className="max-w-[300px] whitespace-normal break-words">
+            <div className="flex flex-wrap gap-1">
               {user_names.length > 0 ? 
-                user_names.map((user_name, index) => (
-                  <span key={index}>{user_name}</span>
-                )) : 
-                <span className="text-gray-400">없음</span>
+                <span>{user_names.join(", ")}</span> : 
+                <span>-</span>
               }
             </div>
           </TooltipContent>

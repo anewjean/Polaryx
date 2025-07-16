@@ -91,7 +91,7 @@ export default function Page() {
       <div className="justify-center gap-10 relative z-10 p-8 bg-black backdrop-blur-md rounded-2xl flex flex-col items-center w-[30%] mt-15">
         <div className="flex flex-row items-center mb-15">
           <img src="./logo.png" alt="SLAM Logo" className="w-15 h-15" />
-          <h1 className="ml-3 zen-antique-soft-regular text-5xl font-extrabold text-white text-center tracking-[0.4rem]">
+          <h1 className="ml-3 zen-antique-soft-regular text-5xl font-extrabold text-white text-center tracking-[0.4rem] whitespace-nowrap">
             Polaris
             <span className="relative ml-1 -translate-y-7 inline-block text-blue-200">
               .

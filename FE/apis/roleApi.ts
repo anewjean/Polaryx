@@ -31,11 +31,7 @@ export const getRoles = async (workspaceId: string): Promise<Role[]> => {
 };
 
 // 역할 생성
-export const createRole = async (
-  workspaceId: string,
-  roleName: string,
-  rolePermission: string[],
-) => {
+export const createRole = async (workspaceId: string, roleName: string, rolePermission: string[]) : Promise<boolean> => {
   const res = await fetchWithAuth(
     `${BASE}/api/workspaces/${workspaceId}/roles`,
     {
@@ -51,11 +47,7 @@ export const createRole = async (
 };
 
 // 역할 수정
-export const updateRole = async (
-  workspaceId: string,
-  roleId: string,
-  rolePermission: string[],
-) => {
+export const updateRole = async (workspaceId: string, roleId: string, rolePermission: string[]) : Promise<boolean> => {
   const res = await fetchWithAuth(
     `${BASE}/api/workspaces/${workspaceId}/roles/${roleId}/edit`,
     {
@@ -68,7 +60,7 @@ export const updateRole = async (
 };
 
 // 역할 삭제
-export const deleteRole = async (workspaceId: string, roleId: string) => {
+export const deleteRole = async (workspaceId: string, roleId: string) : Promise<boolean> => {
   const res = await fetchWithAuth(
     `${BASE}/api/workspaces/${workspaceId}/roles/${roleId}/delete`,
     {
@@ -77,4 +69,19 @@ export const deleteRole = async (workspaceId: string, roleId: string) => {
   );
   if (res == null || !res.ok) throw new Error("역할 삭제에 실패했습니다.");
   return res.json();
+};
+
+// 사용자 권한 조회
+export const getUserPermissions = async (workspaceId: string, userId: string): Promise<string[]> => {
+  const res = await fetchWithAuth(
+    `${BASE}/api/workspaces/${workspaceId}/users/${userId}/permissions`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
+  if (res && res.ok) {
+    const data = await res.json();
+    return data.permissions || [];
+  } else throw new Error("권한 조회에 실패했습니다.");
 };

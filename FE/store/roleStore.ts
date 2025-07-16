@@ -4,66 +4,64 @@ import { getRoles } from '@/apis/roleApi';
 
 
 interface RoleState {
-  roles: Role[];
-  loadingRoles: boolean;
-  workspaceId: string | null;
-  refreshTrigger: number;
+  roles: Record<string, Role[]>; // key: workspaceId, value: roles
+  refreshTrigger: Record<string, number>;
   
-  fetchRoles: (workspaceId: string) => Promise<void>;
-  triggerRefresh: () => void;
+  fetchRoles: (workspaceId: string, forceRefresh?: boolean) => Promise<Role[]>;
+  triggerRefresh: (workspaceId: string) => void;
 }
 
 export const useRoleStore = create<RoleState>((set, get) => ({
-  roles: [],
-  loadingRoles: false,
-  workspaceId: null,
-  refreshTrigger: 0,
+  roles: {},
+  refreshTrigger: {},
   
-  fetchRoles: async (workspaceId: string) => {
-    // 이미 같은 워크스페이스의 데이터가 있고 로딩 중이 아니면 다시 불러오지 않음
-    if (get().roles.length > 0 && get().workspaceId === workspaceId && !get().loadingRoles) {
-      return;
-    }
-    set({ loadingRoles: true });
-
+  fetchRoles: async (workspaceId: string, forceRefresh: boolean = false) => {
     try {
+      // 이미 데이터가 있는지 확인 (강제 새로고침이 아닌 경우에만)
+      const currentRoles = get().roles[workspaceId];
+      if (!forceRefresh && currentRoles && currentRoles.length > 0) {
+        return currentRoles; // 강제 새로고침이 아니고 이미 데이터가 있으면 그대로 반환
+      }
+      
       const roles = await getRoles(workspaceId);
       console.log('역할 API 응답 데이터:', roles);
       
       // user_names, group_name, permissions 필드가 없는 경우 빈 배열로 초기화하고 DM 권한 추가
       const processedRoles = roles.map(role => {
-        // permissions 처리: 빈 배열이면 초기화하고 DM 권한 추가
         let permissions = role.permissions || [];
-        if (!permissions.includes("dm") && !permissions.includes("DM")) {
-          permissions = [...permissions, "DM"];
-        }
-        
+                
         return {
           ...role,
           user_names: role.user_names || [],
-          group_name: role.group_name || [],
+          group_names: role.group_names || [],
           permissions: permissions
         };
-      });
+      });    
       
-      console.log('처리된 역할 데이터:', processedRoles);
-      set({ roles: processedRoles, workspaceId });
+      // 상태 업데이트
+      set((state) => ({
+        roles: {
+          ...state.roles,
+          [workspaceId]: processedRoles,
+        },
+      }));
+      
+      return processedRoles;
     } catch (error) {
-      console.error('역할을 불러오는데 실패했습니다:', error);
-    } finally {
-      set({ loadingRoles: false });
+      console.error('역할 데이터 가져오기 오류:', error);
+      return [];
     }
   },
   
-  triggerRefresh: () => {
+  triggerRefresh: (workspaceId: string) => {
     set((state) => ({
-      refreshTrigger: state.refreshTrigger + 1
+      refreshTrigger: {
+        ...state.refreshTrigger,
+        [workspaceId]: (state.refreshTrigger[workspaceId] || 0) + 1
+      }
     }));
     
-    // 현재 워크스페이스 ID가 있으면 데이터 다시 불러오기
-    const { workspaceId } = get();
-    if (workspaceId) {
-      get().fetchRoles(workspaceId);
-    }
+    // 해당 워크스페이스의 데이터 강제로 다시 불러오기
+    get().fetchRoles(workspaceId, true);
   }
 }));

@@ -1,60 +1,62 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { roleColumns } from "../../app/workspaces/[workspaceId]/admin/roles/columns";
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { createRoleColumns } from "../../app/workspaces/[workspaceId]/admin/roles/columns";
 import { useRoleStore } from "@/store/roleStore";
+import { Role } from "@/apis/roleApi";
 
 interface RoleTableProps {
   onRolesLoaded?: (count: number) => void;
-  onRefreshNeeded?: () => void;
+  columns?: ColumnDef<Role>[];
 }
 
-export function RoleTable({ onRolesLoaded, onRefreshNeeded }: RoleTableProps = {}) {
+export function RoleTable({ onRolesLoaded, columns }: RoleTableProps = {}) {
   const params = useParams();
   const workspaceId = params.workspaceId as string;
 
   // 전역 상태에서 역할 데이터 가져오기
-  const { roles, loadingRoles, fetchRoles } = useRoleStore();
+  const { roles, fetchRoles } = useRoleStore();
 
-  // 외부에서 새로고침 요청 시 호출될 함수
-  const handleRefresh = () => {
-    fetchRoles(workspaceId);
-    
-    // 외부에 새로고침 요청 전달
-    if (onRefreshNeeded) {
-      onRefreshNeeded();
+  // 로컬 상태 - 로딩 상태만 관리
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 역할 목록 불러오기 함수
+  const loadRoles = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await fetchRoles(workspaceId);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("역할 조회에 실패했습니다.", error);
+      setIsLoading(false);
     }
-  };
+  }, [fetchRoles, workspaceId]);
 
+  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    fetchRoles(workspaceId);
-  }, [workspaceId, fetchRoles]);
+    loadRoles().finally(() => {
+      // 역할 로드 완료 시 콜백 호출
+      if (roles?.[workspaceId] && onRolesLoaded) {
+        onRolesLoaded(roles[workspaceId].length);
+      }
+    });
+  }, [workspaceId, roles]);  
 
-  // 역할 수를 외부로 전달
-  useEffect(() => {
-    if (onRolesLoaded && roles.length > 0) {
-      onRolesLoaded(roles.length);
-    }
-  }, [roles, onRolesLoaded]);  
-
-  // 데이터 디버깅
-  console.log("역할 테이블 데이터:", roles);
-  
-  const data = roles;
+  // 전역 상태에서 현재 워크스페이스의 역할 데이터 가져오기 
+  const data = roles?.[workspaceId] || [];
 
   const table = useReactTable({
     data,
-    columns: roleColumns,
+    columns: columns || createRoleColumns(),
     getCoreRowModel: getCoreRowModel(),
-    debugTable: true, // 테이블 디버깅 활성화
   });
 
-  if (loadingRoles && roles.length === 0) {
+  if (isLoading && (!roles?.[workspaceId] || roles[workspaceId].length === 0)) {
     return (
-      <div className="flex items-center justify-center h-24">
-        <p>역할 정보를 불러오는 중...</p>
+      <div className="flex flex-1 mt-30 items-start justify-center h-screen">
+        <p>로딩중...</p>
       </div>
     );
   }

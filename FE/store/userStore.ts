@@ -4,58 +4,36 @@ import { getUsers } from "@/apis/userApi";
 
 interface UserState {
   users: Record<string, Profile[]>; // key: workspaceId, value: users
-  loadingUsers: Record<string, boolean>;
   refreshTrigger: Record<string, number>;
   
-  // 사용자 목록 불러오기
-  fetchUsers: (workspaceId: string) => Promise<Profile[]>;
-  
-  // 새로고침 트리거 업데이트
+  fetchUsers: (workspaceId: string, forceRefresh?: boolean) => Promise<Profile[]>;
   triggerRefresh: (workspaceId: string) => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
   users: {},
-  loadingUsers: {},
   refreshTrigger: {},
   
-  fetchUsers: async (workspaceId: string) => {
-    // 로딩 상태 설정
-    set((state) => ({
-      loadingUsers: {
-        ...state.loadingUsers,
-        [workspaceId]: true,
-      },
-    }));
-    
+  fetchUsers: async (workspaceId: string, forceRefresh: boolean = false) => {
     try {
-      // API 호출
-      const usersData = await getUsers(workspaceId);
+      // 이미 데이터가 있는지 확인 (강제 새로고침이 아닌 경우에만)
+      const currentUsers = get().users[workspaceId];
+      if (!forceRefresh && currentUsers && currentUsers.length > 0) {
+        return currentUsers; // 강제 새로고침이 아니고 이미 데이터가 있으면 그대로 반환
+      }
       
-      // 상태 업데이트
+      // 데이터가 없으면 API 호출
+      const usersData = await getUsers(workspaceId);           
       set((state) => ({
         users: {
           ...state.users,
           [workspaceId]: usersData,
         },
-        loadingUsers: {
-          ...state.loadingUsers,
-          [workspaceId]: false,
-        },
-      }));
-      
+      }));      
       return usersData;
-    } catch (error) {
-      console.error("회원 목록을 불러오는데 실패했습니다:", error);
-      
-      // 로딩 상태 업데이트
-      set((state) => ({
-        loadingUsers: {
-          ...state.loadingUsers,
-          [workspaceId]: false,
-        },
-      }));
-      
+
+    } catch (error) {                
+      console.error('사용자 데이터 가져오기 오류:', error);
       return [];
     }
   },
@@ -67,5 +45,8 @@ export const useUserStore = create<UserState>((set, get) => ({
         [workspaceId]: (state.refreshTrigger[workspaceId] || 0) + 1,
       },
     }));
+    
+    // 해당 워크스페이스의 데이터 강제로 다시 불러오기
+    get().fetchUsers(workspaceId, true);
   },
 }));

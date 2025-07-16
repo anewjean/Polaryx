@@ -21,8 +21,7 @@ export default function WorkspacesLayout({
             </span>
           </span>
         </div>
-        <div className="flex flex-row items-center gap-2">
-          <ExUpload />
+        <div className="flex flex-row items-center gap-2">          
           <Button
             variant="destructive"
             onClick={resetDB}

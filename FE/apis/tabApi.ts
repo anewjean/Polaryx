@@ -12,7 +12,7 @@ export interface Tab {
 }
 
 export interface Member {
-  user_id?: string;
+  user_id: string;
   nickname: string;
   image?: string | null;
   role_id?: number;
