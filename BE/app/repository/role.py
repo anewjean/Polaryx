@@ -128,11 +128,18 @@ bulk_insert_member_roles = """
 INSERT INTO member_roles (
     user_id, role_id, user_name
 )
-SELECT %(user_id)s   AS user_id,
-       %(user_name)s AS user_name,
-       r.id          AS role_id
-FROM roles r
-WHERE r.name = %(role_name)s;
+SELECT 
+    u.id AS user_id,
+    %(role_id)s AS role_id,
+    %(name)s AS user_name
+FROM users u
+WHERE u.email = %(email)s
+  AND NOT EXISTS (
+    SELECT 1 
+    FROM member_roles mr 
+    WHERE mr.user_id = u.id 
+      AND mr.role_id = %(role_id)s
+  );
 """
 
 class QueryRepo(AbstractQueryRepo):

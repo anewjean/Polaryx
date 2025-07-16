@@ -361,3 +361,8 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(100, 100, 100, 0.2) transparent;
 }
+
+/* 노션 breadcrunb 제거를 위함 */
+.notion-header {
+  display: none !important;
+}

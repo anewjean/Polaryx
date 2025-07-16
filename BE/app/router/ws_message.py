@@ -48,9 +48,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             data = json.loads(raw_data)
             sender_id = (data.get("sender_id"))
             content = data.get("content")
+            print("content: ", content)
             # 추가
             file_data = data.get("file_url")
-            print(file_data)
+            print("file_url: ", file_data)
             
             clean_content = strip_tags(content)
 
