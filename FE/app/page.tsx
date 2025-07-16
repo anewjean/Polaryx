@@ -1,7 +1,8 @@
 "use client";
 
-const BASE = process.env.NEXT_PUBLIC_BASE
+const BASE = process.env.NEXT_PUBLIC_BASE;
 
+import "@/styles/globals.css";
 import React, { useMemo } from "react";
 import { LoginButton } from "../components/login/LoginButton";
 import { useEffect } from "react";
@@ -50,7 +51,7 @@ const Stars: React.FC<{ count?: number }> = ({ count = 100 }) => {
 };
 
 export default function Page() {
-  const router = useRouter(); 
+  const router = useRouter();
 
   useEffect(() => {
     const getToken = async () => {
@@ -82,14 +83,22 @@ export default function Page() {
     getToken();
   }, [router]);
   return (
-    <div className="relative flex justify-center items-center h-screen overflow-hidden bg-black">
+    <div className="flex flex-col relative flex justify-center items-center h-screen overflow-hidden bg-black">
       {/* 별만 있는 레이어 */}
       <Stars count={150} />
 
-      {/* 기존 콘텐츠 레이어: 가운데 카드 */}
-      <div className="flex flex-col justify-end gap-20 relative z-10 p-8 bg-black/50 backdrop-blur-md rounded-2xl flex flex-col items-center w-[30%]">
-        {/* <img src="./logo.png" alt="SLAM Logo" className="w-58 mb-1 animate-spin spin-glow" /> */}
-        <h1 className="text-4xl font-extrabold text-white mb-4 text-center">Polaris</h1>        
+      {/* 로고 */}
+      <div className="justify-center gap-10 relative z-10 p-8 bg-black backdrop-blur-md rounded-2xl flex flex-col items-center w-[30%] mt-15">
+        <div className="flex flex-row items-center mb-15">
+          <img src="./logo.png" alt="SLAM Logo" className="w-15 h-15" />
+          <h1 className="ml-3 zen-antique-soft-regular text-5xl font-extrabold text-white text-center tracking-[0.4rem]">
+            Polaris
+            <span className="relative ml-1 -translate-y-7 inline-block text-blue-200">
+              .
+            </span>
+          </h1>
+        </div>
+        {/* 구글 로그인 버튼 */}
         <LoginButton />
       </div>
     </div>

@@ -12,9 +12,22 @@ export default function WorkspacesLayout({
     <div className="flex h-full flex-col w-full overflow-hidden">
       {/* 상단 바 */}
       <header className="flex h-11 items-center justify-between p-4 bg-black shadow-xl">
-        <span className="font-bold text-xl text-white">Polaris</span>
-        <div className="flex flex-row items-center gap-2">          
-          <Button variant="destructive" onClick={resetDB}>
+        <div className="flex flex-row items-center">
+          <img src="/logo.png" className="w-7 h-7 mr-1" />
+          <span className="zen-antique-soft-regular font-bold text-xl text-white tracking-widest">
+            Polaris
+            <span className="relative -translate-y-3 inline-block text-blue-200">
+              .
+            </span>
+          </span>
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          <ExUpload />
+          <Button
+            variant="destructive"
+            onClick={resetDB}
+            className="cursor-pointer"
+          >
             Reset DB
           </Button>
         </div>
