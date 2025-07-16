@@ -27,7 +27,7 @@ export function ChatPage({
   workspaceId: string;
   tabId: string;
 }) {
-  const { messages, prependMessages } = useMessageStore();
+  const { messages, prependMessages, setMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
@@ -40,13 +40,13 @@ export function ChatPage({
       console.log("first loading")
       await getMessages(workspaceId, tabId, undefined)
         .then((res) => {
-          if (res.messages.length) prependMessages(res.messages);
+          if (res.messages.length) setMessages(res.messages);
         })
         .finally(() => {
           setIsLoading(false);
         });
-    })();
-  }, [workspaceId, tabId, prependMessages]);
+      })();
+  }, [workspaceId, tabId, setMessages]);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
@@ -129,10 +129,9 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
-      className="flex-1 min-h-0"
+      className="flex-1 min-h-0 overflow-y-auto"
       style={{
         height: "580px",
-        overflowY: "auto"
       }}
       onScroll={(event) => {
         handleScroll(event);
