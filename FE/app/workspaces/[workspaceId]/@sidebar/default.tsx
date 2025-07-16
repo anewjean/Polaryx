@@ -9,6 +9,8 @@ import { useSectionStore } from "@/store/sidebarStore";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/profileStore";
 import { useTabStore } from "@/store/tabStore";
+import { useMyUserStore } from "@/store/myUserStore";
+import { useMyPermissionsStore } from "@/store/myPermissionsStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -45,6 +47,7 @@ import { logout } from "@/apis/logout";
 import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 import { getProfile, Profile } from "@/apis/profileApi";
+import { useMessageStore } from "@/store/messageStore";
 
 type SidebarProps = { width: number };
 
@@ -64,13 +67,14 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 프로필 상태 관리
   const [profile, setProfile] = useState<Profile | null>(null);
 
-  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
+  // 권한 스토어에서 권한 확인 함수 가져오기
+  const { hasPermission, fetchPermissions } = useMyPermissionsStore();
+
+  // 탭 생성 모달 상태 관리 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 탭 생성 모달 상태 관리 (열림/닫힘, 섹션 ID)
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
-    null,
-  );
+  // 섹션 상태 관리 (Add Tab 버튼 선택 시 해당 섹션 정보 저장)
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
   const { openSections, toggleSection } = useSectionStore();
@@ -93,7 +97,15 @@ export default function AppSidebar({ width }: SidebarProps) {
     }
   };
 
-  // 진입 시 워크스페이스, 탭, 프로필 정보 획득
+  // 읽지 않은 수 & 클리어 함수 가져오기
+  const unread = useMessageStore((s) => s.unreadCounts);
+  const clearUnread = useMessageStore((s) => s.clearUnread);
+
+  // 새 탭 추가
+  const invitedTabs = useMessageStore((s) => s.invitedTabs);
+  const clearInvited = useMessageStore((s) => s.clearInvitedTab);
+
+  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -113,6 +125,9 @@ export default function AppSidebar({ width }: SidebarProps) {
           setWorkspaceInfo(workspace as workspace);
           setTabList(tabs as Tab[]);
           setProfile(profileData as Profile);
+          
+          // 권한 정보 가져오기
+          fetchPermissions(workspaceId);
         } else {
           router.replace("/");
         }
@@ -151,13 +166,13 @@ export default function AppSidebar({ width }: SidebarProps) {
     }
   }
 
-  // 섹션 id별 섹션명과 아이콘
+  // 섹션 id별 섹션명과 아이콘, 권한 키
   const sectionType = [
-    { id: "1", label: "Announcements", icon: Megaphone },
-    { id: "2", label: "Courses", icon: Landmark },
-    { id: "3", label: "Channels", icon: Users },
-    { id: "4", label: "Direct Messages", icon: Mail },
-  ];
+    { id: "1", label: "Announcements", icon: Megaphone, permissionKey: "announce" },
+    { id: "2", label: "Courses", icon: Landmark, permissionKey: "course" },
+    { id: "3", label: "Channels", icon: Users, permissionKey: "channel" },
+    { id: "4", label: "Direct Messages", icon: Mail, permissionKey: "dm" },
+  ];  
 
   return (
     <SidebarProvider>
@@ -215,30 +230,56 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <SidebarMenu className="flex flex-col pl-5 gap-0">
                     {tabList
                       .filter((tab) => tab.section_id === Number(section.id))
-                      .map((tab) => (
-                        <SidebarMenuItem key={tab.tab_id}>
-                          <SidebarMenuButton
-                            isActive={tab.tab_id.toString() === tabId}
-                            className="flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer"
-                            onClick={() =>
-                              router.push(
-                                `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
-                              )
-                            }
-                          >
-                            <span className="truncate">{tab.tab_name}</span>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
-                    {/* 탭 추가 모달 팝업 내용 */}
-                    <DialogModal
-                      title="Create a Tab"
-                      defaultOpen={false}
-                      open={isModalOpen}
-                      onOpenChange={(isOpen) =>
-                        handleModalOpenChange(isOpen, section.id.toString())
-                      }
-                      trigger={
+                      .map((tab) => {
+                        const count = unread[tab.tab_id] || 0;
+                        const hasUnread = count > 0;
+                        const isInvited = invitedTabs.includes(tab.tab_id);
+                        const isActive = tab.tab_id.toString() === tabId;
+
+                        const emphasized =
+                          !isActive && (isInvited || hasUnread); // 강조 조건
+
+                        return (
+                          <SidebarMenuItem key={tab.tab_id}>
+                            <SidebarMenuButton
+                              isActive={isActive}
+                              className={`flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer
+                              ${emphasized && "text-white font-bold"}`}
+                              onClick={() => {
+                                clearUnread(tab.tab_id);
+                                clearInvited(tab.tab_id);
+                                // sectionId가 2인 경우 캔버스 페이지로 직접 라우팅
+                                if (Number(section.id) === 2) {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}/canvases/231bae03622f80679bfcfc9b96a0ff03`,
+                                  );
+                                } else {
+                                  router.push(
+                                    `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
+                                  );
+                                }
+                              }}
+                            >
+                              <span className="truncate">{tab.tab_name}</span>
+                              {hasUnread && !isActive && (
+                                <span className="ml-auto text-s-bold">
+                                  {count}
+                                </span>
+                              )}
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    {/* 탭 추가 모달 팝업 내용 - 권한에 따라 표시 */}
+                    {(section.permissionKey === "dm" || (section.permissionKey && hasPermission(workspaceId, section.permissionKey))) && (
+                      <DialogModal
+                        title="Create a Tab"
+                        defaultOpen={false}
+                        open={isModalOpen}
+                        onOpenChange={(isOpen) =>
+                          handleModalOpenChange(isOpen, section.id.toString())
+                        }
+                        trigger={
                         <SidebarMenuItem>
                           <SidebarMenuButton
                             asChild
@@ -287,6 +328,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                         </div>
                       </div>
                     </DialogModal>
+                    )}
                   </SidebarMenu>
                 </SidebarGroupContent>
               )}
@@ -304,7 +346,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <img
                     src={profile?.image || "/user_default.png"}
                     alt="profile_image"
-                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
+                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden object-cover"
                   />
                   {/* 사용자 정보 */}
                   <div
@@ -323,7 +365,7 @@ export default function AppSidebar({ width }: SidebarProps) {
             </PopoverTrigger>
             <PopoverContent
               side="right"
-              sideOffset={12}
+              sideOffset={17}
               className="flex overflow-hidden bg-gray-700 rounded-md w-48"
             >
               <ProfileMenu logout={logout} router={router} />

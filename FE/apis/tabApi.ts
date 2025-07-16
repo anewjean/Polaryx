@@ -16,7 +16,7 @@ export interface Member {
   nickname: string;
   image?: string | null;
   role_id?: number;
-  role_name: string;
+  role_name?: string;
   group_id?: number[] | [];
   group_name?: string[] | [];
 }

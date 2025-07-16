@@ -2,6 +2,7 @@ import { ms } from "date-fns/locale";
 import { create } from "zustand";
 
 interface Message {
+  tabId: number;
   senderId: string;
   msgId: number | undefined;
   nickname: string;
@@ -41,9 +42,19 @@ interface MessageStore {
     userId: string,
     updates: { nickname?: string; image?: string },
   ) => void;
+
+  // 새 메시지 실시간 알림
+  unreadCounts: Record<number, number>;
+  incrementUnread: (tabId: number) => void;
+  clearUnread: (tabId: number) => void;
+
+  // 탭 초대 실시간 알림
+  invitedTabs: number[];
+  addInvitedTab: (tabId: number) => void;
+  clearInvitedTab: (tabId: number) => void;
 }
 
-export const useMessageStore = create<MessageStore>((set) => ({
+export const useMessageStore = create<MessageStore>((set, get) => ({
   message: "",
   setMessage: (msg) => set({ message: msg }),
 
@@ -102,4 +113,36 @@ export const useMessageStore = create<MessageStore>((set) => ({
       ),
     }));
   },
+  // 새 메시지 실시간 알림
+  unreadCounts: {},
+
+  incrementUnread: (tabId) =>
+    set((state) => ({
+      unreadCounts: {
+        ...state.unreadCounts,
+        [tabId]: (state.unreadCounts[tabId] || 0) + 1,
+      },
+    })),
+
+  clearUnread: (tabId) =>
+    set((state) => ({
+      unreadCounts: {
+        ...state.unreadCounts,
+        [tabId]: 0,
+      },
+    })),
+
+  // 탭 초대 실시간 알림
+  invitedTabs: [],
+  addInvitedTab: (tabId) =>
+    set((state) => ({
+      invitedTabs: state.invitedTabs.includes(tabId)
+        ? state.invitedTabs
+        : [...state.invitedTabs, tabId],
+    })),
+
+  clearInvitedTab: (tabId) =>
+    set((state) => ({
+      invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
+    })),
 }));
