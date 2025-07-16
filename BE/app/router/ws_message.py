@@ -31,6 +31,27 @@ notification_service = NotificationService()
 def strip_tags(text: str) -> str:
     return re.sub(r'<[^>]+>', '', text)
 
+# 이미지 파일인지 확인하는 함수
+def check_file_type(file_url: str) -> str:
+    if not file_url:
+        return "none"
+    
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']
+    if any(file_url.lower().endswith(ext) for ext in image_extensions):
+        return "image"
+    else:
+        return "file"
+
+# 알림 메시지 생성 함수
+def create_push_message(nickname: str, content: str, file_url: str) -> str:
+    file_type = check_file_type(file_url)
+    if file_type == "image":
+        return f"{nickname}: 사진이 첨부되었습니다"
+    elif file_type == "file":
+        return f"{nickname}: 파일이 첨부되었습니다"
+    else:
+        clean_content = strip_tags(content)
+        return f"{nickname}: {clean_content}"
 
 
 @router.websocket("/{workspace_id}/{tab_id}")
@@ -128,7 +149,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
             await push_service.send_push_to(recipients, {
                 "title": tab_name,
-                "body": f"{nickname}: {clean_content}",
+                "body": create_push_message(nickname, content, file_data),
                 "url": f"/workspaces/{workspace_id}/tabs/{tab_id}"
             })
 
