@@ -2,7 +2,10 @@ import { useCallback } from "react";
 import { useFileStore } from "@/store/fileStore";
 import { useMessageStore } from "@/store/messageStore";
 import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
-export function useFilePreview(editor: any, fileInputRef: React.RefObject<HTMLInputElement>) {
+export function useFilePreview(
+  editor: any,
+  fileInputRef: React.RefObject<HTMLInputElement>,
+) {
   const convertFileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -45,14 +48,17 @@ export function useFilePreview(editor: any, fileInputRef: React.RefObject<HTMLIn
         const base64 = await convertFileToBase64(file);
         // 에디터에 이미지 삽입
         if (file.type.startsWith("image/")) {
-          editor.chain().focus().setImage({ src: base64 }).run();
+          editor.chain().focus().setImage({ src: fileUrl }).run();
         } else {
           const ext = file.name.split(".").pop()?.toLowerCase() || "";
           let defaultImg = "/upload_default.png"; // 기본값
           if (ext === "pdf") defaultImg = "/upload_default.png";
-          else if (["doc", "docx"].includes(ext)) defaultImg = "/upload_default.png";
-          else if (["xls", "xlsx"].includes(ext)) defaultImg = "/upload_default.png";
-          else if (["ppt", "pptx"].includes(ext)) defaultImg = "/upload_default.png";
+          else if (["doc", "docx"].includes(ext))
+            defaultImg = "/upload_default.png";
+          else if (["xls", "xlsx"].includes(ext))
+            defaultImg = "/upload_default.png";
+          else if (["ppt", "pptx"].includes(ext))
+            defaultImg = "/upload_default.png";
           editor.chain().focus().setImage({ src: defaultImg }).run();
         }
         // 파일 입력 초기화
