@@ -331,14 +331,16 @@ class TabRepository(AbstractQueryRepo):
     
     # 미완
     def insert_group_members(self, workspace_id: int, tab_id: int, group_ids: List[str]):
+        res = 0
         for group_id in group_ids:
           params = {
               "workspace_id": workspace_id,
               "tab_id": tab_id,
               "group_id": int(group_id)
           }
-          res = self.execute(insert_tab_group_members, params)
-          return res["rowcount"]
+          r = self.execute(insert_tab_group_members, params)
+          res += r["rowcount"]
+        return res
 
     def insert_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         for user_id in user_ids:
