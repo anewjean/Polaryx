@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
+import { Star } from "lucide-react";
 
 interface ChatProfileProps {
   senderId: string;
@@ -164,6 +165,14 @@ export function ChatProfile({
                       (편집됨)
                     </span>
                   ) : null}
+                </div>
+                <div className="text-blue-500 p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 border-1 border-blue-600 bg-blue-100 rounded-full gap-0.5">
+                  <Star className="w-3 h-3 fill-current"/>
+                  <p className="text-xxs">1</p>
+                </div>
+                <div className="text-white p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 bg-gray-300 rounded-full gap-0.5">
+                  <Star className="w-3 h-3 fill-current"/>
+                  <p className="text-xxs">1</p>
                 </div>
               </>
             )}
