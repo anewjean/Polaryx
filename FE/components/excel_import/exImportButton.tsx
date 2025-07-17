@@ -129,7 +129,7 @@ export function ExUpload() {
       <Button
         onClick={handleClick}
         variant="outline"
-        className="text-gray-400 cursor-pointer"
+        className="text-gray-800"
       >
         <FileSpreadsheet className="mr-0 h-4 w-4" />
         Import .xlsx

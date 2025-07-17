@@ -84,7 +84,7 @@ class WorkspaceMemberService:
         workspace_columns = self.workspace_member_repo.find_by_workspace_columns()
         return workspace_columns
   
-    def get_member_by_workspace_id(self, workspace_id: int) -> List[tuple]:
+    def get_member_by_workspace_id(self, workspace_id: int) -> List[list]:
         members_infos = self.workspace_member_repo.find_by_user_workspace_id(workspace_id)
         return members_infos
 
@@ -122,3 +122,58 @@ class WorkspaceMemberService:
     def search_members(self, workspace_id: int, keyword: str) -> List[tuple]:
         rows = self.workspace_member_repo.search_members(workspace_id, keyword)
         return rows
+    # 회원 등록(개별) - 미완
+    def register_single(self, workspace_id, data: dict) -> dict:
+        user_name = data["nickname"]
+        email = data["email"]
+        role_id = int(data["role_id"])
+        group_id = data["group_id"]
+
+        # users에 없으면 추가, 있으면 패스
+        res_users = user_service.find_user_by_email(email)
+        try:
+            user_id = res_users[0][0]
+        except:
+            if (not res_users):
+                # id, name, email, provider, workspace_id
+                params = {
+                    "id": uuid4().bytes,
+                    "name": user_name,
+                    "email": email,
+                    "provider": "google",
+                    "workspace_id": workspace_id
+                }
+                user_service.create_user_in_usertable(params)
+                user_id = user_service.find_user_by_email(email)
+        
+        # workspace_members에 없으면 추가, 있으면 패스
+        res_wm = self.get_member_by_user_id(user_id)
+        if (not res_wm):
+            # id, name, email, provider, workspace_id
+            params = {
+                "id": uuid4().bytes,
+                "user_id": user_id,
+                "email": email,
+                "nickname": user_name,
+                "workspace_id": workspace_id
+            }
+            self.insert_workspace_member(params)
+
+        # workspace의 기본 탭, tab_members에 추가.(tab_id = 1)
+
+        # group_members 추가
+        params = {
+            "user_id": user_id,
+            "group_id": data["group_id"],
+            "user_name": user_name
+        }
+        group_service.insert_member_by_group_id()
+        # member_roles 추가
+        params = {
+            "user_id": user_id,
+            "user_name": user_name,
+            "role_id": role_id
+        }
+        role_service.insert_member_roles(params)
+
+        return 

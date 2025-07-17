@@ -46,8 +46,7 @@ export function DeleteUserDialog({ userId, userName, isOpen, setIsOpen, onDelete
           icon: <Ban className="size-5" />,
         });
       }
-    } catch (error) {
-      console.error("사용자 삭제 중 오류 발생:", error);
+    } catch (error) {      
       toast.error("사용자 삭제에 실패했습니다", {
         icon: <Ban className="size-5" />,
       });
@@ -66,10 +65,8 @@ export function DeleteUserDialog({ userId, userName, isOpen, setIsOpen, onDelete
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>취소</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-            삭제
-          </AlertDialogAction>
+          <AlertDialogCancel onClick={() => setIsOpen(false)}>취소</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete}>삭제</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

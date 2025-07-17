@@ -23,11 +23,13 @@ function SkeletonChat() {
 export function ChatPage({
   workspaceId,
   tabId,
+  className = "",
 }: {
   workspaceId: string;
   tabId: string;
+  className?: string;
 }) {
-  const { messages, prependMessages } = useMessageStore();
+  const { messages, prependMessages, setMessages } = useMessageStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
@@ -37,15 +39,31 @@ export function ChatPage({
   // 최초 메시지 불러오기 + 로딩 해제
   useEffect(() => {
     (async () => {
+      console.log("first loading")
       await getMessages(workspaceId, tabId, undefined)
         .then((res) => {
-          if (res.messages.length) prependMessages(res.messages);
+          console.log("Before setMessages", res.messages)
+          
+          if (res.messages.length) {
+            const new_messages = res.messages.map((msg: any) => ({
+              senderId: msg.sender_id,
+              msgId: msg.msg_id,
+              nickname: msg.nickname,
+              content: msg.content,
+              image: msg.image,
+              createdAt: msg.created_at,
+              isUpdated: msg.is_updated,
+              fileUrl: msg.file_url,
+            }));
+            setMessages(new_messages);
+          }
+          console.log("After setMessages", useMessageStore.getState().messages)
         })
         .finally(() => {
           setIsLoading(false);
         });
-    })();
-  }, [workspaceId, tabId, prependMessages]);
+      })();
+  }, [workspaceId, tabId, setMessages]);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
@@ -55,9 +73,6 @@ export function ChatPage({
     const el = containerRef.current;
     if (!el) return;
 
-    // 최초 30개의 메세지에 대해서만 가장 하단으로 스크롤 내려가게
-    // + 새 채팅 쳤을 때, 가장 하단으로
-    // 둘의 공통점은? message[-1] 이 변했을 경우
     requestAnimationFrame(() => {
       el.scrollTop = el.scrollHeight;
     });
@@ -70,14 +85,15 @@ export function ChatPage({
   // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
+    console.log("handleScroll")
     if (el.scrollTop < 30 && !isFetching.current) {
       isFetching.current = true;
 
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      // console.log("oldestID:", oldestId);
-      // console.log("old:", messages);
+      console.log("oldestID:", oldestId);
+      console.log("old:", messages);
       // console.log("previousHeight:", previousHeight);
       const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
 
@@ -96,13 +112,17 @@ export function ChatPage({
 
       if (new_messages != null) {
         prependMessages(new_messages);
-        isFetching.current = false;
         // 스크롤 위치를 현재 위치만큼 유지
         requestAnimationFrame(() => {
-          const newHeight = el.scrollHeight;
-          const heightDiff = newHeight - previousHeight;
-          el.scrollTop = heightDiff;
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              const newHeight = el.scrollHeight;
+              const heightDiff = newHeight - previousHeight;
+              el.scrollTop = heightDiff;
+            });
+          }, 0);
         });
+        isFetching.current = false;
       }
     }
   };
@@ -130,16 +150,14 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
-      className="flex-1 min-h-0 overflow-y-auto"
+      className={`flex-1 min-h-0 overflow-y-auto scrollbar-thin ${className}`}
       onScroll={(event) => {
         handleScroll(event);
       }}
     >
       <SSEListener />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
-
-      {/* <div ref={containerRef} className="flex-1 overflow-y-auto min-h-0 text-m px-5 w-full"></div> */}
-      <div className="text-m min-h-0 pl-5 w-full">
+      <div className="text-m pl-5 w-full">
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = msg.createdAt ? dayStart(msg.createdAt) : null;
