@@ -115,6 +115,12 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
     [handleDelete],
   );
 
+  const table = useReactTable<LinkItem>({
+    data: links,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+  
   if (loading) {
     return <div className="p-4 text-center">링크 불러오는 중</div>;
   }
@@ -122,12 +128,6 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
   if (error) {
     return <div className="p-4 text-center text-red-500">{error}</div>;
   }
-
-  const table = useReactTable<LinkItem>({
-    data: links,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   return (
     <div className="rounded-xl border bg-white">
