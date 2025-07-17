@@ -10,7 +10,11 @@ interface TabState {
 interface TabInfoState {
   tabInfoCache: Record<string, Tab>;
   loadingTabs: Record<string, boolean>;
-  fetchTabInfo: (workspaceId: string, tabId: string) => Promise<void>;
+  fetchTabInfo: (
+    workspaceId: string,
+    tabId: string,
+    options?: { force?: boolean }
+  ) => Promise<void>;
 }
 
 export const useTabStore = create<TabState>((set) => ({
@@ -22,11 +26,12 @@ export const useTabStore = create<TabState>((set) => ({
 export const useTabInfoStore = create<TabInfoState>((set, get) => ({
   tabInfoCache: {},
   loadingTabs: {},
-  fetchTabInfo: async (workspaceId, tabId) => {
+  fetchTabInfo: async (workspaceId, tabId, options) => {
     const { tabInfoCache, loadingTabs } = get();
+    const forceFetch = options?.force || false;
 
-    // 캐시에 있거나, 이미 로딩 중이면 실행하지 않음
-    if (tabInfoCache[tabId] || loadingTabs[tabId]) {
+    // 캐시에 있거나, 이미 로딩 중이면 실행하지 않음 (강제 새로고침이 아닐 경우)
+    if (!forceFetch && (tabInfoCache[tabId] || loadingTabs[tabId])) {
       return;
     }
 

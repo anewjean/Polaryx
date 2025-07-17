@@ -13,9 +13,10 @@ export default function ChannelDefault() {
   return (
     <div className="flex flex-col h-full">
       {/* 채팅 리스트 - 고정 높이를 제외한 나머지 영역 차지, 스크롤 가능 */}
-      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin">
+      <div className="flex flex-col flex-1 min-h-0">
         <ChatPage workspaceId={workspaceId} tabId={tabId} />
       </div>
+
 
       {/* 입력창 - 고정된 높이로 설정 */}
       <div className="flex-none mb-5 mx-5 mt-0">
