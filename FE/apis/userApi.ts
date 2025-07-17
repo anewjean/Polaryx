@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "./authApi";
 import { Profile } from "./profileApi";
 
+
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
 /* 워크스페이스 유저 조회 */
