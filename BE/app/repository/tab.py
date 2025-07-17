@@ -333,7 +333,6 @@ class TabRepository(AbstractQueryRepo):
     def insert_group_members(self, workspace_id: int, tab_id: int, group_ids: List[str]):
         res = 0
         for group_id in group_ids:
-          print("\n\n\ninsert_group_membersl, group_id", int(group_id))
           params = {
               "workspace_id": workspace_id,
               "tab_id": tab_id,

@@ -26,6 +26,7 @@ from app.router import notification
 from app.router import db
 from app.router import role
 from app.router import group
+from app.router import links
 from app.router import sse  # SSE
 
 load_dotenv()
@@ -47,6 +48,7 @@ app.include_router(router=s3.router, prefix="/api")
 app.include_router(router=push.router, prefix="/api")
 app.include_router(router=notification.router, prefix="/api")
 app.include_router(router=group.router, prefix="/api")
+app.include_router(router=links.router, prefix="/api")
 
 app.include_router(router=workspace_members.router, prefix="/api")
 app.include_router(router=tab.router, prefix="/api")
