@@ -21,28 +21,13 @@ import Link from "@tiptap/extension-link";
 import { EditorContent, useEditor } from "@tiptap/react";
 import ToolBar from "./toolbar";
 import { useMessageStore } from "@/store/messageStore";
-// import { useMessageProfileStore } from "@/store/messageProfileStore";
-// import { putPresignedUrl, uploadFile } from "@/apis/fileImport";
-// import { useFileStore } from "@/store/fileStore";
 import { useFilePreview } from "@/hooks/useFilePreview";
 import { useParams } from "next/navigation";
-import { getTabInfo } from "@/apis/tabApi";
 import { useFetchMessages } from "@/hooks/useFetchMessages";
 import { useTabInfoStore } from "@/store/tabStore";
-// import { Send } from "lucide-react";
-// 실험용
-import { jwtDecode } from "jwt-decode";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+import { LinkDialog } from "./LinkDialog";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -205,48 +190,51 @@ export function TipTap() {
     setIsLinkDialogOpen(true);
   }, [editor]);
 
-  const setLink = useCallback(() => {
-    if (!editor) return;
+  const setLink = useCallback(
+    (text: string, url: string) => {
+      if (!editor) return;
 
-    // 기존 링크 해제
-    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      // 기존 링크 해제
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
 
-    // 빈 URL이면 그냥 닫기
-    if (linkUrl === "") {
+      // 빈 URL이면 그냥 닫기
+      if (!url.trim()) {
+        setIsLinkDialogOpen(false);
+        return;
+      }
+
+      // 프로토콜이 없으면 https:// 붙이기
+      const href = /^https?:\/\//.test(url) ? url : `https://${url}`;
+      const { from, to } = editor.state.selection;
+
+      // 선택 영역이 있으면 대체, 없으면 삽입
+      if (from !== to) {
+        editor
+          .chain()
+          .focus()
+          .deleteRange({ from, to })
+          .insertContentAt(from, {
+            type: "text",
+            text: linkText,
+            marks: [{ type: "link", attrs: { href } }],
+          })
+          .run();
+      } else {
+        editor
+          .chain()
+          .focus()
+          .insertContentAt(from, {
+            type: "text",
+            text: text,
+            marks: [{ type: "link", attrs: { href } }],
+          })
+          .run();
+      }
+
       setIsLinkDialogOpen(false);
-      return;
-    }
-
-    // 프로토콜이 없으면 https:// 붙이기
-    const href = /^https?:\/\//.test(linkUrl) ? linkUrl : `https://${linkUrl}`;
-    const { from, to } = editor.state.selection;
-
-    // 선택 영역이 있으면 대체, 없으면 삽입
-    if (from !== to) {
-      editor
-        .chain()
-        .focus()
-        .deleteRange({ from, to })
-        .insertContentAt(from, {
-          type: "text",
-          text: linkText,
-          marks: [{ type: "link", attrs: { href } }],
-        })
-        .run();
-    } else {
-      editor
-        .chain()
-        .focus()
-        .insertContentAt(from, {
-          type: "text",
-          text: linkText,
-          marks: [{ type: "link", attrs: { href } }],
-        })
-        .run();
-    }
-
-    setIsLinkDialogOpen(false);
-  }, [editor, linkText, linkUrl]);
+    },
+    [editor],
+  );
 
   const { handleFileSelect } = useFilePreview(
     editor,
@@ -316,39 +304,11 @@ export function TipTap() {
       </div>
 
       {/* 링크 추가 다이얼로그 */}
-      <AlertDialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-xl mb-2">
-              링크 추가
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="flex flex-col gap-2">
-            <>
-              <p className="text-m-bold">텍스트</p>
-              <input
-                type="text"
-                className="border rounded-md px-2 py-1.5 mb-2"
-                value={linkText}
-                onChange={(e) => setLinkText(e.target.value)}
-              />
-            </>
-            <>
-              <p className="text-m-bold">링크</p>
-              <input
-                type="text"
-                className="border rounded-md px-2 py-1.5"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-              />
-            </>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>취소</AlertDialogCancel>
-            <AlertDialogAction onClick={setLink}>저장</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <LinkDialog
+        isOpen={isLinkDialogOpen}
+        onOpenChange={setIsLinkDialogOpen}
+        onSave={setLink}
+      ></LinkDialog>
 
       <div className="editor-container flex">
         <EditorContent

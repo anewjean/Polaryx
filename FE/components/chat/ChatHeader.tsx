@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle, StickyNote } from "lucide-react";
+import { MessageCircle, StickyNote, Link } from "lucide-react";
 import { TabMembers } from "@/components/modal/TabMembers";
 import { useTabInfoStore } from "@/store/tabStore";
 import { useEffect } from "react";
@@ -18,9 +18,10 @@ export function ChatHeader() {
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
 
-  // 현재 활성화된 탭 확인 (message 또는 canvas)
+  // 현재 활성화된 탭 확인 (message 또는 canvas 또는 link)
   const isCanvasActive = pathname.includes("/canvases");
   const isMessageActive = !isCanvasActive;
+  const isLinkActive = pathname.includes("/link");
 
   // 탭 정보 가져오기
   const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
@@ -42,6 +43,11 @@ export function ChatHeader() {
     router.push(
       `/workspaces/${workspaceId}/tabs/${tabId}/canvases/231bae03622f80679bfcfc9b96a0ff03`,
     );
+  };
+
+  // 링크 탭으로 이동
+  const navigateToLink = () => {
+    router.push(`/workspaces/${workspaceId}/tabs/${tabId}/links`);
   };
 
   return (
@@ -86,11 +92,22 @@ export function ChatHeader() {
           className={cn(
             "flex flex-fit items-center p-[6px] px-[10px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md",
             isMessageActive &&
+              !isLinkActive &&
               "bg-[#F4F4F4] rounded-t-md border-b-2 border-black",
           )}
         >
           <MessageCircle className="w-[16px] mr-[4px]" />
           <p className="text-center text-s-bold">Message</p>
+        </div>
+        <div
+          onClick={navigateToLink}
+          className={cn(
+            "flex flex-fit items-center p-[6px] px-[10px] cursor-pointer hover:bg-[#F4F4F4] hover:rounded-t-md",
+            isLinkActive && "bg-[#F4F4F4] rounded-t-md border-b-2 border-black",
+          )}
+        >
+          <Link className="w-[16px] mr-[4px]" />
+          <p className="text-center text-s-bold">Link</p>
         </div>
       </div>
     </div>
