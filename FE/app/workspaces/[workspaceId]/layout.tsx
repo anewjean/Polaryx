@@ -62,18 +62,20 @@ export default function WorkspaceIdLayout({
             <main className="h-full">{children}</main>
           </ResizablePanel>
           <ResizableHandle />
-          <ResizablePanel
-            ref={profilePanelRef}
-            collapsible
-            onCollapse={onCollapse}
-            defaultSize={20}
-            collapsedSize={0}
-            minSize={15}
-            maxSize={30}
-            className="shadow-lg"
-          >
-            <aside className="h-full">{profile}</aside>
-          </ResizablePanel>
+          {isOpen && (     
+            <ResizablePanel
+              ref={profilePanelRef}
+              collapsible
+              onCollapse={onCollapse}
+              defaultSize={20}
+              collapsedSize={0}
+              minSize={15}
+              maxSize={30}
+              className="shadow-lg"
+            >
+              <aside className="h-full">{profile}</aside>
+            </ResizablePanel>
+          )}
         </ResizablePanelGroup>
       </div>
     </div>

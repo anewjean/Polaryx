@@ -62,7 +62,7 @@ class QueryRepo(AbstractQueryRepo):
             "workspace_id": workspace_id,
             "tab_id": tab_id,
             "link_id": int(link_id),
-            "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat()
+            "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
         }
         print("\n\n\delete_link, params: ", params)
         res = self.db.execute(delete_link_at_tab, params)

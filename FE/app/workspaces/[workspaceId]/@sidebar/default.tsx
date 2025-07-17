@@ -48,6 +48,7 @@ import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 import { getProfile, Profile } from "@/apis/profileApi";
 import { useMessageStore } from "@/store/messageStore";
+import { User } from "lucide-react";
 
 type SidebarProps = { width: number };
 
@@ -260,7 +261,11 @@ export default function AppSidebar({ width }: SidebarProps) {
                                 }
                               }}
                             >
-                              <span className="truncate">{tab.tab_name}</span>
+                              <span className="flex flex-row gap-1.5 items-center truncate">
+                                {/* dm 방이면 사람 아이콘 추가 */}
+                                {Number(section.id) === 4 && <User className="size-5"/>}
+                                {tab.tab_name}
+                              </span>
                               {hasUnread && !isActive && (
                                 <span className="ml-auto text-s-bold">
                                   {count}
