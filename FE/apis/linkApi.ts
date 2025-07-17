@@ -46,6 +46,7 @@ export const createLink = async (
       body: JSON.stringify({
         link_name: linkName,
         link_url: linkUrl,
+        favicon: null,
       }),
     },
   );
