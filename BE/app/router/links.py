@@ -24,8 +24,7 @@ async def insert_link_in_tab(workspace_id: int, tab_id: int, request: Request, u
     user_id = user_info["user_id"]
     link_url = data["link_url"]
     link_name = data["link_name"]
-    favicon = data["favicon"]
-    return service.insert_link(workspace_id, tab_id, link_url, link_name, favicon, user_id)
+    return service.insert_link(workspace_id, tab_id, link_url, link_name, user_id)
 
 # 링크 삭제
 @router.patch("/{workspace_id}/tabs/{tab_id}/links", response_model=bool)

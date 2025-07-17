@@ -84,7 +84,10 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
                 >
                   {item.link_name}
                 </a>
-                <span className="text-sm text-gray-500">{item.link_url}</span>
+                <span className="text-sm text-gray-500">
+                  {item.link_url.length > 50
+                    ? `${item.link_url.slice(0, 70)}...`
+                    : item.link_url}</span>
               </div>
             </div>
           );
@@ -120,7 +123,7 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  
+
   if (loading) {
     return <div className="p-4 text-center">링크 불러오는 중</div>;
   }
