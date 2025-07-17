@@ -22,11 +22,11 @@ const Stars: React.FC<{ count?: number }> = ({ count = 100 }) => {
   const stars: Star[] = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
-      size: Math.random() * 1.5 + 0.5, // 0.5 ~ 2px
+      size: Math.random() * 1 + 1, // 1 ~ 2px
       top: Math.random() * 100, // 0% ~ 100%
       left: Math.random() * 100,
-      delay: Math.random() * 4, // 0s ~ 4s
-      duration: Math.random() * 4 + 2, // 2s ~ 6s
+      delay: Math.random() * 1, // 0s ~ 1s
+      duration: Math.random() * 1 + 1, // 1s ~ 2s
     }));
   }, [count]);
 
