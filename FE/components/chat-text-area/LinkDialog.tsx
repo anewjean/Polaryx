@@ -75,7 +75,7 @@ export function LinkDialog({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSave}>저장</AlertDialogAction>
+          <AlertDialogAction onClick={handleSave}>추가</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

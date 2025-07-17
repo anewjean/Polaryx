@@ -4,6 +4,8 @@ import { useState } from "react";
 import { LinkDialog } from "../chat-text-area/LinkDialog";
 import { createLink } from "@/apis/linkApi";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { CircleCheck, Ban } from "lucide-react";
 
 interface AddLinkButtonProps {
   workspaceId: string;
@@ -23,6 +25,11 @@ export default function AddLinkButton({
     try {
       await createLink(workspaceId, tabId, text, url);
       setIsOpen(false);
+
+      toast.success("링크가 추가되었습니다", {
+        icon: <CircleCheck className="size-5" />,
+      });
+
       if (onCreated) {
         // 바로 보여주기
         onCreated();
@@ -30,6 +37,9 @@ export default function AddLinkButton({
         router.refresh();
       }
     } catch (err) {
+      toast.error("링크 추가에 실패했습니다", {
+        icon: <Ban className="size-5" />,
+      });
       console.error("링크 생성 실패", err);
     }
   };
