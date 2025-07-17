@@ -45,6 +45,7 @@ import { logout } from "@/apis/logout";
 import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 import { getProfile, Profile } from "@/apis/profileApi";
+import { useMessageStore } from "@/store/messageStore";
 
 type SidebarProps = { width: number };
 
@@ -92,6 +93,14 @@ export default function AppSidebar({ width }: SidebarProps) {
       setTabName("");
     }
   };
+
+  // 읽지 않은 수 & 클리어 함수 가져오기
+  const unread = useMessageStore((s) => s.unreadCounts);
+  const clearUnread = useMessageStore((s) => s.clearUnread);
+
+  // 새 탭 추가
+  const invitedTabs = useMessageStore((s) => s.invitedTabs);
+  const clearInvited = useMessageStore((s) => s.clearInvitedTab);
 
   // 진입 시 워크스페이스, 탭, 프로필 정보 획득
   useEffect(() => {
@@ -215,21 +224,39 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <SidebarMenu className="flex flex-col pl-5 gap-0">
                     {tabList
                       .filter((tab) => tab.section_id === Number(section.id))
-                      .map((tab) => (
-                        <SidebarMenuItem key={tab.tab_id}>
-                          <SidebarMenuButton
-                            isActive={tab.tab_id.toString() === tabId}
-                            className="flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer"
-                            onClick={() =>
-                              router.push(
-                                `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
-                              )
-                            }
-                          >
-                            <span className="truncate">{tab.tab_name}</span>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
+                      .map((tab) => {
+                        const count = unread[tab.tab_id] || 0;
+                        const hasUnread = count > 0;
+                        const isInvited = invitedTabs.includes(tab.tab_id);
+                        const isActive = tab.tab_id.toString() === tabId;
+
+                        const emphasized =
+                          !isActive && (isInvited || hasUnread); // 강조 조건
+
+                        return (
+                          <SidebarMenuItem key={tab.tab_id}>
+                            <SidebarMenuButton
+                              isActive={isActive}
+                              className={`flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer
+                              ${emphasized && "text-white font-bold"}`}
+                              onClick={() => {
+                                clearUnread(tab.tab_id);
+                                clearInvited(tab.tab_id);
+                                router.push(
+                                  `/workspaces/${workspaceInfo?.workspace_id}/tabs/${tab.tab_id}`,
+                                );
+                              }}
+                            >
+                              <span className="truncate">{tab.tab_name}</span>
+                              {hasUnread && !isActive && (
+                                <span className="ml-auto text-s-bold">
+                                  {count}
+                                </span>
+                              )}
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
                     {/* 탭 추가 모달 팝업 내용 */}
                     <DialogModal
                       title="Create a Tab"
@@ -304,7 +331,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                   <img
                     src={profile?.image || "/user_default.png"}
                     alt="profile_image"
-                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden"
+                    className="w-[34px] aspect-square bg-gray-400 rounded-lg overflow-hidden object-cover"
                   />
                   {/* 사용자 정보 */}
                   <div
