@@ -41,6 +41,7 @@ import {
   School,
   ChevronRightIcon,
   ChevronDownIcon,
+  ChevronsUpDown,
   Plus,
 } from "lucide-react";
 import { logout } from "@/apis/logout";
@@ -48,6 +49,7 @@ import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 import { getProfile, Profile } from "@/apis/profileApi";
 import { useMessageStore } from "@/store/messageStore";
+import { WorkspaceMenu } from "@/components/sidebar/WorkspaceMenu";
 
 type SidebarProps = { width: number };
 
@@ -84,6 +86,15 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 탭 목록 새로고침 필요 상태 관리
   const { needsRefresh, resetRefresh } = useTabStore();
+
+  // 워크스페이스 모달 상태 관리
+  const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
+
+  // 워크스페이스 모달 열기/닫기 핸들러
+  const handleWorkspaceOpenChange = (open: boolean) => {
+    setIsWorkspaceOpen(open);
+  };
+  
 
   // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
   const handleModalOpenChange = (
@@ -178,25 +189,37 @@ export default function AppSidebar({ width }: SidebarProps) {
     <SidebarProvider>
       <Sidebar
         collapsible="none"
-        className="flex flex-col h-full w-full p-1 bg-gray-800 text-gray-400"
+        className="flex flex-col h-full w-full p-0 bg-gray-800 text-gray-400"
       >
-        {/* 사이드바 헤더 (mvp에서는 단순 정보 표시) */}
+        {/* 사이드바 헤더 */}
         <SidebarHeader>
-          <div className="h-13 p-2">
-            <div className="flex flex-row items-center w-full gap-2">
-              {/* 아이콘 */}
-              <div className="bg-blue-600 rounded-lg p-2 flex items-center justify-center">
-                <School size={20} className="text-white" />
-              </div>
-              {/* 워크스페이스 정보 */}
-              <div className="flex flex-col overflow-hidden" style={{ width }}>
-                <span className="text-md font-bold text-gray-200 truncate">
-                  {workspaceInfo?.workspace_name}
-                </span>
-                <span className="text-xs text-gray-400 truncate">
-                  Welcome to {workspaceInfo?.workspace_name}
-                </span>
-              </div>
+          <div className="h-14 px-3 py-2 hover:bg-gray-700 rounded-lg">
+            <div className="flex flex-row justify-between w-full">
+              <WorkspaceMenu 
+                workspaceId={workspaceInfo?.workspace_id.toString() || ""} 
+                userId={profile?.user_id.toString() || ""} 
+                onWorkspaceOpenChange={handleWorkspaceOpenChange} 
+                trigger={              
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <div className="flex flex-row items-center gap-2 overflow-hidden">
+                      {/* 아이콘 */}
+                      <div className="bg-blue-600 rounded-lg p-2 flex items-center justify-center">
+                        <School size={20} className="text-white" />
+                      </div>
+                      {/* 워크스페이스 정보 */}
+                      <div className="flex flex-col overflow-hidden" style={{ width }}>
+                        <span className="text-md font-bold text-gray-200 truncate">
+                          {workspaceInfo?.workspace_name}
+                        </span>
+                        <span className="text-xs text-gray-400 truncate">
+                          Welcome to {workspaceInfo?.workspace_name}
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronsUpDown size={18} className="text-gray-200" />
+                  </div>
+                }
+              />
             </div>
           </div>
         </SidebarHeader>
