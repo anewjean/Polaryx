@@ -1,14 +1,9 @@
 import { useState, useEffect, ReactNode } from "react";
 import {
-  PopoverTrigger,
-  Popover,
-  PopoverContent,
-} from "@/components/ui/popover"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card"
 import { Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SaveMessage as ApiSaveMessage, getSaveMessages, addSaveMessage, deleteSaveMessage } from "@/apis/saveMessageApi";
@@ -31,9 +26,6 @@ interface SaveMessagesProps {
 }
 
 export default function SaveMessages({ workspaceId, children, openPopover, setOpenPopover, editor, onAddMessage }: SaveMessagesProps) {
-  // 툴팁 상태 관리
-  const [openTooltip, setOpenTooltip] = useState(false);
-
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
 
@@ -45,13 +37,6 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
 
   // 로딩 상태 관리
   const [loading, setLoading] = useState(false);
-
-  // 팝오버가 열리면 툴팁 닫기
-  useEffect(() => {
-    if (openPopover) {
-      setOpenTooltip(false);
-    }
-  }, [openPopover]);
 
   // 저장 메시지 가져오기
   useEffect(() => {
@@ -104,32 +89,37 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
     }
   };
 
+  // 현재 에디터의 내용을 저장 메시지로 추가
+  const addCurrentContent = () => {
+    // 1) SSR 환경에서는 window가 없기 때문에, 브라우저에서만 실행되도록 한 안전장치
+    if (typeof window !== "undefined") {
+      // 2) DOM에서 클래스명이 .ProseMirror인 첫 번째 요소를 찾아서 input에 담음
+      const input = document.querySelector('.ProseMirror') as HTMLElement | null;
+      // 3) 에디터 엘리먼트가 존재하면 그 안의 문자열(innerHTML)을 content에 담음
+      let content = "";
+      if (input) {
+        content = input.innerHTML;
+      }
+      // 4) content가 비어있지 않으면 handleAddSaveMessage 함수를 호출하고
+      if (content.trim()) {
+        handleAddSaveMessage(content);
+        // 5) 부모 컴포넌트에서 onAddMessage라는 콜백을 prop으로 넘겨줬다면,
+        // 그 함수에도 동일한 콘텐츠를 전달해 "메시지 추가" 이벤트를 알림
+        if (typeof onAddMessage === 'function') onAddMessage(content);
+      }
+    }
+  }
+
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover}>
-      {/* 툴팁 */}
-      <Tooltip
-        // 팝오버가 닫혀 있을 때만 호버 트리거에 반응
-        open={openTooltip && !openPopover}
-        onOpenChange={setOpenTooltip}
-      >
-        {/* TooltipTrigger 와 PopoverTrigger 를 asChild 로 중첩하여 동일한 버튼에 이벤트 핸들러 부착 */}
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            {children}
-          </PopoverTrigger>
-        </TooltipTrigger>
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        {children}
+      </HoverCardTrigger>
 
-        <TooltipContent className="flex flex-col text-xs text-center gap-1">
-          <div>저장 메시지</div>
-          <div>추가하기</div>
-        </TooltipContent>
-      </Tooltip>
-
-      {/* 팝오버 */}
-      <PopoverContent
+      <HoverCardContent
         side="top"
         align="end"
-        className="w-100 bg-white text-black border mb-0.5 mr-1"
+        className="w-100 bg-white text-black border m-0 p-0 mb-0.5 mr-1"
       >
         <div>
           <div className="flex flex-row items-center justify-between pl-5 pr-3 py-3">
@@ -138,31 +128,13 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
               variant="outline"
               size="icon"
               className="h-6 w-6 cursor-pointer rounded-full"
-              onClick={() => {
-                // 1) SSR 환경에서는 window가 없기 때문에, 브라우저에서만 실행되도록 한 안전장치
-                if (typeof window !== "undefined") {
-                  // 2) DOM에서 클래스명이 .ProseMirror인 첫 번째 요소를 찾아서 input에 담음
-                  const input = document.querySelector('.ProseMirror') as HTMLElement | null;
-                  // 3) 에디터 엘리먼트가 존재하면 그 안의 문자열(innerHTML)을 content에 담음
-                  let content = "";
-                  if (input) {
-                    content = input.innerHTML;
-                  }
-                  // 4) content가 비어있지 않으면 handleAddSaveMessage 함수를 호출하고
-                  if (content.trim()) {
-                    handleAddSaveMessage(content);
-                    // 5) 부모 컴포넌트에서 onAddMessage라는 콜백을 prop으로 넘겨줬다면,
-                    // 그 함수에도 동일한 콘텐츠를 전달해 "메시지 추가" 이벤트를 알림
-                    if (typeof onAddMessage === 'function') onAddMessage(content);
-                  }
-                }
-              }}
+              onClick={addCurrentContent}
             >
               <Plus className="!h-4 !w-4 text-gray-500" />
             </Button>
           </div>
-          
-          
+        
+        
           <div className="border-t-1 border-gray-200 flex flex-col max-h-80 overflow-y-auto scrollbar-thin">
             {loading && (
               <div className="py-3 text-sm text-center">메시지 불러오는 중</div>
@@ -197,7 +169,7 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
             )}
           </div>
         </div>
-      </PopoverContent>
-    </Popover>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
