@@ -154,9 +154,6 @@ export function ChatProfile({
                 {fileUrl && isImageFile(fileUrl) && (
                   <ImageWithModal fileUrl={fileUrl} />
                 )}
-                {fileUrl && !isImageFile(fileUrl) && (
-                  <FileDownload fileUrl={fileUrl} />
-                )}
 
                 <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
                   <div
@@ -172,6 +169,11 @@ export function ChatProfile({
                     </span>
                   ) : null}
                 </div>
+                {fileUrl && !isImageFile(fileUrl) && (
+                  <div className="mt-2">
+                    <FileDownload fileUrl={fileUrl} />
+                  </div>
+                )}
                 {/* <div className="text-blue-500 p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 border-1 border-blue-600 bg-blue-100 rounded-full gap-0.5">
                   <Star className="w-3 h-3 fill-current"/>
                   <p className="text-xxs">1</p>
