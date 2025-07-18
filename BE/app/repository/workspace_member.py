@@ -154,6 +154,30 @@ WHERE wm.user_id = %(user_id)s
   AND wm.deleted_at IS NULL;
 """
 
+#검색
+search_workspace_members = """
+SELECT
+    wm.user_id,
+    wm.workspace_id,
+    wm.nickname,
+    wm.email,
+    wm.image,
+    r.name AS role,
+    GROUP_CONCAT(DISTINCT g.name) AS groups,
+    wm.github,
+    wm.blog
+FROM workspace_members wm
+LEFT JOIN member_roles mr ON wm.user_id = mr.user_id
+LEFT JOIN roles r ON mr.role_id = r.id
+LEFT JOIN group_members gm ON wm.user_id = gm.user_id
+LEFT JOIN `groups` g ON gm.group_id = g.id
+WHERE wm.workspace_id = %(workspace_id)s
+  AND wm.deleted_at IS NULL
+  AND (wm.nickname LIKE %(pattern)s OR wm.email LIKE %(pattern)s)
+GROUP BY wm.user_id, wm.workspace_id, wm.nickname, wm.email, wm.image, r.name, wm.github, wm.blog;
+"""
+
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -224,3 +248,10 @@ class QueryRepo(AbstractQueryRepo):
             "workspace_id": workspace_id
         }
         return self.db.execute(find_by_user_all_workspace_id, param)
+    
+    def search_members(self, workspace_id: int, keyword: str) -> List[WorkspaceMember]:
+        params = {
+            "workspace_id": workspace_id,
+            "pattern": f"%{keyword}%",
+        }
+        return self.db.execute(search_workspace_members, params)

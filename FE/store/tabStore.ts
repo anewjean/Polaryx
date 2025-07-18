@@ -1,15 +1,17 @@
 import { create } from "zustand";
 import { getTabInfo, Tab } from "@/apis/tabApi";
 
+// 사이드바의 탭 목록 새로고침 상태 관리
 interface TabState {
   needsRefresh: boolean;
   refreshTabs: () => void;
   resetRefresh: () => void;
 }
 
+// 탭 헤더의 타이틀, 탭 인원, TipTap의 PlaceHolder에 표시할 정보 관리
 interface TabInfoState {
   tabInfoCache: Record<string, Tab>;
-  loadingTabs: Record<string, boolean>;
+  loadingTabs: Record<string, boolean>; // 레이스 컨디션 방지용 장치 (일종의 lock)
   fetchTabInfo: (
     workspaceId: string,
     tabId: string,
@@ -36,11 +38,11 @@ export const useTabInfoStore = create<TabInfoState>((set, get) => ({
     }
 
     // 로딩 시작
-    set((state) => ({ loadingTabs: { ...state.loadingTabs, [tabId]: true } }));
+    set((state) => ({ loadingTabs: { ...state.loadingTabs, [tabId]: true }}));
 
     try {
       const info = await getTabInfo(workspaceId, tabId);
-      // 데이터 저장
+      // TabInfo 데이터 저장
       set((state) => ({
         tabInfoCache: { ...state.tabInfoCache, [tabId]: info },
       }));

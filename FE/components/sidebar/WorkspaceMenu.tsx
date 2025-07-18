@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { logout } from "@/apis/logout";
 import {
@@ -48,7 +48,6 @@ export function WorkspaceMenu({
       }
     }
   };
-
   return (
     <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger
@@ -87,6 +86,20 @@ export function WorkspaceMenu({
               </div>
             </DropdownMenuItem>
           ))}
+          {/* <DropdownMenuItem
+            asChild
+            className="hover:bg-gray-600 focus:bg-gray-600"
+            onClick={() =>
+              router.push(`/workspaces/${workspaceId}/admin/users`)
+            }
+          >
+            <div className="flex flex-row items-center gap-3 hover:bg-gray-600 rounded-md py-3 px-3">
+              <Cog className="size-7 border border-gray-400 text-gray-400 rounded-md p-1" />
+              <span className="text-lg font-semibold text-gray-300">
+                게임 테크랩
+              </span>
+            </div>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-gray-600" />
         <DropdownMenuItem

@@ -55,3 +55,10 @@ class MessageService:
     # 디버깅용 다지우기 함수
     async def delete_all_message(self):
         self.message_repo.delete_all()
+        
+    
+    
+    
+    # 검색
+    async def search_messages(self, tab_id: int, keyword: str) -> List[Message]:
+        return self.message_repo.search_messages(tab_id, keyword)

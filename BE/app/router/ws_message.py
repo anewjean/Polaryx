@@ -136,6 +136,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #               for row in members
             #               if row[0] != uuid.UUID(sender_id).bytes
             #               ]
+            
             sender_uuid = uuid.UUID(sender_id)
             recipients = [
             str(uuid.UUID(bytes=row[0]))
@@ -147,6 +148,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             print("푸시 아이디", recipients)
             
             #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
+            
             await push_service.send_push_to(recipients, {
                 "title": tab_name,
                 "body": create_push_message(nickname, content, file_data),

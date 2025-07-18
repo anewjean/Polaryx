@@ -49,8 +49,8 @@ import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
 import { getWorkspaceName, workspace } from "@/apis/workspaceApi";
 import { getProfile, Profile } from "@/apis/profileApi";
 import { useMessageStore } from "@/store/messageStore";
-import { User } from "lucide-react";
 import { WorkspaceMenu } from "@/components/sidebar/WorkspaceMenu";
+import { User } from "lucide-react";
 
 type SidebarProps = { width: number };
 
@@ -196,9 +196,9 @@ export default function AppSidebar({ width }: SidebarProps) {
     <SidebarProvider>
       <Sidebar
         collapsible="none"
-        className="flex flex-col h-full w-full p-1 bg-gray-800 text-gray-400"
+        className="flex flex-col h-full w-full p-0 bg-gray-800 text-gray-400"
       >
-        {/* 사이드바 헤더 (mvp에서는 단순 정보 표시) */}
+        {/* 사이드바 헤더 */}
         <SidebarHeader>
           <div className="h-14 px-3 py-2 hover:bg-gray-700 rounded-lg">
             <div className="flex flex-row justify-between w-full">
