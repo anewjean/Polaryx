@@ -75,7 +75,9 @@ export function WorkspaceMenu({
               className="hover:bg-gray-600 focus:bg-gray-600"
               key={workspace.workspace_id}
               onClick={() =>
-                router.push(`/workspaces/${workspace.workspace_id}/tabs/1`)
+                router.push(
+                  `/workspaces/${workspace.workspace_id}/tabs/${workspace.min_tab_id}`,
+                )
               }
             >
               <div className="flex flex-row items-center gap-3 hover:bg-gray-600 rounded-md py-3 px-3">

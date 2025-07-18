@@ -5,11 +5,13 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
 export interface workspace {
   workspace_id: number;
   workspace_name: string;
+  min_tab_id: number;
 }
 
 const dummyWorkspace: workspace = {
   workspace_id: -1,
   workspace_name: "none",
+  min_tab_id: -1,
 };
 
 /* 워크스페이스 정보 조회 */
@@ -36,6 +38,7 @@ export async function getWorkspaceName(
       return {
         workspace_id: Number(workspaceId),
         workspace_name: "API 호출 실패",
+        min_tab_id: -1,
       };
     }
     return res.json();
@@ -61,10 +64,13 @@ export async function getUserWorkspaces(
     console.log("getUserWorkspaces rawData", rawData); // note : delete
 
     // 백엔드 응답을 workspace 타입으로 변환
-    const workspaces: workspace[] = rawData.map((item: [number, string]) => ({
-      workspace_id: item[0],
-      workspace_name: item[1],
-    }));
+    const workspaces: workspace[] = rawData.map(
+      (item: [number, string, number]) => ({
+        workspace_id: item[0],
+        workspace_name: item[1],
+        min_tab_id: item[2],
+      }),
+    );
     console.log("getUserWorkspaces workspaces", workspaces);
 
     return workspaces;

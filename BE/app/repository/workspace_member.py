@@ -126,10 +126,27 @@ WHERE id = %(workspace_members_id)s
   AND deleted_at IS NULL;
 """
 
+# find_by_user_all_workspace_id = """
+# SELECT 
+#     wm.workspace_id, 
+#     w.name AS workspace_name
+# FROM workspace_members wm
+# JOIN workspaces w ON wm.workspace_id = w.id
+# WHERE wm.user_id = %(user_id)s
+#   AND wm.workspace_id != %(workspace_id)s
+#   AND wm.deleted_at IS NULL;
+# """
+
 find_by_user_all_workspace_id = """
 SELECT 
     wm.workspace_id, 
-    w.name AS workspace_name
+    w.name AS workspace_name,
+    (
+        SELECT MIN(tm.tab_id)
+        FROM tab_members tm
+        WHERE tm.user_id = wm.user_id
+          AND tm.workspace_id = wm.workspace_id
+    ) AS min_tab_id
 FROM workspace_members wm
 JOIN workspaces w ON wm.workspace_id = w.id
 WHERE wm.user_id = %(user_id)s
