@@ -2,9 +2,13 @@
 
 import { Member, postMemberList } from "@/apis/tabApi";
 import { useState } from "react";
-import { SidebarProvider, SidebarMenu, SidebarFooter } from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarMenu,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { UserMenuItem } from "@/components/tab/UserMenuItem";
+import { InviteListItem } from "@/components/tab/InviteListItem";
 import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 
@@ -29,7 +33,7 @@ export function PossibleMembersModal({
     setSelectedMembers((prev) =>
       prev.some((m) => m.user_id === member.user_id)
         ? prev.filter((m) => m.user_id !== member.user_id)
-        : [...prev, member]
+        : [...prev, member],
     );
   };
 
@@ -40,12 +44,12 @@ export function PossibleMembersModal({
       await postMemberList(
         workspaceId,
         tabId,
-        selectedMembers.map((member) => member.user_id)
+        selectedMembers.map((member) => member.user_id),
       );
       toast.success(`${selectedMembers.length}명이 초대되었습니다`, {
         icon: <CircleCheck className="size-5" />,
       });
-      onInviteComplete(); 
+      onInviteComplete();
     } catch (error) {
       toast.error("초대에 실패했습니다", {
         icon: <Ban className="size-5" />,
@@ -60,12 +64,14 @@ export function PossibleMembersModal({
           <h1 className="py-10 text-center">No possible members</h1>
         )}
         {possibleMembers.map((member) => (
-          <UserMenuItem
+          <InviteListItem
             key={member.user_id}
             user={member}
             mode="addableMember"
             onClick={() => toggleMemberSelect(member)}
-            isSelected={selectedMembers.some((m) => m.user_id === member.user_id)}
+            isSelected={selectedMembers.some(
+              (m) => m.user_id === member.user_id,
+            )}
           />
         ))}
       </SidebarMenu>
@@ -81,5 +87,3 @@ export function PossibleMembersModal({
     </SidebarProvider>
   );
 }
-
-
