@@ -30,28 +30,28 @@ export function WorkspaceMenu({
 }: WorkspaceMenuProps) {
   const router = useRouter();
   const [workspaces, setWorkspaces] = useState<workspace[]>([]);
+
   const handleLogout = async () => {
     await logout();
     router.push("/");
   };
 
-  useEffect(() => {
-    const fetchUserWorkspaces = async () => {
+  // 드롭다운이 열릴 때만 API 호출
+  const handleOpenChange = async (open: boolean) => {
+    onWorkspaceOpenChange(open);
+    if (open && userId && workspaceId) {
       try {
-        console.log("fetchUserWorkspaces userId", userId);
         const userWorkspaces = await getUserWorkspaces(userId, workspaceId);
         setWorkspaces(userWorkspaces);
         console.log("userWorkspaces", userWorkspaces); // note : delete
-        // TODO: workspaceName을 상태로 저장하거나 사용하세요.
       } catch (error) {
         console.error("워크스페이스 이름 조회 실패", error);
       }
-    };
-    fetchUserWorkspaces();
-  }, [userId, workspaceId]);
+    }
+  };
 
   return (
-    <DropdownMenu onOpenChange={onWorkspaceOpenChange}>
+    <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger
         asChild
         className="w-full flex justify-between items-center cursor-pointer"
