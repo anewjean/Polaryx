@@ -87,6 +87,7 @@
     "novel": "^1.0.2",
     "prismjs": "^1.30.0",
     "react": "^19.1.0",
+    "react-countup": "^6.5.3",
     "react-day-picker": "^9.7.0",
     "react-dom": "^19.1.0",
     "react-notion-x": "^7.4.2",
@@ -102,6 +103,9 @@
     "web-push": "^3.6.7",
     "xlsx": "^0.18.5",
     "zustand": "^5.0.6"
+  },
+  "overrides": {
+    "react-is": "^19.1.0-rc-69d4b800-20241021"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
