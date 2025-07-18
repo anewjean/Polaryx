@@ -5,13 +5,6 @@ import { useLikeStore } from "@/store/likeStore";
 
 const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
-interface LikeEvent {
-  type: "like";
-  messageId: number;
-  userId: string;
-  likeCount: number;
-}
-
 interface WebSocketLikeClientProps {
   workspaceId: string;
   tabId: string;
@@ -22,71 +15,72 @@ export function WebSocketLikeClient({
   tabId,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  const { setLikeCount, setSendLike } = useLikeStore();
+  // 스토어에서 상태와 액션을 모두 가져옵니다.
+  const { setLikeCount, sendFlag, messageIdToSend, userIdToSend, resetSendFlag } = useLikeStore();
 
+  // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
     const wsUrl = `${NEXT_PUBLIC_WS}/api/ws/like/${workspaceId}/${tabId}`;
     const socket = new WebSocket(wsUrl);
     socketRef.current = socket;
 
-    // 이 sendLike 함수는 아래 onopen 핸들러 안에서 사용됩니다.
-    const sendLike = (messageId: number, userId: string) => {
-        // 만약을 위해 한번 더 체크
-        console.log("like socket")
-      if (socket.readyState === WebSocket.OPEN) {
-        const payload = {
-          type: "like",
-          // 백엔드 ws_message.py와 키 이름을 맞춥니다 (userId, messageId)
-          userId: userId,
-          messageId: messageId,
-        };
-        console.log("WebSocket: Sending like data", payload);
-        socket.send(JSON.stringify(payload));
-      } else {
-        console.warn(
-          "Could not send like. WebSocket not ready. State:",
-          socket.readyState
-        );
-      }
-    };
+    console.log("Like WebSocket: Attempting to connect...");
 
-    // 1. 웹소켓 연결이 성공하면...
     socket.onopen = () => {
-      console.log("Like WebSocket connected. Registering sendLike function.");
-      // 2. ...그때 비로소 sendLike 함수를 스토어에 등록합니다.
-      setSendLike(() => sendLike);
+      console.log("Like WebSocket: Connection successful.");
     };
 
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // 백엔드에서 온 데이터 키(messageId, likeCount)에 맞춰 수정
-        if (data.type === "like") {
+        // 서버로부터 'like' 타입의 메시지를 받으면 like count 상태를 업데이트합니다.
+        if (data.type === "like" && data.messageId !== undefined && data.likeCount !== undefined) {
+          console.log("Like WebSocket: Received like update", data);
           setLikeCount(data.messageId, data.likeCount);
         }
       } catch (e) {
-        console.warn("Invalid like event: ", event.data);
+        console.warn("Like WebSocket: Invalid message format received:", event.data);
       }
     };
 
     socket.onerror = (error) => {
-      console.error("Like WebSocket error", error);
+      console.error("Like WebSocket: An error occurred:", error);
     };
 
-    // 3. 연결이 닫히면 스토어의 함수도 비워줍니다.
     socket.onclose = () => {
-      console.log("Like WebSocket closed. Deregistering sendLike function.");
-      setSendLike(null);
+      console.log("Like WebSocket: Connection closed.");
     };
 
-    // 컴포넌트가 언마운트될 때 정리
+    // 컴포넌트가 언마운트될 때 웹소켓 연결을 정리합니다.
     return () => {
       if (socket.readyState === WebSocket.OPEN) {
         socket.close();
       }
-      setSendLike(null);
     };
-  }, [workspaceId, tabId, setLikeCount, setSendLike]);
+  }, [workspaceId, tabId, setLikeCount]); // 이 effect는 ID가 바뀔 때만 실행됩니다.
+
+  // 2. '좋아요' 데이터 전송 감지 전용 useEffect
+  useEffect(() => {
+    // sendFlag가 true이고, 소켓이 연결되어 있으며, 필요한 ID가 모두 있을 때 실행됩니다.
+    if (
+      sendFlag &&
+      socketRef.current?.readyState === WebSocket.OPEN &&
+      messageIdToSend !== null &&
+      userIdToSend
+    ) {
+      const payload = {
+        type: "like",
+        messageId: messageIdToSend,
+        userId: userIdToSend,
+      };
+      
+      console.log("Like WebSocket: Sending data...", payload);
+      socketRef.current.send(JSON.stringify(payload));
+      
+      // 전송 후, 다시 보낼 수 있도록 플래그를 리셋합니다.
+      resetSendFlag();
+    }
+  }, [sendFlag, messageIdToSend, userIdToSend, resetSendFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
 
   return null;
 }

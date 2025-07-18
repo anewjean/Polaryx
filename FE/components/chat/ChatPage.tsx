@@ -32,6 +32,7 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
+  // 스토어에서 상태와 액션을 모두 가져옵니다.
   const { likes, myLikes, setInitialState } = useLikeStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
@@ -53,21 +54,22 @@ export function ChatPage({
             initialMyLikesData.push(msg.msg_id);
           }
           return {
-            senderId: msg.sender_id,
-            msgId: msg.msg_id,
-            nickname: msg.nickname,
-            content: msg.content,
-            image: msg.image,
-            createdAt: msg.created_at,
-            isUpdated: msg.is_updated,
-            fileUrl: msg.file_url,
+            senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
+            content: msg.content, image: msg.image, createdAt: msg.created_at,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url,
           };
         });
         setMessages(new_messages);
+        ///////////////////////////////////////////////////////////////
+        // 스토어의 초기 상태를 한 번에 설정합니다.
         setInitialState(initialLikesData, initialMyLikesData);
+        ///////////////////////////////////////////////////////////////
       } else {
         setMessages([]);
+        ///////////////////////////////////////////////////////////////
+        // 초기 상태 설정
         setInitialState({}, []);
+        ///////////////////////////////////////////////////////////////
       }
       setIsLoading(false);
     })();
@@ -75,13 +77,11 @@ export function ChatPage({
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
-    // isLoading이 false로 바뀌는 순간 (즉, 로딩 완료 후) 한 번만 실행
     if (!isLoading && containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [isLoading]);
 
-  // 3. [수정] 새로운 메시지가 추가되었을 때 스크롤을 아래로 이동시키는 훅
   useEffect(() => {
     // 최초 로딩 중에는 이 훅이 동작하지 않도록 방지
     if (isLoading) return;
@@ -89,18 +89,15 @@ export function ChatPage({
     const el = containerRef.current;
     if (!el) return;
 
-    // 현재 스크롤이 거의 맨 아래에 있을 때만 자동으로 스크롤
-    // (사용자가 과거 메시지를 보고 있을 때는 방해하지 않기 위함)
     requestAnimationFrame(() => {
       const newHeight = el.scrollHeight;
       el.scrollTop = newHeight;
     });
-  }, [messages[messages.length - 1], isLoading]); // 의존성을 messages.length로 변경
+  }, [messages[messages.length - 1], isLoading]);
 
   // 스크롤을 올려서 과거 메세지들을 불러와
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
-    // `messages.length > 0` 조건을 추가하여, 메시지가 없을 때 불필요한 API 호출 방지
     if (el.scrollTop < 30 && !isFetching.current && messages.length > 0) {
       isFetching.current = true;
       const oldestId = messages[0]?.msgId;
@@ -113,33 +110,22 @@ export function ChatPage({
         const initialMyLikesData: number[] = [];
         
         const new_messages = res.messages.map((msg: any) => {
-          // '좋아요' 관련 로직을 map 함수 안으로 이동
-          if (msg.like_count > 0) {
-            initialLikesData[msg.msg_id] = msg.like_count;
-          }
-          if (msg.is_liked_by_me) {
-            initialMyLikesData.push(msg.msg_id);
-          }
-          return {
-            senderId: msg.sender_id,
-            msgId: msg.msg_id,
-            nickname: msg.nickname,
-            content: msg.content,
-            image: msg.image,
-            createdAt: msg.created_at,
-            isUpdated: msg.is_updated,
-            fileUrl: msg.file_url,
+           if (msg.like_count > 0) initialLikesData[msg.msg_id] = msg.like_count;
+           if (msg.is_liked_by_me) initialMyLikesData.push(msg.msg_id);
+           return {
+            senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
+            content: msg.content, image: msg.image, createdAt: msg.created_at,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url,
           };
         });
-
         prependMessages(new_messages);
+        ///////////////////////////////////////////////////////////////
+        // 스토어의 초기 상태를 한 번에 설정합니다.
         setInitialState(initialLikesData, initialMyLikesData);
-
-        // 스크롤 위치를 현재 위치만큼 유지
+        ///////////////////////////////////////////////////////////////
         requestAnimationFrame(() => {
-          const newHeight = el.scrollHeight;
-          const heightDiff = newHeight - previousHeight;
-          el.scrollTop = heightDiff;
+            const newHeight = el.scrollHeight;
+            el.scrollTop = newHeight - previousHeight;
         });
       }
       isFetching.current = false;
@@ -224,6 +210,7 @@ export function ChatPage({
                 fileUrl={msg.fileUrl}
                 isUpdated={msg.isUpdated}
                 likeCount={likes[msg.msgId || 0] || 0}
+                // 스토어에서 '내가 좋아요 눌렀는지' 여부를 가져와 전달합니다.
                 isLikedByMe={myLikes.has(msg.msgId || 0)}
               />
             </React.Fragment>

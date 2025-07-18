@@ -171,10 +171,8 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
             data = json.loads(raw_data)
             print(f"\n\n\nLike data received: {data}")
 
-            # 1. 프론트엔드(webSocketLikeClient)에서 보낸 데이터 파싱
-            # 프론트가 보낸 camelCase('userId', 'messageId')를 받습니다.
-            user_id = data.get("userId")
-            message_id = data.get("messageId")
+            user_id = data["userId"]
+            message_id = data["messageId"]
 
             if not user_id or not message_id:
                 print(f"Invalid like data received: {data}")

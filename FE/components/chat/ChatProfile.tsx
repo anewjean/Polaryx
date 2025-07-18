@@ -74,7 +74,7 @@ export function ChatProfile({
   
   ///////////////////////////////////////////////////////////////
   // likeStore 사용. 좋아요 데이터 관리.
-  const { sendLike, toggleMyLike } = useLikeStore();
+  const toggleLike = useLikeStore((s) => s.toggleLike);
   ///////////////////////////////////////////////////////////////
 
   // 메시지 저장 핸들러
@@ -107,16 +107,12 @@ export function ChatProfile({
 
   // 좋아요 버튼 클릭 핸들러
   const handleLike = () => {
-    console.log("handleLike")
+    console.log("handleLike clicked");
     if (myUserId) {
-      // 1. 내 화면의 상태를 먼저 바꾼다 (빠른 반응성)
-      console.log("toggleMyLike")
-      toggleMyLike(msgId);
-      // 2. 서버에 웹소켓으로 알린다
-      if (sendLike) {
-        console.log("sendLike")
-        sendLike(msgId, myUserId);
-      }
+      // 이제 '좋아요'를 누르면 store의 상태를 변경하여 전송을 "요청"합니다.
+      toggleLike(msgId, myUserId);
+    } else {
+      console.warn("Cannot like: myUserId is not set.");
     }
   };
   /////////////////////////////////////////////////////////////////
@@ -215,10 +211,10 @@ export function ChatProfile({
                   ) : null}
                 </div>
                 <div
-                  className={`p-1 flex mt-0.5 justify-center items-center w-auto h-4.5 border-1 rounded-full gap-0.5 cursor-pointer ${
+                  className={`p-1 flex mt-0.5 justify-center items-center w-auto min-w-[32px] h-4.5 border-1 rounded-full gap-0.5 cursor-pointer ${
                     isLikedByMe
                       ? "bg-blue-100 border-blue-600 text-blue-600"
-                      : "bg-gray-300 rounded-full gap-0.5"
+                      : "bg-gray-100 border-gray-300 text-gray-600"
                   }`}
                   onClick={handleLike}
                 >

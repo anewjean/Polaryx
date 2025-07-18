@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
-from app.domain.message import Message, MessageUpdateType
+from app.domain.message import Message, MessageUpdateType, Likes
 from datetime import datetime
 from fastapi import HTTPException
 
@@ -20,6 +20,14 @@ VALUES (
     %(content)s,
     %(url)s
 );
+"""
+
+update_like_count = """
+UPDATE messages
+SET 
+    likes = %(like_count)s
+WHERE id = %(msg_id)s
+  AND deleted_at IS NULL;
 """
 
 update_message = """
@@ -167,6 +175,21 @@ class QueryRepo(AbstractQueryRepo):
             "url": message.file_url
         }
         return self.db.execute(insert_message, params)
+    
+    def update_likes(self, likes: Likes):
+        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
+        sender_id = likes.sender_id
+        if isinstance(sender_id, UUID):
+            sender_id_bytes = sender_id.bytes
+        else:
+            sender_id_bytes = UUID(str(sender_id)).bytes
+        params = {
+            "tab_id": likes.tab_id,
+            "sender_id": sender_id_bytes,
+            "msg_id": likes.msg_id,
+            "like_count": likes.like
+        }
+        return self.db.execute(update_like_count, params)
     
     def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
         params = {

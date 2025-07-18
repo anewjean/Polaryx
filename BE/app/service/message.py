@@ -1,6 +1,6 @@
 from typing import List
 
-from app.domain.message import Message
+from app.domain.message import Message, Likes
 from app.repository.message import QueryRepo as MessageRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
 from app.repository.files import QueryRepo as FilesRepo
@@ -16,6 +16,12 @@ class MessageService:
         print("file_data: ", file_data) # debug: 나중에 지울 것
         message = Message.of(tab_id, sender_id, content, file_data)
         res = self.message_repo.insert(message)
+        return res["lastrowid"]
+    
+    # 미완
+    async def save_likes(self, tab_id: int, sender_id: uuid.UUID, msg_id: int, like: int) -> None:
+        likes = Likes.of(tab_id, sender_id, msg_id, like)
+        res = self.message_repo.update_likes(likes)
         return res["lastrowid"]
 
     async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
