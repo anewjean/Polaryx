@@ -45,8 +45,14 @@ export function LinkDialog({
     onOpenChange(false);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    setLinkText("");
+    setLinkUrl("");
+    onOpenChange(open);
+  };
+
   return (
-    <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
+    <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-xl mb-2">
@@ -75,7 +81,9 @@ export function LinkDialog({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>취소</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSave}>저장</AlertDialogAction>
+          <AlertDialogAction
+            disabled={linkText.trim() === "" || linkUrl.trim() === ""}
+            onClick={handleSave}>추가</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

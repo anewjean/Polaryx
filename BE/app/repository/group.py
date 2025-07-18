@@ -189,13 +189,13 @@ class QueryRepo(AbstractQueryRepo):
 
 
     # 미완
-    def insert_member_by_group_id(self, data: dict):
-        params = {
-            "user_id": data["user_id"],
-            "group_id": data["group_id"],
-            "user_name": data["nickname"]
-        }
-        return self.db.execute(insert_group_member, params)
+    # def insert_member_by_group_id(self, data: dict):
+    #     params = {
+    #         "user_id": data["user_id"],
+    #         "group_id": data["group_id"],
+    #         "user_name": data["nickname"]
+    #     }
+    #     return self.db.execute(insert_group_member, params)
         
     def delete_member(self, user_id:  UUID.bytes, workspace_id: int) -> bool:
         params = {
