@@ -18,6 +18,7 @@ export default function WorkspacesLayout({
         <span className="font-bold text-xl text-white">Polaris</span>
         <div className="flex flex-row items-center gap-2">
           <SearchAutocomplete />
+          
           <ExUpload />
           <Button
             variant="destructive"
@@ -34,6 +35,3 @@ export default function WorkspacesLayout({
     </div>
   );
 }
-
-
-

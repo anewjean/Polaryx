@@ -5,7 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import { Search, AtSign } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { searchUsers, Profile } from "@/apis/userApi";
+import { searchUsers } from "@/apis/userApi";
+import { Profile } from "@/apis/profileApi";
 import { useCreateDM } from "@/hooks/createDM";
 import { useProfileStore } from "@/store/profileStore";
 
@@ -48,7 +49,7 @@ export default function SearchAutocomplete() {
         className="pl-7 w-48 bg-gray-700 text-white border-gray-600"
       />
       {results.length > 0 && (
-        <ul className="absolute z-10 mt-1 w-full max-h-60 overflow-y-auto bg-white border rounded-md shadow">
+        <ul className="absolute z-50 mt-1 w-full max-h-60 overflow-y-auto bg-white border rounded-md shadow">
           {results.map((u) => (
             <li
               key={u.user_id}
