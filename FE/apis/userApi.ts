@@ -62,3 +62,19 @@ export async function deleteUser(workspaceId: string, userId: string): Promise<b
   return false;
 }
 
+export async function searchUsers(workspaceId: string, keyword: string): Promise<Profile[]> {
+  const res = await fetchWithAuth(
+    `${BASE}/api/workspaces/${workspaceId}/members/search?q=${encodeURIComponent(keyword)}`,
+    {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    },
+  );
+
+  if (res && res.ok) {
+    return res.json();
+  }
+  return [];
+}
+
+
