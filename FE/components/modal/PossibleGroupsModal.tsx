@@ -3,8 +3,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Group, postGroupList } from "@/apis/tabApi";
-import { SidebarProvider, SidebarMenu, SidebarFooter } from "@/components/ui/sidebar";
-import { UserMenuItem } from "@/components/tab/UserMenuItem";
+import {
+  SidebarProvider,
+  SidebarMenu,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
+import { InviteListItem } from "@/components/tab/InviteListItem";
 import { toast } from "sonner";
 
 export interface PossibleGroupsModalProps {
@@ -28,7 +32,7 @@ export function PossibleGroupsModal({
     setSelectedGroups((prev) =>
       prev.find((g) => g.group_id === group.group_id)
         ? prev.filter((g) => g.group_id !== group.group_id)
-        : [...prev, group]
+        : [...prev, group],
     );
   };
 
@@ -39,10 +43,9 @@ export function PossibleGroupsModal({
         toast.success("그룹이 성공적으로 초대되었습니다.");
         onInviteComplete();
       })
-      .catch((err: any) => {        
+      .catch((err: any) => {
         toast.error("그룹 초대에 실패했습니다.");
       });
-      
   };
 
   return (
@@ -53,7 +56,7 @@ export function PossibleGroupsModal({
             <div className="py-10 text-center">No possible groups</div>
           )}
           {possibleGroups.map((group) => (
-            <UserMenuItem
+            <InviteListItem
               key={group.group_id}
               user={{
                 user_id: String(group.group_id),
@@ -62,7 +65,9 @@ export function PossibleGroupsModal({
               }}
               mode="addableGroup"
               onClick={() => toggleGroupSelect(group)}
-              isSelected={selectedGroups.some((g) => g.group_id === group.group_id)}
+              isSelected={selectedGroups.some(
+                (g) => g.group_id === group.group_id,
+              )}
             />
           ))}
         </SidebarMenu>

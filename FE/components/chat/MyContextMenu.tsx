@@ -1,7 +1,13 @@
 "use client";
 
-import { ContextMenuContent, ContextMenuItem } from "@/components/ui/context-menu";
-import { deleteMessage as deleteMessageApi, updateMessage as updateMessageApi } from "@/apis/messageApi";
+import {
+  ContextMenuContent,
+  ContextMenuItem,
+} from "@/components/ui/context-menu";
+import {
+  deleteMessage as deleteMessageApi,
+  updateMessage as updateMessageApi,
+} from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useState } from "react";
@@ -26,10 +32,15 @@ interface MyContextMenuProps {
   onEdit: () => void; // 편집 모드 진입 함수 prop 추가
 }
 
-export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextMenuProps) {
+export function MyContextMenu({
+  messageId,
+  userId,
+  content,
+  onEdit,
+}: MyContextMenuProps) {
   // 내 userId 추출
   const myUserId = useMyUserStore((s) => s.userId);
-  
+
   // workspace id, tab id 추출
   const params = useParams();
   const workspaceId = params.workspaceId;
@@ -44,13 +55,12 @@ export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextM
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDelete = async () => {
-    try {  
+    try {
       // 2-1) 백엔드 API 호출
       await deleteMessageApi(workspaceId as string, tabId as string, messageId);
 
       // 2-2) 로컬 store 에서 메시지 제거
       removeMessage(messageId);
-      
     } catch (e) {
       console.log("메시지 삭제 실패:", e);
     }
@@ -68,13 +78,22 @@ export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextM
   return (
     <>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => { setProfileUserId(userId); openProfile(); }}>프로필 보기</ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            setProfileUserId(userId);
+            openProfile();
+          }}
+        >
+          프로필 보기
+        </ContextMenuItem>
         {myUserId === userId && (
           <>
             <ContextMenuItem onClick={handleEdit}>메시지 편집</ContextMenuItem>
-            <ContextMenuItem onClick={() => setIsDialogOpen(true)}>메시지 삭제</ContextMenuItem>
+            <ContextMenuItem onClick={() => setIsDialogOpen(true)}>
+              메시지 삭제
+            </ContextMenuItem>
           </>
-        )}        
+        )}
       </ContextMenuContent>
       {/* 삭제 메시지 확인 다이얼로그 */}
       <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -86,7 +105,9 @@ export function MyContextMenu({ messageId, userId, content, onEdit }: MyContextM
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>취소</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              취소
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete}>삭제</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

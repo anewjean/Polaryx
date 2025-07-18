@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createUserColumns } from "./columns";
-import { UserTable } from "@/components/Administration/UserTable";
+import { UserTable } from "@/components/administration/UserTable";
 import { Button } from "@/components/ui/button";
 import { ExUpload } from "@/components/excel_import/exImportButton";
 import { Plus } from "lucide-react";
@@ -76,7 +76,7 @@ export default function UserTablePage() {
     if (!isOpen) {
       setForm({ name: "", email: "", role_id: "2", group_id: [] });
     }
-  };  
+  };
 
   // 에러 토스트 표시 함수
   const showErrorToast = () => {
@@ -102,7 +102,7 @@ export default function UserTablePage() {
       const result = await addUser(workspaceId, payload);
 
       if (result) {
-        handleModalOpenChange(false);        
+        handleModalOpenChange(false);
         triggerRefresh(workspaceId);
         toast.success("회원이 등록되었습니다", {
           icon: <CircleCheck className="size-5" />,
@@ -156,7 +156,9 @@ export default function UserTablePage() {
                 <h1>역할*</h1>
                 <RadioGroup
                   value={String(form.role_id)}
-                  onValueChange={(value) => setForm({ ...form, role_id: value })}
+                  onValueChange={(value) =>
+                    setForm({ ...form, role_id: value })
+                  }
                 >
                   {workspaceRoles.length === 0 ? (
                     <div>역할을 불러오는 중입니다...</div>

@@ -11,6 +11,8 @@ import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
+import { cn } from "@/lib/utils";
+import { Star } from "lucide-react";
 
 interface ChatProfileProps {
   senderId: string;
@@ -22,6 +24,7 @@ interface ChatProfileProps {
   showProfile: boolean;
   fileUrl: string | null;
   isUpdated: number;
+  className?: string;
 }
 
 function isImageFile(url: string) {
@@ -38,6 +41,7 @@ export function ChatProfile({
   showProfile,
   fileUrl,
   isUpdated,
+  className,
 }: ChatProfileProps) {
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -76,7 +80,10 @@ export function ChatProfile({
     <ContextMenu>
       <ContextMenuTrigger>
         <div
-          className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}
+          className={cn(
+            `flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-muted"}`,
+            className,
+          )}
         >
           {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
           {showProfile ? (
@@ -165,6 +172,14 @@ export function ChatProfile({
                     </span>
                   ) : null}
                 </div>
+                {/* <div className="text-blue-500 p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 border-1 border-blue-600 bg-blue-100 rounded-full gap-0.5">
+                  <Star className="w-3 h-3 fill-current"/>
+                  <p className="text-xxs">1</p>
+                </div>
+                <div className="text-white p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 bg-gray-300 rounded-full gap-0.5">
+                  <Star className="w-3 h-3 fill-current"/>
+                  <p className="text-xxs">1</p>
+                </div> */}
               </>
             )}
           </div>
