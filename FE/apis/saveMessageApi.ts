@@ -22,7 +22,7 @@ export async function getSaveMessages(workspaceId: string, userId: string): Prom
 }
 
 /* 저장 메시지 추가 */
-export async function addSaveMessage(workspaceId: string, userId: string, content: string): Promise<boolean> {  
+export async function addSaveMessage(workspaceId: string, userId: string, content: string): Promise<SaveMessage> {  
   const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/saveMessages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -32,10 +32,11 @@ export async function addSaveMessage(workspaceId: string, userId: string, conten
     }),
   });
 
-  if (res && res.ok) {
-      return true;
-  }
-  return false;
+    if (res && res.ok) {
+        return res.json();
+    } else {
+        throw new Error("저장 메시지 조회에 실패했습니다.");
+    }   
 }
 
 /* 저장 메시지 삭제 */
