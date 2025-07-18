@@ -5,7 +5,7 @@ import { Profile } from "@/apis/profileApi";
 import {
   ActionMenu,
   OnUserUpdated,
-} from "@/components/administration_temp/UserActions";
+} from "@/components/administration/UserActions";
 import {
   Tooltip,
   TooltipContent,

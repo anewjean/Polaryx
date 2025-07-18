@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { createUserColumns } from "./columns";
-import { UserTable } from "@/components/administration_temp/UserTable";
+import { UserTable } from "@/components/administration/UserTable";
 import { Button } from "@/components/ui/button";
 import { ExUpload } from "@/components/excel_import/exImportButton";
 import { Plus } from "lucide-react";

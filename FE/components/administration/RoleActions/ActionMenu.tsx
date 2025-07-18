@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 
 // 절대 경로로 임포트
-import { DeleteRoleDialog } from "@/components/administration_temp/RoleActions/DeleteRoleDialog";
-import { EditRoleDialog } from "@/components/administration_temp/RoleActions/EditRoleDialog";
+import { DeleteRoleDialog } from "@/components/administration/RoleActions/DeleteRoleDialog";
+import { EditRoleDialog } from "@/components/administration/RoleActions/EditRoleDialog";
 
 export type OnRoleUpdated = () => void;
 

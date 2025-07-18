@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ActionMenu } from "@/components/administration_temp/GroupActions/ActionMenu";
+import { ActionMenu } from "@/components/administration/GroupActions/ActionMenu";
 
 export const createGroupColumns = (
   onRefreshNeeded?: () => void,
