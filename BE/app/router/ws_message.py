@@ -115,6 +115,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             #               for row in members
             #               if row[0] != uuid.UUID(sender_id).bytes
             #               ]
+            
             sender_uuid = uuid.UUID(sender_id)
             recipients = [
             str(uuid.UUID(bytes=row[0]))

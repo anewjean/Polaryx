@@ -18,7 +18,7 @@ export default function WorkspaceSearchPage() {
   }, [keyword, workspaceId]);
 
   return (
-    <div className="p-4 text-white">
+    <div className="p-4 text-black">
       <h1 className="text-xl font-bold mb-4">Search Results</h1>
       {keyword ? (
         <ul className="space-y-2">
@@ -26,7 +26,7 @@ export default function WorkspaceSearchPage() {
             <li key={u.user_id} className="flex items-center gap-2">
               <img
                 src={u.image || "/user_default.png"}
-                className="w-6 h-6 rounded-md bg-gray-400 object-cover"
+                className="w-12 h-12 rounded-md bg-gray-400 object-cover"
               />
               <span>{u.nickname}</span>
             </li>
