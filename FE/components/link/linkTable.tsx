@@ -17,20 +17,39 @@ import {
 import { MoreVertical } from "lucide-react";
 import { Table, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { getLinks, deleteLink, Link as ApiLink } from "@/apis/linkApi";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { CircleCheck, Ban } from "lucide-react";
 
-// 테이블에 표시할 항목 타입 정의
+// 테이블에 표시할 항목 타입
 type LinkItem = ApiLink;
 
 interface LinkTableProps {
   workspaceId: string;
   tabId: string;
+  reload?: number;
 }
 
-// 테이블 컴포넌트
-export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
+export default function LinkTable({
+  workspaceId,
+  tabId,
+  reload = 0,
+}: LinkTableProps) {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedLinkId, setSelectedLinkId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!workspaceId || !tabId) return;
@@ -48,16 +67,34 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
     };
 
     fetchLinks();
-  }, [workspaceId, tabId]);
+  }, [workspaceId, tabId, reload]);
 
-  // 삭제 핸들러
-  const handleDelete = async (linkId: number) => {
-    if (!window.confirm("정말 이 링크를 삭제하시겠습니까?")) return;
+  // 다이얼로그 오픈 시 선택된 링크 저장
+  const handleDeleteClick = (linkId: number) => {
+    setSelectedLinkId(linkId); // void 반환
+    setIsDialogOpen(true);
+  };
+
+  // 다이얼로그 확인 클릭: 실제 삭제
+  const handleConfirmDelete = async () => {
+    console.log(selectedLinkId);
+
+    if (selectedLinkId === null) return;
+
     try {
-      await deleteLink(workspaceId, tabId, linkId.toString());
-      setLinks((prev) => prev.filter((l) => l.link_id !== linkId));
-    } catch (err: any) {
-      setError(err.message || "링크 삭제에 실패했습니다.");
+      await deleteLink(workspaceId, tabId, selectedLinkId.toString());
+      setLinks((prev) => prev.filter((l) => l.link_id !== selectedLinkId));
+
+      toast.success("링크가 삭제되었습니다", {
+        icon: <CircleCheck className="size-5" />,
+      });
+    } catch (e) {
+      toast.error(`실패, ${e}`, {
+        icon: <Ban className="size-5" />,
+      });
+    } finally {
+      setIsDialogOpen(false);
+      setSelectedLinkId(null);
     }
   };
 
@@ -71,7 +108,7 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
           return (
             <div className="flex items-center gap-5">
               <img
-                src={item.link_favicon}
+                src={item.link_favicon ? item.link_favicon : "/linkDefault.png"}
                 alt="favicon"
                 className="h-8 w-8 rounded-sm"
               />
@@ -84,7 +121,11 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
                 >
                   {item.link_name}
                 </a>
-                <span className="text-sm text-gray-500">{item.link_url}</span>
+                <span className="text-sm text-gray-500">
+                  {item.link_url.length > 70
+                    ? `${item.link_url.slice(0, 70)}...`
+                    : item.link_url}
+                </span>
               </div>
             </div>
           );
@@ -103,7 +144,7 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => handleDelete(row.original.link_id)}
+                onClick={() => handleDeleteClick(row.original.link_id)}
               >
                 삭제
               </DropdownMenuItem>
@@ -112,7 +153,7 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
         ),
       },
     ],
-    [handleDelete],
+    [handleDeleteClick],
   );
 
   const table = useReactTable<LinkItem>({
@@ -120,7 +161,7 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  
+
   if (loading) {
     return <div className="p-4 text-center">링크 불러오는 중</div>;
   }
@@ -130,31 +171,59 @@ export default function LinkTable({ workspaceId, tabId }: LinkTableProps) {
   }
 
   return (
-    <div className="rounded-xl border bg-white">
-      <Table>
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-16">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={`p-4 ${cell.column.id === "actions" ? "text-right" : ""}`}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+    <>
+      {/* 삭제 메시지 확인 다이얼로그 */}
+      <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>링크 삭제</AlertDialogTitle>
+            <AlertDialogDescription>
+              선택한 링크를 정말 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+              취소
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete}>
+              삭제
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="rounded-xl border bg-white">
+        <Table>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} className="h-16">
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={`p-4 ${cell.column.id === "actions" ? "text-right" : ""}`}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={columns.length}
+                >
+                  링크가 없습니다.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell className="h-24 text-center" colSpan={2}>
-                링크가 없습니다.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }
