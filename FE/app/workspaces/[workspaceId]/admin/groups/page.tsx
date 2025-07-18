@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { GroupTable } from "@/components/administration/GroupTable";
+import { GroupTable } from "@/components/administration_temp/GroupTable";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { CreateGroupDialog } from "@/components/administration/GroupActions/CreateGroupDialog";
+import { CreateGroupDialog } from "@/components/administration_temp/GroupActions/CreateGroupDialog";
 import { useGroupStore } from "@/store/groupStore";
 import { createGroupColumns } from "./columns";
 

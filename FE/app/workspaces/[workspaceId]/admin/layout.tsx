@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminHeader } from "@/components/administration/AdminHeader";
+import { AdminHeader } from "@/components/administration_temp/AdminHeader";
 
 export default function AdminLayout({
   children,

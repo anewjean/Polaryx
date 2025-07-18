@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { RoleTable } from "@/components/administration/RoleTable";
+import { RoleTable } from "@/components/administration_temp/RoleTable";
 import { Button } from "@/components/ui/button";
 import { Plus, CircleCheck, Ban } from "lucide-react";
 import { useParams } from "next/navigation";

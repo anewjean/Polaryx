@@ -16,7 +16,7 @@ import {
   Trash2,
 } from "lucide-react";
 import EditRole from "@/components/modal/EditRole";
-import { DeleteUserDialog } from "@/components/administration/UserActions/DeleteUserDialog";
+import { DeleteUserDialog } from "@/components/administration_temp/UserActions/DeleteUserDialog";
 
 export type OnUserUpdated = () => void;
 

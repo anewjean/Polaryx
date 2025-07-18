@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Role } from "@/apis/roleApi";
 import { Member } from "@/apis/tabApi";
 import { Badge } from "@/components/ui/badge";
-import { ActionMenu } from "@/components/administration/RoleActions/ActionMenu";
+import { ActionMenu } from "@/components/administration_temp/RoleActions/ActionMenu";
 import {
   Tooltip,
   TooltipContent,
