@@ -126,6 +126,16 @@ WHERE id = %(workspace_members_id)s
   AND deleted_at IS NULL;
 """
 
+find_by_user_all_workspace_id = """
+SELECT 
+    wm.workspace_id, 
+    w.name AS workspace_name
+FROM workspace_members wm
+JOIN workspaces w ON wm.workspace_id = w.id
+WHERE wm.user_id = %(user_id)s
+  AND wm.deleted_at IS NULL;
+"""
+
 class QueryRepo(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -189,3 +199,9 @@ class QueryRepo(AbstractQueryRepo):
             "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat()
         }
         return self.db.execute(delete_wm_by_id, params)
+
+    def find_by_user_all_workspace_id(self, user_id: str):
+        param = {
+            "user_id": UUID(user_id).bytes
+        }
+        return self.db.execute(find_by_user_all_workspace_id, param)
