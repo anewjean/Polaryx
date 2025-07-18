@@ -6,6 +6,9 @@ interface LikeState {
   // 내가 '좋아요' 누른 메시지 ID들을 저장하는 Set
   myLikes: Set<number>;
 
+  // '좋아요' 토글 액션의 종류를 저장 ('like' 또는 'unlike')
+  likeAction: 'like' | 'unlike' | null;
+
   // API 로딩 시 초기 상태를 한 번에 설정하는 함수
   setInitialState: (
     initialLikes: Record<number, number>,
@@ -28,6 +31,7 @@ interface LikeState {
 export const useLikeStore = create<LikeState>((set, get) => ({
   likes: {},
   myLikes: new Set(),
+  likeAction: null, // 상태 초기화
 
   setInitialState: (initialLikes, initialMyLikes) => {
     set((state) => ({
@@ -40,28 +44,31 @@ export const useLikeStore = create<LikeState>((set, get) => ({
     likes: { ...state.likes, [messageId]: count },
   })),
   
-  // '좋아요' 버튼이 호출할 메인 함수
+  // '좋아요' 버튼이 호출할 메인 함수 수정
   toggleLike: (messageId, userId) => {
-    // 1. 현재 상태를 가져와서 UI를 즉시 업데이트 (Optimistic Update)
     const myLikes = new Set(get().myLikes);
     const currentLikes = get().likes;
     let likeCount = currentLikes[messageId] || 0;
+    let action: 'like' | 'unlike'; // 액션을 저장할 변수
 
     if (myLikes.has(messageId)) {
-      myLikes.delete(messageId); // 내 좋아요 목록에서 제거
+      myLikes.delete(messageId);
       likeCount--;
+      action = 'unlike'; // '좋아요 취소' 액션
     } else {
-      myLikes.add(messageId); // 내 좋아요 목록에 추가
+      myLikes.add(messageId);
       likeCount++;
+      action = 'like'; // '좋아요 추가' 액션
     }
 
-    // 2. 변경된 UI 상태와 함께, 웹소켓 전송을 요청하는 플래그를 true로 설정
+    // 변경된 UI 상태와 함께, 웹소켓 전송에 필요한 정보들을 설정
     set({
       myLikes,
       likes: { ...currentLikes, [messageId]: Math.max(0, likeCount) },
       sendFlag: true,
       messageIdToSend: messageId,
       userIdToSend: userId,
+      likeAction: action, // 어떤 액션이었는지 스토어에 저장
     });
   },
   
@@ -69,9 +76,11 @@ export const useLikeStore = create<LikeState>((set, get) => ({
   sendFlag: false,
   messageIdToSend: null,
   userIdToSend: null,
+  // 전송 후, 모든 관련 상태를 리셋
   resetSendFlag: () => set({
     sendFlag: false,
     messageIdToSend: null,
     userIdToSend: null,
+    likeAction: null, // likeAction도 함께 리셋
   }),
 }));

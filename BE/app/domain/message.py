@@ -61,14 +61,14 @@ class Message:
 class Likes:
     msg_id: Optional[int] = None
     tab_id: Optional[int] = None
-    sender_id: Optional[uuid.UUID] = None
-    like: Optional[int] = None
+    user_id: Optional[uuid.UUID] = None
+    plus: bool = None
 
     @staticmethod
-    def of(tab_id: int, sender_id: uuid.UUID, msg_id: int, like: int) -> Likes:
+    def of(tab_id: int, user_id: uuid.UUID, msg_id: int, plus: bool) -> Likes:
         return Likes(
             msg_id=msg_id,
             tab_id=tab_id,
-            sender_id=sender_id,
-            like=like
+            user_id=user_id,
+            plus=plus
         )

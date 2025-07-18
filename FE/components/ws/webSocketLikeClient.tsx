@@ -15,8 +15,7 @@ export function WebSocketLikeClient({
   tabId,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  // 스토어에서 상태와 액션을 모두 가져옵니다.
-  const { setLikeCount, sendFlag, messageIdToSend, userIdToSend, resetSendFlag } = useLikeStore();
+  const { setLikeCount, sendFlag, messageIdToSend, userIdToSend, likeAction, resetSendFlag } = useLikeStore();
 
   // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
@@ -61,26 +60,27 @@ export function WebSocketLikeClient({
 
   // 2. '좋아요' 데이터 전송 감지 전용 useEffect
   useEffect(() => {
-    // sendFlag가 true이고, 소켓이 연결되어 있으며, 필요한 ID가 모두 있을 때 실행됩니다.
     if (
       sendFlag &&
       socketRef.current?.readyState === WebSocket.OPEN &&
       messageIdToSend !== null &&
-      userIdToSend
+      userIdToSend &&
+      likeAction // likeAction 정보도 있는지 확인
     ) {
+      // 페이로드에 'action' 필드를 추가합니다.
       const payload = {
         type: "like",
         messageId: messageIdToSend,
         userId: userIdToSend,
+        action: likeAction, // 'like' 또는 'unlike'
       };
       
-      console.log("Like WebSocket: Sending data...", payload);
+      console.log("Like WebSocket: Sending data with action...", payload);
       socketRef.current.send(JSON.stringify(payload));
       
-      // 전송 후, 다시 보낼 수 있도록 플래그를 리셋합니다.
       resetSendFlag();
     }
-  }, [sendFlag, messageIdToSend, userIdToSend, resetSendFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
+  }, [sendFlag, messageIdToSend, userIdToSend, likeAction, resetSendFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
 
   return null;
 }

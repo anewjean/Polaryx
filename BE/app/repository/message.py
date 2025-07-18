@@ -22,12 +22,27 @@ VALUES (
 );
 """
 
-update_like_count = """
+insert_likes = """
+INSERT likes (msg_id, user_id)
+VALUE (%(msg_id)s, %(sender_id)s)
+"""
+
+delete_likes = """
+DELETE FROM likes
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s;
+"""
+
+count_likes = """
+SELECT COUNT(*) FROM likes
+WHERE msg_id = %(msg_id)s;
+"""
+
+save_like_cnt = """
 UPDATE messages
 SET 
-    likes = %(like_count)s
-WHERE id = %(msg_id)s
-  AND deleted_at IS NULL;
+    likes = %(like_cnt)s
+WHERE id = %(msg_id)s;
 """
 
 update_message = """
@@ -178,7 +193,7 @@ class QueryRepo(AbstractQueryRepo):
     
     def update_likes(self, likes: Likes):
         # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
-        sender_id = likes.sender_id
+        sender_id = likes.user_id
         if isinstance(sender_id, UUID):
             sender_id_bytes = sender_id.bytes
         else:
@@ -187,9 +202,19 @@ class QueryRepo(AbstractQueryRepo):
             "tab_id": likes.tab_id,
             "sender_id": sender_id_bytes,
             "msg_id": likes.msg_id,
-            "like_count": likes.like
         }
-        return self.db.execute(update_like_count, params)
+        if (likes.plus):
+            self.db.execute(insert_likes, params)
+        else:
+            self.db.execute(delete_likes, params)
+        like_cnt = self.db.execute(count_likes, params)
+        print("\n\n\n 확인좀 하자, like_cnt: ", like_cnt)
+        params = {
+            "msg_id": likes.msg_id,
+            "like_cnt": like_cnt[0][0]
+        }
+        self.db.execute(save_like_cnt, params)
+        return like_cnt[0][0]
     
     def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
         params = {

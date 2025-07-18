@@ -19,10 +19,9 @@ class MessageService:
         return res["lastrowid"]
     
     # 미완
-    async def save_likes(self, tab_id: int, sender_id: uuid.UUID, msg_id: int, like: int) -> None:
-        likes = Likes.of(tab_id, sender_id, msg_id, like)
-        res = self.message_repo.update_likes(likes)
-        return res["lastrowid"]
+    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, plus: bool) -> None:
+        likes = Likes.of(tab_id, user_id, msg_id, plus)
+        return self.message_repo.update_likes(likes)
 
     async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
         return self.message_repo.find_recent_30(tab_id, before_id)
