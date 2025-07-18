@@ -18,7 +18,12 @@ import uuid
 import re
 
 router = APIRouter()
-connection = ConnectionManager()
+#############################################################
+# 1. ConnectionManager를 두 개 생성합니다.
+message_connection = ConnectionManager()
+like_connection = ConnectionManager()
+#############################################################
+
 message_service = MessageService()
 workspace_member_service = WorkspaceMemberService()
 
@@ -38,7 +43,10 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
     workspace_member = None
     print("******************* ws endpoint *******************")
 
-    await connection.connect(workspace_id, tab_id, websocket)
+    #############################################################
+    # 2. 메시지용 매니저를 사용합니다.
+    await message_connection.connect(workspace_id, tab_id, websocket)
+    #############################################################
     try:
         while True:
             print("************* in while **************")
@@ -105,7 +113,9 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             # }
             # if file_data != None:
             #     await message_service.save_file_to_db(file_data_with_msg_id)
-            await connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+            #############################################################
+            await message_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+            #############################################################
             
             members = tab_service.get_tab_members(workspace_id, tab_id)
             tab_info = tab_service.find_tab(workspace_id, tab_id)
@@ -142,6 +152,60 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     content=clean_content,
                 )
     except WebSocketDisconnect:
-        print("********* except *********")
-        # await connection.broadcast(workspace_id, tab_id, f"#{nickname}님이 나갔습니다.")
-        connection.disconnect(workspace_id, tab_id, websocket)
+        #############################################################
+        print("********* Message websocket disconnected *********")
+        # 4. 연결 해제도 메시지용 매니저로 합니다.
+        message_connection.disconnect(workspace_id, tab_id, websocket)
+        #############################################################
+
+@router.websocket("/like/{workspace_id}/{tab_id}")
+async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
+    print("************* ws like endpoint ****************")
+
+    # 5. '좋아요'는 like_connection 매니저를 사용합니다.
+    await like_connection.connect(workspace_id, tab_id, websocket)
+    try:
+        while True:
+            print("********* like in while **********")
+            raw_data = await websocket.receive_text()
+            data = json.loads(raw_data)
+            print(f"\n\n\nLike data received: {data}")
+
+            # 1. 프론트엔드(webSocketLikeClient)에서 보낸 데이터 파싱
+            # 프론트가 보낸 camelCase('userId', 'messageId')를 받습니다.
+            user_id = data.get("userId")
+            message_id = data.get("messageId")
+
+            if not user_id or not message_id:
+                print(f"Invalid like data received: {data}")
+                continue
+
+            # 2. '좋아요' 토글 서비스 로직 호출
+            # 이 서비스는 내부에 '좋아요' 추가/삭제 및 like_count 업데이트 로직을 포함하고,
+            # 최종 업데이트된 like_count를 반환해야 합니다.
+            # (이 부분은 message_service.py에 새로 구현해야 합니다.)
+            updated_like_count = await message_service.toggle_like(
+                message_id=message_id,
+                user_id=user_id
+            )
+
+            # 3. 브로드캐스트할 페이로드(payload) 생성
+            # 프론트엔드가 받을 데이터 형식이므로 camelCase로 맞춰줍니다.
+            payload = {
+                "type": "like",
+                "messageId": message_id,
+                "likeCount": updated_like_count
+            }
+
+            print(f"Broadcasting like update: {payload}")
+
+            # 6. 브로드캐스트도 '좋아요'용 매니저로 합니다.
+            await like_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+
+    except WebSocketDisconnect:
+        print("********* Like websocket disconnected *********")
+        # 7. 연결 해제도 '좋아요'용 매니저로 합니다.
+        like_connection.disconnect(workspace_id, tab_id, websocket)
+    except Exception as e:
+        print(f"An error occurred in like websocket: {e}")
+        like_connection.disconnect(workspace_id, tab_id, websocket)
