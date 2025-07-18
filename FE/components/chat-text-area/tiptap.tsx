@@ -28,6 +28,8 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
+import { BookmarkPlus, BookmarkX } from "lucide-react";
+import SaveMessages from "./SaveMessages";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -53,6 +55,9 @@ export function TipTap() {
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
 
+  // 팝오버 트리거
+  const [openPopover, setOpenPopover] = useState(false);
+
   // 클라이언트에서만 mounted = true
   useEffect(() => {
     setMounted(true);
@@ -66,7 +71,7 @@ export function TipTap() {
   useFetchMessages(workspaceId, tabId);
 
   const { message, setMessage, setSendFlag, setMessages, appendMessage } =
-    useMessageStore();
+  useMessageStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
@@ -299,8 +304,18 @@ export function TipTap() {
         onChange={handleFileSelect}
         style={{ display: "none" }}
       />
-      <div className="toolbar-container rounded-t-[7px]">
+      <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
         <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
+        {/* 북마크 버튼 누르면 팝오버 열기 */}
+        <SaveMessages workspaceId={workspaceId} openPopover={openPopover} setOpenPopover={setOpenPopover}>
+          {openPopover ? (
+            // 팝오버가 열려있으면, 회색의 엑스 버튼 보여줌
+            <BookmarkX onClick={() => setOpenPopover(false)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-gray-400" />
+          ) : (
+            // 팝오버가 닫혀있으면, 파란색의 플러스 버튼 보여줌
+            <BookmarkPlus onClick={() => setOpenPopover(true)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300" />
+          )}
+        </SaveMessages>
       </div>
 
       {/* 링크 추가 다이얼로그 */}
