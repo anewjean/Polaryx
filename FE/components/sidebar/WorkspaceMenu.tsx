@@ -39,7 +39,7 @@ export function WorkspaceMenu({
     const fetchUserWorkspaces = async () => {
       try {
         console.log("fetchUserWorkspaces userId", userId);
-        const userWorkspaces = await getUserWorkspaces(userId);
+        const userWorkspaces = await getUserWorkspaces(userId, workspaceId);
         setWorkspaces(userWorkspaces);
         console.log("userWorkspaces", userWorkspaces); // note : delete
         // TODO: workspaceName을 상태로 저장하거나 사용하세요.
@@ -48,7 +48,7 @@ export function WorkspaceMenu({
       }
     };
     fetchUserWorkspaces();
-  }, [userId]);
+  }, [userId, workspaceId]);
 
   return (
     <DropdownMenu onOpenChange={onWorkspaceOpenChange}>

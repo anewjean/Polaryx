@@ -174,8 +174,8 @@ class WorkspaceMemberService:
 
         return 
 
-    def get_user_workspaces(self, user_id: str) -> List[WorkspaceMember]:
+    def get_user_workspaces(self, user_id: str, workspace_id: str) -> List[WorkspaceMember]:
         print("get_user_workspaces user_id", user_id)
-        workspaces = self.workspace_member_repo.find_by_user_all_workspace_id(user_id)
+        workspaces = self.workspace_member_repo.find_by_user_all_workspace_id(user_id, workspace_id)
         print("get_user_workspaces workspaces", workspaces)
         return workspaces

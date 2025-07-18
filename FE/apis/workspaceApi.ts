@@ -43,14 +43,17 @@ export async function getWorkspaceName(
 }
 
 /* 사용자가 참여한 워크스페이스 목록 조회 */
-export async function getUserWorkspaces(userId: string): Promise<workspace[]> {
+export async function getUserWorkspaces(
+  userId: string,
+  workspaceId: string,
+): Promise<workspace[]> {
   const res = await fetchWithAuth(`${BASE}/api/workspaces/user/workspaces`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({ user_id: userId }),
+    body: JSON.stringify({ user_id: userId, workspace_id: workspaceId }),
   });
 
   if (res && res.ok) {

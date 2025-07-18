@@ -65,7 +65,8 @@ async def get_user_workspaces(
     # 사용자가 참여한 워크스페이스 목록 조회
     data: dict = await request.json()
     user_id = data["user_id"]
-    workspaces = workspace_member_service.get_user_workspaces(user_id)
+    workspace_id = data["workspace_id"]
+    workspaces = workspace_member_service.get_user_workspaces(user_id, workspace_id)
     return workspaces
 
 # 회원 등록(파일 임포트)

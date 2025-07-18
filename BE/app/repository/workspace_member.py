@@ -133,6 +133,7 @@ SELECT
 FROM workspace_members wm
 JOIN workspaces w ON wm.workspace_id = w.id
 WHERE wm.user_id = %(user_id)s
+  AND wm.workspace_id != %(workspace_id)s
   AND wm.deleted_at IS NULL;
 """
 
@@ -200,8 +201,9 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(delete_wm_by_id, params)
 
-    def find_by_user_all_workspace_id(self, user_id: str):
+    def find_by_user_all_workspace_id(self, user_id: str, workspace_id: str):
         param = {
-            "user_id": UUID(user_id).bytes
+            "user_id": UUID(user_id).bytes,
+            "workspace_id": workspace_id
         }
         return self.db.execute(find_by_user_all_workspace_id, param)
