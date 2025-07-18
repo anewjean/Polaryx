@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
+import { cn } from "@/lib/utils";
 
 interface ChatProfileProps {
   senderId: string;
@@ -22,6 +23,7 @@ interface ChatProfileProps {
   showProfile: boolean;
   fileUrl: string | null;
   isUpdated: number;
+  className?: string;
 }
 
 function isImageFile(url: string) {
@@ -38,6 +40,7 @@ export function ChatProfile({
   showProfile,
   fileUrl,
   isUpdated,
+  className,
 }: ChatProfileProps) {
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -76,7 +79,10 @@ export function ChatProfile({
     <ContextMenu>
       <ContextMenuTrigger>
         <div
-          className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}
+          className={cn(
+            `flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-muted"}`,
+            className,
+          )}
         >
           {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
           {showProfile ? (
