@@ -62,7 +62,7 @@ class Emoji:
     msg_id: Optional[int] = None
     tab_id: Optional[int] = None
     user_id: Optional[uuid.UUID] = None
-    emoji_type: str
+    emoji_type: str = None
 
     @staticmethod
     def of(tab_id: int, user_id: uuid.UUID, msg_id: int, type: str, plus: bool) -> Emoji:

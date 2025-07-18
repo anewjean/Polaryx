@@ -48,7 +48,6 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     # [11]: m.check_cnt
     # [12]: m.clap_cnt
     # [13]: m.like_cnt
-    # [14]: e.id
     
     # 원래 로직
     messages = [MessageSchema.from_row(row) for row in rows]

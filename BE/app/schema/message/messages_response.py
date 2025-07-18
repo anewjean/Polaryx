@@ -22,7 +22,7 @@ class MessageSchema(BaseModel):
     e_check_cnt: int
     e_clap_cnt: int
     e_like_cnt: int
-    my_toggle: Optional[str] = None
+    my_toggle: Optional[List] = None
 
     @classmethod
     def from_row(cls, row: tuple) -> MessageSchema:
