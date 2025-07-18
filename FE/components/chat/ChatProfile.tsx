@@ -6,13 +6,19 @@ import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 import DOMPurify from "dompurify";
 import ChatEditTiptap from "./ChatEditTiptap";
-import { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
 import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
+import { WebSocketLikeClient } from "@/components/ws/webSocketLikeClient"; // 새로 만든 컴포넌트 import
+import { jwtDecode } from "jwt-decode";
+/////////////////////////////////////////////////////////////
+// likeStore 사용. 좋아요 데이터 관리.
+import { useLikeStore } from "@/store/likeStore";
+/////////////////////////////////////////////////////////////
 
 interface ChatProfileProps {
   senderId: string;
@@ -25,6 +31,11 @@ interface ChatProfileProps {
   fileUrl: string | null;
   isUpdated: number;
   className?: string;
+  ///////////////////////////////////////////////////////////////
+  // likeStore 사용. 좋아요 데이터 관리.
+  likeCount: number; // likeCount prop 추가
+  isLikedByMe: boolean; // 토글 기능: prop 추가
+  ///////////////////////////////////////////////////////////////
 }
 
 function isImageFile(url: string) {
@@ -42,6 +53,11 @@ export function ChatProfile({
   fileUrl,
   isUpdated,
   className,
+  ///////////////////////////////////////////////////////////////
+  // likeStore 사용. 좋아요 데이터 관리.
+  likeCount, // prop 받기
+  isLikedByMe, // prop 받기
+  ///////////////////////////////////////////////////////////////
 }: ChatProfileProps) {
   // 유저 id 상태 관리
   const [userId, setUserId] = useState<string | null>(null);
@@ -58,6 +74,11 @@ export function ChatProfile({
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
   const updateMessage = useMessageStore((s) => s.updateMessage);
+  
+  ///////////////////////////////////////////////////////////////
+  // likeStore 사용. 좋아요 데이터 관리.
+  const toggleLike = useLikeStore((s) => s.toggleLike);
+  ///////////////////////////////////////////////////////////////
 
   // 메시지 저장 핸들러
   const handleSave = async (newContent: string) => {
@@ -75,6 +96,29 @@ export function ChatProfile({
   const handleCancel = () => {
     setIsEditMode(false);
   };
+
+  /////////////////////////////////////////////////////////////////
+  // 내 userId 가져오기 (예시: localStorage에서)
+  const [myUserId, setMyUserId] = useState<string>(""); // 이건 그대로 사용
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      const { user_id } = jwtDecode(token) as { user_id: string };
+      setMyUserId(user_id);
+    }
+  }, []);
+
+  // 좋아요 버튼 클릭 핸들러
+  const handleLike = () => {
+    console.log("handleLike clicked");
+    if (myUserId) {
+      // 이제 '좋아요'를 누르면 store의 상태를 변경하여 전송을 "요청"합니다.
+      toggleLike(msgId, myUserId);
+    } else {
+      console.warn("Cannot like: myUserId is not set.");
+    }
+  };
+  /////////////////////////////////////////////////////////////////
 
   return (
     <ContextMenu>
@@ -172,14 +216,23 @@ export function ChatProfile({
                     </span>
                   ) : null}
                 </div>
-                {/* <div className="text-blue-500 p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 border-1 border-blue-600 bg-blue-100 rounded-full gap-0.5">
-                  <Star className="w-3 h-3 fill-current"/>
-                  <p className="text-xxs">1</p>
+                <div
+                  className={`p-1 flex mt-0.5 justify-center items-center w-auto min-w-[32px] h-4.5 border-1 rounded-full gap-0.5 cursor-pointer ${
+                    isLikedByMe
+                      ? "bg-blue-100 border-blue-600 text-blue-600"
+                      : "bg-gray-100 border-gray-300 text-gray-600"
+                  }`}
+                  onClick={handleLike}
+                >
+                  <Star
+                    className={`w-3 h-3 ${isLikedByMe ? "fill-current" : ""}`}
+                  />
+                  <p className="text-xxs">{likeCount}</p>
                 </div>
                 <div className="text-white p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 bg-gray-300 rounded-full gap-0.5">
-                  <Star className="w-3 h-3 fill-current"/>
+                  <Star className="w-3 h-3 fill-current" />
                   <p className="text-xxs">1</p>
-                </div> */}
+                </div>
               </>
             )}
           </div>

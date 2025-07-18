@@ -14,7 +14,7 @@ from datetime import datetime
 #   deleted_at TIMESTAMP
 
 make_group = """
-INSERT INTO groups (
+INSERT INTO `groups` (
     name,
     workspace_id
 )
@@ -25,22 +25,22 @@ VALUES (
 """
 
 update_workspace_member = """
-UPDATE groups
+UPDATE `groups`
 SET 
 WHERE;
 """
 
 find_group_by_id = """
-SELECT * FROM groups WHERE id = %(group_id)s;
+SELECT * FROM `groups` WHERE id = %(group_id)s;
 """
 
 get_all_groups_with_id = """
-SELECT id, name FROM groups 
+SELECT id, name FROM `groups` 
 WHERE deleted_at IS NULL;
 """
 
 find_group_by_name = """
-SELECT * FROM groups WHERE name = %(group_name)s;
+SELECT * FROM `groups` WHERE name = %(group_name)s;
 """
 
 insert_group_member_query = """
@@ -64,11 +64,11 @@ WHERE u.email = %(email)s
 """
 
 find_all_groups_by_id = """
-SELECT * FROM groups;
+SELECT * FROM `groups`;
 """
 
 find_all_groups_by_wid = """
-SELECT id, name FROM groups
+SELECT id, name FROM `groups`
 WHERE workspace_id = %(workspace_id)s;
 """
 
@@ -83,7 +83,7 @@ AND gm.group_id = %(group_id)s;
 
 find_del_target_by_id = """
 SELECT gm.id FROM group_members gm
-JOIN groups g ON gm.group_id = g.id
+JOIN `groups` g ON gm.group_id = g.id
 WHERE g.workspace_id = %(workspace_id)s
   AND gm.user_id = %(user_id)s
   AND gm.deleted_at IS NULL;
@@ -91,7 +91,7 @@ WHERE g.workspace_id = %(workspace_id)s
 
 delete_wm_by_id = """
 UPDATE group_members gm
-JOIN groups g ON gm.group_id = g.id
+JOIN `groups` g ON gm.group_id = g.id
 SET 
     gm.deleted_at = %(deleted_at)s
 WHERE g.workspace_id = %(workspace_id)s

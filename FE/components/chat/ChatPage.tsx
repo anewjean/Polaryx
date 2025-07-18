@@ -6,6 +6,8 @@ import { ChatProfile } from "./ChatProfile";
 import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SSEListener } from "../sse/SSEListener";
+import { WebSocketLikeClient } from "../ws/webSocketLikeClient";
+import { useLikeStore } from "@/store/likeStore";
 
 function SkeletonChat() {
   return (
@@ -30,100 +32,103 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
+  // 스토어에서 상태와 액션을 모두 가져옵니다.
+  const { likes, myLikes, setInitialState } = useLikeStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
-
-  const [isLoading, setIsLoading] = useState(true); // 스켈레톤 로딩을 위한 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(true);
 
   // 최초 메시지 불러오기 + 로딩 해제
   useEffect(() => {
     (async () => {
-      console.log("first loading")
-      await getMessages(workspaceId, tabId, undefined)
-        .then((res) => {
-          console.log("Before setMessages", res.messages)
-          
-          if (res.messages.length) {
-            const new_messages = res.messages.map((msg: any) => ({
-              senderId: msg.sender_id,
-              msgId: msg.msg_id,
-              nickname: msg.nickname,
-              content: msg.content,
-              image: msg.image,
-              createdAt: msg.created_at,
-              isUpdated: msg.is_updated,
-              fileUrl: msg.file_url,
-            }));
-            setMessages(new_messages);
+      const res = await getMessages(workspaceId, tabId, undefined);
+      if (res.messages && res.messages.length) {
+        const initialLikesData: Record<number, number> = {};
+        const initialMyLikesData: number[] = [];
+        const new_messages = res.messages.map((msg: any) => {
+          if (msg.like_count > 0) {
+            initialLikesData[msg.msg_id] = msg.like_count;
           }
-          console.log("After setMessages", useMessageStore.getState().messages)
-        })
-        .finally(() => {
-          setIsLoading(false);
+          if (msg.is_liked_by_me) {
+            initialMyLikesData.push(msg.msg_id);
+          }
+          return {
+            senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
+            content: msg.content, image: msg.image, createdAt: msg.created_at,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url,
+          };
         });
-      })();
-  }, [workspaceId, tabId, setMessages]);
+        setMessages(new_messages);
+        ///////////////////////////////////////////////////////////////
+        // 스토어의 초기 상태를 한 번에 설정합니다.
+        setInitialState(initialLikesData, initialMyLikesData);
+        ///////////////////////////////////////////////////////////////
+      } else {
+        setMessages([]);
+        ///////////////////////////////////////////////////////////////
+        // 초기 상태 설정
+        setInitialState({}, []);
+        ///////////////////////////////////////////////////////////////
+      }
+      setIsLoading(false);
+    })();
+  }, [workspaceId, tabId, setMessages, setInitialState]);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
-    if (isLoading) return; // 로딩 중이면 스킵
+    if (!isLoading && containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [isLoading]);
 
-    console.log("메세지 추가됐음.");
+  useEffect(() => {
+    // 최초 로딩 중에는 이 훅이 동작하지 않도록 방지
+    if (isLoading) return;
+
     const el = containerRef.current;
     if (!el) return;
 
     requestAnimationFrame(() => {
-      el.scrollTop = el.scrollHeight;
+      const newHeight = el.scrollHeight;
+      el.scrollTop = newHeight;
     });
-
-    // 길이 업데이트
-    prevMessageLengthRef.current = messages.length;
   }, [messages[messages.length - 1], isLoading]);
 
   // 스크롤을 올려서 과거 메세지들을 불러와
-  // messages에 변화가 생겨 새로 렌더링 해줘야 하는 경우.
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
-    console.log("handleScroll")
-    if (el.scrollTop < 30 && !isFetching.current) {
+    if (el.scrollTop < 30 && !isFetching.current && messages.length > 0) {
       isFetching.current = true;
-
       const oldestId = messages[0]?.msgId;
       const previousHeight = el.scrollHeight;
 
-      console.log("oldestID:", oldestId);
-      console.log("old:", messages);
-      // console.log("previousHeight:", previousHeight);
-      const res = await getMessages(workspaceId, tabId, oldestId); // 과거 메시지 요청
+      const res = await getMessages(workspaceId, tabId, oldestId);
 
-      // console.log(res["messages"]);
-
-      const new_messages = res.messages.map((msg: any) => ({
-        senderId: msg.sender_id,
-        msgId: msg.msg_id,
-        nickname: msg.nickname,
-        content: msg.content,
-        image: msg.image,
-        createdAt: msg.created_at,
-        isUpdated: msg.is_updated,
-        fileUrl: msg.file_url,
-      }));
-
-      if (new_messages != null) {
-        prependMessages(new_messages);
-        // 스크롤 위치를 현재 위치만큼 유지
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              const newHeight = el.scrollHeight;
-              const heightDiff = newHeight - previousHeight;
-              el.scrollTop = heightDiff;
-            });
-          }, 0);
+      if (res.messages && res.messages.length > 0) {
+        const initialLikesData: Record<number, number> = {};
+        const initialMyLikesData: number[] = [];
+        
+        const new_messages = res.messages.map((msg: any) => {
+           if (msg.like_count > 0) initialLikesData[msg.msg_id] = msg.like_count;
+           if (msg.is_liked_by_me) initialMyLikesData.push(msg.msg_id);
+           return {
+            senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
+            content: msg.content, image: msg.image, createdAt: msg.created_at,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url,
+          };
         });
-        isFetching.current = false;
+        prependMessages(new_messages);
+        ///////////////////////////////////////////////////////////////
+        // 스토어의 초기 상태를 한 번에 설정합니다.
+        setInitialState(initialLikesData, initialMyLikesData);
+        ///////////////////////////////////////////////////////////////
+        requestAnimationFrame(() => {
+            const newHeight = el.scrollHeight;
+            el.scrollTop = newHeight - previousHeight;
+        });
       }
+      isFetching.current = false;
     }
   };
 
@@ -156,6 +161,7 @@ export function ChatPage({
       }}
     >
       <SSEListener />
+      <WebSocketLikeClient workspaceId={workspaceId} tabId={tabId} />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
       <div className="text-m pl-5 w-full">
         {messages.map((msg, idx) => {
@@ -184,14 +190,11 @@ export function ChatPage({
 
           return (
             <React.Fragment key={msg.msgId}>
-              {/* 날짜 헤더 : sticky 추가 */}
               {showDateHeader && todayKey && <ShowDate timestamp={todayKey} />}
-
-              {/* 각각의 채팅 */}
               <ChatProfile
-                senderId={msg.senderId ? msg.senderId : ""}
-                msgId={msg.msgId ? msg.msgId : 0}
-                imgSrc={msg.image ? msg.image : "/user_default.png"}
+                senderId={msg.senderId || ""}
+                msgId={msg.msgId || 0}
+                imgSrc={msg.image || "/user_default.png"}
                 nickname={msg.nickname}
                 time={
                   msg.createdAt
@@ -206,6 +209,9 @@ export function ChatPage({
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
                 isUpdated={msg.isUpdated}
+                likeCount={likes[msg.msgId || 0] || 0}
+                // 스토어에서 '내가 좋아요 눌렀는지' 여부를 가져와 전달합니다.
+                isLikedByMe={myLikes.has(msg.msgId || 0)}
               />
             </React.Fragment>
           );
