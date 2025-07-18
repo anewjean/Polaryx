@@ -61,7 +61,6 @@ export async function getUserWorkspaces(
 
   if (res && res.ok) {
     const rawData = await res.json();
-    console.log("getUserWorkspaces rawData", rawData); // note : delete
 
     // 백엔드 응답을 workspace 타입으로 변환
     const workspaces: workspace[] = rawData.map(

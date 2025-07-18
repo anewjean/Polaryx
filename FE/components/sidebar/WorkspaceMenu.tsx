@@ -43,7 +43,6 @@ export function WorkspaceMenu({
       try {
         const userWorkspaces = await getUserWorkspaces(userId, workspaceId);
         setWorkspaces(userWorkspaces);
-        console.log("userWorkspaces", userWorkspaces); // note : delete
       } catch (error) {
         console.error("워크스페이스 이름 조회 실패", error);
       }
@@ -88,20 +87,6 @@ export function WorkspaceMenu({
               </div>
             </DropdownMenuItem>
           ))}
-          {/* <DropdownMenuItem
-            asChild
-            className="hover:bg-gray-600 focus:bg-gray-600"
-            onClick={() =>
-              router.push(`/workspaces/${workspaceId}/admin/users`)
-            }
-          >
-            <div className="flex flex-row items-center gap-3 hover:bg-gray-600 rounded-md py-3 px-3">
-              <Cog className="size-7 border border-gray-400 text-gray-400 rounded-md p-1" />
-              <span className="text-lg font-semibold text-gray-300">
-                게임 테크랩
-              </span>
-            </div>
-          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-gray-600" />
         <DropdownMenuItem
