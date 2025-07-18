@@ -29,6 +29,7 @@ export default function RootLayout({
   }, []); // 빈 의존성 배열 = 컴포넌트 마운트 시 한 번만 실행
   return (
     <html lang="en" className="h-full">
+      {/* 파비콘 추가 */}
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
