@@ -84,7 +84,7 @@ def available_tab_groups(workspace_id: int, tab_id: int):
     return [TabGroupMember.from_row(row) for row in rows]
 
 # 탭에 그룹 초대
-@router.post("/{workspace_id}/tabs/{tab_id}/groups/")
+@router.post("/{workspace_id}/tabs/{tab_id}/groups")
 async def invite_group_to_tab(
             workspace_id: int,
             tab_id: int,
@@ -92,7 +92,7 @@ async def invite_group_to_tab(
             # user_info: Dict = Depends(verify_token_and_get_token_data),
 ):
     data = await request.json()
-    group_ids: List[str] = data["groups_ids"]
+    group_ids: List[str] = data["group_ids"]
     return [{"success_cnt": service.invite_groups(workspace_id, tab_id, group_ids)}]
 
 # 탭 나가기

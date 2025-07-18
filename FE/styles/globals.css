@@ -165,6 +165,11 @@
   font-weight: bold;
 }
 
+.text-xl {
+  font-size: 24px;
+  font-weight: bold;
+}
+
 /* 18px bold - 제일 중요해서 강조되는 글씨
  * 예) 워크 스페이스명, 채팅방 내 채널명
  */

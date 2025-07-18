@@ -8,7 +8,7 @@ export interface Group {
   group_name: string;
   members?: Member[];
   non_members?: Member[];
-  members_count?: number;  
+  group_members_count?: number;  
   user_names?: string[];
   role_id?: number;
   role_name?: string;  
