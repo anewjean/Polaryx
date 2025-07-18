@@ -1,14 +1,15 @@
 "use client";
 
-import { MessageCircle, StickyNote, Link } from "lucide-react";
+import { MessageCircle, StickyNote, Link, Search } from "lucide-react";
 import { TabMembers } from "@/components/modal/TabMembers";
 import { useTabInfoStore } from "@/store/tabStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { getTabInfo } from "@/apis/tabApi";
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Input } from "../ui/input";
 
 export function ChatHeader() {
   // 파라미터에서 workspaceId와 tabId 추출
@@ -26,6 +27,18 @@ export function ChatHeader() {
   // 탭 정보 가져오기
   const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
   const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
+
+  // 검색어 상태
+  const [searchKeyword, setSearchKeyword] = useState("");
+
+  //검색 실행
+  const handleSearch = () => {
+    if (!searchKeyword.trim()) return;
+    router.push(
+      `/workspaces/${workspaceId}/tabs/${tabId}/search?q=${encodeURIComponent(searchKeyword)}`,
+    );
+    setSearchKeyword("");
+  };
 
   useEffect(() => {
     if (workspaceId && tabId) {
@@ -61,7 +74,19 @@ export function ChatHeader() {
               <p className="w-40 h-7 rounded-lg bg-[#F4F4F4]"></p> // 스켈레톤
             )}
           </div>
-          <div className="flex flex-row items-center gap-0">
+          
+          <div className="flex flex-row items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search messages"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                className="pl-7 w-48"
+              />
+            </div>
             <TabMembers />
             <Button
               variant="ghost"
@@ -87,6 +112,7 @@ export function ChatHeader() {
             <p className="text-center text-s-bold">Canvas</p>
           </div>
         )}
+
         <div
           onClick={navigateToMessage}
           className={cn(

@@ -225,8 +225,6 @@ class QueryRepo(AbstractQueryRepo):
         print("delete_all_message")
         return self.db.execute(delete_all_message)
     
-    
-    
     def search_messages(self, tab_id: int, keyword: str):
         param = {
             "tab_id": tab_id,
