@@ -15,6 +15,7 @@ import { SaveMessage as ApiSaveMessage, getSaveMessages, addSaveMessage, deleteS
 import { useMyUserStore } from "@/store/myUserStore";
 import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
+import { Editor } from "@tiptap/react";
 
 // 항목 타입 정의
 type messageItem = ApiSaveMessage;
@@ -25,9 +26,11 @@ interface SaveMessagesProps {
   children: React.ReactNode;
   openPopover: boolean;
   setOpenPopover: (open: boolean) => void;
+  editor?: Editor;
+  onAddMessage?: (content: string) => void;
 }
 
-export default function SaveMessages({ workspaceId, children, openPopover, setOpenPopover }: SaveMessagesProps) {
+export default function SaveMessages({ workspaceId, children, openPopover, setOpenPopover, editor, onAddMessage }: SaveMessagesProps) {
   // 툴팁 상태 관리
   const [openTooltip, setOpenTooltip] = useState(false);
 
@@ -58,6 +61,8 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
       try{
         setLoading(true);
         const data = await getSaveMessages(workspaceId, userId);
+
+        if (!data) return;
         setSaveMessages(data);
       } catch {
         setError("저장 메시지 조회에 실패했습니다.");
@@ -74,6 +79,7 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
 
     try {
       await addSaveMessage(workspaceId, userId, content);
+      // 다른 유저와 동기화될 필요가 없으므로, 낙관적 업데이트 방식 사용 (직접 갱신)
       setSaveMessages((prev) => [...prev, { content, save_message_id: userId.toString() }]);
     } catch {
       setError("저장 메시지 추가에 실패했습니다.");
@@ -100,6 +106,7 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover}>
+      {/* 툴팁 */}
       <Tooltip
         // 팝오버가 닫혀 있을 때만 호버 트리거에 반응
         open={openTooltip && !openPopover}
@@ -118,6 +125,7 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
         </TooltipContent>
       </Tooltip>
 
+      {/* 팝오버 */}
       <PopoverContent
         side="top"
         align="end"
@@ -130,13 +138,32 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
               variant="outline"
               size="icon"
               className="h-6 w-6 cursor-pointer rounded-full"
+              onClick={() => {
+                // 1) SSR 환경에서는 window가 없기 때문에, 브라우저에서만 실행되도록 한 안전장치
+                if (typeof window !== "undefined") {
+                  // 2) DOM에서 클래스명이 .ProseMirror인 첫 번째 요소를 찾아서 input에 담음
+                  const input = document.querySelector('.ProseMirror') as HTMLElement | null;
+                  // 3) 에디터 엘리먼트가 존재하면 그 안의 문자열(innerHTML)을 content에 담음
+                  let content = "";
+                  if (input) {
+                    content = input.innerHTML;
+                  }
+                  // 4) content가 비어있지 않으면 handleAddSaveMessage 함수를 호출하고
+                  if (content.trim()) {
+                    handleAddSaveMessage(content);
+                    // 5) 부모 컴포넌트에서 onAddMessage라는 콜백을 prop으로 넘겨줬다면,
+                    // 그 함수에도 동일한 콘텐츠를 전달해 "메시지 추가" 이벤트를 알림
+                    if (typeof onAddMessage === 'function') onAddMessage(content);
+                  }
+                }
+              }}
             >
               <Plus className="!h-4 !w-4 text-gray-500" />
             </Button>
           </div>
           
           
-          <div className="flex flex-row justify-between pl-5 pr-3 border-t-1 border-gray-200 hover:bg-gray-100 cursor-default">
+          <div className="border-t-1 border-gray-200 flex flex-col max-h-80 overflow-y-auto scrollbar-thin">
             {loading && (
               <div className="py-3 text-sm text-center">메시지 불러오는 중</div>
             )}
@@ -145,17 +172,29 @@ export default function SaveMessages({ workspaceId, children, openPopover, setOp
               <div className="py-3 text-sm text-center text-red-500">{error}</div>
             )}
 
-            {saveMessages.map((message) => (
-              <div>
-                <div key={message.content} className="text-sm mr-2 py-3">
-                  <p>{message.content}</p>
-                </div>
-                {/* 메시지 삭제 버튼 */}
-                <div onClick={() => handleDeleteSaveMessage(message.save_message_id)} className="pb-3 flex items-end justify-end">
-                  <Trash2 className="w-5 h-5 mt-2 cursor-pointer text-gray-400 hover:text-red-300 hover:fill-red-100" />
-                </div>
+            {saveMessages.length === 0 ? (
+              <div className="px-5 py-3 text-sm text-gray-500">
+                저장할 메시지를 추가해주세요
               </div>
-            ))}
+            ) : (
+              saveMessages.map((message, idx) => (
+                <div
+                  key={message.save_message_id}
+                  onClick={() => editor?.commands.setContent(message.content)} 
+                  className={`
+                    ${idx !== 0 ? 'border-t-1' : ''}
+                    border-gray-200 flex flex-row justify-between hover:bg-gray-100 cursor-pointer`}
+                >
+                  <div className="flex-1 message-content text-sm px-5 py-3">
+                    <div dangerouslySetInnerHTML={{ __html: message.content }} />
+                  </div>
+                  {/* 메시지 삭제 버튼 */}
+                  <div onClick={() => handleDeleteSaveMessage(message.save_message_id)} className="pr-3 pb-3 flex items-end justify-end">
+                    <Trash2 className="w-5 h-5 mt-2 cursor-pointer text-gray-400 hover:text-red-300 hover:fill-red-100" />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </PopoverContent>

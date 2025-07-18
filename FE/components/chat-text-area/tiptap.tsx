@@ -28,7 +28,7 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
-import { BookmarkPlus, BookmarkX } from "lucide-react";
+import { ClipboardPlus, ClipboardX } from "lucide-react";
 import SaveMessages from "./SaveMessages";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
@@ -70,8 +70,7 @@ export function TipTap() {
   }, [workspaceId, tabId, fetchTabInfo]);
   useFetchMessages(workspaceId, tabId);
 
-  const { message, setMessage, setSendFlag, setMessages, appendMessage } =
-  useMessageStore();
+  const { message, setMessage, setSendFlag } = useMessageStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
@@ -202,12 +201,6 @@ export function TipTap() {
       // 기존 링크 해제
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
 
-      // 빈 URL이면 그냥 닫기
-      if (!url.trim()) {
-        setIsLinkDialogOpen(false);
-        return;
-      }
-
       // 프로토콜이 없으면 https:// 붙이기
       const href = /^https?:\/\//.test(url) ? url : `https://${url}`;
       const { from, to } = editor.state.selection;
@@ -304,16 +297,27 @@ export function TipTap() {
         onChange={handleFileSelect}
         style={{ display: "none" }}
       />
+      
       <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
         <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
         {/* 북마크 버튼 누르면 팝오버 열기 */}
-        <SaveMessages workspaceId={workspaceId} openPopover={openPopover} setOpenPopover={setOpenPopover}>
+        <SaveMessages
+          workspaceId={workspaceId}
+          openPopover={openPopover}
+          setOpenPopover={setOpenPopover}
+          editor={editor}
+        >
           {openPopover ? (
             // 팝오버가 열려있으면, 회색의 엑스 버튼 보여줌
-            <BookmarkX onClick={() => setOpenPopover(false)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-gray-400" />
+            <ClipboardX onClick={() => setOpenPopover(false)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-gray-400" />
           ) : (
             // 팝오버가 닫혀있으면, 파란색의 플러스 버튼 보여줌
-            <BookmarkPlus onClick={() => setOpenPopover(true)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300" />
+            <ClipboardPlus
+              onClick={() => {
+                setOpenPopover(true); // 팝오버만 열기, 저장 메시지 추가 X
+              }}
+              className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
+            />
           )}
         </SaveMessages>
       </div>
