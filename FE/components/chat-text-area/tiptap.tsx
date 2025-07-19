@@ -28,6 +28,7 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
+import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -78,6 +79,7 @@ export function TipTap() {
       editable: true,
       extensions: [
         StarterKit, // 핵심 확장 모음
+        FileDownloadExtension, // 문제시 당장 삭제
         Placeholder.configure({
           // placeholder가 뭐임?
           placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
