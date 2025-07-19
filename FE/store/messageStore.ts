@@ -62,11 +62,17 @@ interface MessageStore {
 
 
   // 좋아요 실시간 전파
+  // EmojiType, EmojiCount 저장.
+  target: Record<string, number>;
+  setTargetEmoji: (messageId: number, emojiType: string, count: number) => void;
+  emojiAction: boolean;
+  setAction: (flag: boolean) => void;
+
   // 웹소켓에서 브로드캐스트된 like_count를 설정하는 함수
-  setEmojiCount: (messageId: number, count: number) => void;
+  setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
-  toggleEmoji: (messageId: number, userId: string, emojiType: string) => void;
+  toggleEmoji: (messageId: number, userId: string, emojiType: string, count: number) => void;
 
 }
 
@@ -161,29 +167,23 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
     set((state) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
+
   // 전송 후, 모든 관련 상태를 리셋
+  target: {},
+  setTargetEmoji: (msgId, Type, count) => set({ target: {"msgId": msgId, [Type]: count} }),
+  emojiAction: false,
+  setAction: (flag) => set({ emojiAction: flag }),
+
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
 
-  setEmojiCount: (messageId, count) => set((state) => ({
+  setEmojiCount: (messageId, emojiType, count) => set((state) => ({
   })),
 
   // '좋아요' 버튼이 호출할 메인 함수 수정
-  toggleEmoji: (messageId, userId, emojiType) => {
-    const myLikes = new Set(get().myLikes);
-    const currentLikes = get().likes;
-    let likeCount = currentLikes[messageId] || 0;
-    let action: 'like' | 'unlike'; // 액션을 저장할 변수
-
-    if (myLikes.has(messageId)) {
-      myLikes.delete(messageId);
-      likeCount--;
-      action = 'unlike'; // '좋아요 취소' 액션
-    } else {
-      myLikes.add(messageId);
-      likeCount++;
-      action = 'like'; // '좋아요 추가' 액션
-    }
+  toggleEmoji: (messageId, userId, emojiType, count) => {
+    
+    
   }
 }));
 

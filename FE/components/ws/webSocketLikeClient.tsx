@@ -2,30 +2,25 @@
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
+import { jwtDecode } from "jwt-decode";
 
 const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
+
+interface JWTPayload {
+  user_id: string;
+}
 
 interface WebSocketLikeClientProps {
   workspaceId: string;
   tabId: string;
-  msgId: number;
-  userId: string;
-  emojiType: string;
-  likeAction: 'like' | 'unlike';
-  count: number;
 }
 
 export function WebSocketLikeClient({
   workspaceId,
   tabId,
-  msgId,
-  userId,
-  emojiType,
-  likeAction,
-  count,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  const { sendEmojiFlag, setSendEmojiFlag } = useMessageStore();
+  const { sendEmojiFlag, target, emojiAction, setSendEmojiFlag, setEmojiCount } = useMessageStore();
 
   // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
@@ -43,10 +38,11 @@ export function WebSocketLikeClient({
       try {
         const data = JSON.parse(event.data);
         // 서버로부터 'like' 타입의 메시지를 받으면 like count 상태를 업데이트합니다.
-        if (data.type === "like" && data.messageId !== undefined && data.likeCount !== undefined) {
+        if (data.type === "emoji" && data.emojiType !== undefined && data.messageId !== undefined && data.count !== undefined) {
           console.log("Like WebSocket: Received like update", data);
           //////////////////////////////////////////////////// 
           // broadcast 결과를 받아와서 처리하는 로직 추가해야됨
+          setEmojiCount(data.messageId, data.emojiType, data.count);
           ////////////////////////////////////////////////////
         }
       } catch (e) {
@@ -75,20 +71,27 @@ export function WebSocketLikeClient({
     if (
       sendEmojiFlag &&
       socketRef.current?.readyState === WebSocket.OPEN &&
-      msgId !== null &&
-      userId &&
-      likeAction &&
-      emojiType &&
-      count// likeAction 정보도 있는지 확인
+      target
     ) {
-      // 페이로드에 'action' 필드를 추가합니다.
+      const token = localStorage.getItem("access_token")
+
+      if (!token) {
+        console.log("토큰없당"); // 추후 수정
+        return;
+      }
+
+      const { user_id } = jwtDecode<JWTPayload>(token);
+      
+      const keys = Object.keys(target).filter((key) => key !== "msgId");
+      const emojiType = keys[0];
+
       const payload = {
         type: "emoji",
-        messageId: msgId,
-        userId: userId,
-        action: likeAction, // 'like' 또는 'unlike'
-        emojiType: emojiType,
-        count: count
+        messageId: target["msgId"],
+        userId: user_id,
+        action: emojiAction ? 'like':'unlike',
+        emojiType: emojiType as keyof typeof target,
+        count: target[emojiType]
       };
       
       console.log("Like WebSocket: Sending data with action...", payload);
