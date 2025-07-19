@@ -79,7 +79,7 @@ export function MostActiveByMessage() {
         </div>
         {/* 기간 필터 */}
         <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-[150px] rounded-lg ml-auto" aria-label="Select a value">
+          <SelectTrigger className="w-[145px] rounded-lg ml-auto" aria-label="Select a value">
             <SelectValue placeholder="Select time range" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
