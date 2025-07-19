@@ -32,7 +32,9 @@ export default function SearchAutocomplete() {
 
   const handleSearch = () => {
     if (!keyword.trim()) return;
-    router.push(`/workspaces/${workspaceId}/search?q=${encodeURIComponent(keyword)}`);
+    router.push(
+      `/workspaces/${workspaceId}/search?q=${encodeURIComponent(keyword)}`,
+    );
     setKeyword("");
     setResults([]);
   };
