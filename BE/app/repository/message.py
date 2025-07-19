@@ -206,6 +206,8 @@ ORDER BY m.id DESC
 LIMIT 30;
 """
 
+
+
 find_recent_30_before = """
 SELECT 
     m.id,
@@ -239,6 +241,28 @@ LIMIT 30;
 delete_all_message = """
 DELETE FROM messages
 WHERE id > 0;
+"""
+
+#검색
+search_messages_by_keyword = """
+SELECT
+    m.id,
+    m.tab_id,
+    m.sender_id,
+    wm.nickname,
+    wm.image,
+    m.content,
+    m.is_updated,
+    m.created_at,
+    m.updated_at,
+    m.deleted_at,
+    m.url
+FROM messages m
+JOIN workspace_members wm ON m.sender_id = wm.user_id
+WHERE m.tab_id = %(tab_id)s
+  AND m.deleted_at IS NULL
+  AND m.content LIKE %(pattern)s
+ORDER BY m.id DESC;
 """
 
 
@@ -410,3 +434,11 @@ class QueryRepo(AbstractQueryRepo):
     def delete_all(self):
         print("delete_all_message")
         return self.db.execute(delete_all_message)
+    
+    def search_messages(self, tab_id: int, keyword: str):
+        param = {
+            "tab_id": tab_id,
+            "pattern": f"%{keyword}%",
+        }
+        return self.db.execute(search_messages_by_keyword, param)
+        

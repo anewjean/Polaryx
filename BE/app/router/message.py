@@ -93,4 +93,10 @@ async def delete_message(
 
     await message_service.delete_message(message_id, current_user_id)  # user_id 추가
     await connection.broadcast(workspace_id, tab_id, data)
-
+    
+#검색
+@router.get("/workspaces/{workspace_id}/tabs/{tab_id}/messages/search", response_model=MessagesResponse)
+async def search_messages(workspace_id: int, tab_id: int, q: str = Query(...)) -> MessagesResponse:
+    rows = await message_service.search_messages(tab_id, q)
+    messages = [MessageSchema.from_row(row) for row in rows]
+    return MessagesResponse(messages=messages)

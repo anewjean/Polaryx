@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { MemberModal } from "./MemberModal";
-import { UserMenuItem } from "@/components/tab/UserMenuItem";
+import { InviteListItem } from "@/components/tab/InviteListItem";
 import { UserRoundPlus } from "lucide-react";
 import { Member } from "@/apis/tabApi";
 
@@ -27,7 +27,7 @@ export function TabMembersModal({
       <SidebarProvider>
         <SidebarMenu>
           {onAddClick && (
-            <UserMenuItem
+            <InviteListItem
               key="add-member-button"
               user={{ nickname: "Add Members" }}
               mode="addMember"
@@ -35,7 +35,11 @@ export function TabMembersModal({
             />
           )}
           {tabMembers.map((member) => (
-            <UserMenuItem key={member.user_id} user={member} mode="tabMember" />
+            <InviteListItem
+              key={member.user_id}
+              user={member}
+              mode="tabMember"
+            />
           ))}
         </SidebarMenu>
       </SidebarProvider>

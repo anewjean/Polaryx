@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { RoleTable } from "@/components/Administration/RoleTable";
+import { RoleTable } from "@/components/administration/RoleTable";
 import { Button } from "@/components/ui/button";
 import { Plus, CircleCheck, Ban } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -20,7 +20,7 @@ export default function RoleTablePage() {
   const workspaceId = params.workspaceId as string;
 
   // 역할 수 상태 관리 및 테이블 상단에 표시
-  const [roleCount, setRoleCount] = useState<number>(0);  
+  const [roleCount, setRoleCount] = useState<number>(0);
   const handleRolesLoaded = (count: number) => {
     setRoleCount(count);
   };
@@ -30,30 +30,56 @@ export default function RoleTablePage() {
 
   // 사용 가능한 권한 목록
   const availablePermissions = [
-    { 
-      id: "admin", 
-      name: ( <><span className="font-bold">Admin:</span> 회원, 그룹, 역할을 관리할 수 있습니다</> ) 
+    {
+      id: "admin",
+      name: (
+        <>
+          <span className="font-bold">Admin:</span> 회원, 그룹, 역할을 관리할 수
+          있습니다
+        </>
+      ),
     },
-    { 
-      id: "announce", 
-      name: (<><span className="font-bold">Announcements:</span> 탭을 생성할 수 있습니다</> ) 
+    {
+      id: "announce",
+      name: (
+        <>
+          <span className="font-bold">Announcements:</span> 탭을 생성할 수
+          있습니다
+        </>
+      ),
     },
     {
       id: "course",
-      name: (<><span className="font-bold">Courses:</span> 탭을 생성하고, 학습 자료를 게시할 수 있습니다</> )
+      name: (
+        <>
+          <span className="font-bold">Courses:</span> 탭을 생성하고, 학습 자료를
+          게시할 수 있습니다
+        </>
+      ),
     },
-    { 
-      id: "channel", 
-      name: (<><span className="font-bold">Channels:</span> 탭을 생성할 수 있습니다</> ) 
+    {
+      id: "channel",
+      name: (
+        <>
+          <span className="font-bold">Channels:</span> 탭을 생성할 수 있습니다
+        </>
+      ),
     },
-    { 
-      id: "dm", 
-      name: (<><span className="font-bold">Direct Message:</span> 메시지를 보낼 수 있습니다</> ) 
+    {
+      id: "dm",
+      name: (
+        <>
+          <span className="font-bold">Direct Message:</span> 메시지를 보낼 수
+          있습니다
+        </>
+      ),
     },
   ];
 
   // 역할 생성 폼 데이터 상태 관리 (direct_message는 기본 선택)
-  const [form, setForm] = useState<{ roleName: string; permissions: string[]; }>({ roleName: "", permissions: ["dm"] }); 
+  const [form, setForm] = useState<{ roleName: string; permissions: string[] }>(
+    { roleName: "", permissions: ["dm"] },
+  );
 
   // 역할 생성 모달 표시 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,18 +88,23 @@ export default function RoleTablePage() {
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
 
-    // 모달이 닫힐 때 폼 초기화 
+    // 모달이 닫힐 때 폼 초기화
     if (!isOpen) {
       setForm({ roleName: "", permissions: [""] });
     }
   };
 
   // 권한 체크박스 변경 핸들러 (dm은 항상 선택된 상태로 유지)
-  const handlePermissionChange = (permissionId: string, checked: boolean) => {    
+  const handlePermissionChange = (permissionId: string, checked: boolean) => {
     if (permissionId === "dm") return;
 
-    if (checked) { setForm({ ...form, permissions: [...form.permissions, permissionId], });
-    } else { setForm({ ...form, permissions: form.permissions.filter((id) => id !== permissionId) });
+    if (checked) {
+      setForm({ ...form, permissions: [...form.permissions, permissionId] });
+    } else {
+      setForm({
+        ...form,
+        permissions: form.permissions.filter((id) => id !== permissionId),
+      });
     }
   };
 
@@ -89,13 +120,17 @@ export default function RoleTablePage() {
     try {
       // dm를 제외한 권한 배열 생성
       const permissionsToSend = form.permissions.filter((p) => p !== "dm");
-      const result = await createRole(workspaceId, form.roleName, permissionsToSend);
+      const result = await createRole(
+        workspaceId,
+        form.roleName,
+        permissionsToSend,
+      );
 
       if (result) {
         toast.success("역할이 생성되었습니다", {
           icon: <CircleCheck className="size-5" />,
         });
-        handleModalOpenChange(false);        
+        handleModalOpenChange(false);
         triggerRefresh(workspaceId);
       } else {
         showErrorToast();
@@ -185,8 +220,8 @@ export default function RoleTablePage() {
         </div>
       </div>
       <div className="flex flex-1 mx-1 overflow-y-auto scrollbar-thin">
-        <RoleTable 
-          onRolesLoaded={handleRolesLoaded} 
+        <RoleTable
+          onRolesLoaded={handleRolesLoaded}
           key={refreshTrigger?.[workspaceId] || 0} // 전역 상태의 새로고침 트리거가 변경되면 컴포넌트 재렌더링
           columns={createRoleColumns(() => triggerRefresh(workspaceId))}
         />

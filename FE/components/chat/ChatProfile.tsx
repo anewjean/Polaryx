@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
+import { cn } from "@/lib/utils";
 import { Star } from "lucide-react";
 import { WebSocketLikeClient } from "@/components/ws/webSocketLikeClient"; // 새로 만든 컴포넌트 import
 import { jwtDecode } from "jwt-decode";
@@ -29,6 +30,7 @@ interface ChatProfileProps {
   showProfile: boolean;
   fileUrl: string | null;
   isUpdated: number;
+  className?: string;
   ///////////////////////////////////////////////////////////////
   // likeStore 사용. 좋아요 데이터 관리.
   likeCount: number; // likeCount prop 추가
@@ -50,6 +52,7 @@ export function ChatProfile({
   showProfile,
   fileUrl,
   isUpdated,
+  className,
   ///////////////////////////////////////////////////////////////
   // likeStore 사용. 좋아요 데이터 관리.
   likeCount, // prop 받기
@@ -121,7 +124,10 @@ export function ChatProfile({
     <ContextMenu>
       <ContextMenuTrigger>
         <div
-          className={`flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-[#F4F4F4]"}`}
+          className={cn(
+            `flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-muted"}`,
+            className,
+          )}
         >
           {/* showProfile이면, 프로필 사진 + 이름 + 채팅 보여줌. 아니면 채팅만 */}
           {showProfile ? (
