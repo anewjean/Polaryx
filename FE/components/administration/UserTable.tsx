@@ -78,9 +78,9 @@ export function UserTable({ onUsersLoaded, columns }: UserTableProps = {}) {
   return (
     <div className="flex flex-1 flex-col h-full w-full overflow-hidden rounded-md border">      
       {/* 테이블 헤더와 본문을 하나의 테이블로 구성 */}
-      <div className="w-full overflow-x-auto overflow-y-auto scrollbar-thin">
+      <div className="w-full overflow-y-auto scrollbar-thin">
         <table className="w-full border-collapse" style={{ tableLayout: 'fixed', minWidth: '1000px' }}>
-          <thead className="bg-gray-50 sticky top-0 z-10">
+          <thead className="bg-gray-50 sticky top-0 shadow-xs">
             <tr>
               {table.getHeaderGroups()[0].headers.map((header) => (
                 <th
