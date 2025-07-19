@@ -1,6 +1,6 @@
 from typing import List
 
-from app.domain.message import Message, Likes
+from app.domain.message import Message, Emoji
 from app.repository.message import QueryRepo as MessageRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
 from app.repository.files import QueryRepo as FilesRepo
@@ -19,9 +19,15 @@ class MessageService:
         return res["lastrowid"]
     
     # 미완
-    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, plus: bool) -> None:
-        likes = Likes.of(tab_id, user_id, msg_id, plus)
-        return self.message_repo.update_likes(likes)
+    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool) -> None:
+        emoji = Emoji.of(tab_id, user_id, msg_id, type)
+        
+        if (plus):
+            self.message_repo.plus_emoji(emoji)
+        else:
+            self.message_repo.minus_emoji(emoji)
+        self.message_repo.update_emoji_cnt(emoji)        
+
 
     async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
         return self.message_repo.find_recent_30(tab_id, before_id)

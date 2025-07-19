@@ -3,7 +3,7 @@ from uuid import UUID
 
 from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
-from app.domain.message import Message, MessageUpdateType, Likes
+from app.domain.message import Message, MessageUpdateType, Emoji
 from datetime import datetime
 from fastapi import HTTPException
 
@@ -22,26 +22,111 @@ VALUES (
 );
 """
 
-insert_likes = """
-INSERT likes (msg_id, user_id)
-VALUE (%(msg_id)s, %(sender_id)s)
+find_msg_emoji = """
+SELECT * from emoji
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
 """
 
-delete_likes = """
-DELETE FROM likes
+insert_emoji_check = """
+INSERT emoji (msg_id, e_check, user_id)
+VALUE (%(msg_id)s, 1, %(sender_id)s)
+"""
+
+insert_emoji_clap = """
+INSERT emoji (msg_id, e_clap, user_id)
+VALUE (%(msg_id)s, 1, %(sender_id)s)
+"""
+
+insert_emoji_like = """
+INSERT emoji (msg_id, e_like, user_id)
+VALUE (%(msg_id)s, 1, %(sender_id)s)
+"""
+
+update_emoji_check = """
+UPDATE emoji
+SET e_check = 1
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+update_emoji_clap = """
+UPDATE emoji
+SET e_clap = 1
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+update_emoji_like = """
+UPDATE emoji
+SET e_like = 1
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+minus_emoji_check = """
+UPDATE emoji
+SET e_check = 0
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+minus_emoji_clap = """
+UPDATE emoji
+SET e_clap = 0
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+minus_emoji_like = """
+UPDATE emoji
+SET e_like = 0
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+delete_emoji = """
+DELETE FROM emoji
 WHERE msg_id = %(msg_id)s
   AND user_id = %(sender_id)s;
 """
 
-count_likes = """
-SELECT COUNT(*) FROM likes
-WHERE msg_id = %(msg_id)s;
+count_checks = """
+SELECT COUNT(*) FROM emoji
+WHERE msg_id = %(msg_id)s
+  AND e_check = 1;
 """
 
-save_like_cnt = """
+count_claps = """
+SELECT COUNT(*) FROM emoji
+WHERE msg_id = %(msg_id)s
+  AND e_clap = 1;
+"""
+
+count_likes = """
+SELECT COUNT(*) FROM emoji
+WHERE msg_id = %(msg_id)s
+  AND e_like = 1;
+"""
+
+update_check_cnt = """
 UPDATE messages
 SET 
-    likes = %(like_cnt)s
+    check_cnt = %(cnt)s
+WHERE id = %(msg_id)s;
+"""
+
+update_clap_cnt = """
+UPDATE messages
+SET 
+    clap_cnt = %(cnt)s
+WHERE id = %(msg_id)s;
+"""
+
+update_like_cnt = """
+UPDATE messages
+SET 
+    like_cnt = %(cnt)s
 WHERE id = %(msg_id)s;
 """
 
@@ -105,10 +190,16 @@ SELECT
     m.created_at,
     m.updated_at,
     m.deleted_at,
-    m.url
+    m.url,
+    m.check_cnt,
+    m.clap_cnt,
+    m.like_cnt,
+    e.e_check,
+    e.e_clap,
+    e.e_like
 FROM messages m
-JOIN workspace_members wm
-ON m.sender_id = wm.user_id
+JOIN workspace_members wm ON m.sender_id = wm.user_id
+LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL
 ORDER BY m.id DESC
@@ -127,10 +218,16 @@ SELECT
     m.created_at,
     m.updated_at,
     m.deleted_at,
-    m.url
+    m.url,
+    m.check_cnt,
+    m.clap_cnt,
+    m.like_cnt,
+    e.e_check,
+    e.e_clap,
+    e.e_like
 FROM messages m
-JOIN workspace_members wm
-ON m.sender_id = wm.user_id
+JOIN workspace_members wm ON m.sender_id = wm.user_id
+LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
 WHERE m.tab_id = %(tab_id)s
 AND m.id < %(message_id)s
 AND m.deleted_at IS NULL
@@ -191,30 +288,95 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(insert_message, params)
     
-    def update_likes(self, likes: Likes):
+    def plus_emoji(self, emoji: Emoji):
         # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
-        sender_id = likes.user_id
+        sender_id = emoji.user_id
         if isinstance(sender_id, UUID):
             sender_id_bytes = sender_id.bytes
         else:
             sender_id_bytes = UUID(str(sender_id)).bytes
+
         params = {
-            "tab_id": likes.tab_id,
+            "tab_id": emoji.tab_id,
             "sender_id": sender_id_bytes,
-            "msg_id": likes.msg_id,
+            "msg_id": emoji.msg_id,
         }
-        if (likes.plus):
-            self.db.execute(insert_likes, params)
+        target = self.db.execute(find_msg_emoji, params)
+        if target == []:
+            if emoji.emoji_type == "check":
+                sql = insert_emoji_check
+            elif emoji.emoji_type == "clap":
+                sql = insert_emoji_clap
+            else:
+                sql = insert_emoji_like
         else:
-            self.db.execute(delete_likes, params)
-        like_cnt = self.db.execute(count_likes, params)
-        print("\n\n\n 확인좀 하자, like_cnt: ", like_cnt)
+            if emoji.emoji_type == "check":
+                sql = update_emoji_check
+            elif emoji.emoji_type == "clap":
+                sql = update_emoji_clap
+            else:
+                sql = update_emoji_like
+        return self.db.execute(sql, params)
+                
+    def minus_emoji(self, emoji: Emoji):
+        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
+        sender_id = emoji.user_id
+        if isinstance(sender_id, UUID):
+            sender_id_bytes = sender_id.bytes
+        else:
+            sender_id_bytes = UUID(str(sender_id)).bytes
+
         params = {
-            "msg_id": likes.msg_id,
-            "like_cnt": like_cnt[0][0]
+            "tab_id": emoji.tab_id,
+            "sender_id": sender_id_bytes,
+            "msg_id": emoji.msg_id,
         }
-        self.db.execute(save_like_cnt, params)
-        return like_cnt[0][0]
+        if emoji.emoji_type == "check":
+            sql = minus_emoji_check
+        elif emoji.emoji_type == "clap":
+            sql = minus_emoji_clap
+        else:
+            sql = minus_emoji_like
+        self.db.execute(sql, params)
+        target = self.db.execute(find_msg_emoji, params)
+        
+        if target[0][1] and target[0][2] and target[0][3]:
+            self.db.execute(delete_emoji, params)
+        return
+    
+    def update_emoji_cnt(self, emoji: Emoji):
+        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
+        sender_id = emoji.user_id
+        if isinstance(sender_id, UUID):
+            sender_id_bytes = sender_id.bytes
+        else:
+            sender_id_bytes = UUID(str(sender_id)).bytes
+
+        params = {
+            "tab_id": emoji.tab_id,
+            "sender_id": sender_id_bytes,
+            "msg_id": emoji.msg_id,
+        }
+        if emoji.emoji_type == "check":
+            sql = count_checks
+        elif emoji.emoji_type == "clap":
+            sql = count_claps
+        else:
+            sql = count_likes
+        res = self.db.execute(sql, params)
+        print("\n\n\n 확인좀 하자, cnt: ", res[0][0])
+
+        params = {
+            "msg_id": emoji.msg_id,
+            "cnt": res[0][0],
+        }
+        if emoji.emoji_type == "check":
+            sql = update_check_cnt
+        elif emoji.emoji_type == "clap":
+            sql = update_clap_cnt
+        else:
+            sql = update_like_cnt
+        return self.db.execute(sql, params)
     
     def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
         params = {

@@ -58,17 +58,17 @@ class Message:
 
 
 @dataclass
-class Likes:
+class Emoji:
     msg_id: Optional[int] = None
     tab_id: Optional[int] = None
     user_id: Optional[uuid.UUID] = None
-    plus: bool = None
+    emoji_type: str = None
 
     @staticmethod
-    def of(tab_id: int, user_id: uuid.UUID, msg_id: int, plus: bool) -> Likes:
-        return Likes(
+    def of(tab_id: int, user_id: uuid.UUID, msg_id: int, type: str, plus: bool) -> Emoji:
+        return Emoji(
             msg_id=msg_id,
             tab_id=tab_id,
             user_id=user_id,
-            plus=plus
+            emoji_type= type,
         )

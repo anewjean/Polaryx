@@ -173,6 +173,7 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
             user_id = data["userId"]
             message_id = data["messageId"]
+            emoji_type = data["emojiType"]
             action = data["action"] == "like"
 
             if not user_id or not message_id:
@@ -181,7 +182,7 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
             # 2. '좋아요' 토글 서비스 로직 호출
             # 이 서비스는 내부에 '좋아요' 추가/삭제 및 like_count 업데이트 로직을 포함하고,
-            updated_like_count = await message_service.toggle_like(tab_id, message_id, user_id, action)
+            updated_like_count = await message_service.toggle_like(tab_id, message_id, user_id, emoji_type, action)
 
             # 3. 브로드캐스트할 페이로드(payload) 생성
             # 프론트엔드가 받을 데이터 형식이므로 camelCase로 맞춰줍니다.
