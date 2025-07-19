@@ -16,13 +16,7 @@ interface Message {
   sparkleCnt: number;
   clapCnt: number;
   likeCnt: number;
-  myToggle: {
-    clap: boolean;
-    pray: boolean;
-    sparkle: boolean;
-    check: boolean;
-    like: boolean;
-  };
+  myToggle: Record<string, boolean>;
 }
 
 interface MessageStore {
@@ -167,8 +161,6 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
     set((state) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
-
-
   // 전송 후, 모든 관련 상태를 리셋
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
@@ -194,3 +186,4 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
     }
   }
 }));
+

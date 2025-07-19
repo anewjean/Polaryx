@@ -17,7 +17,7 @@ interface EmojiGroupProps {
   sparkleCnt: number;
   clapCnt: number;
   likeCnt: number;
-  myToggle: string[];  
+  myToggle: Record<string, boolean>;  
 }
 
 
@@ -46,19 +46,19 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
     // 폭죽 애니메이션 조절부
     confetti({
       origin: origin,
-      particleCount: 100,
-      spread: 50,
+      particleCount: 300,
+      spread: 150,
       angle: 90,
-      scalar: 0.5,
+      scalar: 0.9,
       ticks: 200,
-      gravity: 1.5,
+      gravity: 1,
       decay: 0.94,
-      startVelocity: 20,
+      startVelocity: 35,
     });    
     
     setTimeout(() => {
       onClose();
-    }, 200); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
+    }, 200); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.    
   };
 
   return (
@@ -109,8 +109,8 @@ export function EmojiGroup({ msgId, userId, checkCnt, prayCnt, sparkleCnt, clapC
 
   return (
     <div className="flex flex-row flex-wrap gap-2 mt-1">
-      {emojiData.map(({ emoji, count, name }) => (
-        // count > 0 && (          
+      {emojiData.map(({ emoji, count, name }) => 
+        count > 0 && (
           <button
             key={emoji}
             onMouseDown={() => setPressedEmoji(emoji)}
@@ -119,13 +119,16 @@ export function EmojiGroup({ msgId, userId, checkCnt, prayCnt, sparkleCnt, clapC
             onClick={(e) => handleEmojiClick(e, emoji)}
             className={`flex flex-row h-[26px] min-w-[48px] items-center justify-center gap-1 border rounded-xl p-1 space-x-0 cursor-pointer hover:bg-gray-200 ${
               pressedEmoji === emoji ? 'scale-90' : 'scale-100'
-            } 
+            } ${
+              myToggle[name] ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            }
             `}
           >
             <span className="text-[15px]">{emoji}</span>
             <span className="text-xs">{count}</span>            
           </button>
-      ))}
+        )
+      )}
     </div>
   );
 }
