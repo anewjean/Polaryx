@@ -209,12 +209,18 @@ export function ChatPage({
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
                 isUpdated={msg.isUpdated}
-                checkCnt={msg.e_check_cnt}
-                prayCnt={msg.e_pray_cnt}
-                sparkleCnt={msg.e_sparkle_cnt}
-                clapCnt={msg.e_clap_cnt}
-                likeCnt={msg.like_count}                
-                myToggle={msg.my_toggle}
+                checkCnt={msg.checkCnt}
+                prayCnt={msg.prayCnt}
+                sparkleCnt={msg.sparkleCnt}
+                clapCnt={msg.clapCnt}
+                likeCnt={msg.likeCnt}
+                myToggle={
+                  clap={msg.myToggle.clap},
+                  pray={msg.myToggle.pray},
+                  sparkle={msg.myToggle.sparkle},
+                  check={msg.myToggle.check},
+                  like={msg.myToggle.like}
+                }
               />
             </React.Fragment>
           );

@@ -1,21 +1,31 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useLikeStore } from "@/store/likeStore";
+import { useMessageStore } from "@/store/messageStore";
 
 const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
 interface WebSocketLikeClientProps {
   workspaceId: string;
   tabId: string;
+  msgId: number;
+  userId: string;
+  emojiType: string;
+  likeAction: 'like' | 'unlike';
+  count: number;
 }
 
 export function WebSocketLikeClient({
   workspaceId,
   tabId,
+  msgId,
+  userId,
+  emojiType,
+  likeAction,
+  count,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  const { setLikeCount, sendFlag, messageIdToSend, userIdToSend, likeAction, resetSendFlag } = useLikeStore();
+  const { sendEmojiFlag, setSendEmojiFlag } = useMessageStore();
 
   // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
@@ -35,7 +45,9 @@ export function WebSocketLikeClient({
         // 서버로부터 'like' 타입의 메시지를 받으면 like count 상태를 업데이트합니다.
         if (data.type === "like" && data.messageId !== undefined && data.likeCount !== undefined) {
           console.log("Like WebSocket: Received like update", data);
-          setLikeCount(data.messageId, data.likeCount);
+          //////////////////////////////////////////////////// 
+          // broadcast 결과를 받아와서 처리하는 로직 추가해야됨
+          ////////////////////////////////////////////////////
         }
       } catch (e) {
         console.warn("Like WebSocket: Invalid message format received:", event.data);
@@ -56,31 +68,35 @@ export function WebSocketLikeClient({
         socket.close();
       }
     };
-  }, [workspaceId, tabId, setLikeCount]); // 이 effect는 ID가 바뀔 때만 실행됩니다.
+  }, [workspaceId, tabId]); // 이 effect는 ID가 바뀔 때만 실행됩니다.
 
   // 2. '좋아요' 데이터 전송 감지 전용 useEffect
   useEffect(() => {
     if (
-      sendFlag &&
+      sendEmojiFlag &&
       socketRef.current?.readyState === WebSocket.OPEN &&
-      messageIdToSend !== null &&
-      userIdToSend &&
-      likeAction // likeAction 정보도 있는지 확인
+      msgId !== null &&
+      userId &&
+      likeAction &&
+      emojiType &&
+      count// likeAction 정보도 있는지 확인
     ) {
       // 페이로드에 'action' 필드를 추가합니다.
       const payload = {
-        type: "like",
-        messageId: messageIdToSend,
-        userId: userIdToSend,
+        type: "emoji",
+        messageId: msgId,
+        userId: userId,
         action: likeAction, // 'like' 또는 'unlike'
+        emojiType: emojiType,
+        count: count
       };
       
       console.log("Like WebSocket: Sending data with action...", payload);
       socketRef.current.send(JSON.stringify(payload));
       
-      resetSendFlag();
+      setSendEmojiFlag(false);
     }
-  }, [sendFlag, messageIdToSend, userIdToSend, likeAction, resetSendFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
+  }, [sendEmojiFlag, setSendEmojiFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
 
   return null;
 }
