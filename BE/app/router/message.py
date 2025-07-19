@@ -58,6 +58,7 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     
     # 원래 로직
     messages = [MessageSchema.from_row(row) for row in rows]
+    print("\n\n\nget messages, messages: ", messages)
     return MessagesResponse(messages=messages)
 
 @router.patch("/workspaces/{workspace_id}/tabs/{tab_id}/messages/{message_id}", status_code=204)

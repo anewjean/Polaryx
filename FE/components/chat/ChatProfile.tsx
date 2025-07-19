@@ -46,7 +46,13 @@ interface ChatProfileProps {
   sparkleCnt: number;
   clapCnt: number;
   likeCnt: number;
-  myToggle: Record<string, boolean>;
+  myToggle: {
+    check: boolean;
+    pray: boolean;
+    sparkle: boolean;
+    clap: boolean;
+    like: boolean;
+  }
 }
 
 function isImageFile(url: string) {
@@ -284,7 +290,13 @@ export function ChatProfile({
           <EmojiGroupMenu
             msgId={msgId}
             userId={senderId}
-            onClose={closeEmojiGroup}            
+            onClose={closeEmojiGroup}
+            checkCnt={checkCnt}
+            clapCnt={clapCnt}
+            prayCnt={prayCnt}
+            sparkleCnt={sparkleCnt}
+            likeCnt={likeCnt}
+            myToggle={myToggle}
           />
         </div>
       )}

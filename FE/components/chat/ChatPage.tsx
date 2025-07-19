@@ -47,11 +47,12 @@ export function ChatPage({
           return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
-            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.check_cnt,
-            clapCnt: msg.clap_cnt, likeCnt: msg.like_cnt, sparkleCnt: msg.sparkle_cnt,
-            prayCnt: msg.pray_cnt, myToggle: msg.my_toggle
+            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.e_check_cnt,
+            clapCnt: msg.e_clap_cnt, likeCnt: msg.e_like_cnt, sparkleCnt: msg.e_sparkle_cnt,
+            prayCnt: msg.e_pray_cnt, myToggle: msg.my_toggle
           };
         });
+        console.log("getmessages, chatpage: ", new_messages[0].myToggle)
         setMessages(new_messages);
       } else {
         setMessages([]);
@@ -92,11 +93,12 @@ export function ChatPage({
 
       if (res.messages && res.messages.length > 0) {
         const new_messages = res.messages.map((msg: any) => {
-           
            return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
-            isUpdated: msg.is_updated, fileUrl: msg.file_url,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.e_check_cnt,
+            clapCnt: msg.e_clap_cnt, likeCnt: msg.e_like_cnt, sparkleCnt: msg.e_sparkle_cnt,
+            prayCnt: msg.e_pray_cnt, myToggle: msg.my_toggle
           };
         });
         prependMessages(new_messages);
@@ -192,7 +194,7 @@ export function ChatPage({
                 sparkleCnt={msg.sparkleCnt}
                 clapCnt={msg.clapCnt}
                 likeCnt={msg.likeCnt}
-                myToggle={msg.myToggle}                  
+                myToggle={msg.myToggle}
               />
             </React.Fragment>
           );

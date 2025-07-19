@@ -204,7 +204,7 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
 
 @router.websocket("/profile/{workspace_id}/{tab_id}")
-async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
+async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, tab_id: int):
     print("************* ws profile endpoint ****************")
 
     await profile_connection.connect(workspace_id, tab_id, websocket)

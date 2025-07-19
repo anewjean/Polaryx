@@ -8,6 +8,18 @@ interface EmojiGroupMenuProps {
   msgId: number;
   userId: string;
   onClose: () => void;
+  checkCnt: number;
+  prayCnt: number;
+  sparkleCnt: number;
+  clapCnt: number;
+  likeCnt: number;
+  myToggle: {
+    check: boolean;
+    pray: boolean;
+    sparkle: boolean;
+    clap: boolean;
+    like: boolean;
+  }
 }
 
 interface EmojiGroupProps {
@@ -15,11 +27,17 @@ interface EmojiGroupProps {
   userId: string;
   onClose: () => void;
   checkCnt: number;
-  clapCnt: number;
   prayCnt: number;
   sparkleCnt: number;
+  clapCnt: number;
   likeCnt: number;
-  myToggle: Record<string, boolean>;  
+  myToggle: {
+    check: boolean;
+    pray: boolean;
+    sparkle: boolean;
+    clap: boolean;
+    like: boolean;
+  }
 }
 
 const emojis = ['✅', '🙏', '✨', '👏', '❤️'];
@@ -33,8 +51,7 @@ const emojiToggleMap: Record<string, string> = {
   '❤️': 'like'
 };
 
-export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) {
-
+export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleCnt, likeCnt, onClose, myToggle }: EmojiGroupMenuProps) {
   // 클릭된 이모지 상태 관리
   const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
 
@@ -75,18 +92,20 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
     // 이모지 선택 유무 확인
     const toggleKey = emojiToggleMap[emoji];   
     
-    // 현재 사용자가 이 이모지를 이미 눌렀는지 확인 (myToggle 키 사용)
-    const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
-    const action = isAlreadyToggled ? 'unlike' : 'like';
     let type;
-    if (emoji == '✅') type = 'check'
-    else if (emoji == '🙏') type = 'pray'
-    else if (emoji == '✨') type = 'sparkle'
-    else if (emoji == '👏') type = 'clap'        
-    else type = 'like'
+    let count;
+    if (emoji == '✅') { type = 'check'; count = checkCnt }
+    else if (emoji == '🙏') { type = 'pray'; count = prayCnt }
+    else if (emoji == '✨') { type = 'sparkle'; count = sparkleCnt }
+    else if (emoji == '👏') { type = 'clap'; count = clapCnt }
+    else { type = 'like'; count = likeCnt }
+
     console.log("handleEmojiClick, type: ", type)
+    // 현재 사용자가 이 이모지를 이미 눌렀는지 확인 (myToggle 키 사용)
+    const isAlreadyToggled = currentMessage?.myToggle?.[type] || false;
+    const action = isAlreadyToggled ? 'unlike' : 'like';
     
-    setTargetEmoji(msgId, type, 0)
+    setTargetEmoji(msgId, type, count)
     setAction(action=='like')
     toggleEmoji(msgId, userId, toggleKey, action);
   };
@@ -160,18 +179,20 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
       if (!toggleKey) return;
       
       // 현재 사용자가 이 이모지를 이미 눌렀는지 확인
-      const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
-      const action = isAlreadyToggled ? 'unlike' : 'like';
       
       let type;
-      if (emoji == '✅') type = 'check'
-      else if (emoji == '🙏') type = 'pray'
-      else if (emoji == '✨') type = 'sparkle'
-      else if (emoji == '👏') type = 'clap'        
-      else type = 'like'
+      let count;
+      if (emoji == '✅') { type = 'check'; count = checkCnt }
+      else if (emoji == '🙏') { type = 'pray'; count = prayCnt }
+      else if (emoji == '✨') { type = 'sparkle'; count = sparkleCnt }
+      else if (emoji == '👏') { type = 'clap'; count = clapCnt }
+      else { type = 'like'; count = likeCnt }
       console.log("handleEmojiClick, type: ", type)
+
+      const isAlreadyToggled = currentMessage?.myToggle?.[type] || false;
+      const action = isAlreadyToggled ? 'unlike' : 'like';
       
-      setTargetEmoji(msgId, emoji, 0)
+      setTargetEmoji(msgId, emoji, count)
       setAction(action=='like')
       toggleEmoji(msgId, userId, toggleKey, action);
     };
