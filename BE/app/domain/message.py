@@ -65,7 +65,7 @@ class Emoji:
     emoji_type: str = None
 
     @staticmethod
-    def of(tab_id: int, user_id: uuid.UUID, msg_id: int, type: str, plus: bool) -> Emoji:
+    def of(tab_id: int, user_id: uuid.UUID, msg_id: int, type: str) -> Emoji:
         return Emoji(
             msg_id=msg_id,
             tab_id=tab_id,

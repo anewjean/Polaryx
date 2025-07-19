@@ -24,7 +24,7 @@ class MessageSchema(BaseModel):
     e_like_cnt: int
     e_pray_cnt: int
     e_sparkle_cnt: int
-    my_toggle: Optional[List] = None
+    my_toggle: Optional[dict] = None
 
     # [0]: m.id
     # [1]: m.tab_id
@@ -72,7 +72,7 @@ class MessageSchema(BaseModel):
             created_at=row[7],
             updated_at=row[8],
             deleted_at=row[9],
-            file_url=row[10] if len(row) > 10 else None,
+            file_url=row[10] if row[10] else None,
             e_check_cnt=row[11],
             e_clap_cnt=row[12],
             e_like_cnt=row[13],

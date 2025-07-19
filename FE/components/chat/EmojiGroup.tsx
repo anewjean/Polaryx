@@ -40,7 +40,9 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
 
   // 이모지 버튼 클릭 시 동작할 함수
   const toggleEmoji = useMessageStore((state) => state.toggleEmoji);
-  
+  const setTargetEmoji = useMessageStore((state) => state.setTargetEmoji);
+  const setAction = useMessageStore((state) => state.setAction);
+
   // 현재 메시지 정보 가져오기
   const currentMessage = useMessageStore((state) => 
     state.messages.find(msg => msg.msgId === msgId)
@@ -76,7 +78,16 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
     // 현재 사용자가 이 이모지를 이미 눌렀는지 확인 (myToggle 키 사용)
     const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
     const action = isAlreadyToggled ? 'unlike' : 'like';
+    let type;
+    if (emoji == '✅') type = 'check'
+    else if (emoji == '🙏') type = 'pray'
+    else if (emoji == '✨') type = 'sparkle'
+    else if (emoji == '👏') type = 'clap'        
+    else type = 'like'
+    console.log("handleEmojiClick, type: ", type)
     
+    setTargetEmoji(msgId, type, 0)
+    setAction(action=='like')
     toggleEmoji(msgId, userId, toggleKey, action);
   };
 
@@ -116,6 +127,8 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
 
     // 이모지 버튼 클릭 시 동작할 함수
     const toggleEmoji = useMessageStore((state) => state.toggleEmoji);
+    const setTargetEmoji = useMessageStore((state) => state.setTargetEmoji);
+    const setAction = useMessageStore((state) => state.setAction);
     
     // 현재 메시지 정보 가져오기
     const currentMessage = useMessageStore((state) => 
@@ -150,6 +163,16 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
       const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
       const action = isAlreadyToggled ? 'unlike' : 'like';
       
+      let type;
+      if (emoji == '✅') type = 'check'
+      else if (emoji == '🙏') type = 'pray'
+      else if (emoji == '✨') type = 'sparkle'
+      else if (emoji == '👏') type = 'clap'        
+      else type = 'like'
+      console.log("handleEmojiClick, type: ", type)
+      
+      setTargetEmoji(msgId, emoji, 0)
+      setAction(action=='like')
       toggleEmoji(msgId, userId, toggleKey, action);
     };
 

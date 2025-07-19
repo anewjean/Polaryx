@@ -181,7 +181,10 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
   setEmojiCount: (messageId, emojiType, count) => set((state) => ({
     messages: state.messages.map((msg) =>
       msg.msgId === messageId
-        ? { ...msg, [emojiType]: count }
+    ? {
+      ...msg,
+      [`${emojiType}Cnt`]: count, 
+    }
         : msg
     )
   })),

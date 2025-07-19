@@ -177,9 +177,10 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
             message_id = data["messageId"]
             emoji_type = data["emojiType"]
             action = data["action"] == "like"
+            print("\naction: ", action)
             count = data["count"]
 
-            if action == "like":
+            if action:
                 count += 1
             else:
                 count -= 1
