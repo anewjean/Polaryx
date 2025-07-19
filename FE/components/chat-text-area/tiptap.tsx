@@ -278,9 +278,9 @@ export function TipTap() {
   // 저장 메시지 추가
   const handleAddSaveMessage = async (content: string) => {
     try {
-      await addSaveMessage(workspaceId, userId!, content);
-      // 다른 유저와 동기화될 필요가 없으므로, 낙관적 업데이트 방식 사용 (직접 갱신)
-      add(workspaceId, userId!, content);
+      // zustand 스토어의 add 액션만 호출하면 내부에서 API 요청을 수행한다
+      await add(workspaceId, userId!, content);
+
     } catch {
       toast.error("저장 메시지 추가에 실패했습니다.", { icon: <Ban /> });
     }

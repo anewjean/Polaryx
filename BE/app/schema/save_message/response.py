@@ -4,14 +4,14 @@ from app.domain.save_message import SaveMessage
 
 
 class SaveMessageSchema(BaseModel):
-    id: int
+    save_message_id: int
     content: str
     created_at: datetime
 
     @classmethod
     def from_domain(cls, message: SaveMessage) -> "SaveMessageSchema":
         return cls(
-            id=message.id,
+            save_message_id=message.id,
             content=message.content,
             created_at=message.created_at,
         )

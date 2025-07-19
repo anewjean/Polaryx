@@ -56,7 +56,7 @@ class SaveMessageRepo(AbstractQueryRepo):
             "sender_id": sender_id_bytes,
             "content": save_message.content
         }
-        self.db.execute(insert_message, params)
+        return self.db.execute(insert_message, params)
 
     async def find_all_by_user(self, sender_id: UUID, workspace_id: int) -> List[SaveMessage]:
         params = {

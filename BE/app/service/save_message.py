@@ -8,9 +8,11 @@ class SaveMessageService:
     def __init__(self):
         self.repo = SaveMessageRepo()
 
-    async def save(self, sender_id: UUID, workspace_id: int, content: str) -> None:
+    async def save(self, sender_id: UUID, workspace_id: int, content: str) -> SaveMessage:
         message = SaveMessage.of(sender_id, workspace_id, content)
-        await self.repo.insert(message)
+        result = await self.repo.insert(message)
+        message.id = result.get("lastrowid") if isinstance(result, dict) else None
+        return message
 
     async def get_all(self, sender_id: UUID, workspace_id: int):
         return await self.repo.find_all_by_user(sender_id, workspace_id)
