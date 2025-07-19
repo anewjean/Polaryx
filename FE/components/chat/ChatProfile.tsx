@@ -7,7 +7,6 @@ import { Ban } from "lucide-react";
 import { ImageWithModal } from "./imageWithModal";
 import { HoverCard, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { MyContextMenu } from "./MyContextMenu";
 import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 import DOMPurify from "dompurify";
 import ChatEditTiptap from "./ChatEditTiptap";
@@ -16,12 +15,12 @@ import { useParams } from "next/navigation";
 import { updateMessage as updateMessageApi } from "@/apis/messageApi";
 import { useMessageStore } from "@/store/messageStore";
 import { useProfileStore } from "@/store/profileStore";
-
 import { cn } from "@/lib/utils";
-import { Star } from "lucide-react";
+import { SmilePlus } from "lucide-react";
 import { WebSocketLikeClient } from "@/components/ws/webSocketLikeClient"; // 새로 만든 컴포넌트 import
 import { jwtDecode } from "jwt-decode";
 import { MessageMenu } from "./MessageMenu";
+import { EmojiGroupMenu, EmojiGroup } from "./EmojiGroup";
 /////////////////////////////////////////////////////////////
 // likeStore 사용. 좋아요 데이터 관리.
 import { useLikeStore } from "@/store/likeStore";
@@ -38,11 +37,12 @@ interface ChatProfileProps {
   fileUrl: string | null;
   isUpdated: number;
   className?: string;
-  ///////////////////////////////////////////////////////////////
-  // likeStore 사용. 좋아요 데이터 관리.
-  likeCount: number; // likeCount prop 추가
-  isLikedByMe: boolean; // 토글 기능: prop 추가
-  ///////////////////////////////////////////////////////////////
+  checkCnt: number;
+  prayCnt: number;
+  sparkleCnt: number;
+  clapCnt: number;
+  likeCnt: number;
+  myToggle: string[];
 }
 
 function isImageFile(url: string) {
@@ -60,10 +60,13 @@ export function ChatProfile({
   fileUrl,
   isUpdated,
   className,
-  ///////////////////////////////////////////////////////////////
-  // likeStore 사용. 좋아요 데이터 관리.
-  likeCount, // prop 받기
-  isLikedByMe, // prop 받기
+  
+  checkCnt,
+  prayCnt,
+  sparkleCnt,
+  clapCnt,
+  likeCnt,
+  myToggle,
   ///////////////////////////////////////////////////////////////
 }: ChatProfileProps) {
   // 유저 id 상태 관리
@@ -102,7 +105,12 @@ export function ChatProfile({
 
   // 메시지 호버 상태 관리(메시지 메뉴 표시)
   const [isHovered, setIsHovered] = useState(false);
+
+  // 메시지 삭제 확인 모달 상태 관리
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // 이모지 메뉴 표시 상태 관리
+  const [isEmojiGroupOpen, setIsEmojiGroupOpen] = useState(false);
 
   // 메시지 삭제 핸들러
   const handleDelete = async (id: number) => {
@@ -125,16 +133,28 @@ export function ChatProfile({
   const handleMouseLeave = () => {
     setIsHovered(false);
     setIsDeleteDialogOpen(false);
+    setIsEmojiGroupOpen(false);
   };
 
+  // 메시지 삭제 확인 모달 열기
   const openDeleteDialog = () => {
     setIsDeleteDialogOpen(true);
     setIsHovered(false); // 메뉴를 닫는 로직을 이 함수에 통합
   };
 
-  // 메시지 취소 핸들러
+  // 편집 취소 핸들러
   const handleCancel = () => {
     setIsEditMode(false);
+  };
+
+  // 이모지 메뉴 열기
+  const openEmojiGroup = () => {
+    setIsEmojiGroupOpen(true);
+  };
+
+  // 이모지 메뉴 닫기
+  const closeEmojiGroup = () => {
+    setIsEmojiGroupOpen(false);
   };
 
   /////////////////////////////////////////////////////////////////
@@ -258,51 +278,36 @@ export function ChatProfile({
                 </span>
               ) : null}
             </div>
-            {isLikedByMe ? (
-              <div
-                className="p-1 flex mt-0.5 justify-start items-center w-[32px] min-w-[32px] h-4.5 border-1 rounded-full gap-0.5 cursor-pointer"
-              >
-                <Star className="w-3 h-3 fill-current" />
-                <p className="text-xxs">{likeCount}</p>
-              </div>
-            ) : null}                
-            <div
-              className="p-1 flex mt-0.5 justify-start items-center w-[32px] min-w-[32px] h-4.5 border-1 rounded-full gap-0.5 cursor-pointer"
-            >
-              <Star className="w-3 h-3 fill-current" />
-              <p className="text-xxs">{likeCount}</p>
-            </div>                              
-            <div
-              className={`p-1 flex mt-0.5 justify-start items-center w-[32px] min-w-[32px] h-4.5 border-1 rounded-full gap-0.5 cursor-pointer ${
-                isLikedByMe
-                  ? "bg-blue-100 border-blue-600 text-blue-600"
-                  : "bg-gray-100 border-gray-300 text-gray-600"
-              }`}
-              onClick={handleLike}
-            >
-              <Star
-                className={`w-3 h-3 ${isLikedByMe ? "fill-current" : ""}`}
-              />
-              <p className="text-xxs">{likeCount}</p>
-            </div>
-            <div className="text-white p-1 flex mt-0.5 justify-center items-center w-8 h-4.5 bg-gray-300 rounded-full gap-0.5">
-              <Star className="w-3 h-3 fill-current" />
-              <p className="text-xxs">1</p>
-            </div>
+            <EmojiGroup 
+              msgId={msgId} 
+              userId={senderId} 
+              checkCnt={checkCnt} 
+              clapCnt={clapCnt} 
+              prayCnt={prayCnt} 
+              sparkleCnt={sparkleCnt} 
+              likeCnt={likeCnt}
+              myToggle={myToggle} 
+            />
           </>
         )}
       </div>
-      {!isEditMode && isHovered && !isDeleteDialogOpen && (
-      <div className="absolute -top-5 right-2">
-        <MessageMenu
-          msgId={msgId}
-          userId={senderId}
-          content={editContent}
-          onEdit={() => setIsEditMode(true)}
-          onDelete={openDeleteDialog}
-          onClose={closeMenu}
-        />
-      </div>
+      {!isEditMode && isHovered && !isDeleteDialogOpen && !isEmojiGroupOpen && (
+        <div className="absolute -top-5 right-2">
+          <MessageMenu
+            msgId={msgId}
+            userId={senderId}
+            content={editContent}
+            onEmoji={openEmojiGroup}
+            onEdit={() => setIsEditMode(true)}
+            onDelete={openDeleteDialog}
+            onClose={closeMenu}
+          />
+        </div>
+      )}
+      {isHovered && isEmojiGroupOpen && (
+        <div className="absolute -top-5 right-2">
+          <EmojiGroupMenu msgId={msgId} userId={senderId} onClose={closeEmojiGroup} />
+        </div>
       )}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>

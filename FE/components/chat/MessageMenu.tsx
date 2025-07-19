@@ -8,12 +8,13 @@ interface MessageMenuProps {
     msgId: number;
     userId: string;
     content: string;
+    onEmoji: () => void;
     onEdit: () => void;
     onDelete: () => void;
     onClose: () => void;
 }
 
-export function MessageMenu({ msgId, userId, content, onEdit, onDelete, onClose }: MessageMenuProps) {
+export function MessageMenu({ msgId, userId, content, onEmoji, onEdit, onDelete, onClose }: MessageMenuProps) {
 
     // userId 추출
     const myUserId = useMyUserStore((s) => s.userId);
@@ -28,11 +29,15 @@ export function MessageMenu({ msgId, userId, content, onEdit, onDelete, onClose 
         onEdit();
         onClose();
     };
-    
+
+    const handleEmoji = () => {
+        onEmoji();
+    };
+       
     return (
         <>
             <div className="flex items-center bg-white border border-gray-200 rounded-md shadow-xs p-1 space-x-0">
-                <button className="px-2 py-1 text-sm rounded-sm hover:bg-gray-200"><SmilePlus className="w-5 h-5 text-gray-600" /></button>
+                <button onClick={handleEmoji} className="px-2 py-1 text-sm rounded-sm hover:bg-gray-200"><SmilePlus className="w-5 h-5 text-gray-600" /></button>
                 <button className="px-2 py-1 text-sm rounded-sm hover:bg-gray-200"><Pin className="w-5 h-5 text-gray-600" /></button>
                 <button className="px-2 py-1 text-sm rounded-sm hover:bg-gray-200"><Bookmark className="w-5 h-5 text-gray-600" /></button>
                 {myUserId === userId && (
