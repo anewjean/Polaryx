@@ -354,49 +354,49 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),16,'신명훈'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),16,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),16,'박은채'),
-     (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),16,'김민중');
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110010'), 19, '이영준'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110011'), 19, '이원규'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110012'), 19, '이유민'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110013'), 19, '이윤아'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110014'), 19, '이현재'),
      -- 게임랩 공지 채널
-     (2,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),21,'안유진'),
-     (2,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),21,'이재웅'),
-     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),21,'김윤석'),
-     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),21,'신명훈'),
-     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),21,'이찬석'),
-     (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),21,'박은채'),
+     (2,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),20,'안유진'),
+     (2,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),20,'이재웅'),
+     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),20,'김윤석'),
+     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),20,'신명훈'),
+     (2,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),20,'이찬석'),
+     (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),20,'박은채'),
      -- 게임테크랩 공지 채널
-     (3,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),22,'안유진'),
-     (3,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),22,'이재웅'),
-     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),22,'김윤석'),
-     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),22,'신명훈'),
-     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),22,'이찬석'),
-     (3,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),22,'박은채'),
+     (3,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),21,'안유진'),
+     (3,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),21,'이재웅'),
+     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),21,'김윤석'),
+     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),21,'신명훈'),
+     (3,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),21,'이찬석'),
+     (3,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),21,'박은채'),
 
 INSERT INTO jungle_slam.tabs (name,workspace_id,section_id,url) VALUES
-     ('정글 공지 채널',1,1,NULL),
-     ('Q&A',1,1,NULL),
-     ('[WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL),
-     ('[WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL),
-     ('[WEEK03] 그래프, BFS, DFS, 위상정렬',1,2,NULL),
-     ('[WEEK04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL),
-     ('[WEEK05] C언어, 자료구조, 알고리즘',1,2,NULL),
-     ('[WEEK06] Red-Black Tree',1,2,NULL),
-     ('[WEEK07] Malloc Lab',1,2,NULL),
-     ('[WEEK08] 웹서버 만들기',1,2,NULL),
-     ('[WEEK09](PintOS)Threads',1,2,NULL),
-     ('[WEEK10-11](PintOS) User Programs',1,2,NULL),
-     ('[WEEK12-13](PintOS)Virtual Memory',1,2,NULL),
-     ('나만무3팀',1,3,NULL),
-     ('9기 공지',1,1,NULL),
-     ('307호',1,3,NULL),
-     ('301호',1,3,NULL),
-     ('306호',1,3,NULL),
-     ('10기 공지',1,1,NULL),
-     ('농구 사기단',1,3,NULL),
-     ('전체 공지',1,1,NULL),
-     ('301호',1,3,NULL),
-     ('306호',1,3,NULL),
-     -- 순서 변경하지 마세요
-     ('게임랩 공지 채널',2,1,NULL),
-     ('게임테크랩 공지 채널',3,1,NULL);
+     ('정글 공지 채널',1,1,NULL), -- id : 1
+     ('Q&A',1,1,NULL), -- id : 2
+     ('[WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL), -- id : 3
+     ('[WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL), -- id : 4
+     ('[WEEK03] 그래프, BFS, DFS, 위상정렬',1,2,NULL), -- id : 5
+     ('[WEEK04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL), -- id : 6
+     ('[WEEK05] C언어, 자료구조, 알고리즘',1,2,NULL), -- id : 7
+     ('[WEEK06] Red-Black Tree',1,2,NULL), -- id : 8
+     ('[WEEK07] Malloc Lab',1,2,NULL), -- id : 9
+     ('[WEEK08] 웹서버 만들기',1,2,NULL), -- id : 10
+     ('[WEEK09](PintOS)Threads',1,2,NULL), -- id : 11
+     ('[WEEK10-11](PintOS) User Programs',1,2,NULL), -- id : 12
+     ('[WEEK12-13](PintOS)Virtual Memory',1,2,NULL), -- id : 13
+     ('나만무3팀',1,3,NULL), -- id : 14
+     ('농구 사기단',1,3,NULL), -- id : 15
+     ('307호',1,3,NULL), -- id : 16
+     ('301호',1,3,NULL), -- id : 17
+     ('306호',1,3,NULL), -- id : 18
+     ('9기 공지',1,1,NULL), -- id : 19
+     ('게임랩 공지 채널',2,1,NULL), -- id : 20
+     ('게임테크랩 공지 채널',3,1,NULL), -- id : 21
+     ('전체 공지',1,1,NULL); -- id : 23 ??
     
 INSERT INTO jungle_slam.member_roles (user_id, role_id, user_name)
 VALUES
@@ -440,8 +440,19 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('CEF6C2175C1711F0A8650242AC110002'),'유윤선코치님','uuu@gmail.com','local',NULL,1),
      (UNHEX('E662D0245C8511F0A8650242AC110002'),'손채민','sonchaemin89@gmail.com','local',NULL,1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110002'),'김민중','91minjung@gmail.com','google', NULL, 1),
-
-
+     (UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), '박일룡', '', 'google', NULL, 1), -- https://ca.slack-edge.com/E01DL1Z9D6Z-U03U1RMGZUL-12daf35c6c61-512
+     (UNHEX('B2933F353084410594B6FAA8A2C46CD7'), '이승민', '', 'google', NULL, 1), -- https://ca.slack-edge.com/E01DL1Z9D6Z-U084J7UUYBX-bd11c804dbfa-512
+     (UNHEX('878F4895917541A4BEAB9CFFAA2F8A5B'), '안예인', '', 'google', NULL, 1), -- https://ca.slack-edge.com/E01DL1Z9D6Z-U084J7UPXQV-91f8d3ee6f0e-512
+     (UNHEX('AB62B1EC353F4DD6AF05E62F3B7994D4'), '원준석', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08GGJ0EJ9H-41b5bf6984ab-512
+     (UNHEX('34052B51FD7C48BA85A10DA622D205A7'), '이하린', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08G8L6MB6J-f3900729fa19-512
+     (UNHEX('F3628C2A2BA14410A4E7F4CB8E5A604E'), '김도영', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08G0QLBR4P-e67a7483b5dc-512
+     (UNHEX('0C8323D3260649E4AC68F54169D2FC16'), '권우현', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08GG8R8WTC-af49525a262c-512
+     (UNHEX('7C5D304C63C04C368B6D0A8C239ACDB4'), '김민석', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08GGJD1HFD-ab58a94628de-512
+     (UNHEX('F29AB5E6A3D848D68AFDDCEEE30D05A2'), '이도연', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08H513B9ME-c0e6693451d6-512
+     (UNHEX('E5F5F61806A14F2EBA2C31B2DEB6D250'), '고재웅', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08G8LJ0Z2A-78a6c503d0d4-512
+     (UNHEX('91F18C3213B24E9D830A91A1F3108F68'), '조현호', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08G8LYTZEJ-5763f312baed-512
+     (UNHEX('B63DB3B5F4BC445B837B7BB3C0A70334'), '오수빈', '', 'google', NULL, 1), -- https://ca.slack-edge.com/T01GNAFL1MX-U08GD3U1EER-737ade56d6d8-512
+     -- 추가 users
      (UNHEX('E2EB5DE9609D11F0A5420242AC110001'), '권민성', 'user1@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110022'), '김관수', 'user2@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110003'), '김별', 'user3@gmail.com', 'google', NULL, 1),
@@ -468,7 +479,6 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('E2EB5DE9609D11F0A5420242AC110018'), '조정민', 'user25@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110019'), '지준배', 'user26@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11001A'), '최우석', 'user27@gmail.com', 'google', NULL, 1),
-
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002B'), '김경연', 'user28@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002C'), '김대원', 'user29@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002D'), '김명석', 'user30@gmail.com', 'google', NULL, 1),
@@ -493,7 +503,12 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('E2EB5DE9609D11F0A5420242AC110042'), '정권호', 'user51@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110043'), '정소영', 'user52@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110044'), '정현우', 'user53@gmail.com', 'google', NULL, 1),
-     (UNHEX('E2EB5DE9609D11F0A5420242AC110045'), '조윤호', 'user54@gmail.com', 'google', NULL, 1);
+     (UNHEX('E2EB5DE9609D11F0A5420242AC110045'), '조윤호', 'user54@gmail.com', 'google', NULL, 1),
+     -- 워크스페이스 2 게임랩
+     (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),'김윤석','yunsuk224@gmail.com','google','102405209671119574595',2),
+     (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),'신명훈','irootw11@gmail.com','google','102959621092836114036',2),
+     (UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),'이찬석','dl9704tjr@gmail.com','google','111699399539889639007',2),
+     (UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'박은채','ghkqh09@gmail.com','google','116758020634952483923',2),
 
 
 
@@ -503,26 +518,25 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
 
 
 INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,email,image,github,blog) VALUES
-    (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', NULL, NULL, NULL),
-    (UNHEX('2066CA895C8611F0A8650242AC110002'), UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철', 'goochul175465@gmail.com', NULL, NULL, NULL),
-    (UNHEX('3546C7635C8611F0A8650242AC110002'), UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁', 'jhim0228@gmail.com', NULL, NULL, NULL),
-    (UNHEX('4598DA5E5C8611F0A8650242AC110002'), UNHEX('42E101A25C8611F0A8650242AC110002'), 1, '정진영', 'jy.juniper.jeong@gmail.com', NULL, NULL, NULL),
-    (UNHEX('5627A73F5C8611F0A8650242AC110002'), UNHEX('545A4AB45C8611F0A8650242AC110002'), 1, '정경호', 'jkhkorea2028@gmail.com', NULL, NULL, NULL),
-    (UNHEX('80DAEE565C8611F0A8650242AC110002'), UNHEX('802E0FE95C8611F0A8650242AC110002'), 1, '최효식', 'gytlr0785@gmail.com', NULL, NULL, NULL),
-    (UNHEX('85049B055C8411F0A8650242AC110002'), UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 1, '김세현', 'sehyun5004@gmail.com', NULL, NULL, NULL),
-    (UNHEX('88C4AC635BFF11F0A1F20242AC110002'), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '이재웅', 'iamlee103@gmail.com', 'https://stqnq5ux4599.edge.naverncp.com/data2/content/image/2023/04/24/.cache/512/202304240914899.jpg', 'https://github.com/jaewoong', 'https://blog.jaewoong.dev'),
-    (UNHEX('88C4AF655BFF11F0A1F20242AC110002'), UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), 1, '안유진', 'anewjean00@gmail.com', 'https://image.fnnews.com/resource/media/image/2023/10/14/202310140602016302_l.jpg', 'https://github.com/bob', 'https://blog.bob.dev'),
-    (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석', 'yunsuk224@gmail.com', 'https://i.namu.wiki/i/TaNHF90GTgXSwRxcX8rCC9MGWwP9viBkpx6qlHQ6rgA-mq0ydwL9EIjfDbNirNp5Df_bL6SGO31sCGVlk_H2-WRKV0oedSqf7AVlhh2jwsDoraYX1FGc27vCeEk2lr4l9fW1LuPxGOH2W53wqrlbAg.webp', 'https://github.com/rasegqw', 'https://blog.alice.dev'),
-    (UNHEX('88C4B1755BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), 1, '신명훈', 'irootw11@gmail.com', 'https://i.namu.wiki/i/izVXkClWRy9-s5DAkC_lGo3za4Zy9seGH1V6AM0qZJzsckE9eWe6-Hp-1OvJm_DkVv7BL7U0Ar7QB89ApaklkQ.webp', 'https://github.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('88C4B1E85BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), 1, '이찬석', 'dl9704tjr@gmail.com', 'https://media1.tenor.com/m/JZTIyLcEhKAAAAAd/%ED%95%91%EA%B5%AC-%ED%95%91%EA%B5%AC-%EB%AC%BC%EA%B0%9C.gif', 'https://githu1b.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('88C4B2555BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 1, '박은채', 'ghkqh09@gmail.com', 'https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F09%2Faa-run-hani-s-production-released-a-follow-up-model-trailer-info-01.jpg?q=75&w=800&cbr=1&fit=max', 'https://github.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('A07609D85C8411F0A8650242AC110002'), UNHEX('9F95C1F15C8411F0A8650242AC110002'), 1, '김준혁', 'kjh91207@gmail.com', NULL, NULL, NULL),
-    (UNHEX('C6CB40145C8511F0A8650242AC110002'), UNHEX('BEA1232F5C8511F0A8650242AC110002'), 1, '박은범', 'eun4005@gmail.com', NULL, NULL, NULL),
-    (UNHEX('E0DBC45F5C1711F0A8650242AC110002'), UNHEX('CEF6C2175C1711F0A8650242AC110002'), 1, '유윤선코치님', 'uuu@gmail.com', 'https://velog.velcdn.com/images/seeh_h/post/a83a9cf0-2365-4946-9d0d-96ec782c4c86/image.png', NULL, NULL),
-    (UNHEX('E7159E115C8511F0A8650242AC110002'), UNHEX('E662D0245C8511F0A8650242AC110002'), 1, '손채민', 'sonchaemin89@gmail.com', NULL, NULL, NULL),
-    (UNHEX('F11E8FC75C1411F0A6350242AC110002'), UNHEX('8430DCCE5C1411F0A6350242AC110002'), 1, '이동석코치님', 'dongseok@gmail.com', 'https://upload.wikimedia.org/wikipedia/commons/5/5a/SOL%EC%BA%90%EB%A6%AD%ED%84%B0.png', NULL, NULL),
-    (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com', NULL, NULL, NULL),
-
+     (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GSGL5ZK3-0c7f0765f91c-512', NULL, NULL),
+     (UNHEX('2066CA895C8611F0A8650242AC110002'), UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철', 'goochul175465@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG9DK7C2-65d136bf7de0-512', NULL, NULL),
+     (UNHEX('3546C7635C8611F0A8650242AC110002'), UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁', 'jhim0228@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G0RSLZ63-e8fc3d520338-512', NULL, NULL),
+     (UNHEX('4598DA5E5C8611F0A8650242AC110002'), UNHEX('42E101A25C8611F0A8650242AC110002'), 1, '정진영', 'jy.juniper.jeong@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08H51V5SL8-35035abc83f0-512', NULL, NULL),
+     (UNHEX('5627A73F5C8611F0A8650242AC110002'), UNHEX('545A4AB45C8611F0A8650242AC110002'), 1, '정경호', 'jkhkorea2028@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG9ZL93L-093ba12668f7-512', NULL, NULL),
+     (UNHEX('80DAEE565C8611F0A8650242AC110002'), UNHEX('802E0FE95C8611F0A8650242AC110002'), 1, '최효식', 'gytlr0785@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GGJAQK99-29a368f10ce2-512', NULL, NULL),
+     (UNHEX('85049B055C8411F0A8650242AC110002'), UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 1, '김세현', 'sehyun5004@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GJPKE5L4-2a79cdb80b87-512', NULL, NULL),
+     (UNHEX('88C4AC635BFF11F0A1F20242AC110002'), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '이재웅', 'iamlee103@gmail.com', 'https://stqnq5ux4599.edge.naverncp.com/data2/content/image/2023/04/24/.cache/512/202304240914899.jpg', 'https://github.com/jaewoong', 'https://blog.jaewoong.dev'),
+     (UNHEX('88C4AF655BFF11F0A1F20242AC110002'), UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), 1, '안유진', 'anewjean00@gmail.com', 'https://image.fnnews.com/resource/media/image/2023/10/14/202310140602016302_l.jpg', 'https://github.com/bob', 'https://blog.bob.dev'),
+     (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석', 'yunsuk224@gmail.com', 'https://i.namu.wiki/i/TaNHF90GTgXSwRxcX8rCC9MGWwP9viBkpx6qlHQ6rgA-mq0ydwL9EIjfDbNirNp5Df_bL6SGO31sCGVlk_H2-WRKV0oedSqf7AVlhh2jwsDoraYX1FGc27vCeEk2lr4l9fW1LuPxGOH2W53wqrlbAg.webp', 'https://github.com/rasegqw', 'https://blog.alice.dev'),
+     (UNHEX('88C4B1755BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), 1, '신명훈', 'irootw11@gmail.com', 'https://i.namu.wiki/i/izVXkClWRy9-s5DAkC_lGo3za4Zy9seGH1V6AM0qZJzsckE9eWe6-Hp-1OvJm_DkVv7BL7U0Ar7QB89ApaklkQ.webp', 'https://github.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('88C4B1E85BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), 1, '이찬석', 'dl9704tjr@gmail.com', 'https://media1.tenor.com/m/JZTIyLcEhKAAAAAd/%ED%95%91%EA%B5%AC-%ED%95%91%EA%B5%AC-%EB%AC%BC%EA%B0%9C.gif', 'https://githu1b.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('88C4B2555BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 1, '박은채', 'ghkqh09@gmail.com', 'https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F09%2Faa-run-hani-s-production-released-a-follow-up-model-trailer-info-01.jpg?q=75&w=800&cbr=1&fit=max', 'https://github.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('A07609D85C8411F0A8650242AC110002'), UNHEX('9F95C1F15C8411F0A8650242AC110002'), 1, '김준혁', 'kjh91207@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GJQCGGHJ-878acb84c995-512', NULL, NULL),
+     (UNHEX('C6CB40145C8511F0A8650242AC110002'), UNHEX('BEA1232F5C8511F0A8650242AC110002'), 1, '박은범', 'eun4005@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G8KVEG3Y-418225030167-512', NULL, NULL),
+     (UNHEX('E0DBC45F5C1711F0A8650242AC110002'), UNHEX('CEF6C2175C1711F0A8650242AC110002'), 1, '유윤선코치님', 'uuu@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U089QLY289K-68301a0346f9-512', NULL, NULL),
+     (UNHEX('E7159E115C8511F0A8650242AC110002'), UNHEX('E662D0245C8511F0A8650242AC110002'), 1, '손채민', 'sonchaemin89@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GSGMGLLR-28923ec4e049-512', NULL, NULL),
+     (UNHEX('F11E8FC75C1411F0A6350242AC110002'), UNHEX('8430DCCE5C1411F0A6350242AC110002'), 1, '이동석코치님', 'dongseok@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U085L9ZRDQW-21ecc433d650-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110001'), 1, '권민성', 'user1@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110022'), 1, '김관수', 'user2@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110003'), 1, '김별', 'user3@gmail.com', NULL, NULL, NULL),
@@ -549,7 +563,6 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110018'), 1, '조정민', 'user25@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110019'), 1, '지준배', 'user26@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11001A'), 1, '최우석', 'user27@gmail.com', NULL, NULL, NULL),
-
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002B'), 1, '김경연', 'user28@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002C'), 1, '김대원', 'user29@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002D'), 1, '김명석', 'user30@gmail.com', NULL, NULL, NULL),
@@ -588,10 +601,6 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 3, '박은채', 'ghkqh09@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 2, '이재웅', 'iamlee103@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 3, '이재웅', 'iamlee103@gmail.com', NULL, NULL, NULL);
-
-
-
-
 
 
 INSERT INTO jungle_slam.workspaces (name) VALUES
