@@ -62,7 +62,14 @@ interface MessageStore {
   clearInvitedTab: (tabId: number) => void;
 
   // 좋아요 실시간 전파
+  // EmojiType, EmojiCount 저장.
+  target: Record<string, number>;
+  setTargetEmoji: (messageId: number, emojiType: string, count: number) => void;
+  emojiAction: boolean;
+  setAction: (flag: boolean) => void;
+
   // 웹소켓에서 브로드캐스트된 like_count를 설정하는 함수
+  setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
   setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
@@ -163,6 +170,11 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
     })),
 
   // 전송 후, 모든 관련 상태를 리셋
+  target: {},
+  setTargetEmoji: (msgId, Type, count) => set({ target: {"msgId": msgId, [Type]: count} }),
+  emojiAction: false,
+  setAction: (flag) => set({ emojiAction: flag }),
+
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
 

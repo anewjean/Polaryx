@@ -18,7 +18,6 @@ class MessageService:
         res = self.message_repo.insert(message)
         return res["lastrowid"]
     
-    # 미완
     async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool) -> None:
         emoji = Emoji.of(tab_id, user_id, msg_id, type)
         
@@ -26,7 +25,7 @@ class MessageService:
             self.message_repo.plus_emoji(emoji)
         else:
             self.message_repo.minus_emoji(emoji)
-        self.message_repo.update_emoji_cnt(emoji)        
+        return self.message_repo.update_emoji_cnt(emoji)        
 
 
     async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
