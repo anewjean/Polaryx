@@ -66,9 +66,6 @@ export function TipTap() {
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
 
-  // 메시지를 저장할 수 있는 상태
-  const [createSaveMessage, setCreateSaveMessage] = useState(false);
-
   // 저장 메시지 store의 add
   const { add } = useSaveMessagesStore();
 
@@ -97,9 +94,7 @@ export function TipTap() {
       extensions: [
         StarterKit, // 핵심 확장 모음
         Placeholder.configure({
-          placeholder: createSaveMessage
-            ? "저장할 메시지를 입력하세요"
-            : `${tabInfo?.tab_name}에 메시지 보내기`,
+          placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
         }),
         Document,
         Paragraph,
@@ -187,7 +182,7 @@ export function TipTap() {
       ],
       content: message,
     },
-    [tabInfo?.tab_name, createSaveMessage],
+    [tabInfo?.tab_name],
   );
 
   // 메시지 전송 후에도 채팅이 남아있는 문제 해결을 위한 초기화
@@ -280,6 +275,7 @@ export function TipTap() {
   // 저장 메시지 추가
   const handleAddSaveMessage = async (content: string) => {
     try {
+      toast.success("저장 메시지가 추가되었습니다", { icon: <CircleCheck /> });
       // zustand 스토어의 add 액션만 호출하면 내부에서 API 요청을 수행한다
       await add(workspaceId, userId!, content);
     } catch {
@@ -323,19 +319,7 @@ export function TipTap() {
   }
   return (
     <>
-      {/* 메시지 저장 기능이 켜진 상태면, 전체에 반투명 오버레이 추가 */}
-      {createSaveMessage &&
-        ReactDOM.createPortal(
-          <div
-            className="fixed inset-0 z-40 bg-black/50"
-            onClick={() => setCreateSaveMessage(false)}
-          />,
-          document.body,
-        )}
-
-      <div
-        className={`chat-text-area relative z-50 ${createSaveMessage ? "ring-2 ring-gray-400" : ""}`}
-      >
+      <div className={"chat-text-area relative"}>
         {/* 메시지 저장 기능이 켜진 상태면, 강조해서 보여줌 */}
         <input
           ref={fileInputRef}
@@ -351,26 +335,16 @@ export function TipTap() {
             setLink={openLinkDialog}
             addImage={addImage}
           />
-          {/* 북마크 버튼 누르면 팝오버 열기 */}
-          <SaveMessages
-            workspaceId={workspaceId}
-            createSaveMessage={createSaveMessage}
-            editor={editor}
-          >
-            {createSaveMessage ? (
-              // 저장 가능 상태면, 빨간색의 엑스 버튼을 보여줌
-              <ClipboardX
-                onClick={() => setCreateSaveMessage(false)}
-                className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-red-300"
-              />
-            ) : (
-              // 아니라면 파란색의 플러스 버튼 보여줌
+          {/* 저장 메시지 호버 카드 */}
+          <SaveMessages workspaceId={workspaceId} editor={editor}>
+            {/* 에디터가 빈 상태면 비활성화 */}
+            {editor?.getText().trim().length > 0 ? (
               <ClipboardPlus
-                onClick={() => {
-                  setCreateSaveMessage(true); // 팝오버만 열기, 저장 메시지 추가 X
-                }}
+                onClick={addCurrentContent}
                 className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
               />
+            ) : (
+              <ClipboardPlus className="mb-1.5 w-5.5 h-5.5 cursor-default text-gray-400" />
             )}
           </SaveMessages>
         </div>
@@ -413,27 +387,11 @@ export function TipTap() {
                     editor.commands.splitBlock();
                   }
                 } else {
-                  // Enter: 저장 모드면 저장, 아니면 전송
-                  if (createSaveMessage) {
-                    addCurrentContent();
-                  } else {
-                    handleSend();
-                  }
+                  handleSend();
                 }
               }
             }}
           />
-
-          {/* 저장 메시지 추가 버튼 */}
-          {createSaveMessage && (
-            <Button
-              onClick={addCurrentContent}
-              size="icon"
-              className="h-6 w-6 cursor-pointer bg-gray-400 rounded-full hover:bg-gray-500"
-            >
-              <Plus className="!h-5 !w-5" />
-            </Button>
-          )}
         </div>
       </div>
     </>
