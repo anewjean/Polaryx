@@ -55,22 +55,35 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
       y: (rect.top + rect.bottom) / 2 / window.innerHeight,
     };
 
-    // 폭죽 애니메이션 조절부
-    confetti({
-      origin: origin,
-      particleCount: 300,
-      spread: 150,
-      angle: 90,
-      scalar: 0.9,
-      ticks: 200,
-      gravity: 1,
-      decay: 0.94,
-      startVelocity: 35,
-    });    
+    // 분수대 효과 - 솟구쳤다가 빠른 자유낙하 + 1초간 파티클 반복 생성
+    const createFountainEffect = () => {
+      confetti({
+        origin: origin,
+        particleCount: 2, // 적은 개수로 여러 번 생성
+        spread: 25, // 적당한 퍼짐
+        angle: 90, // 위쪽 방향
+        scalar: 1.8, // 이모지 크기
+        ticks: 600, // 짧은 지속시간으로 빠른 낙하
+        gravity: 7.5, // 강한 중력으로 빠른 자유낙하
+        decay: 0.9, // 적당한 페이드아웃
+        startVelocity: 30, // 적당한 초기 속도
+        flat: true, // 2D 평면 효과
+        shapes: [confetti.shapeFromText({ text: emoji, scalar: 2 })],
+        drift: 0, // 수직 낙하
+      });
+    };
+
+    // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
+    createFountainEffect(); // 즉시 첫 번째 실행
+    const intervals = [];
+    for (let i = 1; i < 5; i++) {
+      const timeoutId = setTimeout(createFountainEffect, i * 100);
+      intervals.push(timeoutId);
+    }    
     
     setTimeout(() => {
       onClose();
-    }, 200); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
+    }, 600); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
     
     // 이모지 선택 유무 확인
     const toggleKey = emojiToggleMap[emoji];   
@@ -78,15 +91,8 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
     // 현재 사용자가 이 이모지를 이미 눌렀는지 확인 (myToggle 키 사용)
     const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
     const action = isAlreadyToggled ? 'unlike' : 'like';
-    let type;
-    if (emoji == '✅') type = 'check'
-    else if (emoji == '🙏') type = 'pray'
-    else if (emoji == '✨') type = 'sparkle'
-    else if (emoji == '👏') type = 'clap'        
-    else type = 'like'
-    console.log("handleEmojiClick, type: ", type)
-    
-    setTargetEmoji(msgId, type, 0)
+        
+    setTargetEmoji(msgId, emoji, 0)
     setAction(action=='like')
     toggleEmoji(msgId, userId, toggleKey, action);
   };
@@ -142,18 +148,31 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
         y: (rect.top + rect.bottom) / 2 / window.innerHeight,
       };
   
-      // 폭죽 애니메이션 조절부
-      confetti({
-        origin: origin,
-        particleCount: 300,
-        spread: 150,
-        angle: 90,
-        scalar: 0.9,
-        ticks: 200,
-        gravity: 1,
-        decay: 0.94,
-        startVelocity: 35,
-      });
+      // 분수대 효과 - 솟구쳤다가 빠른 자유낙하 + 1초간 파티클 반복 생성
+      const createFountainEffect = () => {
+        confetti({
+          origin: origin,
+          particleCount: 2, // 적은 개수로 여러 번 생성
+          spread: 25, // 적당한 퍼짐
+          angle: 90, // 위쪽 방향
+          scalar: 1.8, // 이모지 크기
+          ticks: 600, // 짧은 지속시간으로 빠른 낙하
+          gravity: 7.5, // 강한 중력으로 빠른 자유낙하
+          decay: 0.9, // 적당한 페이드아웃
+          startVelocity: 30, // 적당한 초기 속도
+          flat: true, // 2D 평면 효과
+          shapes: [confetti.shapeFromText({ text: emoji, scalar: 2 })],
+          drift: 0, // 수직 낙하
+        });
+      };
+
+      // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
+      createFountainEffect(); // 즉시 첫 번째 실행
+      const intervals = [];
+      for (let i = 1; i < 5; i++) {
+        const timeoutId = setTimeout(createFountainEffect, i * 100);
+        intervals.push(timeoutId);
+      }
       
       // 이모지 선택 유무 확인
       const toggleKey = emojiToggleMap[emoji];
@@ -162,14 +181,6 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
       // 현재 사용자가 이 이모지를 이미 눌렀는지 확인
       const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
       const action = isAlreadyToggled ? 'unlike' : 'like';
-      
-      let type;
-      if (emoji == '✅') type = 'check'
-      else if (emoji == '🙏') type = 'pray'
-      else if (emoji == '✨') type = 'sparkle'
-      else if (emoji == '👏') type = 'clap'        
-      else type = 'like'
-      console.log("handleEmojiClick, type: ", type)
       
       setTargetEmoji(msgId, emoji, 0)
       setAction(action=='like')
@@ -186,10 +197,10 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
             onMouseUp={() => setPressedEmoji(null)}
             onMouseLeave={() => setPressedEmoji(null)} // 눌린 상태에서 마우스가 벗어날 경우를 대비해 초기화합니다.
             onClick={(e) => handleEmojiClick(e, emoji)}
-            className={`flex flex-row h-[26px] min-w-[48px] items-center justify-center gap-1 border rounded-xl p-1 space-x-0 cursor-pointer hover:bg-gray-200 ${
+            className={`flex flex-row h-[26px] min-w-[48px] items-center justify-center gap-1 border rounded-xl p-1 space-x-0 cursor-pointer ${
               pressedEmoji === emoji ? 'scale-90' : 'scale-100'
             } ${
-              myToggle[name] ? 'bg-blue-500 text-white' : 'bg-gray-200'
+              myToggle[name] ? 'bg-blue-500 text-white border-blue-700 hover:bg-blue-600' : 'bg-gray-200 border-gray-400 hover:bg-gray-300'
             }
             `}
           >
