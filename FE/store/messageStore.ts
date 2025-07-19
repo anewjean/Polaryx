@@ -70,7 +70,6 @@ interface MessageStore {
 
   // 웹소켓에서 브로드캐스트된 like_count를 설정하는 함수
   setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
-  setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
   toggleEmoji: (messageId: number, userId: string, emojiType: string, action: 'like' | 'unlike') => void;

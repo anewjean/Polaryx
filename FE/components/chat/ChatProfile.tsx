@@ -29,10 +29,6 @@ import { WebSocketLikeClient } from "@/components/ws/webSocketLikeClient"; // �
 import { jwtDecode } from "jwt-decode";
 import { MessageMenu } from "./MessageMenu";
 import { EmojiGroupMenu, EmojiGroup } from "./EmojiGroup";
-/////////////////////////////////////////////////////////////
-// likeStore 사용. 좋아요 데이터 관리.
-import { useLikeStore } from "@/store/Emojistore";
-/////////////////////////////////////////////////////////////
 
 interface ChatProfileProps {
   senderId: string;
@@ -93,11 +89,6 @@ export function ChatProfile({
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
   const updateMessage = useMessageStore((s) => s.updateMessage);
-
-  ///////////////////////////////////////////////////////////////
-  // likeStore 사용. 좋아요 데이터 관리.
-  const toggleLike = useLikeStore((s) => s.toggleLike);
-  ///////////////////////////////////////////////////////////////
 
   // 메시지 저장 핸들러
   const handleSave = async (newContent: string) => {
