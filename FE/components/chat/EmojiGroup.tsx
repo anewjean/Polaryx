@@ -13,24 +13,16 @@ interface EmojiGroupMenuProps {
 interface EmojiGroupProps {
   msgId: number;
   userId: string;
+  onClose: () => void;
   checkCnt: number;
+  clapCnt: number;
   prayCnt: number;
   sparkleCnt: number;
-  clapCnt: number;
   likeCnt: number;
   myToggle: Record<string, boolean>;  
 }
 
-
 const emojis = ['✅', '🙏', '✨', '👏', '❤️'];
-
-const emojiData = [
-  { emoji: '✅', count: 1, name: 'check' },
-  { emoji: '🙏', count: 2, name: 'pray' },
-  { emoji: '✨', count: 3, name: 'sparkle' },
-  { emoji: '👏', count: 4, name: 'clap' },
-  { emoji: '❤️', count: 5, name: 'like' },
-];
 
 // 이모지를 myToggle 키명으로 변환 (내 선택 상태용)
 const emojiToggleMap: Record<string, string> = {
@@ -108,12 +100,21 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
   );
 }
 
-export function EmojiGroup({ msgId, userId, checkCnt, prayCnt, sparkleCnt, clapCnt, likeCnt, myToggle }: EmojiGroupProps) {
+export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleCnt, likeCnt, onClose, myToggle }: EmojiGroupProps) {
 
     // 클릭된 이모지 상태 관리
     const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
 
-      // 이모지 버튼 클릭 시 동작할 함수
+    // emojiData 배열을 컴포넌트 내부에서 정의하여 props 값들을 사용
+    const emojiData = [
+      { emoji: '✅', count: checkCnt, name: 'check' },
+      { emoji: '🙏', count: prayCnt, name: 'pray' },
+      { emoji: '✨', count: sparkleCnt, name: 'sparkle' },
+      { emoji: '👏', count: clapCnt, name: 'clap' },
+      { emoji: '❤️', count: likeCnt, name: 'like' },
+    ];
+
+    // 이모지 버튼 클릭 시 동작할 함수
     const toggleEmoji = useMessageStore((state) => state.toggleEmoji);
     
     // 현재 메시지 정보 가져오기

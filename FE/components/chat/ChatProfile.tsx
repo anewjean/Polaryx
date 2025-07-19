@@ -64,17 +64,13 @@ export function ChatProfile({
   fileUrl,
   isUpdated,
   className,
-
   checkCnt,
   prayCnt,
   sparkleCnt,
   clapCnt,
   likeCnt,
   myToggle,
-  ///////////////////////////////////////////////////////////////
-}: ChatProfileProps) {
-  // 유저 id 상태 관리
-  const [userId, setUserId] = useState<string | null>(null);
+}: ChatProfileProps) {  
 
   // 프로필
   const openProfile = useProfileStore((s) => s.openWithId);
@@ -125,15 +121,10 @@ export function ChatProfile({
     }
   };
 
+
   const closeMenu = () => {
     setIsHovered(false);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setIsDeleteDialogOpen(false);
-    setIsEmojiGroupOpen(false);
-  };
+  };  
 
   // 메시지 삭제 확인 모달 열기
   const openDeleteDialog = () => {
@@ -155,29 +146,13 @@ export function ChatProfile({
   const closeEmojiGroup = () => {
     setIsEmojiGroupOpen(false);
   };
-
-  /////////////////////////////////////////////////////////////////
-  // 내 userId 가져오기 (예시: localStorage에서)
-  const [myUserId, setMyUserId] = useState<string>(""); // 이건 그대로 사용
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      const { user_id } = jwtDecode(token) as { user_id: string };
-      setMyUserId(user_id);
-    }
-  }, []);
-
-  // 좋아요 버튼 클릭 핸들러
-  const handleLike = () => {
-    console.log("handleLike clicked");
-    if (myUserId) {
-      // 이제 '좋아요'를 누르면 store의 상태를 변경하여 전송을 "요청"합니다.
-      toggleLike(msgId, myUserId);
-    } else {
-      console.warn("Cannot like: myUserId is not set.");
-    }
+  
+  // 마우스가 메시지 영역을 떠났을 때 이모지 그룹 메뉴 닫기
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setIsDeleteDialogOpen(false);
+    setIsEmojiGroupOpen(false);
   };
-  /////////////////////////////////////////////////////////////////
 
   return (
     <div
@@ -279,6 +254,7 @@ export function ChatProfile({
             </div>
             <EmojiGroup
               msgId={msgId}
+              onClose={closeEmojiGroup}
               userId={senderId}
               checkCnt={checkCnt}
               clapCnt={clapCnt}
@@ -308,7 +284,7 @@ export function ChatProfile({
           <EmojiGroupMenu
             msgId={msgId}
             userId={senderId}
-            onClose={closeEmojiGroup}
+            onClose={closeEmojiGroup}            
           />
         </div>
       )}
