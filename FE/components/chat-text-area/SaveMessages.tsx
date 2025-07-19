@@ -54,8 +54,10 @@ export default function SaveMessages({
 
   return (
     <HoverCard open={hoverOpen} onOpenChange={(open) => setHoverOpen(open)}>
-      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-
+      {/* 재호버 방지 */}
+      <button onClick={() => setHoverOpen((o) => !o)}>
+        <HoverCardTrigger asChild>{children}</HoverCardTrigger>
+      </button>
       <HoverCardContent
         side="top"
         align="end"
