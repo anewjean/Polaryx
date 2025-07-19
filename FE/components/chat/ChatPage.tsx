@@ -41,20 +41,14 @@ export function ChatPage({
   useEffect(() => {
     (async () => {
       const res = await getMessages(workspaceId, tabId, undefined);
-      if (res.messages && res.messages.length) {
-        const initialLikesData: Record<number, number> = {};
-        const initialMyLikesData: number[] = [];
+      if (res.messages && res.messages.length) {       
         const new_messages = res.messages.map((msg: any) => {
-          if (msg.like_count > 0) {
-            initialLikesData[msg.msg_id] = msg.like_count;
-          }
-          if (msg.is_liked_by_me) {
-            initialMyLikesData.push(msg.msg_id);
-          }
           return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
-            isUpdated: msg.is_updated, fileUrl: msg.file_url,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.check_cnt,
+            clapCnt: msg.clap_cnt, likeCnt: msg.like_cnt, sparkleCnt: msg.sparkle_cnt,
+            prayCnt: msg.pray_cnt, myToggle: msg.my_toggle
           };
         });
         setMessages(new_messages);
@@ -96,12 +90,8 @@ export function ChatPage({
       const res = await getMessages(workspaceId, tabId, oldestId);
 
       if (res.messages && res.messages.length > 0) {
-        const initialLikesData: Record<number, number> = {};
-        const initialMyLikesData: number[] = [];
-        
         const new_messages = res.messages.map((msg: any) => {
-           if (msg.like_count > 0) initialLikesData[msg.msg_id] = msg.like_count;
-           if (msg.is_liked_by_me) initialMyLikesData.push(msg.msg_id);
+           
            return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
