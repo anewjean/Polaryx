@@ -8,7 +8,7 @@ import uuid
 @dataclass
 class SaveMessage:
     id: Optional[int] = None
-    sender_id: Optional[uuid.UUID] = None
+    user_id: Optional[uuid.UUID] = None
     workspace_id: Optional[int] = None
     content: Optional[str] = None
     created_at: datetime = datetime.now()
@@ -16,9 +16,9 @@ class SaveMessage:
     deleted_at: Optional[datetime] = None
 
     @staticmethod
-    def of(sender_id: uuid.UUID, workspace_id: int, content: str) -> SaveMessage:
+    def of(user_id: uuid.UUID, workspace_id: int, content: str) -> SaveMessage:
         return SaveMessage(
-            sender_id=sender_id,
+            user_id=user_id,
             workspace_id=workspace_id,
             content=content
         )
@@ -27,7 +27,7 @@ class SaveMessage:
     def from_row(row: tuple) -> SaveMessage:
         return SaveMessage(
             id=row[0],
-            sender_id=uuid.UUID(bytes=row[1]) if isinstance(row[1], bytes) else row[1],
+            user_id=uuid.UUID(bytes=row[1]) if isinstance(row[1], bytes) else row[1],
             workspace_id=row[2],
             content=row[3],
             created_at=row[4],
