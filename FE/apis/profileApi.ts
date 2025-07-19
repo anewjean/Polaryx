@@ -8,10 +8,8 @@ export interface Profile {
   nickname: string;
   email: string;    
   image?: string | null;
-  role_id?: number | null;
-  role_name?: string | null;
-  group_id?: number[] | null;
-  group_name?: string[] | null;
+  role?: string | null;
+  groups?: string[] | null;
   github?: string | null;
   blog?: string | null;
 }
