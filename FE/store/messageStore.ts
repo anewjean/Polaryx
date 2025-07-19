@@ -11,6 +11,12 @@ interface Message {
   createdAt: string | undefined;
   fileUrl: string | null;
   isUpdated: number;
+  e_check_cnt: number;
+  e_pray_cnt: number;
+  e_sparkle_cnt: number;
+  e_clap_cnt: number;
+  like_count: number;
+  my_toggle: Record<string, boolean>;
 }
 
 interface MessageStore {
@@ -146,3 +152,4 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
 }));
+

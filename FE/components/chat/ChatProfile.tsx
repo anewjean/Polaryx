@@ -1,6 +1,14 @@
-
 import { MiniProfile } from "./MiniProfile";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { deleteMessage } from "@/apis/messageApi";
 import { toast } from "sonner";
 import { Ban } from "lucide-react";
@@ -23,7 +31,7 @@ import { MessageMenu } from "./MessageMenu";
 import { EmojiGroupMenu, EmojiGroup } from "./EmojiGroup";
 /////////////////////////////////////////////////////////////
 // likeStore 사용. 좋아요 데이터 관리.
-import { useLikeStore } from "@/store/likeStore";
+import { useLikeStore } from "@/store/Emojistore";
 /////////////////////////////////////////////////////////////
 
 interface ChatProfileProps {
@@ -42,7 +50,7 @@ interface ChatProfileProps {
   sparkleCnt: number;
   clapCnt: number;
   likeCnt: number;
-  myToggle: string[];
+  myToggle: Record<string, boolean>;
 }
 
 function isImageFile(url: string) {
@@ -60,7 +68,7 @@ export function ChatProfile({
   fileUrl,
   isUpdated,
   className,
-  
+
   checkCnt,
   prayCnt,
   sparkleCnt,
@@ -85,7 +93,7 @@ export function ChatProfile({
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
   const updateMessage = useMessageStore((s) => s.updateMessage);
-  
+
   ///////////////////////////////////////////////////////////////
   // likeStore 사용. 좋아요 데이터 관리.
   const toggleLike = useLikeStore((s) => s.toggleLike);
@@ -180,16 +188,18 @@ export function ChatProfile({
   };
   /////////////////////////////////////////////////////////////////
 
-  return (    
+  return (
     <div
       onMouseEnter={() => {
         if (!isDeleteDialogOpen) {
           setIsHovered(true);
         }
       }}
-      onMouseLeave={handleMouseLeave}      
-      className={
-        cn(`relative flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-muted"}`,className)}      
+      onMouseLeave={handleMouseLeave}
+      className={cn(
+        `relative flex px-[8px] py-[4.5px] group${isEditMode ? " bg-blue-50" : " hover:bg-muted"}`,
+        className,
+      )}
     >
       {/* showProfile(마지막 메세지로부터 5분 이후)이면, 프로필 사진, 이름, 메시지 표시. 아니면 메시지만 */}
       {showProfile ? (
@@ -216,9 +226,7 @@ export function ChatProfile({
         </div>
       ) : (
         <div className="flex flex-shrink-0 items-center justify-end text-xxs chat-time-stamp w-[40px] mr-[8px]">
-          <div className="hidden group-hover:block">
-            {time.split(" ")[1]}
-          </div>
+          <div className="hidden group-hover:block">{time.split(" ")[1]}</div>
         </div>
       )}
 
@@ -278,15 +286,15 @@ export function ChatProfile({
                 </span>
               ) : null}
             </div>
-            <EmojiGroup 
-              msgId={msgId} 
-              userId={senderId} 
-              checkCnt={checkCnt} 
-              clapCnt={clapCnt} 
-              prayCnt={prayCnt} 
-              sparkleCnt={sparkleCnt} 
+            <EmojiGroup
+              msgId={msgId}
+              userId={senderId}
+              checkCnt={checkCnt}
+              clapCnt={clapCnt}
+              prayCnt={prayCnt}
+              sparkleCnt={sparkleCnt}
               likeCnt={likeCnt}
-              myToggle={myToggle} 
+              myToggle={myToggle}
             />
           </>
         )}
@@ -306,10 +314,17 @@ export function ChatProfile({
       )}
       {isHovered && isEmojiGroupOpen && (
         <div className="absolute -top-5 right-2">
-          <EmojiGroupMenu msgId={msgId} userId={senderId} onClose={closeEmojiGroup} />
+          <EmojiGroupMenu
+            msgId={msgId}
+            userId={senderId}
+            onClose={closeEmojiGroup}
+          />
         </div>
       )}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>메시지 삭제</AlertDialogTitle>
@@ -321,7 +336,9 @@ export function ChatProfile({
             <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
               취소
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDelete(msgId)}>삭제</AlertDialogAction>
+            <AlertDialogAction onClick={() => handleDelete(msgId)}>
+              삭제
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
