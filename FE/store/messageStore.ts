@@ -35,6 +35,7 @@ interface MessageStore {
   sendEmojiFlag: boolean;
   setSendFlag: (flag: boolean) => void;
   setSendEmojiFlag: (flag: boolean) => void;
+
   // 메시지 저장
   messages: Message[];
   setMessages: (msg: Message[]) => void;
@@ -60,13 +61,12 @@ interface MessageStore {
   addInvitedTab: (tabId: number) => void;
   clearInvitedTab: (tabId: number) => void;
 
-
   // 좋아요 실시간 전파
   // 웹소켓에서 브로드캐스트된 like_count를 설정하는 함수
-  setEmojiCount: (messageId: number, count: number) => void;
+  setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
-  toggleEmoji: (messageId: number, userId: string, emojiType: string) => void;
+  toggleEmoji: (messageId: number, userId: string, emojiType: string, action: 'like' | 'unlike') => void;
 
 }
 
@@ -161,29 +161,41 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
     set((state) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
+
   // 전송 후, 모든 관련 상태를 리셋
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
 
-  setEmojiCount: (messageId, count) => set((state) => ({
+  // 실시간 이모지 수 업데이트
+  setEmojiCount: (messageId, emojiType, count) => set((state) => ({
+    messages: state.messages.map((msg) =>
+      msg.msgId === messageId
+        ? { ...msg, [emojiType]: count }
+        : msg
+    )
   })),
 
-  // '좋아요' 버튼이 호출할 메인 함수 수정
-  toggleEmoji: (messageId, userId, emojiType) => {
-    const myLikes = new Set(get().myLikes);
-    const currentLikes = get().likes;
-    let likeCount = currentLikes[messageId] || 0;
-    let action: 'like' | 'unlike'; // 액션을 저장할 변수
+  // 이모지 버튼 선택 시 동작할 함수
+  toggleEmoji: (messageId, emojiType, action) => {
+    set((state) => ({
+      messages: state.messages.map((msg) => {
+        if (msg.msgId === messageId) {
+          const currentCount = msg[emojiType as keyof Message] as number || 0;
+          const newCount = action === 'like' ? currentCount + 1 : Math.max(0, currentCount - 1);
 
-    if (myLikes.has(messageId)) {
-      myLikes.delete(messageId);
-      likeCount--;
-      action = 'unlike'; // '좋아요 취소' 액션
-    } else {
-      myLikes.add(messageId);
-      likeCount++;
-      action = 'like'; // '좋아요 추가' 액션
-    }
+          return {
+            ...msg,
+            [emojiType]: newCount, // 이모지 카운트 직접 업데이트
+            myToggle: {
+              ...msg.myToggle,
+              [emojiType]: action === 'like' // 내가 눌렀는지 상태 업데이트
+            }
+          };
+        }
+        return msg;
+      }),
+      sendEmojiFlag: true // 이모지 전송 플래그 설정
+    }));
   }
 }));
 

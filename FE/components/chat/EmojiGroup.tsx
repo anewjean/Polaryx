@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
+import { useMessageStore } from '@/store/messageStore';
 
 interface EmojiGroupMenuProps {
   msgId: number;
@@ -31,10 +32,27 @@ const emojiData = [
   { emoji: '❤️', count: 5, name: 'like' },
 ];
 
+// 이모지를 myToggle 키명으로 변환 (내 선택 상태용)
+const emojiToggleMap: Record<string, string> = {
+  '✅': 'check',
+  '🙏': 'pray', 
+  '✨': 'sparkle',
+  '👏': 'clap',
+  '❤️': 'like'
+};
+
 export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) {
 
   // 클릭된 이모지 상태 관리
   const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
+
+  // 이모지 버튼 클릭 시 동작할 함수
+  const toggleEmoji = useMessageStore((state) => state.toggleEmoji);
+  
+  // 현재 메시지 정보 가져오기
+  const currentMessage = useMessageStore((state) => 
+    state.messages.find(msg => msg.msgId === msgId)
+  );
 
   const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emoji: string) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -58,7 +76,16 @@ export function EmojiGroupMenu({ msgId, userId, onClose }: EmojiGroupMenuProps) 
     
     setTimeout(() => {
       onClose();
-    }, 200); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.    
+    }, 200); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
+    
+    // 이모지 선택 유무 확인
+    const toggleKey = emojiToggleMap[emoji];   
+    
+    // 현재 사용자가 이 이모지를 이미 눌렀는지 확인 (myToggle 키 사용)
+    const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
+    const action = isAlreadyToggled ? 'unlike' : 'like';
+    
+    toggleEmoji(msgId, userId, toggleKey, action);
   };
 
   return (
@@ -86,6 +113,14 @@ export function EmojiGroup({ msgId, userId, checkCnt, prayCnt, sparkleCnt, clapC
     // 클릭된 이모지 상태 관리
     const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
 
+      // 이모지 버튼 클릭 시 동작할 함수
+    const toggleEmoji = useMessageStore((state) => state.toggleEmoji);
+    
+    // 현재 메시지 정보 가져오기
+    const currentMessage = useMessageStore((state) => 
+      state.messages.find(msg => msg.msgId === msgId)
+    );
+
     const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emoji: string) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const origin = {
@@ -105,6 +140,16 @@ export function EmojiGroup({ msgId, userId, checkCnt, prayCnt, sparkleCnt, clapC
         decay: 0.94,
         startVelocity: 35,
       });
+      
+      // 이모지 선택 유무 확인
+      const toggleKey = emojiToggleMap[emoji];
+      if (!toggleKey) return;
+      
+      // 현재 사용자가 이 이모지를 이미 눌렀는지 확인
+      const isAlreadyToggled = currentMessage?.myToggle?.[toggleKey] || false;
+      const action = isAlreadyToggled ? 'unlike' : 'like';
+      
+      toggleEmoji(msgId, userId, toggleKey, action);
     };
 
   return (

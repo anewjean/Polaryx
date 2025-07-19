@@ -7,7 +7,6 @@ import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SSEListener } from "../sse/SSEListener";
 import { WebSocketLikeClient } from "../ws/webSocketLikeClient";
-import { useLikeStore } from "@/store/likeStore";
 
 function SkeletonChat() {
   return (
@@ -32,8 +31,7 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
-  // 스토어에서 상태와 액션을 모두 가져옵니다.
-  const { likes, myLikes, setInitialState } = useLikeStore();
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
@@ -60,20 +58,12 @@ export function ChatPage({
           };
         });
         setMessages(new_messages);
-        ///////////////////////////////////////////////////////////////
-        // 스토어의 초기 상태를 한 번에 설정합니다.
-        setInitialState(initialLikesData, initialMyLikesData);
-        ///////////////////////////////////////////////////////////////
       } else {
         setMessages([]);
-        ///////////////////////////////////////////////////////////////
-        // 초기 상태 설정
-        setInitialState({}, []);
-        ///////////////////////////////////////////////////////////////
       }
       setIsLoading(false);
     })();
-  }, [workspaceId, tabId, setMessages, setInitialState]);
+  }, [workspaceId, tabId, setMessages]);
 
   // 새로운 메세지가 추가되었을 때,
   useEffect(() => {
@@ -119,10 +109,6 @@ export function ChatPage({
           };
         });
         prependMessages(new_messages);
-        ///////////////////////////////////////////////////////////////
-        // 스토어의 초기 상태를 한 번에 설정합니다.
-        setInitialState(initialLikesData, initialMyLikesData);
-        ///////////////////////////////////////////////////////////////
         requestAnimationFrame(() => {
             const newHeight = el.scrollHeight;
             el.scrollTop = newHeight - previousHeight;
@@ -214,13 +200,7 @@ export function ChatPage({
                 sparkleCnt={msg.sparkleCnt}
                 clapCnt={msg.clapCnt}
                 likeCnt={msg.likeCnt}
-                myToggle={
-                  clap={msg.myToggle.clap},
-                  pray={msg.myToggle.pray},
-                  sparkle={msg.myToggle.sparkle},
-                  check={msg.myToggle.check},
-                  like={msg.myToggle.like}
-                }
+                myToggle={msg.myToggle}                  
               />
             </React.Fragment>
           );
