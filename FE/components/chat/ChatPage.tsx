@@ -209,9 +209,12 @@ export function ChatPage({
                 showProfile={showProfile}
                 fileUrl={msg.fileUrl}
                 isUpdated={msg.isUpdated}
-                likeCount={likes[msg.msgId || 0] || 0}
-                // 스토어에서 '내가 좋아요 눌렀는지' 여부를 가져와 전달합니다.
-                isLikedByMe={myLikes.has(msg.msgId || 0)}
+                checkCnt={msg.e_check_cnt}
+                prayCnt={msg.e_pray_cnt}
+                sparkleCnt={msg.e_sparkle_cnt}
+                clapCnt={msg.e_clap_cnt}
+                likeCnt={msg.like_count}                
+                myToggle={msg.my_toggle}
               />
             </React.Fragment>
           );
