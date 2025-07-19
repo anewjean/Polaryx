@@ -7,6 +7,7 @@ import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SSEListener } from "../sse/SSEListener";
 import { WebSocketLikeClient } from "../ws/webSocketLikeClient";
+import { WebSocketProfileClient } from "../ws/webSocketProfileClient";
 
 function SkeletonChat() {
   return (
@@ -138,6 +139,7 @@ export function ChatPage({
     >
       <SSEListener />
       <WebSocketLikeClient workspaceId={workspaceId} tabId={tabId} />
+      <WebSocketProfileClient workspaceId={workspaceId} tabId={tabId} />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
       <div className="text-m pl-5 w-full">
         {messages.map((msg, idx) => {

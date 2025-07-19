@@ -18,11 +18,10 @@ import uuid
 import re
 
 router = APIRouter()
-#############################################################
-# 1. ConnectionManager를 두 개 생성합니다.
+
 message_connection = ConnectionManager()
 like_connection = ConnectionManager()
-#############################################################
+profile_connection = ConnectionManager()
 
 message_service = MessageService()
 workspace_member_service = WorkspaceMemberService()
@@ -43,10 +42,8 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
     workspace_member = None
     print("******************* ws endpoint *******************")
 
-    #############################################################
-    # 2. 메시지용 매니저를 사용합니다.
     await message_connection.connect(workspace_id, tab_id, websocket)
-    #############################################################
+
     try:
         while True:
             print("************* in while **************")
@@ -154,17 +151,13 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     content=clean_content,
                 )
     except WebSocketDisconnect:
-        #############################################################
         print("********* Message websocket disconnected *********")
-        # 4. 연결 해제도 메시지용 매니저로 합니다.
         message_connection.disconnect(workspace_id, tab_id, websocket)
-        #############################################################
 
 @router.websocket("/like/{workspace_id}/{tab_id}")
 async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
     print("************* ws like endpoint ****************")
 
-    # 5. '좋아요'는 like_connection 매니저를 사용합니다.
     await like_connection.connect(workspace_id, tab_id, websocket)
     try:
         while True:
@@ -189,12 +182,8 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
                 print(f"Invalid like data received: {data}")
                 continue
 
-            # 2. '좋아요' 토글 서비스 로직 호출
-            # 이 서비스는 내부에 '좋아요' 추가/삭제 및 like_count 업데이트 로직을 포함하고,
             await message_service.toggle_like(tab_id, message_id, user_id, emoji_type, action)
 
-            # 3. 브로드캐스트할 페이로드(payload) 생성
-            # 프론트엔드가 받을 데이터 형식이므로 camelCase로 맞춰줍니다.
             payload = {
                 "type": "emoji",
                 "emojiType": emoji_type,
@@ -204,13 +193,45 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
             print(f"Broadcasting like update: {payload}")
 
-            # 6. 브로드캐스트도 '좋아요'용 매니저로 합니다.
             await like_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
 
     except WebSocketDisconnect:
         print("********* Like websocket disconnected *********")
-        # 7. 연결 해제도 '좋아요'용 매니저로 합니다.
         like_connection.disconnect(workspace_id, tab_id, websocket)
     except Exception as e:
         print(f"An error occurred in like websocket: {e}")
         like_connection.disconnect(workspace_id, tab_id, websocket)
+
+
+@router.websocket("/profile/{workspace_id}/{tab_id}")
+async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
+    print("************* ws profile endpoint ****************")
+
+    await profile_connection.connect(workspace_id, tab_id, websocket)
+    try:
+        while True:
+            print("********* profile in while **********")
+            raw_data = await websocket.receive_text()
+            data = json.loads(raw_data)
+            print(f"\n\n\profile data received: {data}")
+
+            sender_id = data["sender_id"]
+            nickname = data["nickname"]
+            image = data["image"]
+
+            payload = {
+                "sender_id": sender_id,
+                "nickname": nickname,
+                "image": image
+            }
+
+            print(f"Broadcasting like update: {payload}")
+
+            await profile_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+
+    except WebSocketDisconnect:
+        print("********* Like websocket disconnected *********")
+        profile_connection.disconnect(workspace_id, tab_id, websocket)
+    except Exception as e:
+        print(f"An error occurred in like websocket: {e}")
+        profile_connection.disconnect(workspace_id, tab_id, websocket)

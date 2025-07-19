@@ -33,9 +33,11 @@ interface MessageStore {
   // 메시지 전송 trigger
   sendFlag: boolean;
   sendEmojiFlag: boolean;
+  sendEditFlag: boolean;
   setSendFlag: (flag: boolean) => void;
   setSendEmojiFlag: (flag: boolean) => void;
-
+  setSendEditFlag: (flag: boolean) => void;
+  
   // 메시지 저장
   messages: Message[];
   setMessages: (msg: Message[]) => void;
@@ -73,6 +75,10 @@ interface MessageStore {
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
   toggleEmoji: (messageId: number, userId: string, emojiType: string, action: 'like' | 'unlike') => void;
+
+  // 프로필 수정 시 웹소켓 기능
+  editTarget: Record<string, string>;
+  editProfile: (editName: string, editImage: string| undefined) => void;
 
 }
 
@@ -210,6 +216,23 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       }),
       sendEmojiFlag: true // 이모지 전송 플래그 설정
     }));
-  }
+  },
+
+  // Edit Profile 기능
+  sendEditFlag: false,
+  setSendEditFlag: (flag) => set({sendEditFlag : flag}),
+  
+  
+  editTarget: {"":""},
+  editProfile: (editName, editImage) => {
+    set((state) => ({
+      editTarget:{
+        "nickname": editName,
+        "image": editImage ? editImage:"none"
+      },
+      sendEditFlag: true
+    }));
+  },
+
 }));
 

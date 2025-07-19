@@ -32,7 +32,7 @@ export default function ProfilePage() {
   // store에서 targetId 가져오기
   const { isOpen, userId: bufferTargetId } = useProfileStore();
   const { uploadToS3 } = useProfileImageUpload();
-  const updateUserProfile = useMessageStore((s) => s.updateUserProfile);
+  const editProfile = useMessageStore((s) => s.editProfile);
 
   // 프로필 닫기 시 실행할 함수형 변수 선언
   const close = useProfileStore((s) => s.setClose);
@@ -126,7 +126,7 @@ export default function ProfilePage() {
         profileUpdates.image = preview;
       }
 
-      updateUserProfile(myUserId!, profileUpdates); // myUserId가 없으면 error 날 거임. refactoring 필요함
+      editProfile(profileUpdates.nickname, profileUpdates.image); // myUserId가 없으면 error 날 거임. refactoring 필요함
     } catch (error) {
       console.error(error);
       alert("프로필 수정에 실패했습니다.");
