@@ -43,6 +43,16 @@ INSERT emoji (msg_id, e_like, user_id)
 VALUE (%(msg_id)s, 1, %(sender_id)s)
 """
 
+insert_emoji_pray = """
+INSERT emoji (msg_id, e_pray, user_id)
+VALUE (%(msg_id)s, 1, %(sender_id)s)
+"""
+
+insert_emoji_sparkle = """
+INSERT emoji (msg_id, e_sparkle, user_id)
+VALUE (%(msg_id)s, 1, %(sender_id)s)
+"""
+
 update_emoji_check = """
 UPDATE emoji
 SET e_check = 1
@@ -64,6 +74,20 @@ WHERE msg_id = %(msg_id)s
   AND user_id = %(sender_id)s
 """
 
+update_emoji_pray = """
+UPDATE emoji
+SET e_pray = 1
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+update_emoji_sparkle = """
+UPDATE emoji
+SET e_sparkle = 1
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
 minus_emoji_check = """
 UPDATE emoji
 SET e_check = 0
@@ -81,6 +105,20 @@ WHERE msg_id = %(msg_id)s
 minus_emoji_like = """
 UPDATE emoji
 SET e_like = 0
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+minus_emoji_pray = """
+UPDATE emoji
+SET e_pray = 0
+WHERE msg_id = %(msg_id)s
+  AND user_id = %(sender_id)s
+"""
+
+minus_emoji_sparkle = """
+UPDATE emoji
+SET e_sparkle = 0
 WHERE msg_id = %(msg_id)s
   AND user_id = %(sender_id)s
 """
@@ -109,6 +147,18 @@ WHERE msg_id = %(msg_id)s
   AND e_like = 1;
 """
 
+count_prays = """
+SELECT COUNT(*) FROM emoji
+WHERE msg_id = %(msg_id)s
+  AND e_pray = 1;
+"""
+
+count_sparkles = """
+SELECT COUNT(*) FROM emoji
+WHERE msg_id = %(msg_id)s
+  AND e_sparkle = 1;
+"""
+
 update_check_cnt = """
 UPDATE messages
 SET 
@@ -127,6 +177,20 @@ update_like_cnt = """
 UPDATE messages
 SET 
     like_cnt = %(cnt)s
+WHERE id = %(msg_id)s;
+"""
+
+update_pray_cnt = """
+UPDATE messages
+SET 
+    pray_cnt = %(cnt)s
+WHERE id = %(msg_id)s;
+"""
+
+update_sparkle_cnt = """
+UPDATE messages
+SET 
+    sparkle_cnt = %(cnt)s
 WHERE id = %(msg_id)s;
 """
 
@@ -194,9 +258,13 @@ SELECT
     m.check_cnt,
     m.clap_cnt,
     m.like_cnt,
+    m.pray_cnt,
+    m.sparkle_cnt,
     e.e_check,
     e.e_clap,
-    e.e_like
+    e.e_like,
+    e.e_pray,
+    e.e_sparkle
 FROM messages m
 JOIN workspace_members wm ON m.sender_id = wm.user_id
 LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
@@ -224,9 +292,13 @@ SELECT
     m.check_cnt,
     m.clap_cnt,
     m.like_cnt,
+    m.pray_cnt,
+    m.sparkle_cnt,
     e.e_check,
     e.e_clap,
-    e.e_like
+    e.e_like,
+    e.e_pray,
+    e.e_sparkle
 FROM messages m
 JOIN workspace_members wm ON m.sender_id = wm.user_id
 LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
@@ -331,6 +403,10 @@ class QueryRepo(AbstractQueryRepo):
                 sql = insert_emoji_check
             elif emoji.emoji_type == "clap":
                 sql = insert_emoji_clap
+            elif emoji.emoji_type == "sparkle":
+                sql = insert_emoji_clap
+            elif emoji.emoji_type == "pray":
+                sql = insert_emoji_pray
             else:
                 sql = insert_emoji_like
         else:
@@ -338,6 +414,10 @@ class QueryRepo(AbstractQueryRepo):
                 sql = update_emoji_check
             elif emoji.emoji_type == "clap":
                 sql = update_emoji_clap
+            elif emoji.emoji_type == "sparkle":
+                sql = update_emoji_sparkle
+            elif emoji.emoji_type == "pray":
+                sql = update_emoji_pray
             else:
                 sql = update_emoji_like
         return self.db.execute(sql, params)
@@ -359,6 +439,10 @@ class QueryRepo(AbstractQueryRepo):
             sql = minus_emoji_check
         elif emoji.emoji_type == "clap":
             sql = minus_emoji_clap
+        elif emoji.emoji_type == "sparkle":
+            sql = minus_emoji_sparkle
+        elif emoji.emoji_type == "pray":
+            sql = minus_emoji_pray
         else:
             sql = minus_emoji_like
         self.db.execute(sql, params)
@@ -385,6 +469,10 @@ class QueryRepo(AbstractQueryRepo):
             sql = count_checks
         elif emoji.emoji_type == "clap":
             sql = count_claps
+        elif emoji.emoji_type == "sparkle":
+            sql = count_sparkles
+        elif emoji.emoji_type == "pray":
+            sql = count_prays
         else:
             sql = count_likes
         res = self.db.execute(sql, params)
@@ -398,6 +486,10 @@ class QueryRepo(AbstractQueryRepo):
             sql = update_check_cnt
         elif emoji.emoji_type == "clap":
             sql = update_clap_cnt
+        elif emoji.emoji_type == "sparkle":
+            sql = update_sparkle_cnt
+        elif emoji.emoji_type == "pray":
+            sql = update_pray_cnt            
         else:
             sql = update_like_cnt
         return self.db.execute(sql, params)

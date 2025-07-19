@@ -48,6 +48,13 @@ async def find_all_messages(workspace_id: int, tab_id: int, before_id: int = Que
     # [11]: m.check_cnt
     # [12]: m.clap_cnt
     # [13]: m.like_cnt
+    # [14]: m.pray_cnt,
+    # [15]: m.sparkle_cnt,
+    # [16]: e.e_check,
+    # [17]: e.e_clap,
+    # [18]: e.e_like,
+    # [19]: e.e_pray,
+    # [20]: e.e_sparkle
     
     # 원래 로직
     messages = [MessageSchema.from_row(row) for row in rows]

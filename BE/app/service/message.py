@@ -20,7 +20,6 @@ class MessageService:
     
     async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool) -> None:
         emoji = Emoji.of(tab_id, user_id, msg_id, type)
-        
         if (plus):
             self.message_repo.plus_emoji(emoji)
         else:
