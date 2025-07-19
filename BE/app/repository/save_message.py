@@ -59,17 +59,25 @@ class SaveMessageRepo(AbstractQueryRepo):
         return self.db.execute(insert_message, params)
 
     async def find_all_by_user(self, user_id: UUID, workspace_id: int) -> List[SaveMessage]:
+        user_id_bytes = (
+            user_id.bytes if isinstance(user_id, UUID)
+            else UUID(str(user_id)).bytes
+        )
         params = {
-            "user_id": user_id.bytes,
+            "user_id": user_id_bytes,
             "workspace_id": workspace_id
         }
-        rows = await self.db.fetch_all(find_all_by_user, params)
+        rows = self.db.execute(find_all_by_user, params)
         return [SaveMessage.from_row(row) for row in rows]
 
     async def delete_by_id(self, message_id: int, user_id: UUID):
+        user_id_bytes = (
+            user_id.bytes if isinstance(user_id, UUID)
+            else UUID(str(user_id)).bytes
+        )
         params = {
             "message_id": message_id,
-            "current_user_id": user_id.bytes,
+            "current_user_id": user_id_bytes,
             "deleted_at": datetime.now()
         }
-        await self.db.execute(delete_message, params)
+        self.db.execute(delete_message, params)

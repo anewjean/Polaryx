@@ -11,11 +11,10 @@ router = APIRouter()
 service = SaveMessageService()
 
 
-@router.post("/save-messages", status_code=201, response_model=SaveMessageSchema)
+@router.post("/save-messages", status_code=201)
 async def save_message(req: SaveMessageCreate, current_user=Depends(get_current_user)):
-    message = await service.save(current_user["user_id"], req.workspace_id, req.content)
-    return SaveMessageSchema.from_domain(message)
-
+    await service.save(current_user["user_id"], req.workspace_id, req.content)
+    return {"success": True}
 
 
 @router.get("/save-messages", response_model=List[SaveMessageSchema])
