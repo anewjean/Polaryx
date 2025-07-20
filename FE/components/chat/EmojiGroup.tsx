@@ -50,41 +50,6 @@ export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, spar
   const { toggleEmoji, setTargetEmoji, setAction, toggleMyEmoji } = useMessageStore();
 
   const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emojiSymbol: string) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const origin = {
-      x: (rect.left + rect.right) / 2 / window.innerWidth,
-      y: (rect.top + rect.bottom) / 2 / window.innerHeight,
-    };
-
-    // 분수대 효과 - 솟구쳤다가 빠른 자유낙하 + 1초간 파티클 반복 생성
-    const createFountainEffect = () => {
-      confetti({
-        origin: origin,
-        particleCount: 2, // 적은 개수로 여러 번 생성
-        spread: 25, // 적당한 퍼짐
-        angle: 90, // 위쪽 방향
-        scalar: 1.8, // 이모지 크기
-        ticks: 600, // 짧은 지속시간으로 빠른 낙하
-        gravity: 7.5, // 강한 중력으로 빠른 자유낙하
-        decay: 0.9, // 적당한 페이드아웃
-        startVelocity: 30, // 적당한 초기 속도
-        flat: true, // 2D 평면 효과
-        shapes: [confetti.shapeFromText({ text: emojiSymbol, scalar: 2 })],
-        drift: 0, // 수직 낙하
-      });
-    };
-
-    // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
-    createFountainEffect(); // 즉시 첫 번째 실행
-    const intervals = [];
-    for (let i = 1; i < 5; i++) {
-      const timeoutId = setTimeout(createFountainEffect, i * 100);
-      intervals.push(timeoutId);
-    }    
-    
-    setTimeout(() => {
-      onClose();
-    }, 600); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
     
     const emojiType = emojiSymbolMap[emojiSymbol];
     if (!emojiType) return;
@@ -94,8 +59,46 @@ export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, spar
     };
     const currentCount = countMap[emojiType];
     const isAlreadyToggled = myToggle[emojiType];
-    const action = isAlreadyToggled ? 'unlike' : 'like';
+    const action = isAlreadyToggled ? 'unlike' : 'like';    
     
+    if (!myToggle[emojiType]) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const origin = {
+        x: (rect.left + rect.right) / 2 / window.innerWidth,
+        y: (rect.top + rect.bottom) / 2 / window.innerHeight,
+      };
+
+      // 분수대 효과 - 솟구쳤다가 빠른 자유낙하 + 1초간 파티클 반복 생성
+      const createFountainEffect = () => {
+        confetti({
+          origin: origin,
+          particleCount: 2, // 적은 개수로 여러 번 생성
+          spread: 25, // 적당한 퍼짐
+          angle: 90, // 위쪽 방향
+          scalar: 1.8, // 이모지 크기
+          ticks: 600, // 짧은 지속시간으로 빠른 낙하
+          gravity: 7.5, // 강한 중력으로 빠른 자유낙하
+          decay: 0.9, // 적당한 페이드아웃
+          startVelocity: 30, // 적당한 초기 속도
+          flat: true, // 2D 평면 효과
+          shapes: [confetti.shapeFromText({ text: emojiSymbol, scalar: 2 })],
+          drift: 0, // 수직 낙하
+        });
+      };
+
+      // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
+      createFountainEffect(); // 즉시 첫 번째 실행
+      const intervals = [];
+      for (let i = 1; i < 5; i++) {
+        const timeoutId = setTimeout(createFountainEffect, i * 100);
+        intervals.push(timeoutId);
+      }    
+      
+      setTimeout(() => {
+        onClose();
+      }, 600); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
+    }
+        
     // UI를 즉시 업데이트하기 위해 새로운 액션을 먼저 호출합니다.
     toggleMyEmoji(msgId, emojiType);
     
@@ -138,38 +141,41 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
     ];
 
     const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emojiType: EmojiType, currentCount: number) => {
-      const emojiSymbol = emojis.find(em => em.type === emojiType)?.symbol || '';
-      const rect = e.currentTarget.getBoundingClientRect();
-      const origin = {
-        x: (rect.left + rect.right) / 2 / window.innerWidth,
-        y: (rect.top + rect.bottom) / 2 / window.innerHeight,
-      };
-  
-      const createFountainEffect = () => confetti({
-        origin: origin, 
-        particleCount: 2,
-        spread: 25,
-        angle: 90,
-        scalar: 1.8,
-        ticks: 600,
-        gravity: 7.5,
-        decay: 0.9,
-        startVelocity: 30,
-        flat: true,
-        shapes: [confetti.shapeFromText({ text: emojiSymbol, scalar: 2 })],
-        drift: 0,
-      });
-
-      // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
-      createFountainEffect(); // 즉시 첫 번째 실행
-      const intervals = [];
-      for (let i = 1; i < 5; i++) {
-        const timeoutId = setTimeout(createFountainEffect, i * 100);
-        intervals.push(timeoutId);
-      }
       
       const isAlreadyToggled = myToggle[emojiType];
       const action = isAlreadyToggled ? 'unlike' : 'like';
+      const emojiSymbol = emojis.find(em => em.type === emojiType)?.symbol || '';
+
+      if (!myToggle[emojiType]) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const origin = {
+          x: (rect.left + rect.right) / 2 / window.innerWidth,
+          y: (rect.top + rect.bottom) / 2 / window.innerHeight,
+        };
+    
+        const createFountainEffect = () => confetti({
+          origin: origin, 
+          particleCount: 2,
+          spread: 25,
+          angle: 90,
+          scalar: 1.8,
+          ticks: 600,
+          gravity: 7.5,
+          decay: 0.9,
+          startVelocity: 30,
+          flat: true,
+          shapes: [confetti.shapeFromText({ text: emojiSymbol, scalar: 2 })],
+          drift: 0,
+        });
+
+        // 1초간 파티클 반복 생성 (100ms 간격으로 10번)
+        createFountainEffect(); // 즉시 첫 번째 실행
+        const intervals = [];
+        for (let i = 1; i < 5; i++) {
+          const timeoutId = setTimeout(createFountainEffect, i * 100);
+          intervals.push(timeoutId);
+        }       
+      }
       
       // UI를 즉시 업데이트하기 위해 새로운 액션을 먼저 호출합니다.
       toggleMyEmoji(msgId, emojiType);
