@@ -81,39 +81,39 @@ export default function SearchAutocomplete() {
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="w-32 justify-start bg-gray-700 rounded-r-none hover:bg-gray-600 inline-flex items-center space-x-1"
+            className="w-32 justify-between bg-gray-700 rounded-r-none hover:bg-gray-600 space-x-1"
           >
-            <ChevronDown className="h-3 w-3 mx-[-3px]" />
             {searchMode === "user" ? (
-              <>
+              <div className="inline-flex items-center space-x-2">
                 <User className="h-4 w-4" />
-                <span>Users</span>
-              </>
+                <span>User</span>
+              </div>
             ) : (
-              <>
+              <div className="inline-flex items-center space-x-2">
                 <MessageSquare className="h-4 w-4" />
-                <span>Messages</span>
-              </>
+                <span>Message</span>
+              </div>
             )}
+            <ChevronsUpDown className="h-3 w-3 ml-[-3px]" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-30 py-[2px] text-white" align="start">
+        <PopoverContent className="w-32 py-[2px] text-white" align="start">
           <div>
             <Button
-              className={`w-full justify-start text-sm ${searchMode === "user" ? "bg-gray-700" : "bg-gray-500"}`}
+              className={`w-full justify-start text-sm bg-gray-700`}
               onClick={() => handleModeSelect("user")}
             >
               <User className="size-4" />
-              Users
+              User
             </Button>
             <hr className="border-gray-500" />
             <Button
-              className={`w-full justify-start text-sm ${searchMode === "user" ? "bg-gray-700" : "bg-gray-500"}`}
+              className={`w-full justify-start text-sm bg-gray-700`}
               onClick={() => handleModeSelect("tab")}
               disabled={!tabId}
             >
               <MessageSquare className="size-4" />
-              Messages
+              Message
             </Button>
           </div>
         </PopoverContent>
@@ -134,7 +134,7 @@ export default function SearchAutocomplete() {
 
       {/* User Search Results */}
       {searchMode === "user" && results.length > 0 && (
-        <ul className="absolute z-50 mt-1 top-full left-0 right-0 max-h-60 overflow-y-auto bg-white border rounded-md shadow">
+        <ul className="absolute z-10 mt-1 top-full left-32 right-0 max-h-60 overflow-y-auto bg-white border rounded-md shadow">
           {results.map((u) => (
             <li
               key={u.user_id}
@@ -146,15 +146,15 @@ export default function SearchAutocomplete() {
               >
                 <img
                   src={u.image || "/user_default.png"}
-                  className="w-6 h-6 rounded-md bg-gray-400 object-cover"
+                  className="w-8 h-8 rounded-md bg-gray-400 object-cover mr-1"
                 />
-                <span className="text-sm text-gray-800">{u.nickname}</span>
+                <span className="text-m-bold text-black">{u.nickname}</span>
               </div>
               <Button
                 onClick={() => createDM(u.user_id)}
                 variant="ghost"
                 size="icon"
-                className="w-6 h-6"
+                className="w-6 h-6 cursor-pointer"
               >
                 <AtSign className="size-4 text-gray-500" />
               </Button>
