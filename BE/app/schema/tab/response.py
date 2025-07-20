@@ -16,8 +16,11 @@ class TabInfo(BaseModel):
         if section_id == 4: # dm인 경우
             member_names = tab_name.split(", ")
             if (len(member_names) > 1):
-                member_names.remove(user_name)
-                tab_name = ", ".join(member_names) # 나와의 dm이 아니면 tab_name에서 user_name 빼고 사용
+                try:
+                    member_names.remove(user_name)
+                    tab_name = ", ".join(member_names) # 나와의 dm이 아니면 tab_name에서 user_name 빼고 사용
+                except ValueError as e: 
+                    pass   
         
         return cls(
             tab_id=row[0],
@@ -44,8 +47,11 @@ class TabDetailInfo(BaseModel):
         if section_id == 4: # dm인 경우
             member_names = tab_name.split(", ")
             if (len(member_names) > 1):
-                member_names.remove(user_name)
-                tab_name = ", ".join(member_names) # 나와의 dm이 아니면 tab_name에서 user_name 빼고 사용
+                try:
+                    member_names.remove(user_name)
+                    tab_name = ", ".join(member_names) # 나와의 dm이 아니면 tab_name에서 user_name 빼고 사용
+                except ValueError as e:
+                    pass
 
         return cls(
             tab_id=row[0],

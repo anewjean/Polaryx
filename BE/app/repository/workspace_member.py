@@ -7,6 +7,7 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from app.domain.workspace_member import WorkspaceMember
 
+# users email 중복 문제 해결
 insert_workspace_member = """
 INSERT INTO workspace_members (
     id, user_id, workspace_id, nickname, email, github, blog
@@ -21,6 +22,7 @@ SELECT
     %(blog)s AS blog
 FROM users u
 WHERE u.email = %(email)s
+  AND u.workspace_id = %(workspace_id)s
   AND NOT EXISTS (
     SELECT 1 
     FROM workspace_members wm 
@@ -126,6 +128,34 @@ WHERE id = %(workspace_members_id)s
   AND deleted_at IS NULL;
 """
 
+# find_by_user_all_workspace_id = """
+# SELECT 
+#     wm.workspace_id, 
+#     w.name AS workspace_name
+# FROM workspace_members wm
+# JOIN workspaces w ON wm.workspace_id = w.id
+# WHERE wm.user_id = %(user_id)s
+#   AND wm.workspace_id != %(workspace_id)s
+#   AND wm.deleted_at IS NULL;
+# """
+
+find_by_user_all_workspace_id = """
+SELECT 
+    wm.workspace_id, 
+    w.name AS workspace_name,
+    (
+        SELECT MIN(tm.tab_id)
+        FROM tab_members tm
+        WHERE tm.user_id = wm.user_id
+          AND tm.workspace_id = wm.workspace_id
+    ) AS min_tab_id
+FROM workspace_members wm
+JOIN workspaces w ON wm.workspace_id = w.id
+WHERE wm.user_id = %(user_id)s
+  AND wm.workspace_id != %(workspace_id)s
+  AND wm.deleted_at IS NULL;
+"""
+
 #검색
 search_workspace_members = """
 SELECT
@@ -213,6 +243,13 @@ class QueryRepo(AbstractQueryRepo):
             "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat()
         }
         return self.db.execute(delete_wm_by_id, params)
+
+    def find_by_user_all_workspace_id(self, user_id: str, workspace_id: str):
+        param = {
+            "user_id": UUID(user_id).bytes,
+            "workspace_id": workspace_id
+        }
+        return self.db.execute(find_by_user_all_workspace_id, param)
     
     def search_members(self, workspace_id: int, keyword: str) -> List[WorkspaceMember]:
         params = {

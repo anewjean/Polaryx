@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ExUpload } from "@/components/excel_import/exImportButton";
 import { resetDB } from "@/apis/resetApi";
 import SearchAutocomplete from "@/components/search/SearchAutocomplete";
+
 export default function WorkspacesLayout({
   children,
 }: {
@@ -25,7 +26,7 @@ export default function WorkspacesLayout({
         </span>
       </div>
         <div className="flex flex-row items-center gap-2">
-          <SearchAutocomplete />
+          <SearchAutocomplete />               
           <Button
             variant="destructive"
             onClick={resetDB}>
@@ -33,7 +34,7 @@ export default function WorkspacesLayout({
             </Button>
         </div>
       </header>
-      <main className="flex flex-1 min-h-0 overflow-hidden flex-row break-all">
+      <main className="flex w-full h-full overflow-hidden flex-row break-all">
         {children}
       </main>
     </div>

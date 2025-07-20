@@ -28,6 +28,7 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
+import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
 import { ClipboardPlus, ClipboardX } from "lucide-react";
 import SaveMessages from "./SaveMessages";
 import { addSaveMessage } from "@/apis/saveMessageApi";
@@ -58,7 +59,7 @@ export function TipTap() {
 
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
-  
+
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
@@ -94,6 +95,7 @@ export function TipTap() {
       editable: true,
       extensions: [
         StarterKit, // 핵심 확장 모음
+        FileDownloadExtension, // 문제시 당장 삭제
         Placeholder.configure({
           // placeholder가 뭐임?
           placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
@@ -274,13 +276,11 @@ export function TipTap() {
     editor?.commands.clearContent();
   };
 
-  
   // 저장 메시지 추가
   const handleAddSaveMessage = async (content: string) => {
     try {
       // zustand 스토어의 add 액션만 호출하면 내부에서 API 요청을 수행한다
       await add(workspaceId, userId!, content);
-
     } catch {
       toast.error("저장 메시지 추가에 실패했습니다.", { icon: <Ban /> });
     }
@@ -321,7 +321,9 @@ export function TipTap() {
     return null;
   }
   return (
-    <div className={`chat-text-area ${createSaveMessage ? "ring-2 ring-red-300" : ""}`}>
+    <div
+      className={`chat-text-area ${createSaveMessage ? "ring-2 ring-red-300" : ""}`}
+    >
       <input
         ref={fileInputRef}
         type="file"
@@ -329,7 +331,7 @@ export function TipTap() {
         onChange={handleFileSelect}
         style={{ display: "none" }}
       />
-      
+
       <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
         <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
         {/* 북마크 버튼 누르면 팝오버 열기 */}
@@ -340,7 +342,10 @@ export function TipTap() {
         >
           {createSaveMessage ? (
             // 저장 가능 상태면, 빨간색의 엑스 버튼을 보여줌
-            <ClipboardX onClick={() => setCreateSaveMessage(false)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-red-300" />
+            <ClipboardX
+              onClick={() => setCreateSaveMessage(false)}
+              className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-red-300"
+            />
           ) : (
             // 아니라면 파란색의 플러스 버튼 보여줌
             <ClipboardPlus
@@ -396,7 +401,7 @@ export function TipTap() {
             }
           }}
         />
-        
+
         {/* 저장 메시지 추가 버튼 */}
         {createSaveMessage && (
           <Button
