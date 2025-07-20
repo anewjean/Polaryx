@@ -40,52 +40,32 @@ def strip_tags(text: str) -> str:
 @router.websocket("/{workspace_id}/{tab_id}")
 async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: int):
     workspace_member = None
-    print("******************* ws endpoint *******************")
-
     await message_connection.connect(workspace_id, tab_id, websocket)
 
     try:
         while True:
-            print("************* in while **************")
+            print("************* in ws endpoint, while **************")
             raw_data = await websocket.receive_text()
-            print("************* raw_data **************")
 
-            # print(raw_data)
             data = json.loads(raw_data)
             type = data.get("type")
-            print("\n\ntype: ", type)
             if type == "send":
                 sender_id = (data.get("sender_id"))
                 content = data.get("content")
-                print("content: ", content)
-                # 추가
                 file_data = data.get("file_url")
-                print("file_url: ", file_data)
                 
                 clean_content = strip_tags(content)
 
-
                 workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
-                # 가져온 workspace_member data
-                # [0]: wm.user_id
-                # [1]: wm.workspace_id
-                # [2]: wm.nickname
-                # [3]: wm.email
-                # [4]: wm.image
-                # [5]: r.name AS role
-                # [6]: GROUP_CONCAT(DISTINCT g.name)
-                # [7]: wm.github
-                # [8]: wm.blog
                 
                 nickname = workspace_member[0][2]
                 image = workspace_member[0][4]
 
                 message_id = await message_service.save_message(tab_id, sender_id, content, file_data)
-                print("message_id: ", message_id)
 
                 payload = {
                     "type": "send",
-                    "file_url": file_data, # file_url 보내주기.
+                    "file_url": file_data,
                     "content": content,
                     "nickname": nickname,
                     "image": image,
@@ -93,6 +73,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     "message_id": message_id,
                     "sender_id": sender_id
                 }
+
                 # SSE 알림 전송
                 await send_sse_notification(
                     str(workspace_id),
@@ -106,27 +87,12 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     "sender_id": sender_id
                     }
                 )
-                # print(payload)
 
-                
-                # file_data_with_msg_id = {
-                #     "message_id": message_id,
-                #     "file_url": file_data
-                # }
-                # if file_data != None:
-                #     await message_service.save_file_to_db(file_data_with_msg_id)
-                #############################################################
                 await message_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
-                #############################################################
                 
                 members = tab_service.get_tab_members(workspace_id, tab_id)
                 tab_info = tab_service.find_tab(workspace_id, tab_id)
                 tab_name = tab_info[0][1]
-                #members = workspace_member_service.get_members_by_workspace_id(workspace_id)
-                # recipients = [str(uuid.UUID(bytes=row[0])) #자신 제외
-                #               for row in members
-                #               if row[0] != uuid.UUID(sender_id).bytes
-                #               ]
                 
                 sender_uuid = uuid.UUID(sender_id)
                 recipients = [
@@ -135,11 +101,6 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 if uuid.UUID(bytes=row[0]) != sender_uuid
                 ]
 
-                print("보내는 uuid", sender_id)
-                print("푸시 아이디", recipients)
-                
-                #recipients = [str(uuid.UUID(bytes=row[0])) for row in members] #자신 포함 
-                
                 await push_service.send_push_to(recipients, {
                     "title": tab_name,
                     "body": f"{nickname}: {clean_content}",
@@ -174,21 +135,17 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
 
 @router.websocket("/like/{workspace_id}/{tab_id}")
 async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
-    print("************* ws like endpoint ****************")
-
     await like_connection.connect(workspace_id, tab_id, websocket)
     try:
         while True:
-            print("********* like in while **********")
+            print("********* in ws like endpoint, while **********")
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
-            print(f"\n\n\nLike data received: {data}")
 
             user_id = data["userId"]
             message_id = data["messageId"]
             emoji_type = data["emojiType"]
             action = data["action"] == "like"
-            print("\naction: ", action)
             count = data["count"]
 
             if action:
@@ -209,8 +166,6 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
                 "count": count
             }
 
-            print(f"Broadcasting like update: {payload}")
-
             await like_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
 
     except WebSocketDisconnect:
@@ -223,15 +178,12 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
 @router.websocket("/profile/{workspace_id}/{tab_id}")
 async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, tab_id: int):
-    print("************* ws profile endpoint ****************")
-
     await profile_connection.connect(workspace_id, tab_id, websocket)
     try:
         while True:
-            print("********* profile in while **********")
+            print("********* in ws profile endpoint, while **********")
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
-            print(f"\n\n\profile data received: {data}")
 
             sender_id = data["sender_id"]
             nickname = data["nickname"]
@@ -242,8 +194,6 @@ async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, ta
                 "nickname": nickname,
                 "image": image
             }
-
-            print(f"Broadcasting like update: {payload}")
 
             await profile_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
 
