@@ -10,7 +10,7 @@ const chartData = { total: 1020, active: 82, completed: 908 }
 
 export default function LearnerCounts() {
     return (
-        <Card className="pt-8">
+        <Card className="pt-0">
             {/* 차트 제목 */}
             <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 text-lg">
                 <div className="grid flex-1 gap-1">

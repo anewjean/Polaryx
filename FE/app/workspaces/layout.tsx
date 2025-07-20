@@ -25,7 +25,7 @@ export default function WorkspacesLayout({
         </span>
       </div>
         <div className="flex flex-row items-center gap-2">
-          <SearchAutocomplete />
+          <SearchAutocomplete />               
           <Button
             variant="destructive"
             onClick={resetDB}>
