@@ -186,6 +186,27 @@ WHERE
   AND tm.id IS NULL;
 """
 
+find_group_name_by_id = """
+SELECT name FROM `groups`
+WHERE id = %(group_id)s
+  AND deleted_at IS NULL;
+"""
+
+insert_first_message = """
+INSERT INTO messages (tab_id, sender_id, content, sender_name, workspace_id)
+SELECT
+  %(tab_id)s AS tab_id,
+  %(user_id)s AS sender_id,
+  %(content)s AS content,  
+  wm.nickname As sender_name,
+  %(workspace_id)s AS workspace_id
+FROM
+  workspace_members wm
+WHERE
+  wm.user_id = %(user_id)s
+  AND deleted_at IS NULL;
+"""
+
 # 미완
 exit_tab_members_by_id = """
 DELETE FROM tab_members 
@@ -338,8 +359,9 @@ class TabRepository(AbstractQueryRepo):
         return res
     
     # 미완
-    def insert_group_members(self, workspace_id: int, tab_id: int, group_ids: List[str]):
+    def insert_group_members(self, workspace_id: int, tab_id: int, group_ids: List[str], user_id: str):
         res = 0
+        group_names = []
         for group_id in group_ids:
           params = {
               "workspace_id": workspace_id,
@@ -347,8 +369,12 @@ class TabRepository(AbstractQueryRepo):
               "group_id": int(group_id)
           }
           r = self.execute(insert_tab_group_members, params)
+          # group 이름 찾아와서 반환하고,
+          g_name_data = self.execute(find_group_name_by_id, params)
+          group_names.append(g_name_data[0][0])
           res += r["rowcount"]
-        return res
+
+        return [res, group_names]
 
     def insert_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         for user_id in user_ids:

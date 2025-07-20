@@ -229,12 +229,6 @@ export function ChatProfile({
                 <span className="text-xs chat-time-stamp">{time}</span>
               </div>
             )}
-            {fileUrl && isImageFile(fileUrl) && (
-              <ImageWithModal fileUrl={fileUrl} />
-            )}
-            {fileUrl && !isImageFile(fileUrl) && (
-              <FileDownload fileUrl={fileUrl} />
-            )}
 
             <div className="flex flex-wrap flex-row items-center message-content whitespace-pre-wrap break-words break-anywhere text-m">
               <div
@@ -250,6 +244,15 @@ export function ChatProfile({
                 </span>
               ) : null}
             </div>
+            {fileUrl && isImageFile(fileUrl) && (
+              <ImageWithModal fileUrl={fileUrl} />
+            )}
+
+            {fileUrl && !isImageFile(fileUrl) && (
+              <div className="mt-2">
+                <FileDownload fileUrl={fileUrl} />
+              </div>
+            )}
             <EmojiGroup
               msgId={msgId}
               onClose={closeEmojiGroup}

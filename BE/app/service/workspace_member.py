@@ -46,10 +46,10 @@ class WorkspaceMemberService:
         group_service.insert_group_member(data, insert_groups)
 
         # 역할 생성
-        role_service.insert_member_roles_bulk(data)
+        created_roles = role_service.insert_member_roles_bulk(data)
 
         return {
-        "success_count": len(data["users"])
+        "success_count": created_roles
     }
 
     def insert_workspace_member(self, data: dict, workspace_id: int):
@@ -88,10 +88,24 @@ class WorkspaceMemberService:
         members_infos = self.workspace_member_repo.find_by_user_workspace_id(workspace_id)
         return members_infos
 
-    def update_profile_by_user_id(self, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
+    def update_profile_by_user_id(self, workspace_id: int, user_id: UUID, payload: UpdateWorkspaceMemberRequest) -> WorkspaceMemberResponse:
         user_id_bytes = user_id.bytes  # BINARY(16)에 맞게 변환
+
+        # user_id로 찾은 모든 dm 방에서 user_id에 대한 이름 변경
+        tab_infos = tab_service.find_tabs(workspace_id, str(user_id))
+        for tab_info in tab_infos:
+            section_id = tab_info[2]
+            if section_id == 4: # dm에 인원 초대 시 tab_name 변경
+                tab_id = tab_info[0]
+                tab_name = tab_info[1].split(", ") 
+                user_name = self.get_member_by_user_id(user_id_bytes)[0][2]
+                tab_name.remove(user_name) # 변경 전 이름 삭제
+                tab_name.append(payload.nickname) # 변경된 이름 추가
+                tab_name = ", ".join(tab_name)
+                tab_service.modify_name(workspace_id, tab_id, tab_name)
+
         # 업데이트 쿼리는 영향받은 행 수만 반환하므로, 업데이트 후 다시 조회하여 데이터 반환
-        self.workspace_member_repo.update(user_id_bytes, payload)
+        self.workspace_member_repo.update(workspace_id, user_id_bytes, payload)
         updated_rows = self.workspace_member_repo.find_by_user_id(user_id_bytes)
         updated_member = WorkspaceMemberSchema.from_row(updated_rows[0])
 

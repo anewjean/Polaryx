@@ -210,7 +210,13 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      <p>백승현 게임테크랩 코치님 커피챗 희망하시는 분은 여기 스레드에 댓글로 남겨주세요!</p>
      <p><strong>승민)</strong> 승현코치님 시간 이슈로 세 분 밖에 커피챗이 불가하니, 질문을 취합한 후 세 분이 대표로 질문하는 형태로 하는 것이 어떨지 의견 드립니다!</p>',
      0, '최효식', '2025-03-13 15:10:00'),
-     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2025-03-13 15:20:11'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '김세현', '2025-03-13 15:20:11'),
+     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://velog.io/@qnfrma1997/%EC%A0%95%EA%B8%80-CPH-Competitive-Companion%EC%9D%8[…]EC%8A%A4%ED%8A%B8-%EC%84%A4%EC%A0%95-%EA%B0%80%EC%9D%B4%EB%93%9C">:펼쳐진_책:[정글]백준 자동 테스트 설정 가이드:펼쳐진_책:</a><br>백준 문제풀이에 도움되는 내용 공유합니다. 정글 301호 1주차 4팀 "윤석주"님이 알려주신 내용을 바탕으로 작성했습니다.</p>', 0, '박은범', '2025-03-13 15:30:18'),
+     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://testcase.ac/">https://testcase.ac/</a><br>백준 문제 반례찾는 사이트입니다. <br>디버깅할 때 도움되실 것 같아 올립니다.</p>', 0, '임준혁', '2025-03-13 15:40:18'),
+     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://file-import-s3-bucket.s3.amazonaws.com/uploads/250321_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EB%B2%95%20%ED%8A%B9%EA%B0%95.pdf">배상원 교수님 알고리즘 설계 기법 특강 정리한 pdf 파일도 공유드립니다~</a></p>', 0, '임구철', '2025-03-13 15:50:18'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html"><strong>Data Structure Visualizations</strong></a><br>알고리즘의 시각화로 이해를 돕는 사이트를 발견해 공유드립니다!</p>', 0, '최효식', '2025-03-13 16:00:28'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '<p>:확성기:<span class="font-bold">Q&A</span><br>조금 전 점심시간에 방효식 코치님께<br>퀴즈를 태블릿에다가 <code>디지타이저 펜(S펜, 애플펜슬)</code>을 이용해 푼 뒤<br>스크린샷으로 제출해도 되냐고 여쭤봤더니<br>그래도 된다고 하셨습니다.<br><br>참고하세요~</p>', 0, '정경호', '2025-03-13 16:20:12'),
+     (3, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '<p><strong>하노이의 탑 시뮬레이션</strong><br><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.mathsisfun.com/games/towerofhanoi.html">https://www.mathsisfun.com/games/towerofhanoi.html</a><br>칠판에 하노이탑 <code><strong>1,000번쯤</code></strong> 그리다 발견한 사이트입니다!!!</p>', 1, '이재웅', '2025-03-13 16:30:58');
      -- 이 부분 필요한가?
      (14, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '나 차은우임', 0, '이재웅', '2024-07-09 08:45:29'),
      (15, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '안녕~ 반가워~', 0, '신명훈', '2024-07-09 07:16:44'),
