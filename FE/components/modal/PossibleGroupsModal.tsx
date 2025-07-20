@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sidebar";
 import { InviteListItem } from "@/components/tab/InviteListItem";
 import { toast } from "sonner";
+import { useMessageStore } from "@/store/messageStore";
 
 export interface PossibleGroupsModalProps {
   workspaceId: string;
@@ -27,6 +28,7 @@ export function PossibleGroupsModal({
   onInviteComplete,
 }: PossibleGroupsModalProps) {
   const [selectedGroups, setSelectedGroups] = useState<Group[]>([]);
+  const {setMessage, setSendFlag} = useMessageStore();
 
   const toggleGroupSelect = (group: Group) => {
     setSelectedGroups((prev) =>
@@ -39,8 +41,18 @@ export function PossibleGroupsModal({
   const handleInvite = () => {
     const group_ids = selectedGroups.map((g) => String(g.group_id));
     postGroupList(workspaceId, tabId, group_ids)
-      .then(() => {
+      .then((res) => {
         toast.success("그룹이 성공적으로 초대되었습니다.");
+
+        const group_names: string[] = res.group_names;
+
+        if (group_names.length > 1) {
+          setMessage(`<p style='color: gray'> <strong>${group_names[0]} 외 ${group_names.length - 1}개</strong>의 그룹을 초대하였습니다.</p>`)
+        }
+        else {
+          setMessage(`<p style='color: gray'> <strong>${group_names[0]}</strong> 그룹을 초대하였습니다.</p>`)
+        }
+        setSendFlag(true);
         onInviteComplete();
       })
       .catch((err: any) => {
