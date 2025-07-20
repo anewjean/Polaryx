@@ -27,8 +27,8 @@ class MessageService:
         return self.message_repo.update_emoji_cnt(emoji)        
 
 
-    async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
-        return self.message_repo.find_recent_30(tab_id, before_id)
+    async def find_recent_messages(self, tab_id: int, before_id: int, user_id: str) -> List[Message]:
+        return self.message_repo.find_recent_30(tab_id, before_id, user_id)
 
     async def find_message_by_(self, tab_id: int) -> List[Message]:
         return self.message_repo.find_all(tab_id)

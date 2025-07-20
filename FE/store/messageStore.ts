@@ -74,12 +74,14 @@ interface MessageStore {
   setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
-  toggleEmoji: (messageId: number, userId: string, emojiType: string, action: 'like' | 'unlike') => void;
+  toggleEmoji: () => void;
 
   // 프로필 수정 시 웹소켓 기능
   editTarget: Record<string, string>;
   editProfile: (editName: string, editImage: string| undefined) => void;
 
+  // 나의 이모지 토글 상태 업데이트
+  toggleMyEmoji: (msgId: number, emojiType: string) => void;
 }
 
 export const useMessageStore = create<MessageStore>((set, get) => ({
@@ -196,24 +198,8 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
   })),
 
   // 이모지 버튼 선택 시 동작할 함수
-  toggleEmoji: (messageId, emojiType, action) => {
+  toggleEmoji: () => {
     set((state) => ({
-      messages: state.messages.map((msg) => {
-        if (msg.msgId === messageId) {
-          const currentCount = msg[emojiType as keyof Message] as number || 0;
-          const newCount = action === 'like' ? currentCount + 1 : Math.max(0, currentCount - 1);
-
-          return {
-            ...msg,
-            [emojiType]: newCount, // 이모지 카운트 직접 업데이트
-            myToggle: {
-              ...msg.myToggle,
-              [emojiType]: action === 'like' // 내가 눌렀는지 상태 업데이트
-            }
-          };
-        }
-        return msg;
-      }),
       sendEmojiFlag: true // 이모지 전송 플래그 설정
     }));
   },
@@ -233,6 +219,19 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       sendEditFlag: true
     }));
   },
+
+  // 나의 이모지 토글 상태 업데이트
+  toggleMyEmoji: (msgId, emojiType) => set((state) => ({
+    messages: state.messages.map(msg => {
+      if (msg.msgId === msgId) {
+        const newMyToggle = { ...msg.myToggle };
+        // 현재 토글 상태를 반전시킵니다.
+        newMyToggle[emojiType] = !newMyToggle[emojiType];
+        return { ...msg, myToggle: newMyToggle };
+      }
+      return msg;
+    }),
+  })),
 
 }));
 

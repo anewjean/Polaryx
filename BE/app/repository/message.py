@@ -260,14 +260,14 @@ SELECT
     m.like_cnt,
     m.pray_cnt,
     m.sparkle_cnt,
-    e.e_check,
-    e.e_clap,
-    e.e_like,
-    e.e_pray,
-    e.e_sparkle
+    COALESCE(e.e_check, 0),
+    COALESCE(e.e_clap, 0),
+    COALESCE(e.e_like, 0),
+    COALESCE(e.e_pray, 0),
+    COALESCE(e.e_sparkle, 0)
 FROM messages m
 JOIN workspace_members wm ON m.sender_id = wm.user_id
-LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
+LEFT JOIN emoji e ON m.id = e.msg_id AND e.user_id = %(user_id)s
 WHERE m.tab_id = %(tab_id)s
 AND m.deleted_at IS NULL
 ORDER BY m.id DESC
@@ -294,14 +294,14 @@ SELECT
     m.like_cnt,
     m.pray_cnt,
     m.sparkle_cnt,
-    e.e_check,
-    e.e_clap,
-    e.e_like,
-    e.e_pray,
-    e.e_sparkle
+    COALESCE(e.e_check, 0),
+    COALESCE(e.e_clap, 0),
+    COALESCE(e.e_like, 0),
+    COALESCE(e.e_pray, 0),
+    COALESCE(e.e_sparkle, 0)
 FROM messages m
 JOIN workspace_members wm ON m.sender_id = wm.user_id
-LEFT JOIN emoji e ON e.user_id = m.sender_id AND e.msg_id = m.id
+LEFT JOIN emoji e ON m.id = e.msg_id AND e.user_id = %(user_id)s
 WHERE m.tab_id = %(tab_id)s
 AND m.id < %(message_id)s
 AND m.deleted_at IS NULL
@@ -355,19 +355,21 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_messages, param)
 
-    def find_recent_30(self, tab_id: int, before_id: int | None) -> List[Message]:
+    def find_recent_30(self, tab_id: int, before_id: int | None, user_id: str) -> List[Message]:
         print("before_id: ", before_id)
         if before_id == None:
-            param = {
+            params = {
                 "tab_id": tab_id, 
+                "user_id": UUID(user_id).bytes
             }
-            return self.db.execute(find_recent_30_latest, param)
+            return self.db.execute(find_recent_30_latest, params)
         else:
-            param = {
+            params = {
                 "tab_id": tab_id, 
-                "message_id": before_id
+                "message_id": before_id,
+                "user_id": UUID(user_id).bytes
             }
-            return self.db.execute(find_recent_30_before, param)
+            return self.db.execute(find_recent_30_before, params)
 
     def insert(self, message: Message):
         # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
