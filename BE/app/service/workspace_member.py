@@ -94,6 +94,7 @@ class WorkspaceMemberService:
         self.workspace_member_repo.update(user_id_bytes, payload)
         updated_rows = self.workspace_member_repo.find_by_user_id(user_id_bytes)
         updated_member = WorkspaceMemberSchema.from_row(updated_rows[0])
+
         return WorkspaceMemberResponse(workspace_member=updated_member)
     
     # 미완

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
@@ -7,6 +7,7 @@ import { getMessages } from "@/apis/messageApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SSEListener } from "../sse/SSEListener";
 import { WebSocketLikeClient } from "../ws/webSocketLikeClient";
+import { WebSocketProfileClient } from "../ws/webSocketProfileClient";
 
 function SkeletonChat() {
   return (
@@ -36,6 +37,9 @@ export function ChatPage({
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
+  const lastMsgId = useMemo(() => {
+    return messages.length > 0 ? messages[messages.length - 1].msgId : null;
+  }, [messages]);
 
   // 최초 메시지 불러오기 + 로딩 해제
   useEffect(() => {
@@ -46,11 +50,12 @@ export function ChatPage({
           return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
-            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.check_cnt,
-            clapCnt: msg.clap_cnt, likeCnt: msg.like_cnt, sparkleCnt: msg.sparkle_cnt,
-            prayCnt: msg.pray_cnt, myToggle: msg.my_toggle
+            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.e_check_cnt,
+            clapCnt: msg.e_clap_cnt, likeCnt: msg.e_like_cnt, sparkleCnt: msg.e_sparkle_cnt,
+            prayCnt: msg.e_pray_cnt, myToggle: msg.my_toggle
           };
         });
+        console.log("getmessages, chatpage: ", new_messages[0].myToggle)
         setMessages(new_messages);
       } else {
         setMessages([]);
@@ -77,7 +82,7 @@ export function ChatPage({
       const newHeight = el.scrollHeight;
       el.scrollTop = newHeight;
     });
-  }, [messages[messages.length - 1], isLoading]);
+  }, [lastMsgId, isLoading]);
 
   // 스크롤을 올려서 과거 메세지들을 불러와
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
@@ -91,11 +96,12 @@ export function ChatPage({
 
       if (res.messages && res.messages.length > 0) {
         const new_messages = res.messages.map((msg: any) => {
-           
            return {
             senderId: msg.sender_id, msgId: msg.msg_id, nickname: msg.nickname,
             content: msg.content, image: msg.image, createdAt: msg.created_at,
-            isUpdated: msg.is_updated, fileUrl: msg.file_url,
+            isUpdated: msg.is_updated, fileUrl: msg.file_url, checkCnt: msg.e_check_cnt,
+            clapCnt: msg.e_clap_cnt, likeCnt: msg.e_like_cnt, sparkleCnt: msg.e_sparkle_cnt,
+            prayCnt: msg.e_pray_cnt, myToggle: msg.my_toggle
           };
         });
         prependMessages(new_messages);
@@ -138,6 +144,7 @@ export function ChatPage({
     >
       <SSEListener />
       <WebSocketLikeClient workspaceId={workspaceId} tabId={tabId} />
+      <WebSocketProfileClient workspaceId={workspaceId} tabId={tabId} />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
       <div className="text-m pl-5 w-full">
         {messages.map((msg, idx) => {
@@ -190,7 +197,7 @@ export function ChatPage({
                 sparkleCnt={msg.sparkleCnt}
                 clapCnt={msg.clapCnt}
                 likeCnt={msg.likeCnt}
-                myToggle={msg.myToggle}                  
+                myToggle={msg.myToggle}
               />
             </React.Fragment>
           );
