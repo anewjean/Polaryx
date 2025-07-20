@@ -4,15 +4,12 @@ import * as XLSX from "xlsx";
 import { filterUsers } from "./validation";
 import { usePathname } from "next/navigation";
 import { createUsers } from "@/apis/excelApi";
-import { detectTyposJaccard } from "./detectTyposJaccard";
-import { useMemberStore } from "@/store/memberStore";
 import { toast } from "sonner";
 import { CircleCheck, Ban, FileSpreadsheet } from "lucide-react";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
   const inputRef = useRef<HTMLInputElement>(null);
-  const { setMemberList } = useMemberStore();
 
   // Alert 상태 관리
   const [alertInfo, setAlertInfo] = useState<{
@@ -58,39 +55,12 @@ export function ExUpload() {
 
     const uniqueGroups = [...new Set(groupData)]; // 중복 제거
 
-    ////////////////////////// 동작하지 않는 코드 //////////////////////////
-    // 엑셀 헤더 file 검사
-    // const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-    // const uploadedHeaders = json[0] as string[];
-
-    // const typos = detectTyposJaccard(uploadedHeaders);
-    // if (typos.length > 0) {
-    //   setAlertInfo({
-    //     variant: "destructive",
-    //     message: (
-    //       <div className="flex flex-row justify-start items-start gap-4">
-    //         <Ban className="size-4" />
-    //         <div>
-    //           <p>필드명을 정확하게 설정해주세요.</p>
-    //           <ul>
-    //             <li>name</li>
-    //             <li>email</li>
-    //             <li>role</li>
-    //             <li>group</li>
-    //           </ul>
-    //         </div>
-    //       </div>
-    //     ),
-    //   });
-    //   return;
-    // }
-
     // 형식에 맞지 않은 user를 제거
     const { users } = filterUsers(jsonData);
     const memberList = users.map((user) => ({
       email: user.email,
       name: user.name,
-      role: user.role,
+      // role: user.role,
       group: user.group
         ? user.group
             .toString()
@@ -102,9 +72,6 @@ export function ExUpload() {
       github: user.github,
       workspace_id: workspaceId,
     }));
-
-    // memberList를 store에 저장
-    // setMemberList(memberList);
 
     try {
       const result = await createUsers(memberList, uniqueGroups, workspaceId);
