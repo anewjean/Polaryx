@@ -193,7 +193,7 @@ export default function ProfilePage() {
             {profile?.nickname}
           </h1>
           <h1 className="flex-shrink-0 justify-end text-sm font-bold text-gray-500">
-            {profile?.role}
+            {profile?.role_name}
           </h1>
         </div>
         {/* 버튼 (메시지, 편집) */}
@@ -269,7 +269,7 @@ export default function ProfilePage() {
                       <div className="flex flex-col">
                         <label className="font-semibold">Role*</label>
                         <span className="w-full font-normal">
-                          {profile?.role}
+                          {profile?.role_name}
                         </span>
                       </div>
                       {/* 필수 필드2: 이메일 */}
@@ -368,7 +368,7 @@ export default function ProfilePage() {
           </span>
           <div className="flex-1 text-md">
             <ul className="list-disc list-inside pl-1">
-              {profile?.groups?.map((group) => (
+              {profile?.group_name?.map((group) => (
                 <li key={group} className="truncate">
                   {group}
                 </li>
