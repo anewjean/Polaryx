@@ -29,9 +29,7 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchPage() {
-      try {
-        console.log("캔버스 ID로 페이지 불러오는 중:", canvasId);
-        
+      try {             
         // 테스트 ID 사용 (Notion 공개 페이지 ID)
         // 실제 사용 시 canvasId 사용
         const testId = "231bae03622f80679bfcfc9b96a0ff03";
@@ -63,9 +61,10 @@ export default function Page() {
   }, [canvasId]);
 
   if (loading) {
-    return <div className="flex items-center justify-center h-full">
+    return (
+    <div className="flex items-center justify-center w-full h-full">
       <p>캔버스 로딩 중...</p>
-    </div>;
+    </div>);
   }
   
   if (error) {

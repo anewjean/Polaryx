@@ -17,7 +17,6 @@ async def save_message(req: SaveMessageCreate, current_user=Depends(get_current_
     return SaveMessageSchema.from_domain(message)
 
 
-
 @router.get("/save-messages", response_model=List[SaveMessageSchema])
 async def get_saved_messages(workspace_id: int = Query(...), current_user=Depends(get_current_user)):
     messages = await service.get_all(current_user["user_id"], workspace_id)

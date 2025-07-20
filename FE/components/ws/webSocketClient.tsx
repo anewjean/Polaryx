@@ -24,7 +24,7 @@ export const WebSocketClient = ({
   tabId: string;
 }) => {
   const socketRef = useRef<WebSocket | null>(null);
-  const { message, sendFlag, setSendFlag, fileUrl } = useMessageStore();
+  const { message, sendFlag, editMsgFlag, editMessage, setSendFlag, setEditMsgFlag, cleanEditMsgFlag, updateMessage, fileUrl } = useMessageStore();
 
   useEffect(() => {
     {
@@ -49,6 +49,7 @@ export const WebSocketClient = ({
         const rawMsg = JSON.parse(event.data);
         console.log("받은 메시지:", rawMsg); // 전체 메시지 로그
 
+        if (rawMsg.type == "send") {
         // file_url을 fileUrl로 변환하고 원본 제거
         const { file_url, ...msgWithoutFileUrl } = rawMsg;
         const msg = {
@@ -73,16 +74,10 @@ export const WebSocketClient = ({
             console.log("내 메시지이면서 현재 채널이면 알림 생략");
             return;
           }
-      
-
-    //     console.log("알림 메시지 내용", msg.content)
-    //     if (Notification.permission === "granted") {
-    //       new Notification("새 메시지 도착", {
-    //         body: stripTags(msg.content) || "파일이 전송되었습니다.",
-    //         icon: "/icon.png",
-    //     });
-    // }
-
+        }
+        else {
+          updateMessage(rawMsg.message_id, rawMsg.content)
+        }
       } catch {
         console.warn("Invalid message format: ", event.data);
       }
@@ -119,6 +114,7 @@ export const WebSocketClient = ({
       const { user_id } = jwtDecode<JWTPayload>(token);
 
       const payload = {
+        type: "send",
         sender_id: user_id,
         content: message,
         file_url: fileUrl,
@@ -129,6 +125,24 @@ export const WebSocketClient = ({
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, message, fileUrl, setSendFlag]);
+
+  // 메시지 수정
+  useEffect(() => {
+    if (
+      editMsgFlag &&
+      editMessage &&
+      socketRef.current?.readyState === WebSocket.OPEN
+    ) {
+      const payload = {
+        type: "edit",
+        msg_id: editMessage["msgId"],
+        content: editMessage["content"],
+      };
+
+      socketRef.current.send(JSON.stringify(payload));
+      cleanEditMsgFlag(); // 전송 후 플래그 초기화
+    }
+  }, [editMsgFlag, setEditMsgFlag]);
 
   return <div>{/* 필요시 메시지 입력창/버튼 등 추가 */}</div>;
 };

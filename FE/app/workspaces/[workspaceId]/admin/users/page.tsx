@@ -92,10 +92,10 @@ export default function UserTablePage() {
       const payload = {
         nickname: form.name,
         email: form.email,
-        role_id: parseInt(form.role_id),
+        role_id: parseInt(form.role_id).toString(),
         group_id:
           form.group_id && form.group_id.length > 0
-            ? form.group_id.map((id) => parseInt(id))
+            ? form.group_id.map((id) => parseInt(id).toString())
             : [],
       };
 

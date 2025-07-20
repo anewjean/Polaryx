@@ -69,7 +69,7 @@ export function TabHeader() {
   };
 
   return (
-    <div className="sticky top-0 bg-white shadow-sm z-10">
+    <div className="sticky top-0 bg-white shadow-sm">
       <div className="flex items-center h-[50px] px-[17px]">
         <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
           <div className="flex items-center">

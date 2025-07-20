@@ -57,6 +57,18 @@ def get_workspace_info(workspace_id: int):
     row = workspace_service.get_workspace_info(workspace_id)
     return WorkspaceNameSchema.from_row(row)
 
+# 사용자가 참여한 워크스페이스 목록 조회
+@router.post("/user/workspaces")
+async def get_user_workspaces(
+    request: Request
+):
+    # 사용자가 참여한 워크스페이스 목록 조회
+    data: dict = await request.json()
+    user_id = data["user_id"]
+    workspace_id = data["workspace_id"]
+    workspaces = workspace_member_service.get_user_workspaces(user_id, workspace_id)
+    return workspaces
+
 # 회원 등록(파일 임포트)
 @router.post("/{workspace_id}/users", response_model=InsertWorkspaceSchema)
 async def register_members(request: Request, workspace_id: int):

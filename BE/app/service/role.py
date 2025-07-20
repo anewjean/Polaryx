@@ -26,7 +26,8 @@ class RoleService:
         for user_data in data["users"]:
             email = user_data["email"]
             name = user_data["name"] 
-            role_name = user_data["role"]
+            # role_name = user_data["role"]
+            role_name = "Guest"
             
             # role_name으로 role_id 찾기
             if role_name in role_name_to_id:
