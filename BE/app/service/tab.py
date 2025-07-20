@@ -56,7 +56,18 @@ class TabService:
         return self.repo.insert_group_members(workspace_id, tab_id, group_ids)
     
     def invite_members(self, workspace_id: int, tab_id: int, user_ids: List[str]):
-        return self.repo.insert_members(workspace_id, tab_id, user_ids)
+        row = self.repo.insert_members(workspace_id, tab_id, user_ids)
+        
+        tab_info = self.find_tab(workspace_id, tab_id)
+        section_id = tab_info[0][2]
+        if section_id == 4: # dm에 인원 초대 시 tab_name 변경
+            member_names = []
+            for member in row: 
+                member_names.append(member[0])
+                tab_name = ", ".join(member_names)
+            self.modify_name(workspace_id, tab_id, tab_name)
+
+        return row
     
     async def exit_tab(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         users = self.repo.exit_members(workspace_id, tab_id, user_ids)
@@ -71,3 +82,5 @@ class TabService:
                                                None)
         return len(users)
     
+    def modify_name(self, workspace_id: int, tab_id: int, tab_name: str):
+        self.repo.update_tab_name(workspace_id, tab_id, tab_name)

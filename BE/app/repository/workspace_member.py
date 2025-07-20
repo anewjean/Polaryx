@@ -113,7 +113,7 @@ AND wm.deleted_at IS NULL;
 """
 
 find_groups_name_id_by_workspace_id = """
-SELECT g.id, g.name FROM groups g
+SELECT g.id, g.name FROM `groups` g
 JOIN group_members gm ON gm.group_id = g.id
 WHERE gm.user_id = %(user_id)s;
 """
@@ -135,7 +135,7 @@ SELECT
     wm.email,
     wm.image,
     r.name AS role,
-    GROUP_CONCAT(DISTINCT g.name) AS groups,
+    GROUP_CONCAT(DISTINCT g.name) AS `groups`,
     wm.github,
     wm.blog
 FROM workspace_members wm

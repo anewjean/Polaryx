@@ -59,7 +59,7 @@ export default function WorkspaceIdLayout({
 
   return (
     <div className="flex flex-1 min-h-0">
-      <div className="flex flex-1 flex-row min-h-0 w-full">
+      <div className="flex flex-1 flex-row min-h-0 w-lvw">
         <ResizablePanelGroup key="workspace-layout-group" direction="horizontal" className="flex-1 min-h-0">
           <ResizablePanel 
             defaultSize={sidebarSize} 

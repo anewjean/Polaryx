@@ -2,6 +2,7 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 from uuid import UUID
 from typing import List, Optional
+from datetime import datetime
 
 is_dup_name_in_tab_by_section = """
 SELECT * FROM tabs
@@ -215,6 +216,13 @@ find_tab_member_by_user_id = """
 SELECT * FROM tab_members WHERE user_id = %(user_id)s;
 """
 
+update_tab_name = """
+UPDATE tabs SET name = %(tab_name)s,
+                updated_at = %(updated_at)s
+WHERE workspace_id = %(workspace_id)s 
+  AND id = %(tab_id)s;
+"""
+
 class TabRepository(AbstractQueryRepo):
     def __init__(self):
         db = DBFactory.get_db("MySQL")
@@ -373,3 +381,12 @@ class TabRepository(AbstractQueryRepo):
             "user_id": user_id
         }
         return self.db.execute(find_tab_member_by_user_id, param)
+    
+    def update_tab_name(self, workspace_id: int, tab_id: int, tab_name: str):
+        param = {
+            "workspace_id": workspace_id,
+            "tab_id": tab_id,
+            "tab_name": tab_name,
+            "updated_at": datetime.now()
+        }
+        self.db.execute(update_tab_name, param)
