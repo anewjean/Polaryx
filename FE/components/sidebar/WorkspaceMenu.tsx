@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { logout } from "@/apis/logout";
 import {
@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus, Gamepad2, Cog } from "lucide-react";
-import { getUserWorkspaces, workspace } from "@/apis/workspaceApi";
 
 export interface WorkspaceMenuProps {
   workspaceId: string;
@@ -29,27 +28,14 @@ export function WorkspaceMenu({
   onWorkspaceOpenChange,
 }: WorkspaceMenuProps) {
   const router = useRouter();
-  const [workspaces, setWorkspaces] = useState<workspace[]>([]);
 
   const handleLogout = async () => {
     await logout();
     router.push("/");
   };
 
-  // 드롭다운이 열릴 때만 API 호출
-  const handleOpenChange = async (open: boolean) => {
-    onWorkspaceOpenChange(open);
-    if (open && userId && workspaceId) {
-      try {
-        const userWorkspaces = await getUserWorkspaces(userId, workspaceId);
-        setWorkspaces(userWorkspaces);
-      } catch (error) {
-        console.error("워크스페이스 이름 조회 실패", error);
-      }
-    }
-  };
   return (
-    <DropdownMenu onOpenChange={handleOpenChange}>
+    <DropdownMenu onOpenChange={onWorkspaceOpenChange}>
       <DropdownMenuTrigger
         asChild
         className="w-full flex justify-between items-center cursor-pointer"
@@ -67,26 +53,18 @@ export function WorkspaceMenu({
           Programs
         </DropdownMenuLabel>
         <DropdownMenuGroup>
-          {workspaces.map((workspace) => (
-            <DropdownMenuItem
-              asChild
-              className="hover:bg-gray-600 focus:bg-gray-600"
-              key={workspace.workspace_id}
-              onClick={() =>
-                router.push(
-                  `/workspaces/${workspace.workspace_id}/tabs/${workspace.min_tab_id}`,
-                )
-              }
-            >
-              <div className="flex flex-row items-center gap-3 hover:bg-gray-600 rounded-md py-3 px-3">
-                <Gamepad2 className="size-7 border border-gray-400 text-gray-400 rounded-md p-1" />
-                <span className="text-lg font-semibold text-gray-300">
-                  {workspace.workspace_name}
-                </span>
-              </div>
-            </DropdownMenuItem>
-          ))}
-          {/* <DropdownMenuItem
+          <DropdownMenuItem
+            asChild
+            className="hover:bg-gray-600 focus:bg-gray-600"
+          >
+            <div className="flex flex-row items-center gap-3 hover:bg-gray-600 rounded-md py-3 px-3">
+              <Gamepad2 className="size-7 border border-gray-400 text-gray-400 rounded-md p-1" />
+              <span className="text-lg font-semibold text-gray-300">
+                게임랩
+              </span>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem
             asChild
             className="hover:bg-gray-600 focus:bg-gray-600"
             onClick={() =>
@@ -99,7 +77,7 @@ export function WorkspaceMenu({
                 게임 테크랩
               </span>
             </div>
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="bg-gray-600" />
         <DropdownMenuItem
