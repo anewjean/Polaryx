@@ -20,7 +20,7 @@ select_all_member_roles = """
 SELECT wm.nickname FROM member_roles mr
 JOIN workspace_members wm ON wm.user_id = mr.user_id
 JOIN group_members gm ON gm.user_id = mr.user_id
-JOIN groups g ON g.id = gm.group_id
+JOIN `groups` g ON g.id = gm.group_id
 WHERE wm.workspace_id = %(workspace_id)s
   AND mr.role_id = %(role_id)s
   AND wm.deleted_at IS NULL;
@@ -31,7 +31,7 @@ SELECT
   g.name
 FROM
   group_members gm
-JOIN groups g ON g.id = gm.group_id
+JOIN `groups` g ON g.id = gm.group_id
 LEFT JOIN member_roles mr
   ON gm.user_id = mr.user_id AND mr.role_id = %(role_id)s
 GROUP BY

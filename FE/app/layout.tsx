@@ -29,9 +29,6 @@ export default function RootLayout({
   }, []); // 빈 의존성 배열 = 컴포넌트 마운트 시 한 번만 실행
   return (
     <html lang="en" className="h-full">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body
         className={`${notoSansKr.variable} ${lato.variable} h-screen overflow-hidden flex-col`}
       >

@@ -49,8 +49,10 @@ export const createLink = async (
       }),
     },
   );
-  if (res == null || !res.ok) throw new Error("링크 생성에 실패했습니다.");
-  return res.json();
+  if (res && res.ok) {
+    return true;
+  }
+  return false;
 };
 
 // 링크 삭제
@@ -66,6 +68,8 @@ export const deleteLink = async (
       body: JSON.stringify({ link_id: linkId }),
     },
   );
-  if (res == null || !res.ok) throw new Error("링크 삭제에 실패했습니다.");
-  return res.json();
+  if (res && res.ok) {
+    return true;
+  }
+  return false;
 };

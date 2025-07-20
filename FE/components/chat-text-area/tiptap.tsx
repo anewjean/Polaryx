@@ -29,6 +29,14 @@ import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
 import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
+import { ClipboardPlus, ClipboardX } from "lucide-react";
+import SaveMessages from "./SaveMessages";
+import { addSaveMessage } from "@/apis/saveMessageApi";
+import { useMyUserStore } from "@/store/myUserStore";
+import { useSaveMessagesStore } from "@/store/saveMessagesStore";
+import { toast } from "sonner";
+import { CircleCheck, Ban } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -49,10 +57,19 @@ export function TipTap() {
   const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
   const [mounted, setMounted] = useState(false);
 
+  // 유저 id 불러오기
+  const userId = useMyUserStore((state) => state.userId);
+
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+
+  // 메시지를 저장할 수 있는 상태
+  const [createSaveMessage, setCreateSaveMessage] = useState(false);
+
+  // 저장 메시지 store의 add
+  const { add } = useSaveMessagesStore();
 
   // 클라이언트에서만 mounted = true
   useEffect(() => {
@@ -66,8 +83,7 @@ export function TipTap() {
   }, [workspaceId, tabId, fetchTabInfo]);
   useFetchMessages(workspaceId, tabId);
 
-  const { message, setMessage, setSendFlag, setMessages, appendMessage } =
-    useMessageStore();
+  const { message, setMessage, setSendFlag } = useMessageStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   // 한글 조합 추적 플래그.
   const isComposingRef = useRef(false);
@@ -199,12 +215,6 @@ export function TipTap() {
       // 기존 링크 해제
       editor.chain().focus().extendMarkRange("link").unsetLink().run();
 
-      // 빈 URL이면 그냥 닫기
-      if (!url.trim()) {
-        setIsLinkDialogOpen(false);
-        return;
-      }
-
       // 프로토콜이 없으면 https:// 붙이기
       const href = /^https?:\/\//.test(url) ? url : `https://${url}`;
       const { from, to } = editor.state.selection;
@@ -266,6 +276,24 @@ export function TipTap() {
     editor?.commands.clearContent();
   };
 
+  // 저장 메시지 추가
+  const handleAddSaveMessage = async (content: string) => {
+    try {
+      // zustand 스토어의 add 액션만 호출하면 내부에서 API 요청을 수행한다
+      await add(workspaceId, userId!, content);
+    } catch {
+      toast.error("저장 메시지 추가에 실패했습니다.", { icon: <Ban /> });
+    }
+  };
+
+  // 현재 에디터의 내용을 저장 메시지로 추가
+  const addCurrentContent = () => {
+    if (!editor || !workspaceId || !userId) return;
+    const content = editor.getHTML();
+    if (!content.trim()) return;
+    handleAddSaveMessage(content);
+  };
+
   // 서버사이드에서는 아무것도 렌더링하지 않음
   // 스켈레톤 이미지 (로딩중일 때 보여줌)
   if (!mounted) {
@@ -293,7 +321,9 @@ export function TipTap() {
     return null;
   }
   return (
-    <div className="chat-text-area">
+    <div
+      className={`chat-text-area ${createSaveMessage ? "ring-2 ring-red-300" : ""}`}
+    >
       <input
         ref={fileInputRef}
         type="file"
@@ -301,8 +331,31 @@ export function TipTap() {
         onChange={handleFileSelect}
         style={{ display: "none" }}
       />
-      <div className="toolbar-container rounded-t-[7px]">
+
+      <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
         <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
+        {/* 북마크 버튼 누르면 팝오버 열기 */}
+        <SaveMessages
+          workspaceId={workspaceId}
+          createSaveMessage={createSaveMessage}
+          editor={editor}
+        >
+          {createSaveMessage ? (
+            // 저장 가능 상태면, 빨간색의 엑스 버튼을 보여줌
+            <ClipboardX
+              onClick={() => setCreateSaveMessage(false)}
+              className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-red-300"
+            />
+          ) : (
+            // 아니라면 파란색의 플러스 버튼 보여줌
+            <ClipboardPlus
+              onClick={() => {
+                setCreateSaveMessage(true); // 팝오버만 열기, 저장 메시지 추가 X
+              }}
+              className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
+            />
+          )}
+        </SaveMessages>
       </div>
 
       {/* 링크 추가 다이얼로그 */}
@@ -348,9 +401,16 @@ export function TipTap() {
             }
           }}
         />
-        {/* <div className="flex flex-1 justify-end items-end">
-          <Send size={20} />
-        </div> */}
+
+        {/* 저장 메시지 추가 버튼 */}
+        {createSaveMessage && (
+          <Button
+            onClick={addCurrentContent}
+            className="bg-red-400 font-xs w-10 h-6 rounded-[5px] hover:bg-red-500"
+          >
+            추가
+          </Button>
+        )}
       </div>
     </div>
   );
