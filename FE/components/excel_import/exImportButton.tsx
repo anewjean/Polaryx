@@ -90,7 +90,7 @@ export function ExUpload() {
     const memberList = users.map((user) => ({
       email: user.email,
       name: user.name,
-      // role: user.role,
+      role: user.role,
       group: user.group
         ? user.group
             .toString()

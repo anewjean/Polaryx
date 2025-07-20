@@ -4,7 +4,7 @@ import { create } from "zustand";
 interface Member {
   email: string;
   name: string;
-  // role: string;
+  role: string;
   group: string;
   github: string;
   blog: string;

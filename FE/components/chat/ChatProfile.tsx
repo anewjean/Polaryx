@@ -46,13 +46,7 @@ interface ChatProfileProps {
   sparkleCnt: number;
   clapCnt: number;
   likeCnt: number;
-  myToggle: {
-    check: boolean;
-    pray: boolean;
-    sparkle: boolean;
-    clap: boolean;
-    like: boolean;
-  };
+  myToggle: Record<string, boolean>;
 }
 
 function isImageFile(url: string) {
