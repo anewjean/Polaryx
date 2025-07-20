@@ -7,8 +7,8 @@ from app.util.database.abstract_query_repo import AbstractQueryRepo
 from app.util.database.db_factory import DBFactory
 
 insert_message = """
-INSERT INTO messages (
-    sender_id,
+INSERT INTO save_messages (
+    user_id,
     workspace_id,
     content
 )
@@ -21,17 +21,17 @@ VALUES (
 
 find_all_by_user = """
 SELECT 
-    id, sender_id, workspace_id, content, 
+    id, user_id, workspace_id, content, 
     created_at, updated_at, deleted_at
-FROM messages
-WHERE sender_id = %(user_id)s 
+FROM save_messages
+WHERE user_id = %(user_id)s 
 AND workspace_id = %(workspace_id)s
 AND deleted_at IS NULL
 ORDER BY created_at DESC;
 """
 
 delete_message = """
-UPDATE messages
+UPDATE save_messages
 SET 
     deleted_at = %(deleted_at)s
 WHERE id = %(message_id)s
