@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { ChartColumn, Link, LogOut, MessageCircle, StickyNote, Search } from "lucide-react";
+import {
+  ChartColumn,
+  Link,
+  LogOut,
+  MessageCircle,
+  StickyNote,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabInfoStore } from "@/store/tabStore";
 import { TabMembers } from "@/components/modal/TabMembers";
-import { Input } from "@/components/ui/input";
 
 export function TabHeader() {
   // URL에서 workspaceId와 tabId 추출
@@ -21,18 +26,6 @@ export function TabHeader() {
   // 탭 정보 가져오기
   const fetchTabInfo = useTabInfoStore((state) => state.fetchTabInfo);
   const tabInfo = useTabInfoStore((state) => state.tabInfoCache[tabId]);
-
-  // 검색어 상태
-  const [searchKeyword, setSearchKeyword] = useState("");
-
-  // 검색 실행
-  const handleSearch = () => {
-    if (!searchKeyword.trim()) return;
-    router.push(
-      `/workspaces/${workspaceId}/tabs/${tabId}/search?q=${encodeURIComponent(searchKeyword)}`,
-    );
-    setSearchKeyword("");
-  };
 
   useEffect(() => {
     if (workspaceId && tabId) {
@@ -80,21 +73,7 @@ export function TabHeader() {
             )}
           </div>
 
-
-
-
           <div className="flex flex-row items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search messages"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="pl-7 w-48"
-              />
-            </div>
             <TabMembers />
             <Button
               variant="ghost"
