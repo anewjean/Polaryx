@@ -32,9 +32,12 @@ interface MessageStore {
 
   // 메시지 전송 trigger
   sendFlag: boolean;
+  editMsgFlag: boolean;
   sendEmojiFlag: boolean;
   sendEditFlag: boolean;
   setSendFlag: (flag: boolean) => void;
+  setEditMsgFlag: (msgId: number, newContent:string) => void;
+  cleanEditMsgFlag: () => void;
   setSendEmojiFlag: (flag: boolean) => void;
   setSendEditFlag: (flag: boolean) => void;
   
@@ -82,6 +85,12 @@ interface MessageStore {
 
   // 나의 이모지 토글 상태 업데이트
   toggleMyEmoji: (msgId: number, emojiType: string) => void;
+
+  // 메세지 수정
+  editMessage: {
+    "msgId": number;
+    "content": string;
+  }
 }
 
 export const useMessageStore = create<MessageStore>((set, get) => ({
@@ -92,7 +101,7 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
   updateMessage: (msgId, msg) =>
     set((state) => ({
       messages: state.messages.map((m) =>
-        m.msgId === msgId ? { ...m, content: msg } : m,
+        m.msgId === msgId ? { ...m, content: msg, isUpdated: 1 } : m,
       ),
     })), // hack : 오류 발생할 수 있음
 
@@ -232,6 +241,33 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       return msg;
     }),
   })),
+
+  // 메세지 수정 기능
+  editMsgFlag: false,
+  editMessage: {
+    "msgId": 0,
+    "content": ""
+  },
+  setEditMsgFlag: (msgId, content) => {
+    set((state) => ({
+      editMessage:{
+        "msgId": msgId,
+        "content": content
+      },
+      editMsgFlag: true
+    }));
+  },
+
+  cleanEditMsgFlag: () => {
+    set((state) => ({
+      editMessage:{
+        "msgId": 0,
+        "content": ""
+      },
+      editMsgFlag: false
+    }));
+  },
+
 
 }));
 

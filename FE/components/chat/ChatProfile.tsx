@@ -90,7 +90,7 @@ export function ChatProfile({
   const params = useParams();
   const workspaceId = params.workspaceId as string;
   const tabId = params.tabId as string;
-  const updateMessage = useMessageStore((s) => s.updateMessage);
+  const {setEditMsgFlag} = useMessageStore();
 
   // 메시지 저장 핸들러
   const handleSave = async (newContent: string) => {
@@ -98,7 +98,7 @@ export function ChatProfile({
     setIsEditMode(false);
     try {
       await updateMessageApi(workspaceId, tabId, msgId, newContent); // 서버에 PATCH
-      updateMessage(msgId, newContent); // store 갱신
+      setEditMsgFlag(msgId, newContent); // broadcast
     } catch (e) {
       alert("메시지 수정 실패");
     }

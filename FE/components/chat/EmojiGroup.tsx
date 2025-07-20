@@ -182,7 +182,7 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
   return (
     <div className="flex flex-row flex-wrap gap-2 mt-1">
       {emojiData.map(({ symbol, count, type }) => 
-        (count > 0 || myToggle[type]) && ( // 4. 내가 눌렀으면 카운트가 0이어도 표시
+        (count > 0) && ( // 4. 내가 눌렀으면 카운트가 0이어도 표시
           <button
             key={symbol}
             onMouseDown={() => setPressedEmoji(symbol)}
