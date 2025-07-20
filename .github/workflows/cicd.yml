@@ -82,20 +82,40 @@ jobs:
           docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:latest
 
-      - name: Copy docker-compose.yml to EC2
+      - name: Copy docker-compose.yml to Backend Server 1
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_BACKEND_1_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: |
-            docker-compose.yml
+            docker-compose.backend.yml
           target: /home/ec2-user
 
-      - name: Deploy to EC2
+      - name: Copy docker-compose.yml to Backend Server 2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_BACKEND_2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: |
+            docker-compose.backend.yml
+          target: /home/ec2-user
+
+      - name: Copy docker-compose.yml to Frontend Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_FRONTEND_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: |
+            docker-compose.frontend.yml
+          target: /home/ec2-user
+
+      - name: Deploy to Backend Server 1
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_BACKEND_1_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
@@ -103,7 +123,39 @@ jobs:
 
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d
+            docker compose pull
+            docker compose down
+            docker compose up -d
+            docker image prune -a -f
+
+      - name: Deploy to Backend Server 2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_BACKEND_2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            printf '%s\n' "${{ secrets.PROD_ENV_FILE }}" | base64 -d > /home/ec2-user/.env
+
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            cd /home/ec2-user
+            docker compose pull
+            docker compose down
+            docker compose up -d
+            docker image prune -a -f
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_FRONTEND_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            printf '%s\n' "${{ secrets.PROD_ENV_FILE }}" | base64 -d > /home/ec2-user/.env
+
+            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+            cd /home/ec2-user
+            docker compose pull
+            docker compose down
+            docker compose up -d
             docker image prune -a -f
