@@ -192,7 +192,7 @@ export default function LinkTable({
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="rounded-xl border bg-white">
+      <div className="flex rounded-xl w-full border bg-background">
         <Table>
           <TableBody>
             {table.getRowModel().rows.length ? (
@@ -214,7 +214,7 @@ export default function LinkTable({
             ) : (
               <TableRow>
                 <TableCell
-                  className="h-24 text-center"
+                  className="h-20 text-center"
                   colSpan={columns.length}
                 >
                   링크가 없습니다.
