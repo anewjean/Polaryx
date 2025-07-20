@@ -95,11 +95,13 @@ async def invite_group_to_tab(
             workspace_id: int,
             tab_id: int,
             request: Request,
-            # user_info: Dict = Depends(verify_token_and_get_token_data),
+            user_info: Dict = Depends(verify_token_and_get_token_data),
 ):
     data = await request.json()
+    user_id = user_info["user_id"]
     group_ids: List[str] = data["group_ids"]
-    return [{"success_cnt": service.invite_groups(workspace_id, tab_id, group_ids)}]
+    res = service.invite_groups(workspace_id, tab_id, group_ids, user_id)
+    return {"success_cnt": res[0], "group_names": res[1]}
 
 # 탭 나가기
 @router.patch("/{workspace_id}/tabs/{tab_id}/out")
