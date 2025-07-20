@@ -8,7 +8,7 @@ export function ImageWithModal({ fileUrl }: { fileUrl: string }) {
       <img
         src={fileUrl}
         alt="file"
-        className="max-w-[450px] w-full h-auto cursor-pointer object-contain rounded-md"
+        className="max-w-[300px] w-full h-auto cursor-pointer object-contain rounded-md"
         onDoubleClick={() => setOpen(true)}
       />
       {open && (
