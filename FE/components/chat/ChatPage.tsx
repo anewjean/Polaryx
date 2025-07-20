@@ -11,10 +11,10 @@ import { WebSocketLikeClient } from "../ws/webSocketLikeClient";
 function SkeletonChat() {
   return (
     <div className="flex px-[8px] py-[4.5px]">
-      <Skeleton className="w-[40px] h-[40px] mt-1 mr-[8px] rounded-lg" />
+      <Skeleton className="w-[40px] h-[40px] mt-1 mr-[8px] rounded-lg bg-gray-200" />
       <div className="mt-1 space-y-2">
-        <Skeleton className="h-4 w-[70px]" />
-        <Skeleton className="h-10 w-[300px]" />
+        <Skeleton className="h-4 w-[70px] bg-gray-200" />
+        <Skeleton className="h-10 w-[300px] bg-gray-200" />
       </div>
     </div>
   );
@@ -111,8 +111,8 @@ export function ChatPage({
   // 로딩 중이면, 스켈레톤 이미지 보여줌
   if (isLoading) {
     return (
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        <div className="sticky top-1.5 mx-auto w-[120px] h-[28px] my-2 bg-[#f5f5f5] flex items-center justify-center rounded-full" />
+      <div className="flex flex-col justify-start w-full">
+        <div className="sticky top-1.5 mx-auto w-[120px] h-[28px] my-2 bg-gray-200 flex rounded-full" />
         <div className="text-m min-h-0 pl-5 w-full">
           {Array.from({ length: 10 }).map((_, i) => (
             <SkeletonChat key={i} />
@@ -131,7 +131,7 @@ export function ChatPage({
   return (
     <div
       ref={containerRef}
-      className={`flex-1 min-h-0 overflow-y-auto scrollbar-thin ${className}`}
+      className={`flex w-full min-h-0 overflow-y-auto scrollbar-thin ${className}`}
       onScroll={(event) => {
         handleScroll(event);
       }}

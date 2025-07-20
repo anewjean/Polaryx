@@ -34,7 +34,7 @@ export default function WorkspacesLayout({
             </Button>
         </div>
       </header>
-      <main className="flex flex-1 min-h-0 overflow-hidden flex-row break-all">
+      <main className="flex w-full h-full overflow-hidden flex-row break-all">
         {children}
       </main>
     </div>

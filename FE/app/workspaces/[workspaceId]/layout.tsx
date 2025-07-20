@@ -58,23 +58,23 @@ export default function WorkspaceIdLayout({
   };
 
   return (
-    <div className="flex flex-1 min-h-0">
-      <div className="flex flex-1 flex-row min-h-0 w-lvw">
-        <ResizablePanelGroup key="workspace-layout-group" direction="horizontal" className="flex-1 min-h-0">
+    <div className="flex w-full min-h-0">
+      <div className="flex flex-row min-h-0 w-lvw">
+        <ResizablePanelGroup key="workspace-layout-group" direction="horizontal">
           <ResizablePanel 
             defaultSize={sidebarSize} 
             minSize={15} 
             maxSize={30}
             onResize={(size) => setSidebarSize(size)}
           >
-            <aside className="h-full">{sidebar}</aside>
+            <aside className="h-full w-full">{sidebar}</aside>
           </ResizablePanel>
           <ResizableHandle />
           <ResizablePanel 
             defaultSize={childrenSize} 
             minSize={30}
           >
-            <main className="h-full">{children}</main>
+            <main className="h-full w-full">{children}</main>
           </ResizablePanel>
           {isOpen && (
             <>
@@ -90,7 +90,7 @@ export default function WorkspaceIdLayout({
                 onResize={(size) => setProfileSize(size)}
                 className="shadow-lg"
               >
-                <aside className="h-full">{profile}</aside>
+                <aside className="h-full w-full">{profile}</aside>
               </ResizablePanel>
             </>
           )}
