@@ -25,6 +25,7 @@ INSERT INTO jungle_slam.group_members (group_id,user_id,user_name) VALUES
     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채');
 
 INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_name, created_at) VALUES
+     -- 정글 공지 채널
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '실력다지기 발표 자료 제출 안하신 분들이 아직 많습니다. 금일 발표 자료 제출 해 주세요', 0, '이동석코치님', '2024-07-04 17:42:56'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '안녕하십니까 정글러 여러분~ 다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크에 접속하신후 신청룰을 참고하여 기입 부탁드립니다.', 0, '이동석코치님', '2024-07-05 11:32:57'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/spreadsheets/d/1TJwPk-ouY0S6WZm54-8CovGEOavEiZ6M/edit?gid=1806443967#gid=1806443967">링크</a></p> 로 접속 바랍니다.', 0, '이동석코치님', '2024-07-05 11:33:25'),
@@ -36,10 +37,9 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '안녕하십니까 정글러 여러분\n다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크 에 접속 후 신청룰을 참고하여 기입 부탁드립니다.', 0, '유윤선코치님', '2024-07-11 12:44:49'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '지난 4월에 진행한 1차 운동 이벤트(턱걸이 챌린지)에 이어, 교육생 여러분들의 의견을 수렴하여 2차 이벤트를 준비하였습니다\n다음과 같이 안내드리오니 많은 관심과 참여 바랍니다.\n\n\n\n🏀 농구 슛대결 참가 안내 🏀\n\n각 교육장의 명예를 건 치열한 슛 대결이 시작됩니다!', 0, '유윤선코치님', '2024-07-03 19:29:30'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '디스코드 초대링크입니다\n\n<a target="_blank" rel="noopener noreferrer nofollow" href= https://discord.gg/jqaYP7rP56>[성공적인 나만무를 위한 크래프톤 정글 3기 민상기님의 조언]</a>\n\n나만무 프로젝트를 들고 약 20여 곳의 면접을 본 경험을 바탕으로 제 의견을 공유합니다. 참고로 저는 주로 소규모 스타트업 위주로 면접에 참여한 점 참고 부탁드립니다.\n\n어투는 다소 확정적이지만, 매우 주관적인 의견임을 사전에 말씀드립니다.\n\n저와 다른 의견도 언제든지 환영합니다.🤗\n\n...\n\n- 난 백엔드 개발자 할거니까 React몰라도 되겠지? -> (소규모 스타트업 한정) 저는 첫 커리어를 Node 백엔드 개발자로 입사했지만 입사 후에는 파이썬 백엔드, C++ 라이브러리 개발, Vue, Flutter, Node를 모두 다뤄야 했습니다.', 0, '이동석코치님', '2024-07-09 16:13:56'),
-     (1,UNHEX('8430DCCE5C1411F0A6350242AC110002'),'3시 20분 부터 307호 발표 시작합니다.',0,'이동석코치님', '2024-07-10 13:12:26'),
+     (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'),'3시 20분 부터 307호 발표 시작합니다.',0,'이동석코치님', '2024-07-10 13:12:26'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'),'내일 1시부터 반별로 나만무 발표합니다. \n 306호는 1시에 바로 시작하고, \n 307호 -> 301호 순서로 합니다. ',0,'이동석코치님', '2024-07-10 13:14:23'),
-     (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'네 알겠습니다',0,'', '2024-07-10 16:12:26'),
- 
+     (1, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'네 알겠습니다',0,'', '2024-07-10 16:12:26'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '기획 발표는 최대한 명확하게 문제 정의를 설명하는 데 집중해 주세요.', 0, '이동석코치님', '2024-07-12 11:29:01'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '4시 40분 부터 301호 발표 시작합니다.', 0, '유윤선코치님', '2024-07-11 16:40:00'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '교육동 4층 402호 ~ 405호 교육장 탈취 등 작업으로 인해 7/18(금)까지 출입이 금지됩니다. 또한, 해당 공간 내 에어콘 및 전열교환기 사용이 절대 금지됩니다. 참고하여 주시기 바랍니다. 감사합니다.', 0, '유윤선코치님', '2024-07-11 09:15:32'),
@@ -70,13 +70,11 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '안녕하십니까 정글러 여러분\n 다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크 에 접속 후 신청룰을 참고하여 기입 부탁드립니다.', 0, '유윤선코치님', '2024-07-16 21:16:23'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/spreadsheets/d/1TJwPk-ouY0S6WZm54-8CovGEOavEiZ6M/edit?gid=1806443967#gid=1806443967">링크</a></p> 로 접속 바랍니다.', 0, '유윤선코치님', '2024-07-16 21:16:25'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), 'AWS 정글 8기  Paddlet 주소입니다.\n<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://padlet.com/feaver85/8-hw1426cs3xbpkncr">AWS링크</a></p> \n AWS 클라우드 환경 관련 질문 있으신 분들은 상기 사이트에 이용 해보시기 바랍니다.', 0, '유윤선코치님', '2024-07-16 22:16:23'),
-
-
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '4시 40분 부터 301호 발표 시작합니다.', 0, '유윤선코치님', '2024-07-11 16:40:00'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '교육동 4층 402호 ~ 405호 교육장 탈취 등 작업으로 인해 7/18(금)까지 출입이 금지됩니다. 또한, 해당 공간 내 에어콘 및 전열교환기 사용이 절대 금지됩니다. 참고하여 주시기 바랍니다. 감사합니다.', 0, '유윤선코치님', '2024-07-11 09:15:32'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '내일 일정 사전 공유드립니다.\n1400-1700 나만무 중간 발표  (장소: 정글 스테이지)\n내일 발표는 306호, 307호, 301호 순으로 진행됩니다.\n306호는 14시까지 정글 스테이지에 착석 해 주시기 바랍니다.\n앞 반의 발표가 마무리될 즈음 공지드릴 예정이니, 다음 반 발표자분들은 미리 정글 스테이지로 이동해 주시기 바랍니다.\n또한, 다른 반의 기획 발표를 듣고 싶으신 분은 자유롭게 참여하실 수 있습니다.', 0, '유윤선코치님', '2024-07-11 11:03:11'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '노동부 심사위원단이 7월 7일(월) 오후 1시부터 최대 4시간 동안 교육 현장 점검을 진행할 예정입니다.\n오후 2시가 아니라 1시입니다!!\n점심 식사 후에 모든 교육생들은 교육장에서 학습 해 주시기 바랍니다.', 0, '유윤선코치님', '2024-07-11 13:27:55'),
-
+     -- Q & A
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'여기 이모지 보내지나요 😶',0,'', '2024-07-10 16:03:26'),
      (2, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '네 잘 보내집니다. ^^', 0, '유윤선코치님', '2024-07-10 16:04:34'),
      (2, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '질문이 있습니다', 0, '박은채', '2024-07-08 07:20:16'),
@@ -90,42 +88,42 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'안녕하세요!',0,'', '2024-07-10 17:12:26'),
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'질문이 있습니다!',0,'', '2024-07-10 16:12:26'),
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'혹시 기숙사 에어콘이 중간에 멈추던데 혹시 언제 꺼지는지 알 수 있을까요?',0,'', '2024-07-07 16:22:26'),
-
      (2,UNHEX('8430DCCE5C1411F0A6350242AC110002'),'에어콘은 기숙사에서 점심에 자동으로 꺼지게 되어있습니다^^ 식사후 방에가셔서 다시 키면 될꺼같습니다.',0,'이동석코치님', '2024-07-07 16:32:26'),
-     (3, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '외워서 푸는 건 한계가 있어요. 원리를 알고 코드를 짜면 언젠가 분명히 실력이 폭발합니다.', 0, '이동석코치님', '2024-07-06 15:52:50'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '넵, 감사합니다', 0, '신명훈', '2024-07-12 12:40:58'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '넵, 감사합니다', 0, '박은채', '2024-07-05 09:07:48'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀 함수 아직도 개념이 헷갈리는데, 쉽게 이해하는 법 있을까?', 0, '정경호', '2024-07-10 08:03:12'),
-     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '완전탐색 문제 푸는 팁 있으면 공유 부탁!', 0, '최효식', '2024-07-10 08:43:28'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '기초 정렬 구현 코드 같이 보실 분?', 0, '박은채', '2024-07-10 09:07:11'),
-     (3, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '정수론은 소수 판별부터 머리가 아프네.. 좋은 문제 추천?', 0, '안유진', '2024-07-10 09:25:03'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 인덱스 실수 너무 자주 나네.. 디버깅 팁 있음?', 0, '신명훈', '2024-07-10 09:59:14'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '시간 복잡도 줄이는 패턴 좀 공유해주실 수 있나요?', 0, '정경호', '2024-07-10 10:10:27'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '완전탐색에서 visited 배열 없으면 안 되나?', 0, '김윤석', '2024-07-10 10:44:56'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀 함수 depth가 깊어질 때 에러 나는 거 해결법?', 0, '이찬석', '2024-07-10 11:05:41'),
-     (3, UNHEX('9F95C1F15C8411F0A8650242AC110002'), '이중 for문 쓸 때 시간복잡도 항상 n^2인가요?', 0, '김준혁', '2024-07-10 11:42:37'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 복사 shallow, deep 차이 다시 한 번 정리해볼까요?', 0, '신명훈', '2024-07-10 12:01:50'),
-     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '기초 알고리즘 문제 중 추천 좀 해주세요!', 0, '임구철', '2024-07-10 12:18:33'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '반복문으로 풀다가 재귀로 바꾸니 코드가 더 간결해졌어요!', 0, '박은채', '2024-07-10 13:02:14'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 정렬할 때 기준 문자 지정하는 방법 알면 좋을 듯요.', 0, '이찬석', '2024-07-10 13:16:29'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀로 푸는 게 이득인 상황 예시 아시는 분?', 0, '정경호', '2024-07-10 13:39:45'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '문자열 자르는 split()이랑 슬라이싱 차이 궁금합니다.', 0, '신명훈', '2024-07-10 14:05:21'),
-     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '문자열 관련해서 자주 쓰는 메서드 모아볼까요?', 0, '최효식', '2024-07-10 14:19:37'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '정렬 stable vs unstable 개념 깔끔하게 이해한 분?', 0, '정경호', '2024-07-10 14:44:44'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수에서 return이 언제 되는지 직관적으로 잘 모르겠어.', 0, '김윤석', '2024-07-10 15:06:58'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '네 알겠습니다', 0, '박은채', '2024-07-10 16:12:26'),
-     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '정렬은 어느 알고리즘이 제일 직관적인 것 같아?', 0, '임준혁', '2024-07-10 16:28:32'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '배열 최대값 찾는 반복문 최적화 방법 있을까요?', 0, '정경호', '2024-07-10 17:05:47'),
-     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2024-07-10 17:23:11'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '기초 정렬은 시각적으로 보면 이해가 더 잘 되더라', 0, '정경호', '2024-07-10 17:41:56'),
-     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '완전탐색에서 pruning 꼭 써야 하나요?', 0, '박은범', '2024-07-10 18:02:18'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀보다 반복문이 더 편하지 않나요? 혹시 반례 있음?', 0, '이찬석', '2024-07-10 18:30:04'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수 디버깅할 때 call stack 보는 게 도움 되나요?', 0, '김윤석', '2024-07-10 18:51:36'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '수학적 사고 필요한 정수론 유형 정리하면 도움 될 듯요.', 0, '신명훈', '2024-07-10 19:15:47'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '배열 순서 바꾸는 함수 중 가장 효율적인 거 뭐 있을까요?', 0, '박은채', '2024-07-10 19:45:33'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 길이 제한 있을 때 어떻게 처리하시나요?', 0, '이찬석', '2024-07-10 20:11:24'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '반복문 변수 i 대신 다른 알파벳 쓰면 가독성 좋아질까요?', 0, '신명훈', '2024-07-10 20:43:38'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '박은채', '2024-03-25 21:23:45'),
+     -- 1주차 알고리즘 채널
+     (3, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '외워서 푸는 건 한계가 있어요. 원리를 알고 코드를 짜면 언젠가 분명히 실력이 폭발합니다.', 0, '이동석코치님', '2025-03-13 09:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '넵, 감사합니다', 0, '신명훈', '2025-03-13 09:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '넵, 감사합니다', 0, '박은채', '2025-03-13 09:20:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀 함수 아직도 개념이 헷갈리는데, 쉽게 이해하는 법 있을까?', 0, '정경호', '2025-03-13 09:30:00'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '완전탐색 문제 푸는 팁 있으면 공유 부탁!', 0, '최효식', '2025-03-13 09:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '기초 정렬 구현 코드 같이 보실 분?', 0, '박은채', '2025-03-13 09:50:00'),
+     (3, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '정수론은 소수 판별부터 머리가 아프네.. 좋은 문제 추천?', 0, '안유진', '2025-03-13 10:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 인덱스 실수 너무 자주 나네.. 디버깅 팁 있음?', 0, '신명훈', '2025-03-13 10:10:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '시간 복잡도 줄이는 패턴 좀 공유해주실 수 있나요?', 0, '정경호', '2025-03-13 10:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '완전탐색에서 visited 배열 없으면 안 되나?', 0, '김윤석', '2025-03-13 10:30:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀 함수 depth가 깊어질 때 에러 나는 거 해결법?', 0, '이찬석', '2025-03-13 10:40:00'),
+     (3, UNHEX('9F95C1F15C8411F0A8650242AC110002'), '이중 for문 쓸 때 시간복잡도 항상 n^2인가요?', 0, '김준혁', '2025-03-13 10:50:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 복사 shallow, deep 차이 다시 한 번 정리해볼까요?', 0, '신명훈', '2025-03-13 11:00:00'),
+     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '기초 알고리즘 문제 중 추천 좀 해주세요!', 0, '임구철', '2025-03-13 11:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '반복문으로 풀다가 재귀로 바꾸니 코드가 더 간결해졌어요!', 0, '박은채', '2025-03-13 11:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 정렬할 때 기준 문자 지정하는 방법 알면 좋을 듯요.', 0, '이찬석', '2025-03-13 11:30:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀로 푸는 게 이득인 상황 예시 아시는 분?', 0, '정경호', '2025-03-13 11:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '문자열 자르는 split()이랑 슬라이싱 차이 궁금합니다.', 0, '신명훈', '2025-03-13 11:50:00'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '문자열 관련해서 자주 쓰는 메서드 모아볼까요?', 0, '최효식', '2025-03-13 12:00:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '정렬 stable vs unstable 개념 깔끔하게 이해한 분?', 0, '정경호', '2025-03-13 12:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수에서 return이 언제 되는지 직관적으로 잘 모르겠어.', 0, '김윤석', '2025-03-13 12:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '네 알겠습니다', 0, '박은채', '2025-03-13 12:30:00'),
+     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '정렬은 어느 알고리즘이 제일 직관적인 것 같아?', 0, '임준혁', '2025-03-13 12:40:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '배열 최대값 찾는 반복문 최적화 방법 있을까요?', 0, '정경호', '2025-03-13 12:50:00'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2025-03-13 13:00:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '기초 정렬은 시각적으로 보면 이해가 더 잘 되더라', 0, '정경호', '2025-03-13 13:10:00'),
+     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '완전탐색에서 pruning 꼭 써야 하나요?', 0, '박은범', '2025-03-13 13:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀보다 반복문이 더 편하지 않나요? 혹시 반례 있음?', 0, '이찬석', '2025-03-13 13:30:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수 디버깅할 때 call stack 보는 게 도움 되나요?', 0, '김윤석', '2025-03-13 13:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '수학적 사고 필요한 정수론 유형 정리하면 도움 될 듯요.', 0, '신명훈', '2025-03-13 13:50:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '배열 순서 바꾸는 함수 중 가장 효율적인 거 뭐 있을까요?', 0, '박은채', '2025-03-13 14:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 길이 제한 있을 때 어떻게 처리하시나요?', 0, '이찬석', '2025-03-13 14:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '반복문 변수 i 대신 다른 알파벳 쓰면 가독성 좋아질까요?', 0, '신명훈', '2025-03-13 14:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '박은채', '2025-03-13 14:30:00'),
      (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'),
      '<ul>
      <li><p>장기 취업준비로 인한 좌절감을 어떻게 컨트롤 하는지?</p>
@@ -178,7 +176,7 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      </ul>
      </li>
      </ul>',
-     0, '박은범', '2024-04-10 08:21:36'),
+     0, '박은범', '2025-03-13 14:40:00'),
      (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
      '<p>팀별 면담 시간에 나온 질문 내용들 공유하면 좋을 것 같아서 올려요~</p>
      <ol>
@@ -195,7 +193,7 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
           <p>- 안전상의 이유로 구비해두지 않았으나, 그런 문의들이 많아서 생각 해보겠음.</p>
      </li>
      </ol>',
-     0, '김윤석', '2024-03-17 15:46:23'),
+     0, '김윤석', '2025-03-13 14:50:00'),
      (3, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
      '<ol>
      <li><p>정글 종료 후 추천하는 진로</p>
@@ -205,17 +203,19 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
           <p>-&gt; 가급적 머리에서 어떻게 풀 건지를 100% 구상한 다음 코드를 써라. (50~60% 계획으로 코드한 뒤 디버깅하면서 정답에 근접하는 방식 지양)</p>
      </li>
      </ol>',
-     0, '이재웅', '2024-03-17 17:48:57'),
+     0, '이재웅', '2025-03-13 15:00:00'),
      (3, UNHEX('802E0FE95C8611F0A8650242AC110002'),
      '<p>다음 주 평일 중 백승현 코치님(이전에 알고리즘 설명해 주신 코치님입니다) 커피챗이 있습니다.</p>
      <p>반 마다 3명씩 신청 가능하다고 합니다.(307호도 3명)</p>
      <p>백승현 게임테크랩 코치님 커피챗 희망하시는 분은 여기 스레드에 댓글로 남겨주세요!</p>
      <p><strong>승민)</strong> 승현코치님 시간 이슈로 세 분 밖에 커피챗이 불가하니, 질문을 취합한 후 세 분이 대표로 질문하는 형태로 하는 것이 어떨지 의견 드립니다!</p>',
-     0, '최효식', '2024-07-10 16:35:42'),
-
+     0, '최효식', '2025-03-13 15:10:00'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2025-03-13 15:20:11'),
+     -- 이 부분 필요한가?
      (14, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '나 차은우임', 0, '이재웅', '2024-07-09 08:45:29'),
      (15, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '안녕~ 반가워~', 0, '신명훈', '2024-07-09 07:16:44'),
      (15, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '안녕', 0, '박은채', '2024-07-04 16:02:41'),
+     -- 307호 채널
      (16, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '오늘 9시에 10+@K 달리기 합니다. 참석자 이모지 달아줘.', 0, '이재웅', '2024-07-13 14:29:55'),
      (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '참석', 0, '신명훈', '2024-07-13 20:57:03'),
      (16, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '참석', 0, '박은채', '2024-07-13 19:45:28'),
@@ -243,6 +243,7 @@ INSERT INTO jungle_slam.sections (id,workspace_id,name) VALUES
      (4,1,'Direct Messages');
 
 INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALUES
+     -- 정글 공지 채널
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),1,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),1,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),1,'김윤석'),
@@ -250,6 +251,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),1,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),1,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),1,'김민중'),
+     -- Q&A
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),2,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),2,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),2,'김윤석'),
@@ -257,13 +259,23 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),2,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),2,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),2,'김민중'),
+     -- [WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),3,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),3,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),3,'김윤석'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),3,'신명훈'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),3,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),3,'박은채'),
+     (1,UNHEX('6F0AC5FD5C8411F0A8650242AC110002'),3,'김세현'),
+     (1,UNHEX('9F95C1F15C8411F0A8650242AC110002'),3,'김준혁'),
+     (1,UNHEX('BEA1232F5C8511F0A8650242AC110002'),3,'박은범'),
+     (1,UNHEX('32F2411E5C8611F0A8650242AC110002'),3,'임준혁'),
+     (1,UNHEX('545A4AB45C8611F0A8650242AC110002'),3,'정경호'),
+     (1,UNHEX('03DF0C255C8611F0A8650242AC110002'),3,'이민하'),
+     (1,UNHEX('1F61345F5C8611F0A8650242AC110002'),3,'임구철'),
+     (1,UNHEX('802E0FE95C8611F0A8650242AC110002'),3,'최효식'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),3,'김민중'),
+     -- [WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),4,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),4,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),4,'김윤석'),
@@ -271,6 +283,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),4,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),4,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),4,'김민중'),
+     -- [WEEK03] 트리, 그래프, 힙, 트라이, 비트마스크
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),5,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),5,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),5,'김윤석'),
@@ -278,6 +291,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),5,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),5,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),5,'김민중'),
+     -- [WEEK04] 문자열, 투포인터, 누적합, 투포인터, 누적합
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),6,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),6,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),6,'김윤석'),
@@ -285,6 +299,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),6,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),6,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),6,'김민중'),
+     -- [WEEK05] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),7,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),7,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),7,'김윤석'),
@@ -292,6 +307,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),7,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),7,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),7,'김민중'),
+     -- [WEEK06] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),8,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),8,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),8,'김윤석'),
@@ -299,6 +315,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),8,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),8,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),8,'김민중'),
+     -- [WEEK07] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),9,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),9,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),9,'김윤석'),
@@ -354,58 +371,120 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),16,'신명훈'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),16,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),16,'박은채'),
-     (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),16,'김민중'),
-
-
-
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110010'), 19, '이영준'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110011'), 19, '이원규'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110012'), 19, '이유민'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110013'), 19, '이윤아'),
+     (1, UNHEX('E2EB5DE9609D11F0A5420242AC110014'), 19, '이현재');
 
 INSERT INTO jungle_slam.tabs (name,workspace_id,section_id,url) VALUES
-     ('정글 공지 채널',1,1,NULL),
-     ('Q&A',1,1,NULL),
-     ('[WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL),
-     ('[WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL),
-     ('[WEEK03] 그래프, BFS, DFS, 위상정렬',1,2,NULL),
-     ('[WEEK04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL),
-     ('[WEEK05] C언어, 자료구조, 알고리즘',1,2,NULL),
-     ('[WEEK06] Red-Black Tree',1,2,NULL),
-     ('[WEEK07] Malloc Lab',1,2,NULL),
-     ('[WEEK08] 웹서버 만들기',1,2,NULL),
-     ('[WEEK09](PintOS)Threads',1,2,NULL),
-     ('[WEEK10-11](PintOS) User Programs',1,2,NULL),
-     ('[WEEK12-13](PintOS)Virtual Memory',1,2,NULL),
-     ('나만무3팀',1,3,NULL),
-     ('9기 공지',1,1,NULL),
-     ('307호',1,3,NULL),
-     ('301호',1,3,NULL),
-     ('306호',1,3,NULL),
-     ('10기 공지',1,1,NULL),
-     ('농구 사기단',1,3,NULL),
-     ('전체 공지',1,1,NULL);
-     
- 
-
+     ('정글 공지 채널',1,1,NULL), -- id : 1
+     ('Q&A',1,1,NULL), -- id : 2
+     ('[WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL), -- id : 3
+     ('[WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL), -- id : 4
+     ('[WEEK03] 그래프, BFS, DFS, 위상정렬',1,2,NULL), -- id : 5
+     ('[WEEK04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL), -- id : 6
+     ('[WEEK05] C언어, 자료구조, 알고리즘',1,2,NULL), -- id : 7
+     ('[WEEK06] Red-Black Tree',1,2,NULL), -- id : 8
+     ('[WEEK07] Malloc Lab',1,2,NULL), -- id : 9
+     ('[WEEK08] 웹서버 만들기',1,2,NULL), -- id : 10
+     ('[WEEK09](PintOS)Threads',1,2,NULL), -- id : 11
+     ('[WEEK10-11](PintOS) User Programs',1,2,NULL), -- id : 12
+     ('[WEEK12-13](PintOS)Virtual Memory',1,2,NULL), -- id : 13
+     ('나만무3팀',1,3,NULL), -- id : 14
+     ('농구 사기단',1,3,NULL), -- id : 15
+     ('307호',1,3,NULL), -- id : 16
+     ('301호',1,3,NULL), -- id : 17
+     ('306호',1,3,NULL), -- id : 18
+     ('9기 공지',1,1,NULL), -- id : 19
+     -- ('전체 공지',1,1,NULL); -- id : 20
     
 INSERT INTO jungle_slam.member_roles (user_id, role_id, user_name)
 VALUES
-  (UNHEX('1F61345F5C8611F0A8650242AC110002'), 3, '임구철'),
-  (UNHEX('42E101A25C8611F0A8650242AC110002'), 3, '정진영'),
-  (UNHEX('545A4AB45C8611F0A8650242AC110002'), 3, '정경호'),
-  (UNHEX('03DF0C255C8611F0A8650242AC110002'), 3, '이민하'),
-  (UNHEX('32F2411E5C8611F0A8650242AC110002'), 3, '임준혁'),
+  (UNHEX('1F61345F5C8611F0A8650242AC110002'), 4, '임구철'),
+  (UNHEX('42E101A25C8611F0A8650242AC110002'), 4, '정진영'),
+  (UNHEX('545A4AB45C8611F0A8650242AC110002'), 4, '정경호'),
+  (UNHEX('03DF0C255C8611F0A8650242AC110002'), 4, '이민하'),
+  (UNHEX('32F2411E5C8611F0A8650242AC110002'), 4, '임준혁'),
   (UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '이재웅'),
   (UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), 1, '안유진'),
   (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), 1, '신명훈'),
   (UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), 1, '이찬석'),
   (UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 1, '박은채'),
-  (UNHEX('8430DCCE5C1411F0A6350242AC110002'), 2, '이동석코치님'),
-  (UNHEX('CEF6C2175C1711F0A8650242AC110002'), 2, '유윤선코치님'),
-  (UNHEX('802E0FE95C8611F0A8650242AC110002'), 3, '최효식'),
-  (UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 3, '김세현'),
-  (UNHEX('9F95C1F15C8411F0A8650242AC110002'), 3, '김준혁'),
-  (UNHEX('BEA1232F5C8511F0A8650242AC110002'), 3, '박은범'),
-  (UNHEX('E662D0245C8511F0A8650242AC110002'), 3, '손채민'),
-  (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 3, '김윤석'),
-  (UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 3, '김민중');
+  (UNHEX('8430DCCE5C1411F0A6350242AC110002'), 3, '이동석코치님'),
+  (UNHEX('CEF6C2175C1711F0A8650242AC110002'), 3, '유윤선코치님'),
+  (UNHEX('802E0FE95C8611F0A8650242AC110002'), 4, '최효식'),
+  (UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 4, '김세현'),
+  (UNHEX('9F95C1F15C8411F0A8650242AC110002'), 4, '김준혁'),
+  (UNHEX('BEA1232F5C8511F0A8650242AC110002'), 4, '박은범'),
+  (UNHEX('E662D0245C8511F0A8650242AC110002'), 4, '손채민'),
+  (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 2, '김민중'),
+  -- 추가 데이터
+  (UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), 3, '박일룡'),
+  (UNHEX('B2933F353084410594B6FAA8A2C46CD7'), 3, '이승민'),
+  (UNHEX('878F4895917541A4BEAB9CFFAA2F8A5B'), 3, '안예인'),
+  (UNHEX('AB62B1EC353F4DD6AF05E62F3B7994D4'), 4, '원준석'),
+  (UNHEX('34052B51FD7C48BA85A10DA622D205A7'), 4, '이하린'),
+  (UNHEX('F3628C2A2BA14410A4E7F4CB8E5A604E'), 4, '김도영'),
+  (UNHEX('0C8323D3260649E4AC68F54169D2FC16'), 4, '권우현'),
+  (UNHEX('7C5D304C63C04C368B6D0A8C239ACDB4'), 4, '김민석'),
+  (UNHEX('F29AB5E6A3D848D68AFDDCEEE30D05A2'), 4, '이도연'),
+  (UNHEX('E5F5F61806A14F2EBA2C31B2DEB6D250'), 4, '고재웅'),
+  (UNHEX('91F18C3213B24E9D830A91A1F3108F68'), 4, '조현호'),
+  (UNHEX('B63DB3B5F4BC445B837B7BB3C0A70334'), 4, '오수빈'),
+  -- 추가 users
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110001'), 2, '권민성'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110022'), 2, '김관수'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110003'), 2, '김별'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110004'), 2, '김세헌'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110005'), 2, '김재현'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110006'), 2, '김현준'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110007'), 2, '박성현'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110008'), 2, '박준식'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110009'), 2, '백지원'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000A'), 2, '석재민'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000B'), 2, '오주영'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000C'), 2, '원산하'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000D'), 2, '윤석주'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000E'), 2, '윤정환'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11000F'), 2, '이세창'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110010'), 2, '이영준'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110011'), 2, '이원규'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110012'), 2, '이유민'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110013'), 2, '이윤아'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110014'), 2, '이현재'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110015'), 2, '장지민'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110016'), 2, '정승민'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110017'), 2, '조완기'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110018'), 2, '조정민'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110019'), 2, '지준배'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11001A'), 2, '최우석'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11002B'), 2, '김경연'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11002C'), 2, '김대원'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11002D'), 2, '김명석'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11002E'), 2, '김성광'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110030'), 2, '김예찬'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110031'), 2, '김윤호'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110033'), 2, '김진혁'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110034'), 2, '김태용'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110035'), 2, '노기윤'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110036'), 2, '박지성'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110037'), 2, '배재준'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110038'), 2, '설현아'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110039'), 2, '신동주'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003A'), 2, '안채호'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003B'), 2, '윤성원'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003C'), 2, '이시우'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003D'), 2, '이시현'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003E'), 2, '이의재'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC11003F'), 2, '임재홍'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110040'), 2, '장예지'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110041'), 2, '장은수'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110042'), 2, '정권호'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110043'), 2, '정소영'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110044'), 2, '정현우'),
+  (UNHEX('E2EB5DE9609D11F0A5420242AC110045'), 2, '조윤호');
 
 INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) VALUES
      (UNHEX('03DF0C255C8611F0A8650242AC110002'),'이민하','minhyay01@gmail.com','local',NULL,1),
@@ -427,8 +506,19 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('CEF6C2175C1711F0A8650242AC110002'),'유윤선코치님','uuu@gmail.com','local',NULL,1),
      (UNHEX('E662D0245C8511F0A8650242AC110002'),'손채민','sonchaemin89@gmail.com','local',NULL,1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110002'),'김민중','91minjung@gmail.com','google', NULL, 1),
-
-
+     (UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), '박일룡', '92minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('B2933F353084410594B6FAA8A2C46CD7'), '이승민', '93minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('878F4895917541A4BEAB9CFFAA2F8A5B'), '안예인', '94minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('AB62B1EC353F4DD6AF05E62F3B7994D4'), '원준석', '95minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('34052B51FD7C48BA85A10DA622D205A7'), '이하린', '96minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('F3628C2A2BA14410A4E7F4CB8E5A604E'), '김도영', '97minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('0C8323D3260649E4AC68F54169D2FC16'), '권우현', '98minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('7C5D304C63C04C368B6D0A8C239ACDB4'), '김민석', '99minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('F29AB5E6A3D848D68AFDDCEEE30D05A2'), '이도연', '100minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('E5F5F61806A14F2EBA2C31B2DEB6D250'), '고재웅', '101minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('91F18C3213B24E9D830A91A1F3108F68'), '조현호', '102minjung@gmail.com', 'google', NULL, 1),
+     (UNHEX('B63DB3B5F4BC445B837B7BB3C0A70334'), '오수빈', '103minjung@gmail.com', 'google', NULL, 1),
+     -- 추가 users
      (UNHEX('E2EB5DE9609D11F0A5420242AC110001'), '권민성', 'user1@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110022'), '김관수', 'user2@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110003'), '김별', 'user3@gmail.com', 'google', NULL, 1),
@@ -455,7 +545,6 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('E2EB5DE9609D11F0A5420242AC110018'), '조정민', 'user25@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110019'), '지준배', 'user26@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11001A'), '최우석', 'user27@gmail.com', 'google', NULL, 1),
-
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002B'), '김경연', 'user28@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002C'), '김대원', 'user29@gmail.com', 'google', NULL, 1),
      (UNHEX('E2EB5DE9609D11F0A5420242AC11002D'), '김명석', 'user30@gmail.com', 'google', NULL, 1),
@@ -490,26 +579,37 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
 
 
 INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,email,image,github,blog) VALUES
-    (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', NULL, NULL, NULL),
-    (UNHEX('2066CA895C8611F0A8650242AC110002'), UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철', 'goochul175465@gmail.com', NULL, NULL, NULL),
-    (UNHEX('3546C7635C8611F0A8650242AC110002'), UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁', 'jhim0228@gmail.com', NULL, NULL, NULL),
-    (UNHEX('4598DA5E5C8611F0A8650242AC110002'), UNHEX('42E101A25C8611F0A8650242AC110002'), 1, '정진영', 'jy.juniper.jeong@gmail.com', NULL, NULL, NULL),
-    (UNHEX('5627A73F5C8611F0A8650242AC110002'), UNHEX('545A4AB45C8611F0A8650242AC110002'), 1, '정경호', 'jkhkorea2028@gmail.com', NULL, NULL, NULL),
-    (UNHEX('80DAEE565C8611F0A8650242AC110002'), UNHEX('802E0FE95C8611F0A8650242AC110002'), 1, '최효식', 'gytlr0785@gmail.com', NULL, NULL, NULL),
-    (UNHEX('85049B055C8411F0A8650242AC110002'), UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 1, '김세현', 'sehyun5004@gmail.com', NULL, NULL, NULL),
-    (UNHEX('88C4AC635BFF11F0A1F20242AC110002'), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '이재웅', 'iamlee103@gmail.com', 'https://stqnq5ux4599.edge.naverncp.com/data2/content/image/2023/04/24/.cache/512/202304240914899.jpg', 'https://github.com/jaewoong', 'https://blog.jaewoong.dev'),
-    (UNHEX('88C4AF655BFF11F0A1F20242AC110002'), UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), 1, '안유진', 'anewjean00@gmail.com', 'https://image.fnnews.com/resource/media/image/2023/10/14/202310140602016302_l.jpg', 'https://github.com/bob', 'https://blog.bob.dev'),
-    (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석', 'yunsuk224@gmail.com', 'https://i.namu.wiki/i/TaNHF90GTgXSwRxcX8rCC9MGWwP9viBkpx6qlHQ6rgA-mq0ydwL9EIjfDbNirNp5Df_bL6SGO31sCGVlk_H2-WRKV0oedSqf7AVlhh2jwsDoraYX1FGc27vCeEk2lr4l9fW1LuPxGOH2W53wqrlbAg.webp', 'https://github.com/rasegqw', 'https://blog.alice.dev'),
-    (UNHEX('88C4B1755BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), 1, '신명훈', 'irootw11@gmail.com', 'https://i.namu.wiki/i/izVXkClWRy9-s5DAkC_lGo3za4Zy9seGH1V6AM0qZJzsckE9eWe6-Hp-1OvJm_DkVv7BL7U0Ar7QB89ApaklkQ.webp', 'https://github.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('88C4B1E85BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), 1, '이찬석', 'dl9704tjr@gmail.com', 'https://media1.tenor.com/m/JZTIyLcEhKAAAAAd/%ED%95%91%EA%B5%AC-%ED%95%91%EA%B5%AC-%EB%AC%BC%EA%B0%9C.gif', 'https://githu1b.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('88C4B2555BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 1, '박은채', 'ghkqh09@gmail.com', 'https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F09%2Faa-run-hani-s-production-released-a-follow-up-model-trailer-info-01.jpg?q=75&w=800&cbr=1&fit=max', 'https://github.com/alice', 'https://blog.alice.dev'),
-    (UNHEX('A07609D85C8411F0A8650242AC110002'), UNHEX('9F95C1F15C8411F0A8650242AC110002'), 1, '김준혁', 'kjh91207@gmail.com', NULL, NULL, NULL),
-    (UNHEX('C6CB40145C8511F0A8650242AC110002'), UNHEX('BEA1232F5C8511F0A8650242AC110002'), 1, '박은범', 'eun4005@gmail.com', NULL, NULL, NULL),
-    (UNHEX('E0DBC45F5C1711F0A8650242AC110002'), UNHEX('CEF6C2175C1711F0A8650242AC110002'), 1, '유윤선코치님', 'uuu@gmail.com', 'https://velog.velcdn.com/images/seeh_h/post/a83a9cf0-2365-4946-9d0d-96ec782c4c86/image.png', NULL, NULL),
-    (UNHEX('E7159E115C8511F0A8650242AC110002'), UNHEX('E662D0245C8511F0A8650242AC110002'), 1, '손채민', 'sonchaemin89@gmail.com', NULL, NULL, NULL),
-    (UNHEX('F11E8FC75C1411F0A6350242AC110002'), UNHEX('8430DCCE5C1411F0A6350242AC110002'), 1, '이동석코치님', 'dongseok@gmail.com', 'https://upload.wikimedia.org/wikipedia/commons/5/5a/SOL%EC%BA%90%EB%A6%AD%ED%84%B0.png', NULL, NULL),
-    (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com', NULL, NULL, NULL),
-
+     (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GSGL5ZK3-0c7f0765f91c-512', NULL, NULL),
+     (UNHEX('2066CA895C8611F0A8650242AC110002'), UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철', 'goochul175465@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG9DK7C2-65d136bf7de0-512', NULL, NULL),
+     (UNHEX('3546C7635C8611F0A8650242AC110002'), UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁', 'jhim0228@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G0RSLZ63-e8fc3d520338-512', NULL, NULL),
+     (UNHEX('4598DA5E5C8611F0A8650242AC110002'), UNHEX('42E101A25C8611F0A8650242AC110002'), 1, '정진영', 'jy.juniper.jeong@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08H51V5SL8-35035abc83f0-512', NULL, NULL),
+     (UNHEX('5627A73F5C8611F0A8650242AC110002'), UNHEX('545A4AB45C8611F0A8650242AC110002'), 1, '정경호', 'jkhkorea2028@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG9ZL93L-093ba12668f7-512', NULL, NULL),
+     (UNHEX('80DAEE565C8611F0A8650242AC110002'), UNHEX('802E0FE95C8611F0A8650242AC110002'), 1, '최효식', 'gytlr0785@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GGJAQK99-29a368f10ce2-512', NULL, NULL),
+     (UNHEX('85049B055C8411F0A8650242AC110002'), UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), 1, '김세현', 'sehyun5004@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GJPKE5L4-2a79cdb80b87-512', NULL, NULL),
+     (UNHEX('88C4AC635BFF11F0A1F20242AC110002'), UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '이재웅', 'iamlee103@gmail.com', 'https://stqnq5ux4599.edge.naverncp.com/data2/content/image/2023/04/24/.cache/512/202304240914899.jpg', 'https://github.com/jaewoong', 'https://blog.jaewoong.dev'),
+     (UNHEX('88C4AF655BFF11F0A1F20242AC110002'), UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), 1, '안유진', 'anewjean00@gmail.com', 'https://image.fnnews.com/resource/media/image/2023/10/14/202310140602016302_l.jpg', 'https://github.com/bob', 'https://blog.bob.dev'),
+     (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석', 'yunsuk224@gmail.com', 'https://i.namu.wiki/i/TaNHF90GTgXSwRxcX8rCC9MGWwP9viBkpx6qlHQ6rgA-mq0ydwL9EIjfDbNirNp5Df_bL6SGO31sCGVlk_H2-WRKV0oedSqf7AVlhh2jwsDoraYX1FGc27vCeEk2lr4l9fW1LuPxGOH2W53wqrlbAg.webp', 'https://github.com/rasegqw', 'https://blog.alice.dev'),
+     (UNHEX('88C4B1755BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), 1, '신명훈', 'irootw11@gmail.com', 'https://i.namu.wiki/i/izVXkClWRy9-s5DAkC_lGo3za4Zy9seGH1V6AM0qZJzsckE9eWe6-Hp-1OvJm_DkVv7BL7U0Ar7QB89ApaklkQ.webp', 'https://github.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('88C4B1E85BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), 1, '이찬석', 'dl9704tjr@gmail.com', 'https://media1.tenor.com/m/JZTIyLcEhKAAAAAd/%ED%95%91%EA%B5%AC-%ED%95%91%EA%B5%AC-%EB%AC%BC%EA%B0%9C.gif', 'https://githu1b.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('88C4B2555BFF11F0A1F20242AC110002'), UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 1, '박은채', 'ghkqh09@gmail.com', 'https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2023%2F09%2Faa-run-hani-s-production-released-a-follow-up-model-trailer-info-01.jpg?q=75&w=800&cbr=1&fit=max', 'https://github.com/alice', 'https://blog.alice.dev'),
+     (UNHEX('A07609D85C8411F0A8650242AC110002'), UNHEX('9F95C1F15C8411F0A8650242AC110002'), 1, '김준혁', 'kjh91207@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GJQCGGHJ-878acb84c995-512', NULL, NULL),
+     (UNHEX('C6CB40145C8511F0A8650242AC110002'), UNHEX('BEA1232F5C8511F0A8650242AC110002'), 1, '박은범', 'eun4005@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G8KVEG3Y-418225030167-512', NULL, NULL),
+     (UNHEX('E0DBC45F5C1711F0A8650242AC110002'), UNHEX('CEF6C2175C1711F0A8650242AC110002'), 1, '유윤선코치님', 'uuu@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U089QLY289K-68301a0346f9-512', NULL, NULL),
+     (UNHEX('E7159E115C8511F0A8650242AC110002'), UNHEX('E662D0245C8511F0A8650242AC110002'), 1, '손채민', 'sonchaemin89@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GSGMGLLR-28923ec4e049-512', NULL, NULL),
+     (UNHEX('F11E8FC75C1411F0A6350242AC110002'), UNHEX('8430DCCE5C1411F0A6350242AC110002'), 1, '이동석코치님', 'dongseok@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U085L9ZRDQW-21ecc433d650-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), 1, '박일룡', '92minjung@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U03U1RMGZUL-12daf35c6c61-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('B2933F353084410594B6FAA8A2C46CD7'), 1, '이승민', '93minjung@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U084J7UUYBX-bd11c804dbfa-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('878F4895917541A4BEAB9CFFAA2F8A5B'), 1, '안예인', '94minjung@gmail.com', 'https://ca.slack-edge.com/E01DL1Z9D6Z-U084J7UPXQV-91f8d3ee6f0e-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('AB62B1EC353F4DD6AF05E62F3B7994D4'), 1, '원준석', '95minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GGJ0EJ9H-41b5bf6984ab-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('34052B51FD7C48BA85A10DA622D205A7'), 1, '이하린', '96minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G8L6MB6J-f3900729fa19-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('F3628C2A2BA14410A4E7F4CB8E5A604E'), 1, '김도영', '97minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G0QLBR4P-e67a7483b5dc-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('0C8323D3260649E4AC68F54169D2FC16'), 1, '권우현', '98minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG8R8WTC-af49525a262c-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('7C5D304C63C04C368B6D0A8C239ACDB4'), 1, '김민석', '99minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GGJD1HFD-ab58a94628de-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('F29AB5E6A3D848D68AFDDCEEE30D05A2'), 1, '이도연', '100minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08H513B9ME-c0e6693451d6-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E5F5F61806A14F2EBA2C31B2DEB6D250'), 1, '고재웅', '101minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G8LJ0Z2A-78a6c503d0d4-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('91F18C3213B24E9D830A91A1F3108F68'), 1, '조현호', '102minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G8LYTZEJ-5763f312baed-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('B63DB3B5F4BC445B837B7BB3C0A70334'), 1, '오수빈', '103minjung@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GD3U1EER-737ade56d6d8-512', NULL, NULL),
+     (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 1, '김민중', '91minjung@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110001'), 1, '권민성', 'user1@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110022'), 1, '김관수', 'user2@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110003'), 1, '김별', 'user3@gmail.com', NULL, NULL, NULL),
@@ -536,7 +636,6 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110018'), 1, '조정민', 'user25@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110019'), 1, '지준배', 'user26@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11001A'), 1, '최우석', 'user27@gmail.com', NULL, NULL, NULL),
-
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002B'), 1, '김경연', 'user28@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002C'), 1, '김대원', 'user29@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC11002D'), 1, '김명석', 'user30@gmail.com', NULL, NULL, NULL),
@@ -562,10 +661,6 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110043'), 1, '정소영', 'user52@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110044'), 1, '정현우', 'user53@gmail.com', NULL, NULL, NULL),
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110045'), 1, '조윤호', 'user54@gmail.com', NULL, NULL, NULL);
-
-
-
-
 
 
 INSERT INTO jungle_slam.workspaces (name) VALUES

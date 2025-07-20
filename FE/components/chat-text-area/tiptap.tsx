@@ -28,6 +28,7 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
+import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
 import { ClipboardPlus, ClipboardX } from "lucide-react";
 import SaveMessages from "./SaveMessages";
 import { addSaveMessage } from "@/apis/saveMessageApi";
@@ -61,6 +62,7 @@ export function TipTap() {
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
 
+
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
@@ -93,6 +95,7 @@ export function TipTap() {
       editable: true,
       extensions: [
         StarterKit, // 핵심 확장 모음
+        FileDownloadExtension, // 문제시 당장 삭제
         Placeholder.configure({
           placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
         }),
