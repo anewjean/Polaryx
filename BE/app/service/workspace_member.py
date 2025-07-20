@@ -46,10 +46,10 @@ class WorkspaceMemberService:
         group_service.insert_group_member(data, insert_groups)
 
         # 역할 생성
-        role_service.insert_member_roles_bulk(data)
+        created_roles = role_service.insert_member_roles_bulk(data)
 
         return {
-        "success_count": len(data["users"])
+        "success_count": created_roles
     }
 
     def insert_workspace_member(self, data: dict, workspace_id: int):
