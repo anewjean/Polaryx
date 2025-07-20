@@ -25,6 +25,7 @@ INSERT INTO jungle_slam.group_members (group_id,user_id,user_name) VALUES
     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채');
 
 INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_name, created_at) VALUES
+     -- 정글 공지 채널
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '실력다지기 발표 자료 제출 안하신 분들이 아직 많습니다. 금일 발표 자료 제출 해 주세요', 0, '이동석코치님', '2024-07-04 17:42:56'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '안녕하십니까 정글러 여러분~ 다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크에 접속하신후 신청룰을 참고하여 기입 부탁드립니다.', 0, '이동석코치님', '2024-07-05 11:32:57'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/spreadsheets/d/1TJwPk-ouY0S6WZm54-8CovGEOavEiZ6M/edit?gid=1806443967#gid=1806443967">링크</a></p> 로 접속 바랍니다.', 0, '이동석코치님', '2024-07-05 11:33:25'),
@@ -36,10 +37,9 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '안녕하십니까 정글러 여러분\n다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크 에 접속 후 신청룰을 참고하여 기입 부탁드립니다.', 0, '유윤선코치님', '2024-07-11 12:44:49'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '지난 4월에 진행한 1차 운동 이벤트(턱걸이 챌린지)에 이어, 교육생 여러분들의 의견을 수렴하여 2차 이벤트를 준비하였습니다\n다음과 같이 안내드리오니 많은 관심과 참여 바랍니다.\n\n\n\n🏀 농구 슛대결 참가 안내 🏀\n\n각 교육장의 명예를 건 치열한 슛 대결이 시작됩니다!', 0, '유윤선코치님', '2024-07-03 19:29:30'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '디스코드 초대링크입니다\n\n<a target="_blank" rel="noopener noreferrer nofollow" href= https://discord.gg/jqaYP7rP56>[성공적인 나만무를 위한 크래프톤 정글 3기 민상기님의 조언]</a>\n\n나만무 프로젝트를 들고 약 20여 곳의 면접을 본 경험을 바탕으로 제 의견을 공유합니다. 참고로 저는 주로 소규모 스타트업 위주로 면접에 참여한 점 참고 부탁드립니다.\n\n어투는 다소 확정적이지만, 매우 주관적인 의견임을 사전에 말씀드립니다.\n\n저와 다른 의견도 언제든지 환영합니다.🤗\n\n...\n\n- 난 백엔드 개발자 할거니까 React몰라도 되겠지? -> (소규모 스타트업 한정) 저는 첫 커리어를 Node 백엔드 개발자로 입사했지만 입사 후에는 파이썬 백엔드, C++ 라이브러리 개발, Vue, Flutter, Node를 모두 다뤄야 했습니다.', 0, '이동석코치님', '2024-07-09 16:13:56'),
-     (1,UNHEX('8430DCCE5C1411F0A6350242AC110002'),'3시 20분 부터 307호 발표 시작합니다.',0,'이동석코치님', '2024-07-10 13:12:26'),
+     (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'),'3시 20분 부터 307호 발표 시작합니다.',0,'이동석코치님', '2024-07-10 13:12:26'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'),'내일 1시부터 반별로 나만무 발표합니다. \n 306호는 1시에 바로 시작하고, \n 307호 -> 301호 순서로 합니다. ',0,'이동석코치님', '2024-07-10 13:14:23'),
-     (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'네 알겠습니다',0,'', '2024-07-10 16:12:26'),
- 
+     (1, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'네 알겠습니다',0,'', '2024-07-10 16:12:26'),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '기획 발표는 최대한 명확하게 문제 정의를 설명하는 데 집중해 주세요.', 0, '이동석코치님', '2024-07-12 11:29:01'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '4시 40분 부터 301호 발표 시작합니다.', 0, '유윤선코치님', '2024-07-11 16:40:00'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '교육동 4층 402호 ~ 405호 교육장 탈취 등 작업으로 인해 7/18(금)까지 출입이 금지됩니다. 또한, 해당 공간 내 에어콘 및 전열교환기 사용이 절대 금지됩니다. 참고하여 주시기 바랍니다. 감사합니다.', 0, '유윤선코치님', '2024-07-11 09:15:32'),
@@ -70,13 +70,11 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '안녕하십니까 정글러 여러분\n 다음주 월,화요일 코치 커피챗 신청을 원하시는 분들은 링크 에 접속 후 신청룰을 참고하여 기입 부탁드립니다.', 0, '유윤선코치님', '2024-07-16 21:16:23'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/spreadsheets/d/1TJwPk-ouY0S6WZm54-8CovGEOavEiZ6M/edit?gid=1806443967#gid=1806443967">링크</a></p> 로 접속 바랍니다.', 0, '유윤선코치님', '2024-07-16 21:16:25'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), 'AWS 정글 8기  Paddlet 주소입니다.\n<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://padlet.com/feaver85/8-hw1426cs3xbpkncr">AWS링크</a></p> \n AWS 클라우드 환경 관련 질문 있으신 분들은 상기 사이트에 이용 해보시기 바랍니다.', 0, '유윤선코치님', '2024-07-16 22:16:23'),
-
-
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '4시 40분 부터 301호 발표 시작합니다.', 0, '유윤선코치님', '2024-07-11 16:40:00'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '교육동 4층 402호 ~ 405호 교육장 탈취 등 작업으로 인해 7/18(금)까지 출입이 금지됩니다. 또한, 해당 공간 내 에어콘 및 전열교환기 사용이 절대 금지됩니다. 참고하여 주시기 바랍니다. 감사합니다.', 0, '유윤선코치님', '2024-07-11 09:15:32'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '내일 일정 사전 공유드립니다.\n1400-1700 나만무 중간 발표  (장소: 정글 스테이지)\n내일 발표는 306호, 307호, 301호 순으로 진행됩니다.\n306호는 14시까지 정글 스테이지에 착석 해 주시기 바랍니다.\n앞 반의 발표가 마무리될 즈음 공지드릴 예정이니, 다음 반 발표자분들은 미리 정글 스테이지로 이동해 주시기 바랍니다.\n또한, 다른 반의 기획 발표를 듣고 싶으신 분은 자유롭게 참여하실 수 있습니다.', 0, '유윤선코치님', '2024-07-11 11:03:11'),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '노동부 심사위원단이 7월 7일(월) 오후 1시부터 최대 4시간 동안 교육 현장 점검을 진행할 예정입니다.\n오후 2시가 아니라 1시입니다!!\n점심 식사 후에 모든 교육생들은 교육장에서 학습 해 주시기 바랍니다.', 0, '유윤선코치님', '2024-07-11 13:27:55'),
-
+     -- Q & A
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'여기 이모지 보내지나요 😶',0,'', '2024-07-10 16:03:26'),
      (2, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '네 잘 보내집니다. ^^', 0, '유윤선코치님', '2024-07-10 16:04:34'),
      (2, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '질문이 있습니다', 0, '박은채', '2024-07-08 07:20:16'),
@@ -90,42 +88,42 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'안녕하세요!',0,'', '2024-07-10 17:12:26'),
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'질문이 있습니다!',0,'', '2024-07-10 16:12:26'),
      (2,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'혹시 기숙사 에어콘이 중간에 멈추던데 혹시 언제 꺼지는지 알 수 있을까요?',0,'', '2024-07-07 16:22:26'),
-
      (2,UNHEX('8430DCCE5C1411F0A6350242AC110002'),'에어콘은 기숙사에서 점심에 자동으로 꺼지게 되어있습니다^^ 식사후 방에가셔서 다시 키면 될꺼같습니다.',0,'이동석코치님', '2024-07-07 16:32:26'),
-     (3, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '외워서 푸는 건 한계가 있어요. 원리를 알고 코드를 짜면 언젠가 분명히 실력이 폭발합니다.', 0, '이동석코치님', '2024-07-06 15:52:50'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '넵, 감사합니다', 0, '신명훈', '2024-07-12 12:40:58'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '넵, 감사합니다', 0, '박은채', '2024-07-05 09:07:48'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀 함수 아직도 개념이 헷갈리는데, 쉽게 이해하는 법 있을까?', 0, '정경호', '2024-07-10 08:03:12'),
-     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '완전탐색 문제 푸는 팁 있으면 공유 부탁!', 0, '최효식', '2024-07-10 08:43:28'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '기초 정렬 구현 코드 같이 보실 분?', 0, '박은채', '2024-07-10 09:07:11'),
-     (3, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '정수론은 소수 판별부터 머리가 아프네.. 좋은 문제 추천?', 0, '안유진', '2024-07-10 09:25:03'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 인덱스 실수 너무 자주 나네.. 디버깅 팁 있음?', 0, '신명훈', '2024-07-10 09:59:14'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '시간 복잡도 줄이는 패턴 좀 공유해주실 수 있나요?', 0, '정경호', '2024-07-10 10:10:27'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '완전탐색에서 visited 배열 없으면 안 되나?', 0, '김윤석', '2024-07-10 10:44:56'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀 함수 depth가 깊어질 때 에러 나는 거 해결법?', 0, '이찬석', '2024-07-10 11:05:41'),
-     (3, UNHEX('9F95C1F15C8411F0A8650242AC110002'), '이중 for문 쓸 때 시간복잡도 항상 n^2인가요?', 0, '김준혁', '2024-07-10 11:42:37'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 복사 shallow, deep 차이 다시 한 번 정리해볼까요?', 0, '신명훈', '2024-07-10 12:01:50'),
-     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '기초 알고리즘 문제 중 추천 좀 해주세요!', 0, '임구철', '2024-07-10 12:18:33'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '반복문으로 풀다가 재귀로 바꾸니 코드가 더 간결해졌어요!', 0, '박은채', '2024-07-10 13:02:14'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 정렬할 때 기준 문자 지정하는 방법 알면 좋을 듯요.', 0, '이찬석', '2024-07-10 13:16:29'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀로 푸는 게 이득인 상황 예시 아시는 분?', 0, '정경호', '2024-07-10 13:39:45'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '문자열 자르는 split()이랑 슬라이싱 차이 궁금합니다.', 0, '신명훈', '2024-07-10 14:05:21'),
-     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '문자열 관련해서 자주 쓰는 메서드 모아볼까요?', 0, '최효식', '2024-07-10 14:19:37'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '정렬 stable vs unstable 개념 깔끔하게 이해한 분?', 0, '정경호', '2024-07-10 14:44:44'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수에서 return이 언제 되는지 직관적으로 잘 모르겠어.', 0, '김윤석', '2024-07-10 15:06:58'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '네 알겠습니다', 0, '박은채', '2024-07-10 16:12:26'),
-     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '정렬은 어느 알고리즘이 제일 직관적인 것 같아?', 0, '임준혁', '2024-07-10 16:28:32'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '배열 최대값 찾는 반복문 최적화 방법 있을까요?', 0, '정경호', '2024-07-10 17:05:47'),
-     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2024-07-10 17:23:11'),
-     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '기초 정렬은 시각적으로 보면 이해가 더 잘 되더라', 0, '정경호', '2024-07-10 17:41:56'),
-     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '완전탐색에서 pruning 꼭 써야 하나요?', 0, '박은범', '2024-07-10 18:02:18'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀보다 반복문이 더 편하지 않나요? 혹시 반례 있음?', 0, '이찬석', '2024-07-10 18:30:04'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수 디버깅할 때 call stack 보는 게 도움 되나요?', 0, '김윤석', '2024-07-10 18:51:36'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '수학적 사고 필요한 정수론 유형 정리하면 도움 될 듯요.', 0, '신명훈', '2024-07-10 19:15:47'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '배열 순서 바꾸는 함수 중 가장 효율적인 거 뭐 있을까요?', 0, '박은채', '2024-07-10 19:45:33'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 길이 제한 있을 때 어떻게 처리하시나요?', 0, '이찬석', '2024-07-10 20:11:24'),
-     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '반복문 변수 i 대신 다른 알파벳 쓰면 가독성 좋아질까요?', 0, '신명훈', '2024-07-10 20:43:38'),
-     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '박은채', '2024-03-25 21:23:45'),
+     -- 1주차 알고리즘 채널
+     (3, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '외워서 푸는 건 한계가 있어요. 원리를 알고 코드를 짜면 언젠가 분명히 실력이 폭발합니다.', 0, '이동석코치님', '2025-03-13 09:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '넵, 감사합니다', 0, '신명훈', '2025-03-13 09:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '넵, 감사합니다', 0, '박은채', '2025-03-13 09:20:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀 함수 아직도 개념이 헷갈리는데, 쉽게 이해하는 법 있을까?', 0, '정경호', '2025-03-13 09:30:00'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '완전탐색 문제 푸는 팁 있으면 공유 부탁!', 0, '최효식', '2025-03-13 09:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '기초 정렬 구현 코드 같이 보실 분?', 0, '박은채', '2025-03-13 09:50:00'),
+     (3, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '정수론은 소수 판별부터 머리가 아프네.. 좋은 문제 추천?', 0, '안유진', '2025-03-13 10:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 인덱스 실수 너무 자주 나네.. 디버깅 팁 있음?', 0, '신명훈', '2025-03-13 10:10:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '시간 복잡도 줄이는 패턴 좀 공유해주실 수 있나요?', 0, '정경호', '2025-03-13 10:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '완전탐색에서 visited 배열 없으면 안 되나?', 0, '김윤석', '2025-03-13 10:30:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀 함수 depth가 깊어질 때 에러 나는 거 해결법?', 0, '이찬석', '2025-03-13 10:40:00'),
+     (3, UNHEX('9F95C1F15C8411F0A8650242AC110002'), '이중 for문 쓸 때 시간복잡도 항상 n^2인가요?', 0, '김준혁', '2025-03-13 10:50:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '배열 복사 shallow, deep 차이 다시 한 번 정리해볼까요?', 0, '신명훈', '2025-03-13 11:00:00'),
+     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '기초 알고리즘 문제 중 추천 좀 해주세요!', 0, '임구철', '2025-03-13 11:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '반복문으로 풀다가 재귀로 바꾸니 코드가 더 간결해졌어요!', 0, '박은채', '2025-03-13 11:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 정렬할 때 기준 문자 지정하는 방법 알면 좋을 듯요.', 0, '이찬석', '2025-03-13 11:30:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '재귀로 푸는 게 이득인 상황 예시 아시는 분?', 0, '정경호', '2025-03-13 11:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '문자열 자르는 split()이랑 슬라이싱 차이 궁금합니다.', 0, '신명훈', '2025-03-13 11:50:00'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '문자열 관련해서 자주 쓰는 메서드 모아볼까요?', 0, '최효식', '2025-03-13 12:00:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '정렬 stable vs unstable 개념 깔끔하게 이해한 분?', 0, '정경호', '2025-03-13 12:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수에서 return이 언제 되는지 직관적으로 잘 모르겠어.', 0, '김윤석', '2025-03-13 12:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '네 알겠습니다', 0, '박은채', '2025-03-13 12:30:00'),
+     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '정렬은 어느 알고리즘이 제일 직관적인 것 같아?', 0, '임준혁', '2025-03-13 12:40:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '배열 최대값 찾는 반복문 최적화 방법 있을까요?', 0, '정경호', '2025-03-13 12:50:00'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2025-03-13 13:00:00'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '기초 정렬은 시각적으로 보면 이해가 더 잘 되더라', 0, '정경호', '2025-03-13 13:10:00'),
+     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '완전탐색에서 pruning 꼭 써야 하나요?', 0, '박은범', '2025-03-13 13:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '재귀보다 반복문이 더 편하지 않나요? 혹시 반례 있음?', 0, '이찬석', '2025-03-13 13:30:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '재귀 함수 디버깅할 때 call stack 보는 게 도움 되나요?', 0, '김윤석', '2025-03-13 13:40:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '수학적 사고 필요한 정수론 유형 정리하면 도움 될 듯요.', 0, '신명훈', '2025-03-13 13:50:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '배열 순서 바꾸는 함수 중 가장 효율적인 거 뭐 있을까요?', 0, '박은채', '2025-03-13 14:00:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAEEAAAAADDDD'), '문자열 길이 제한 있을 때 어떻게 처리하시나요?', 0, '이찬석', '2025-03-13 14:10:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '반복문 변수 i 대신 다른 알파벳 쓰면 가독성 좋아질까요?', 0, '신명훈', '2025-03-13 14:20:00'),
+     (3, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '박은채', '2025-03-13 14:30:00'),
      (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'),
      '<ul>
      <li><p>장기 취업준비로 인한 좌절감을 어떻게 컨트롤 하는지?</p>
@@ -178,7 +176,7 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      </ul>
      </li>
      </ul>',
-     0, '박은범', '2024-04-10 08:21:36'),
+     0, '박은범', '2025-03-13 14:40:00'),
      (3, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
      '<p>팀별 면담 시간에 나온 질문 내용들 공유하면 좋을 것 같아서 올려요~</p>
      <ol>
@@ -195,7 +193,7 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
           <p>- 안전상의 이유로 구비해두지 않았으나, 그런 문의들이 많아서 생각 해보겠음.</p>
      </li>
      </ol>',
-     0, '김윤석', '2024-03-17 15:46:23'),
+     0, '김윤석', '2025-03-13 14:50:00'),
      (3, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
      '<ol>
      <li><p>정글 종료 후 추천하는 진로</p>
@@ -205,17 +203,19 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
           <p>-&gt; 가급적 머리에서 어떻게 풀 건지를 100% 구상한 다음 코드를 써라. (50~60% 계획으로 코드한 뒤 디버깅하면서 정답에 근접하는 방식 지양)</p>
      </li>
      </ol>',
-     0, '이재웅', '2024-03-17 17:48:57'),
+     0, '이재웅', '2025-03-13 15:00:00'),
      (3, UNHEX('802E0FE95C8611F0A8650242AC110002'),
      '<p>다음 주 평일 중 백승현 코치님(이전에 알고리즘 설명해 주신 코치님입니다) 커피챗이 있습니다.</p>
      <p>반 마다 3명씩 신청 가능하다고 합니다.(307호도 3명)</p>
      <p>백승현 게임테크랩 코치님 커피챗 희망하시는 분은 여기 스레드에 댓글로 남겨주세요!</p>
      <p><strong>승민)</strong> 승현코치님 시간 이슈로 세 분 밖에 커피챗이 불가하니, 질문을 취합한 후 세 분이 대표로 질문하는 형태로 하는 것이 어떨지 의견 드립니다!</p>',
-     0, '최효식', '2024-07-10 16:35:42'),
-
+     0, '최효식', '2025-03-13 15:10:00'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '기초 알고리즘 공부할 때 제일 먼저 해야 할 건 뭐라고 생각해?', 0, '김세현', '2025-03-13 15:20:11'),
+     -- 이 부분 필요한가?
      (14, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '나 차은우임', 0, '이재웅', '2024-07-09 08:45:29'),
      (15, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '안녕~ 반가워~', 0, '신명훈', '2024-07-09 07:16:44'),
      (15, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '안녕', 0, '박은채', '2024-07-04 16:02:41'),
+     -- 307호 채널
      (16, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '오늘 9시에 10+@K 달리기 합니다. 참석자 이모지 달아줘.', 0, '이재웅', '2024-07-13 14:29:55'),
      (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '참석', 0, '신명훈', '2024-07-13 20:57:03'),
      (16, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '참석', 0, '박은채', '2024-07-13 19:45:28'),
@@ -243,6 +243,7 @@ INSERT INTO jungle_slam.sections (id,workspace_id,name) VALUES
      (4,1,'Direct Messages');
 
 INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALUES
+     -- 정글 공지 채널
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),1,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),1,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),1,'김윤석'),
@@ -250,6 +251,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),1,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),1,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),1,'김민중'),
+     -- Q&A
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),2,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),2,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),2,'김윤석'),
@@ -257,13 +259,23 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),2,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),2,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),2,'김민중'),
+     -- [WEEK01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),3,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),3,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),3,'김윤석'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),3,'신명훈'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),3,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),3,'박은채'),
+     (1,UNHEX('6F0AC5FD5C8411F0A8650242AC110002'),3,'김세현'),
+     (1,UNHEX('9F95C1F15C8411F0A8650242AC110002'),3,'김준혁'),
+     (1,UNHEX('BEA1232F5C8511F0A8650242AC110002'),3,'박은범'),
+     (1,UNHEX('32F2411E5C8611F0A8650242AC110002'),3,'임준혁'),
+     (1,UNHEX('545A4AB45C8611F0A8650242AC110002'),3,'정경호'),
+     (1,UNHEX('03DF0C255C8611F0A8650242AC110002'),3,'이민하'),
+     (1,UNHEX('1F61345F5C8611F0A8650242AC110002'),3,'임구철'),
+     (1,UNHEX('802E0FE95C8611F0A8650242AC110002'),3,'최효식'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),3,'김민중'),
+     -- [WEEK02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),4,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),4,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),4,'김윤석'),
@@ -271,6 +283,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),4,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),4,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),4,'김민중'),
+     -- [WEEK03] 트리, 그래프, 힙, 트라이, 비트마스크
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),5,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),5,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),5,'김윤석'),
@@ -278,6 +291,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),5,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),5,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),5,'김민중'),
+     -- [WEEK04] 문자열, 투포인터, 누적합, 투포인터, 누적합
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),6,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),6,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),6,'김윤석'),
@@ -285,6 +299,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),6,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),6,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),6,'김민중'),
+     -- [WEEK05] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),7,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),7,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),7,'김윤석'),
@@ -292,6 +307,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),7,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),7,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),7,'김민중'),
+     -- [WEEK06] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),8,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),8,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),8,'김윤석'),
@@ -299,6 +315,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'),8,'이찬석'),
      (1,UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),8,'박은채'),
      (1,UNHEX('E2EB5DE9609D11F0A5420242AC110002'),8,'김민중'),
+     -- [WEEK07] 비트마스크, 비트 연산, 비트 마스크, 비트 연산
      (1,UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),9,'안유진'),
      (1,UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),9,'이재웅'),
      (1,UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),9,'김윤석'),
@@ -380,7 +397,7 @@ INSERT INTO jungle_slam.tabs (name,workspace_id,section_id,url) VALUES
      ('301호',1,3,NULL), -- id : 17
      ('306호',1,3,NULL), -- id : 18
      ('9기 공지',1,1,NULL), -- id : 19
-     ('전체 공지',1,1,NULL); -- id : 20
+     -- ('전체 공지',1,1,NULL); -- id : 20
     
 INSERT INTO jungle_slam.member_roles (user_id, role_id, user_name)
 VALUES
@@ -404,7 +421,7 @@ VALUES
   (UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '김윤석'),
   (UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 2, '김민중'),
   -- 추가 데이터
-   (UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), 3, '박일룡'),
+  (UNHEX('DD13FE2024334BF4A8E2402540B3FCF9'), 3, '박일룡'),
   (UNHEX('B2933F353084410594B6FAA8A2C46CD7'), 3, '이승민'),
   (UNHEX('878F4895917541A4BEAB9CFFAA2F8A5B'), 3, '안예인'),
   (UNHEX('AB62B1EC353F4DD6AF05E62F3B7994D4'), 4, '원준석'),
