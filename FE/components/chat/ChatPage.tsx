@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { WebSocketClient } from "../ws/webSocketClient";
 import { ShowDate } from "./ShowDate";
@@ -37,6 +37,9 @@ export function ChatPage({
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
+  const lastMsgId = useMemo(() => {
+    return messages.length > 0 ? messages[messages.length - 1].msgId : null;
+  }, [messages]);
 
   // 최초 메시지 불러오기 + 로딩 해제
   useEffect(() => {
@@ -79,7 +82,7 @@ export function ChatPage({
       const newHeight = el.scrollHeight;
       el.scrollTop = newHeight;
     });
-  }, [messages[messages.length - 1], isLoading]);
+  }, [lastMsgId, isLoading]);
 
   // 스크롤을 올려서 과거 메세지들을 불러와
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
