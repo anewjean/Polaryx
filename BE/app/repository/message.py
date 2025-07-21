@@ -316,6 +316,7 @@ WHERE id > 0;
 """
 
 #검색
+#검색
 search_messages_by_keyword = """
 SELECT
     m.id,
@@ -328,9 +329,20 @@ SELECT
     m.created_at,
     m.updated_at,
     m.deleted_at,
-    m.url
+    m.url,
+    m.check_cnt,
+    m.clap_cnt,
+    m.like_cnt,
+    m.pray_cnt,
+    m.sparkle_cnt,
+    COALESCE(e.e_check, 0),
+    COALESCE(e.e_clap, 0),
+    COALESCE(e.e_like, 0),
+    COALESCE(e.e_pray, 0),
+    COALESCE(e.e_sparkle, 0)
 FROM messages m
 JOIN workspace_members wm ON m.sender_id = wm.user_id
+LEFT JOIN emoji e ON m.id = e.msg_id AND e.user_id = %(user_id)s
 WHERE m.tab_id = %(tab_id)s
   AND m.deleted_at IS NULL
   AND m.content LIKE %(pattern)s
@@ -529,10 +541,11 @@ class QueryRepo(AbstractQueryRepo):
         print("delete_all_message")
         return self.db.execute(delete_all_message)
     
-    def search_messages(self, tab_id: int, keyword: str):
+    def search_messages(self, tab_id: int, keyword: str, user_id: str):
         param = {
             "tab_id": tab_id,
             "pattern": f"%{keyword}%",
+            "user_id": UUID(user_id).bytes
         }
         return self.db.execute(search_messages_by_keyword, param)
         
