@@ -36,21 +36,25 @@ class DBRepository(AbstractQueryRepo):
         # 외래키 제약조건을 무시하고 테이블 드롭
         drop_queries = [
             "SET FOREIGN_KEY_CHECKS = 0",
-            "DROP TABLE IF EXISTS notifications",
             "DROP TABLE IF EXISTS canvases", 
-            "DROP TABLE IF EXISTS tab_members",
-            "DROP TABLE IF EXISTS tabs",
-            "DROP TABLE IF EXISTS sections",
-            "DROP TABLE IF EXISTS sub_messages",
-            "DROP TABLE IF EXISTS messages",
-            "DROP TABLE IF EXISTS member_roles",
-            "DROP TABLE IF EXISTS roles",
-            "DROP TABLE IF EXISTS group_members",
+            "DROP TABLE IF EXISTS `emoji`",
+            "DROP TABLE IF EXISTS `group_members`",
             "DROP TABLE IF EXISTS `groups`",
-            "DROP TABLE IF EXISTS workspace_members",
-            "DROP TABLE IF EXISTS workspaces",
-            "DROP TABLE IF EXISTS refresh_tokens",
-            "DROP TABLE IF EXISTS users"
+            "DROP TABLE IF EXISTS `links`",
+            "DROP TABLE IF EXISTS `member_roles`",
+            "DROP TABLE IF EXISTS `messages`",
+            "DROP TABLE IF EXISTS `notifications`",
+            "DROP TABLE IF EXISTS `push_subscriptions`",
+            "DROP TABLE IF EXISTS `refresh_tokens`",
+            "DROP TABLE IF EXISTS `roles`",
+            "DROP TABLE IF EXISTS `save_messages`",
+            "DROP TABLE IF EXISTS `sections`",
+            "DROP TABLE IF EXISTS `sub_messages`",
+            "DROP TABLE IF EXISTS `tab_members`",
+            "DROP TABLE IF EXISTS `tabs`",
+            "DROP TABLE IF EXISTS `users`",
+            "DROP TABLE IF EXISTS `workspace_members`",
+            "DROP TABLE IF EXISTS `workspaces`"
         ]
         
         for query in drop_queries:
