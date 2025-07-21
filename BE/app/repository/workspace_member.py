@@ -87,6 +87,7 @@ SET
     blog    = COALESCE(%(blog)s, blog),
     image   = COALESCE(%(image)s, image)
 WHERE user_id = %(user_id)s
+  AND workspace_id = %(workspace_id)s
   AND deleted_at IS NULL;
 """
 
@@ -200,9 +201,10 @@ class QueryRepo(AbstractQueryRepo):
         }
         return self.db.execute(find_all_workspace_members, param)
 
-    def update(self, id: UUID, update_data: dict) -> WorkspaceMember:
+    def update(self, workspace_id: int, id: UUID, update_data: dict) -> WorkspaceMember:
         params = update_data.dict()
         params["user_id"] = id if isinstance(id, bytes) else UUID(id).bytes
+        params["workspace_id"] = workspace_id
   
         return self.db.execute(update_workspace_member_by_user_id, params)
 

@@ -58,6 +58,18 @@ export const WebSocketClient = ({
           senderId: rawMsg.sender_id,
           msgId: rawMsg.message_id,
           createdAt: rawMsg.created_at,
+          checkCnt: 0,
+          prayCnt: 0,
+          sparkleCnt: 0,
+          clapCnt: 0,
+          likeCnt: 0,
+          myToggle: {
+            'check': false,
+            'pray': false,
+            'sparkle':false,
+            'clap': false,
+            'like': false
+          },
         };
 
         useMessageStore.getState().appendMessage(msg);

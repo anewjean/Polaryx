@@ -74,7 +74,7 @@ async def get_user_workspaces(
 async def register_members(request: Request, workspace_id: int):
     datas: dict = await request.json()
     res = workspace_member_service.import_users(workspace_id, datas)
-    return InsertWorkspaceSchema.from_dict(res) # hack : 여기서 오류 남
+    return InsertWorkspaceSchema.from_dict(res) 
 
 # 프로필 필드 조회
 @router.get("/{workspace_id}/userinfo")

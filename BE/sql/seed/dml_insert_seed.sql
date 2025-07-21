@@ -207,18 +207,24 @@ INSERT INTO jungle_slam.messages (tab_id,sender_id,content,is_updated,sender_nam
      <p>반 마다 3명씩 신청 가능하다고 합니다.(307호도 3명)</p>
      <p>백승현 게임테크랩 코치님 커피챗 희망하시는 분은 여기 스레드에 댓글로 남겨주세요!</p>
      <p><strong>승민)</strong> 승현코치님 시간 이슈로 세 분 밖에 커피챗이 불가하니, 질문을 취합한 후 세 분이 대표로 질문하는 형태로 하는 것이 어떨지 의견 드립니다!</p>',
-     0, '최효식', '2025-07-13 16:35:42'),
-
-     (14, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '나 차은우임', 0, '이재웅', '2025-07-09 08:45:29'),
-
-     (15, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '안녕~ 반가워~', 0, '신명훈', '2025-07-09 07:16:44'),
-     (15, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '안녕', 0, '박은채', '2025-07-04 16:02:41'),
-
-     (16, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '오늘 9시에 10+@K 달리기 합니다. 참석자 이모지 달아줘.', 0, '이재웅', '2025-07-13 14:29:55'),
-     (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '참석', 0, '신명훈', '2025-07-13 20:57:03'),
-     (16, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '참석', 0, '박은채', '2025-07-13 19:45:28'),
-     (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), '참석', 0, '이찬석', '2025-07-13 19:41:18'), 
-     (16, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '참석', 0, '안유진', '2025-07-13 19:41:18');
+     0, '최효식', '2025-03-13 15:10:00'),
+     (3, UNHEX('6F0AC5FD5C8411F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://abundant-carver-c3f.notion.site/2-1bfd5b3e6ec5805f8692e887523a3441?pvs=4">목요일 시험대비 유형별 문제 리스틉니다</a><br>문제 다풀어서 풀거없다 하는 알고리즘 똑똑이들이나 저처럼 플레문제 따위는 시원하게 포기한 헛똑똑이들은 참고하세욧</p>', 0, '김세현', '2025-03-13 15:20:11'),
+     (3, UNHEX('BEA1232F5C8511F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://velog.io/@qnfrma1997/%EC%A0%95%EA%B8%80-CPH-Competitive-Companion%EC%9D%8[…]EC%8A%A4%ED%8A%B8-%EC%84%A4%EC%A0%95-%EA%B0%80%EC%9D%B4%EB%93%9C">:펼쳐진_책:[정글]백준 자동 테스트 설정 가이드:펼쳐진_책:</a><br>백준 문제풀이에 도움되는 내용 공유합니다. 정글 301호 1주차 4팀 "윤석주"님이 알려주신 내용을 바탕으로 작성했습니다.</p>', 0, '박은범', '2025-03-13 15:30:18'),
+     (3, UNHEX('32F2411E5C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://testcase.ac/">https://testcase.ac/</a><br>백준 문제 반례찾는 사이트입니다. <br>디버깅할 때 도움되실 것 같아 올립니다.</p>', 0, '임준혁', '2025-03-13 15:40:18'),
+     (3, UNHEX('1F61345F5C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://file-import-s3-bucket.s3.amazonaws.com/uploads/250321_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%20%EC%84%A4%EA%B3%84%20%EA%B8%B0%EB%B2%95%20%ED%8A%B9%EA%B0%95.pdf">배상원 교수님 알고리즘 설계 기법 특강 정리한 pdf 파일도 공유드립니다~</a></p>', 0, '임구철', '2025-03-13 15:50:18'),
+     (3, UNHEX('802E0FE95C8611F0A8650242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html"><strong>Data Structure Visualizations</strong></a><br>알고리즘의 시각화로 이해를 돕는 사이트를 발견해 공유드립니다!</p>', 0, '최효식', '2025-03-13 16:00:28'),
+     (3, UNHEX('545A4AB45C8611F0A8650242AC110002'), '<p>:확성기:<span class="font-bold">Q&A</span><br>조금 전 점심시간에 방효식 코치님께<br>퀴즈를 태블릿에다가 <code>디지타이저 펜(S펜, 애플펜슬)</code>을 이용해 푼 뒤<br>스크린샷으로 제출해도 되냐고 여쭤봤더니<br>그래도 된다고 하셨습니다.<br><br>참고하세요~</p>', 0, '정경호', '2025-03-13 16:20:12'),
+     (3, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '<p><strong>하노이의 탑 시뮬레이션</strong><br><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.mathsisfun.com/games/towerofhanoi.html">https://www.mathsisfun.com/games/towerofhanoi.html</a><br>칠판에 하노이탑 <code><strong>1,000번쯤</code></strong> 그리다 발견한 사이트입니다!!!</p>', 1, '이재웅', '2025-03-13 16:30:58');
+     -- 이 부분 필요한가?
+     (14, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '나 차은우임', 0, '이재웅', '2024-07-09 08:45:29'),
+     (15, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '안녕~ 반가워~', 0, '신명훈', '2024-07-09 07:16:44'),
+     (15, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '안녕', 0, '박은채', '2024-07-04 16:02:41'),
+     -- 307호 채널
+     (16, UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '오늘 9시에 10+@K 달리기 합니다. 참석자 이모지 달아줘.', 0, '이재웅', '2024-07-13 14:29:55'),
+     (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'), '참석', 0, '신명훈', '2024-07-13 20:57:03'),
+     (16, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '참석', 0, '박은채', '2024-07-13 19:45:28'),
+     (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), '참석', 0, '이찬석', '2024-07-13 19:41:18'), 
+     (16, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '참석', 0, '안유진', '2024-07-13 19:41:18');
 
 INSERT INTO jungle_slam.refresh_tokens (id,user_id,token,user_name) VALUES
      (UNHEX('0575F69EA7584D10B33A8E7E6A135580'),UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJlbWFpbCI6ImlhbWxlZTEwM0BnbWFpbC5jb20iLCJleHAiOjE3NTIwMTgwOTF9.cT61XkdJtubGSs97dzhffc3St57XClxZDOfP-3oI6SU','이재웅'),
@@ -673,3 +679,22 @@ INSERT INTO jungle_slam.workspaces (name) VALUES
      ('정글'),
      ('게임랩'),
      ('게임테크랩');
+
+INSERT INTO jungle_slam.save_messages (user_id, workspace_id, content) VALUES
+(UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p><strong>내일 일정 사전 공지 드립니다.</strong></p><ul><li><p>1400-1500 퀴즈</p></li></ul><p>내일 퀴즈에는 <strong>⭐페이징⭐</strong>에 관련된 문제가 출제됩니다. 다들 미리 공부해 두시길 바랍니다.</p>'),
+(UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<blockquote><p><strong>KDT 훈련생 전원 필독 - 0/0 ~ 0/0 출석기록 확인 요청</strong></p></blockquote><p></p><p>0/0(0) ~ 0/0(0) 기간의 출석기록이 HRD-net에 보고될 예정입니다.</p><p></p><ol><li><p>해당 기간의 <strong>출석기록 중 오입력/미입력 사항은 없는지 반드시 체크</strong>하시기 바랍니다.</p><p>출석부 링크: <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://docs.google.com/spreadsheets/d/1ooskMsPu3mfjuwttC1mn1cZ6eDSh42F7aJmbuhOzE20/edit?usp=sharing\">8기_출석부_KDT</a></p></li><li><p><code>출석 관련 증빙자료</code>(병원진단서, 예비군 훈련 참여 필증 등)가 있으실 경우 저에게 DM으로 전송바랍니다.</p><p><strong>일부 인원의 확인이 늦어지면 전체적으로 훈련장려금 지급 등 행정절차가 지연되고, 출석기록에 오류가 있을 경우 훈련생 개인에게 피해가 갑니다.</strong></p></li></ol><p>확인하신 KDT 훈련생께서는 이모지 하나씩 달아주세요. 감사합니다. 정글 🫡</p>'),
+(UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p><strong>매주 수요일은 랜덤런치 데이입니다.</strong></p><blockquote><p>잠깐 과제 스트레스를 내려놓고 맛있는 점심식사와 티타임도 하면서, 동료들과 친해지는 시간을 가져보시기 바랍니다.</p><p>내일 같이 점심 식사할 동료는 다음의 링크에서 확인해보시기 바랍니다.</p></blockquote><ul><li><p>조배정: <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"c-link\" href=\"https://docs.google.com/spreadsheets/d/15uCDtS4kYuq3lZ1BUTycXZEiDyEHnIZG\">링크</a></p></li></ul>'),
+(UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p><strong>퀴즈를 진행하겠습니다.</strong></p><p>아래 파일은 퀴즈 문제입니다.</p><p>다운로드 받은 후 <strong>14:00~15:00(1시간)</strong> 동안 풀어보세요.시험 완료한 분들은 <a target=\"_blank\" rel=\"noopener noreferrer\" class=\"c-link\" href=\"https://docs.google.com/forms/d/19jXpztoX_MVoAqJs7pMlNwDhF2IgIK2id0vOweIJH8w\">링크</a>로 <strong>답안을 촬영한 사진</strong>을 제출해 주시면 됩니다. (먼저 마친 분들은 다른 동료들에게 방해되지 않게 부탁드려요.)</p><p><strong>⚠️&lt;주의사항&gt;⚠️</strong></p><ol><li><p><strong>컴퓨터를 이용하지 않고 푸는 테스트입니다.</strong></p></li><li><p>문제에 명시한 경우를 제외하고는 <em>구글링/GPT/의논 금지</em>입니다<em>.</em></p></li><li><p>단답형으로<em> </em>끝내지<em> </em>마시고<em> </em>완성된<em> </em>문장을<em> </em>쓰는<em> </em>연습을<em> </em>해보세요<em>.</em></p></li></ol>');
+
+
+INSERT INTO jungle_slam.links (tab_id, sender_id, link_url, link_favicon, link_name) VALUES
+('3', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://velog.io/@qnfrma1997/%EC%A0%95%EA%B8%80-CPH-Competitive-Companion%EC%9D%8[…]EC%8A%A4%ED%8A%B8-%EC%84%A4%EC%A0%95-%EA%B0%80%EC%9D%B4%EB%93%9C', 'https://static.velog.io/favicon.ico', '백준 자동 테스트 설정 가이드'),
+('3', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://testcase.ac/', 'https://testcase.ac/favicon.ico', '백준 문제 반례찾는 사이트'),
+('3', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://www.cs.usfca.edu/~galles/visualization/Algorithms.html', 'https://www.cs.usfca.edu/~galles/visualization/favicon.ico', '알고리즘의 시각화로 이해를 돕는 사이트'),
+('3', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://www.youtube.com/watch?v=1Bh6DBcKgOc&t=33s', 'https://www.youtube.com/s/desktop/33ae93e9/img/logos/favicon.ico', 'N-queens 해설 영상'),
+('3', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://github.com/BaekjoonHub/BaekjoonHub', 'https://github.com/fluidicon.png', '백준 문제 자동 푸시해주는 익스텐션'),
+('11', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://oslab.kaist.ac.kr/pintosslides/', 'https://oslab.kaist.ac.kr/wp-content/uploads/2019/05/cropped-ico-32x32.png', '카이스트 핀토스 교육용 장표 사이트'),
+('11', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://whatissoimportantyou.tistory.com/58', 'https://t1.daumcdn.net/tistory_admin/favicon/tistory_favicon_32x32.ico', 'vs code로 디버깅하는 법'),
+('11', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://wonit.tistory.com/368', 'https://wonit.tistory.com/favicon.ico', 'github 협업을 위한 fork')
+
+

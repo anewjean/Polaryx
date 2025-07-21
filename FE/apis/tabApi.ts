@@ -1,6 +1,6 @@
 import { fetchWithAuth } from "./authApi";
-import { Group } from "./groupApi";
-export type { Group };
+import { Group, InviteGroups } from "./groupApi";
+export type { Group, InviteGroups };
 
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
@@ -187,7 +187,7 @@ export async function getPossibleGroupList(workspaceId: string, tabId: string): 
 }
 
 /* 탭 그룹 초대 */
-export async function postGroupList(workspaceId: string, tabId: string, groupIds: string[]): Promise<Group[]> {
+export async function postGroupList(workspaceId: string, tabId: string, groupIds: string[]): Promise<InviteGroups> {
   const res = await fetchWithAuth(`${BASE}/api/workspaces/${workspaceId}/tabs/${tabId}/groups`,
     {
       method: "POST",
