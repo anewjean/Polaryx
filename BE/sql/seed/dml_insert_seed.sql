@@ -352,26 +352,26 @@ INSERT INTO test_jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name)
      (1, UNHEX('E2EB5DE9609D11F0A5420242AC110013'), 19, '이윤아'),
      (1, UNHEX('E2EB5DE9609D11F0A5420242AC110014'), 19, '이현재');
 
-INSERT INTO test_jungle_slam.tabs (name,workspace_id,section_id,url) VALUES
-     ('정글 공지 채널',1,1,NULL),
-     ('Q&A',1,1,NULL),
-     ('[W01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL),
-     ('[W02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL),
-     ('[W03] 그래프, BFS, DFS, 위상정렬',1,2,NULL),
-     ('[W04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL),
-     ('[W05] C언어, 자료구조, 알고리즘',1,2,NULL),
-     ('[W06] Red-Black Tree',1,2,NULL),
-     ('[W07] Malloc Lab',1,2,NULL),
-     ('[W08] 웹서버 만들기',1,2,NULL),
-     ('[W09](PintOS)Threads',1,2,NULL),
-     ('[W10-11](PintOS) User Programs',1,2,NULL),
-     ('[W12-13](PintOS)Virtual Memory',1,2,NULL),
-     ('나만무3팀',1,3,NULL),
-     ('농구 사기단',1,3,NULL),
-     ('307호',1,3,NULL),
-     ('301호',1,3,NULL),
-     ('306호',1,3,NULL),
-     ('9기 공지',1,1,NULL);
+INSERT INTO test_jungle_slam.tabs (id, name,workspace_id,section_id,url) VALUES
+     (1, '정글 공지 채널',1,1,NULL),
+     (2, 'Q&A',1,1,NULL),
+     (3, '[W01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL),
+     (4, '[W02] 이분탐색, 분할정복, 스택, 큐, 우선순위 큐',1,2,NULL),
+     (5, '[W03] 그래프, BFS, DFS, 위상정렬',1,2,NULL),
+     (6, '[W04] 동적 프로그래밍, 그리디 알고리즘',1,2,NULL),
+     (7, '[W05] C언어, 자료구조, 알고리즘',1,2,NULL),
+     (8, '[W06] Red-Black Tree',1,2,NULL),
+     (9, '[W07] Malloc Lab',1,2,NULL),
+     (10, '[W08] 웹서버 만들기',1,2,NULL),
+     (11, '[W09](PintOS)Threads',1,2,NULL),
+     (12, '[W10-11](PintOS) User Programs',1,2,NULL),
+     (13, '[W12-13](PintOS)Virtual Memory',1,2,NULL),
+     (14, '나만무3팀',1,3,NULL),
+     (15, '농구 사기단',1,3,NULL),
+     (16, '307호',1,3,NULL),
+     (17, '301호',1,3,NULL),
+     (18, '306호',1,3,NULL),
+     (19, '9기 공지',1,1,NULL);
     
 INSERT INTO test_jungle_slam.member_roles (user_id, role_id, user_name)
 VALUES
@@ -629,10 +629,10 @@ INSERT INTO test_jungle_slam.workspace_members (id,user_id,workspace_id,nickname
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110045'), 1, '조윤호', 'user54@gmail.com', NULL, NULL, NULL);
 
 
-INSERT INTO test_jungle_slam.workspaces (name) VALUES
-     ('정글'),
-     ('게임랩'),
-     ('게임테크랩');
+INSERT INTO test_jungle_slam.workspaces (id, name) VALUES
+     (1, '정글'),
+     (2, '게임랩'),
+     (3, '게임테크랩');
 
 INSERT INTO test_jungle_slam.links (
   tab_id,
