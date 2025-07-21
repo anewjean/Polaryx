@@ -53,7 +53,9 @@ class DBRepository(AbstractQueryRepo):
             "DROP TABLE IF EXISTS refresh_tokens",
             "DROP TABLE IF EXISTS users",
             "DROP TABLE IF EXISTS links",
-            "DROP TABLE IF EXISTS push_subscriptions"
+            "DROP TABLE IF EXISTS push_subscriptions",
+            "DROP TABLE IF EXISTS save_messages",
+            "DROP TABLE IF EXISTS emoji"
         ]
         
         for query in drop_queries:
