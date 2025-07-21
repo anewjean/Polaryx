@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-from fastapi import FastAPI
-# CORSMiddleware : CORS 정책 허용을 위한 미들 웨어 
-=======
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from urllib.parse import urlencode
 from dotenv import load_dotenv
->>>>>>> ab8efe1f7c29aeeb6c496d1d8ae4dbfe88cbf74d
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -18,23 +13,6 @@ from app.core.exception_handlers import (
     general_exception_handler
 )
 
-<<<<<<< HEAD
-@app.get("/ping")
-async def pong():
-    return {"message": "pong from backend"}
-
-
-
-# 채팅방 생성
-
-# 내 채팅방 목록 조회
-
-# 채팅방 상세 조회(채팅방 띄우기)
-
-# 메시지 목록 조회
-
-# 메시지 전송
-=======
 from app.router import message
 from app.router.auth import auth_controller as auth
 from app.router import workspace_members
@@ -98,4 +76,3 @@ app.add_exception_handler(Exception, general_exception_handler)
 
 
 
->>>>>>> ab8efe1f7c29aeeb6c496d1d8ae4dbfe88cbf74d
