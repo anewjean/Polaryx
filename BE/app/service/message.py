@@ -1,6 +1,6 @@
 from typing import List
 
-from app.domain.message import Message
+from app.domain.message import Message, Emoji
 from app.repository.message import QueryRepo as MessageRepo
 from app.repository.workspace_member import QueryRepo as WorkspaceMemberRepo
 from app.repository.files import QueryRepo as FilesRepo
@@ -17,9 +17,18 @@ class MessageService:
         message = Message.of(tab_id, sender_id, content, file_data)
         res = self.message_repo.insert(message)
         return res["lastrowid"]
+    
+    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool) -> None:
+        emoji = Emoji.of(tab_id, user_id, msg_id, type)
+        if (plus):
+            self.message_repo.plus_emoji(emoji)
+        else:
+            self.message_repo.minus_emoji(emoji)
+        return self.message_repo.update_emoji_cnt(emoji)        
 
-    async def find_recent_messages(self, tab_id: int, before_id: int) -> List[Message]:
-        return self.message_repo.find_recent_30(tab_id, before_id)
+
+    async def find_recent_messages(self, tab_id: int, before_id: int, user_id: str) -> List[Message]:
+        return self.message_repo.find_recent_30(tab_id, before_id, user_id)
 
     async def find_message_by_(self, tab_id: int) -> List[Message]:
         return self.message_repo.find_all(tab_id)
