@@ -135,19 +135,17 @@ export function ChatPage({
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={`flex flex-col w-full h-full ${className}`}
-      onScroll={(event) => {
-        handleScroll(event);
-      }}
-    >
+    <div className={`flex flex-col w-full h-full ${className}`}>
       <SSEListener />
       <WebSocketLikeClient workspaceId={workspaceId} tabId={tabId} />
       <WebSocketProfileClient workspaceId={workspaceId} tabId={tabId} />
       <WebSocketClient workspaceId={workspaceId} tabId={tabId} />
       {/* 날짜 헤더의 sticky를 위함, overflow-y-auto scrollbar-thin의 위치는 여기에 고정되어야 함 */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      <div className="flex-1 overflow-y-auto scrollbar-thin"
+          ref={containerRef}
+          onScroll={(event) => {
+            handleScroll(event);
+          }}>
         {messages.map((msg, idx) => {
           const prev = messages[idx - 1];
           const todayKey = msg.createdAt ? dayStart(msg.createdAt) : null;
