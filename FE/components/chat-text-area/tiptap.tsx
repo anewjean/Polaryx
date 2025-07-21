@@ -28,14 +28,17 @@ import { useTabInfoStore } from "@/store/tabStore";
 import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
+import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
 import { ClipboardPlus, ClipboardX } from "lucide-react";
 import SaveMessages from "./SaveMessages";
 import { addSaveMessage } from "@/apis/saveMessageApi";
 import { useMyUserStore } from "@/store/myUserStore";
 import { useSaveMessagesStore } from "@/store/saveMessagesStore";
 import { toast } from "sonner";
-import { CircleCheck, Ban } from "lucide-react";
+import { CircleCheck, Ban, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ReactDOM from "react-dom";
+import "./styles.scss";
 
 // Shift+Enter을 Enter처럼 동작시키는 커스텀 확장
 const CustomEnter = Extension.create({
@@ -58,14 +61,12 @@ export function TipTap() {
 
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
-  
+
+
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-
-  // 메시지를 저장할 수 있는 상태
-  const [createSaveMessage, setCreateSaveMessage] = useState(false);
 
   // 저장 메시지 store의 add
   const { add } = useSaveMessagesStore();
@@ -94,8 +95,8 @@ export function TipTap() {
       editable: true,
       extensions: [
         StarterKit, // 핵심 확장 모음
+        FileDownloadExtension, // 문제시 당장 삭제
         Placeholder.configure({
-          // placeholder가 뭐임?
           placeholder: `${tabInfo?.tab_name}에 메시지 보내기`,
         }),
         Document,
@@ -274,13 +275,12 @@ export function TipTap() {
     editor?.commands.clearContent();
   };
 
-  
   // 저장 메시지 추가
   const handleAddSaveMessage = async (content: string) => {
     try {
+      toast.success("저장 메시지가 추가되었습니다", { icon: <CircleCheck /> });
       // zustand 스토어의 add 액션만 호출하면 내부에서 API 요청을 수행한다
       await add(workspaceId, userId!, content);
-
     } catch {
       toast.error("저장 메시지 추가에 실패했습니다.", { icon: <Ban /> });
     }
@@ -321,93 +321,83 @@ export function TipTap() {
     return null;
   }
   return (
-    <div className={`chat-text-area ${createSaveMessage ? "ring-2 ring-red-300" : ""}`}>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx"
-        onChange={handleFileSelect}
-        style={{ display: "none" }}
-      />
-      
-      <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
-        <ToolBar editor={editor} setLink={openLinkDialog} addImage={addImage} />
-        {/* 북마크 버튼 누르면 팝오버 열기 */}
-        <SaveMessages
-          workspaceId={workspaceId}
-          createSaveMessage={createSaveMessage}
-          editor={editor}
-        >
-          {createSaveMessage ? (
-            // 저장 가능 상태면, 빨간색의 엑스 버튼을 보여줌
-            <ClipboardX onClick={() => setCreateSaveMessage(false)} className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-red-300" />
-          ) : (
-            // 아니라면 파란색의 플러스 버튼 보여줌
-            <ClipboardPlus
-              onClick={() => {
-                setCreateSaveMessage(true); // 팝오버만 열기, 저장 메시지 추가 X
-              }}
-              className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
-            />
-          )}
-        </SaveMessages>
-      </div>
-
-      {/* 링크 추가 다이얼로그 */}
-      <LinkDialog
-        isOpen={isLinkDialogOpen}
-        onOpenChange={setIsLinkDialogOpen}
-        onSave={setLink}
-      ></LinkDialog>
-
-      <div className="editor-container flex">
-        <EditorContent
-          editor={editor}
-          className="w-full"
-          // 한글 조합 추적.
-          onCompositionStart={() => {
-            isComposingRef.current = true;
-          }}
-          onCompositionEnd={() => {
-            isComposingRef.current = false;
-          }}
-          /////////////// 추가 ///////////////
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              if (isComposingRef.current) return;
-              event.preventDefault();
-              if (event.shiftKey) {
-                if (
-                  // 리스트 안이면 새 리스트 항목
-                  editor.isActive("bulletList") ||
-                  editor.isActive("orderedList")
-                ) {
-                  editor.commands.splitListItem("listItem");
-                } else if (editor.isActive("codeBlock")) {
-                  // 코드블록 안이면 줄바꿈
-                  editor.commands.newlineInCode();
-                } else {
-                  // 아니면 새 단락
-                  editor.commands.splitBlock();
-                }
-              } else {
-                handleSend();
-              }
-            }
-          }}
+    <>
+      <div className={"chat-text-area relative"}>
+        {/* 메시지 저장 기능이 켜진 상태면, 강조해서 보여줌 */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx"
+          onChange={handleFileSelect}
+          style={{ display: "none" }}
         />
-        
-        {/* 저장 메시지 추가 버튼 */}
-        {createSaveMessage && (
-          <Button
-            onClick={addCurrentContent}
-            className="bg-red-400 font-xs w-10 h-6 rounded-[5px] hover:bg-red-500"
-          >
-            추가
-          </Button>
-        )}
+
+        <div className="flex justify-between items-center toolbar-container rounded-t-[7px]">
+          <ToolBar
+            editor={editor}
+            setLink={openLinkDialog}
+            addImage={addImage}
+          />
+          {/* 저장 메시지 호버 카드 */}
+          <SaveMessages workspaceId={workspaceId} editor={editor}>
+            {/* 에디터가 빈 상태면 비활성화 */}
+            {editor?.getText().trim().length > 0 ? (
+              <ClipboardPlus
+                onClick={addCurrentContent}
+                className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
+              />
+            ) : (
+              <ClipboardPlus className="mb-1.5 w-5.5 h-5.5 cursor-default text-gray-400" />
+            )}
+          </SaveMessages>
+        </div>
+
+        {/* 링크 추가 다이얼로그 */}
+        <LinkDialog
+          isOpen={isLinkDialogOpen}
+          onOpenChange={setIsLinkDialogOpen}
+          onSave={setLink}
+        ></LinkDialog>
+
+        <div className="editor-container flex bg-white">
+          <EditorContent
+            editor={editor}
+            className="w-full"
+            // 한글 조합 추적.
+            onCompositionStart={() => {
+              isComposingRef.current = true;
+            }}
+            onCompositionEnd={() => {
+              isComposingRef.current = false;
+            }}
+            /////////////// 추가 ///////////////
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                if (isComposingRef.current) return;
+                event.preventDefault();
+                if (event.shiftKey) {
+                  if (
+                    // 리스트 안이면 새 리스트 항목
+                    editor.isActive("bulletList") ||
+                    editor.isActive("orderedList")
+                  ) {
+                    editor.commands.splitListItem("listItem");
+                  } else if (editor.isActive("codeBlock")) {
+                    // 코드블록 안이면 줄바꿈
+                    editor.commands.newlineInCode();
+                  } else {
+                    // 아니면 새 단락
+                    editor.commands.splitBlock();
+                  }
+                } else {
+                  handleSend();
+                }
+              }
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 export default TipTap;

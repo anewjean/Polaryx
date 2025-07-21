@@ -77,11 +77,11 @@ export function GroupTable({ columns, onGroupsLoaded }: GroupTableProps = {}) {
   });
 
   return (
-    <div className="flex flex-1 flex-col h-full w-full overflow-hidden rounded-md border">      
+    <div className="flex flex-1 flex-col h-full w-full overflow-x-auto overflow-y-auto scrollbar-thin rounded-md border">      
       {/* 테이블 헤더와 본문을 하나의 테이블로 구성 */}
-      <div className="w-full overflow-x-auto overflow-y-auto scrollbar-thin">
+      <div className="w-full overflow-x-auto">
         <table className="w-full border-collapse" style={{ tableLayout: 'fixed', minWidth: '1000px' }}>
-          <thead className="bg-gray-50 sticky top-0 z-10">
+          <thead className="bg-gray-50 sticky top-0 shadow-xs">
             <tr>
               {table.getHeaderGroups()[0].headers.map((header) => (
                 <th
@@ -110,7 +110,7 @@ export function GroupTable({ columns, onGroupsLoaded }: GroupTableProps = {}) {
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="p-4 align-middle border-b border-gray-100 text-sm"
+                    className="p-3 align-middle border-b border-gray-100 text-sm"
                     style={{ width: columnSizes[cell.column.id] }}
                   >
                     <div className="flex items-center justify-start w-full overflow-hidden">

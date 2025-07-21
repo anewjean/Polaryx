@@ -73,11 +73,13 @@ export default function AppSidebar({ width }: SidebarProps) {
   // 권한 스토어에서 권한 확인 함수 가져오기
   const { hasPermission, fetchPermissions } = useMyPermissionsStore();
 
-  // 탭 생성 모달 상태 관리 
+  // 탭 생성 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 섹션 상태 관리 (Add Tab 버튼 선택 시 해당 섹션 정보 저장)
-  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
+  const [selectedSectionId, setSelectedSectionId] = useState<string | null>(
+    null,
+  );
 
   // 섹션 열림/닫힘 상태 관리 (하나의 상태에 섹션을 개별적으로 관리)
   const { openSections, toggleSection } = useSectionStore();
@@ -95,7 +97,6 @@ export default function AppSidebar({ width }: SidebarProps) {
   const handleWorkspaceOpenChange = (open: boolean) => {
     setIsWorkspaceOpen(open);
   };
-  
 
   // 탭 생성 모달 종료 핸들러 (작성 중인 탭 이름 초기화)
   const handleModalOpenChange = (
@@ -117,7 +118,7 @@ export default function AppSidebar({ width }: SidebarProps) {
   const invitedTabs = useMessageStore((s) => s.invitedTabs);
   const clearInvited = useMessageStore((s) => s.clearInvitedTab);
 
-  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득 
+  // 진입 시 워크스페이스, 탭, 프로필, 권한 정보 획득
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -137,7 +138,7 @@ export default function AppSidebar({ width }: SidebarProps) {
           setWorkspaceInfo(workspace as workspace);
           setTabList(tabs as Tab[]);
           setProfile(profileData as Profile);
-          
+
           // 권한 정보 가져오기
           fetchPermissions(workspaceId);
         } else {
@@ -180,11 +181,16 @@ export default function AppSidebar({ width }: SidebarProps) {
 
   // 섹션 id별 섹션명과 아이콘, 권한 키
   const sectionType = [
-    { id: "1", label: "Announcements", icon: Megaphone, permissionKey: "announce" },
+    {
+      id: "1",
+      label: "Announcements",
+      icon: Megaphone,
+      permissionKey: "announce",
+    },
     { id: "2", label: "Courses", icon: Landmark, permissionKey: "course" },
     { id: "3", label: "Channels", icon: Users, permissionKey: "channel" },
     { id: "4", label: "Direct Messages", icon: Mail, permissionKey: "dm" },
-  ];  
+  ];
 
   return (
     <SidebarProvider>
@@ -196,11 +202,11 @@ export default function AppSidebar({ width }: SidebarProps) {
         <SidebarHeader>
           <div className="h-14 px-3 py-2 hover:bg-gray-700 rounded-lg">
             <div className="flex flex-row justify-between w-full">
-              <WorkspaceMenu 
-                workspaceId={workspaceInfo?.workspace_id.toString() || ""} 
-                userId={profile?.user_id.toString() || ""} 
-                onWorkspaceOpenChange={handleWorkspaceOpenChange} 
-                trigger={              
+              <WorkspaceMenu
+                workspaceId={workspaceInfo?.workspace_id.toString() || ""}
+                userId={profile?.user_id.toString() || ""}
+                onWorkspaceOpenChange={handleWorkspaceOpenChange}
+                trigger={
                   <div className="flex flex-row items-center justify-between w-full">
                     <div className="flex flex-row items-center gap-2 overflow-hidden">
                       {/* 아이콘 */}
@@ -208,7 +214,10 @@ export default function AppSidebar({ width }: SidebarProps) {
                         <School size={20} className="text-white" />
                       </div>
                       {/* 워크스페이스 정보 */}
-                      <div className="flex flex-col overflow-hidden" style={{ width }}>
+                      <div
+                        className="flex flex-col overflow-hidden"
+                        style={{ width }}
+                      >
                         <span className="text-md font-bold text-gray-200 truncate">
                           {workspaceInfo?.workspace_name}
                         </span>
@@ -286,7 +295,9 @@ export default function AppSidebar({ width }: SidebarProps) {
                             >
                               <span className="flex flex-row gap-1.5 items-center truncate">
                                 {/* dm 방이면 사람 아이콘 추가 */}
-                                {Number(section.id) === 4 && <User className="size-5"/>}
+                                {Number(section.id) === 4 && (
+                                  <User className="size-5" />
+                                )}
                                 {tab.tab_name}
                               </span>
                               {hasUnread && !isActive && (
@@ -299,7 +310,9 @@ export default function AppSidebar({ width }: SidebarProps) {
                         );
                       })}
                     {/* 탭 추가 모달 팝업 내용 - 권한에 따라 표시 */}
-                    {(section.permissionKey === "dm" || (section.permissionKey && hasPermission(workspaceId, section.permissionKey))) && (
+                    {(section.permissionKey === "dm" ||
+                      (section.permissionKey &&
+                        hasPermission(workspaceId, section.permissionKey))) && (
                       <DialogModal
                         title="Create a Tab"
                         defaultOpen={false}
@@ -308,54 +321,54 @@ export default function AppSidebar({ width }: SidebarProps) {
                           handleModalOpenChange(isOpen, section.id.toString())
                         }
                         trigger={
-                        <SidebarMenuItem>
-                          <SidebarMenuButton
-                            asChild
-                            isActive={false}
-                            className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0 cursor-pointer"
-                          >
-                            <span className="flex flex-row gap-2 items-center truncate">
-                              <Plus
-                                size={18}
-                                className="bg-gray-700 rounded-sm cursor-pointer"
-                              />
-                              Add Tab
-                            </span>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      }
-                    >
-                      {/* DialogModal 내용: 탭 생성 폼 */}
-                      <div className="flex flex-col gap-2">
-                        <h1>Name</h1>
-                        <Input
-                          type="text"
-                          placeholder="Please enter the name of the tab."
-                          value={tabName}
-                          onChange={(e) => setTabName(e.target.value)}
-                        />
-                        <div className="flex flex-1 flex-row mt-6 gap-3">
-                          <Button
-                            variant="secondary"
-                            onClick={() => handleModalOpenChange(false)}
-                            className="flex flex-1"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="default"
-                            onClick={() =>
-                              selectedSectionId &&
-                              handleAddTab(selectedSectionId, tabName)
-                            }
-                            disabled={tabName.trim() === ""}
-                            className="flex flex-1"
-                          >
-                            Create
-                          </Button>
+                          <SidebarMenuItem>
+                            <SidebarMenuButton
+                              asChild
+                              isActive={false}
+                              className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0 cursor-pointer"
+                            >
+                              <span className="flex flex-row gap-2 items-center truncate">
+                                <Plus
+                                  size={18}
+                                  className="bg-gray-700 rounded-sm cursor-pointer"
+                                />
+                                Add Tab
+                              </span>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        }
+                      >
+                        {/* DialogModal 내용: 탭 생성 폼 */}
+                        <div className="flex flex-col gap-2">
+                          <h1>Name</h1>
+                          <Input
+                            type="text"
+                            placeholder="Please enter the name of the tab."
+                            value={tabName}
+                            onChange={(e) => setTabName(e.target.value)}
+                          />
+                          <div className="flex flex-1 flex-row mt-6 gap-3">
+                            <Button
+                              variant="secondary"
+                              onClick={() => handleModalOpenChange(false)}
+                              className="flex flex-1"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="default"
+                              onClick={() =>
+                                selectedSectionId &&
+                                handleAddTab(selectedSectionId, tabName)
+                              }
+                              disabled={tabName.trim() === ""}
+                              className="flex flex-1"
+                            >
+                              Create
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </DialogModal>
+                      </DialogModal>
                     )}
                   </SidebarMenu>
                 </SidebarGroupContent>

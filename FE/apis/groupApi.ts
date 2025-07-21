@@ -4,14 +4,19 @@ import { fetchWithAuth } from "./authApi";
 import { Member } from "./tabApi";
 
 export interface Group {
-  group_id: number;
-  group_name: string;
+  group_id?: number;
+  group_name?: string;
   members?: Member[];
   non_members?: Member[];
   group_members_count?: number;  
   user_names?: string[];
   role_id?: number;
   role_name?: string;  
+}
+
+export interface InviteGroups {
+  successCnt: number;
+  group_names: string[];
 }
 
 // 그룹 조회
