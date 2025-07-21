@@ -101,9 +101,9 @@ jobs:
               "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
               "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
               "cd /home/ec2-user",
-              "docker compose docker-compose.yml pull",
-              "docker compose docker-compose.yml down",
-              "docker compose docker-compose.yml up -d",
+              "docker compose -f docker-compose.yml pull",
+              "docker compose -f docker-compose.yml down",
+              "docker compose -f docker-compose.yml up -d",
               "docker image prune -a -f"
             ]' \
             --region ${{ env.AWS_REGION }}
@@ -117,9 +117,9 @@ jobs:
               "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
               "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
               "cd /home/ec2-user",
-              "docker compose docker-compose.yml pull",
-              "docker compose docker-compose.yml down",
-              "docker compose docker-compose.yml up -d",
+              "docker compose -f docker-compose.yml pull",
+              "docker compose -f docker-compose.yml down",
+              "docker compose -f docker-compose.yml up -d",
               "docker image prune -a -f"
             ]' \
             --region ${{ env.AWS_REGION }}
@@ -134,7 +134,7 @@ jobs:
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             cd /home/ec2-user
 
-            docker compose docker-compose.frontend.yml pull
-            docker compose docker-compose.frontend.yml down
-            docker compose docker-compose.frontend.yml up -d
+            docker compose -f docker-compose.frontend.yml pull
+            docker compose -f docker-compose.frontend.yml down
+            docker compose -f docker-compose.frontend.yml up -d
             docker image prune -a -f
