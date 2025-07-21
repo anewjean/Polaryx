@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS jungle_slam;
-USE jungle_slam;
+CREATE DATABASE IF NOT EXISTS test_jungle_slam;
+USE test_jungle_slam;
 
 CREATE TABLE IF NOT EXISTS `users` (
     id BINARY(16) NOT NULL PRIMARY KEY,
@@ -116,6 +116,24 @@ CREATE TABLE IF NOT EXISTS `messages` (
     url VARCHAR(256) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
+    check_cnt int(11) DEFAULT 0,
+    clap_cnt int(11) DEFAULT 0,
+    like_cnt int(11) DEFAULT 0,
+    sparkle_cnt int(11) DEFAULT 0,
+    pray_cnt int(11) DEFAULT 0,
+    workspace_id int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `links` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    tab_id BIGINT NOT NULL,
+    sender_id BINARY(16) NOT NULL,
+    link_url TEXT NOT NULL,
+    link_favicon TEXT,
+    link_name VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
     deleted_at TIMESTAMP NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -162,4 +180,15 @@ CREATE TABLE IF NOT EXISTS `notifications` (
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     read_at TIMESTAMP NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `push_subscriptions` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    endpoint TEXT NOT NULL,
+    p256dh TEXT NOT NULL,
+    auth TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    UNIQUE KEY uq_push_sub (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
