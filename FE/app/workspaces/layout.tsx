@@ -1,9 +1,7 @@
 "use client";
 import "@/styles/globals.css";
 
-import { Button } from "@/components/ui/button";
 import { ExUpload } from "@/components/excel_import/exImportButton";
-import { resetDB } from "@/apis/resetApi";
 import SearchAutocomplete from "@/components/search/SearchAutocomplete";
 
 export default function WorkspacesLayout({
@@ -11,7 +9,6 @@ export default function WorkspacesLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <div className="flex h-full flex-col w-full overflow-hidden">
       {/* 상단 바 */}
@@ -26,7 +23,7 @@ export default function WorkspacesLayout({
             </span>
           </span>
         </div>
-        
+
         {/* Center - Search */}
         <div className="flex flex-1 justify-center px-4">
           <div
@@ -39,15 +36,6 @@ export default function WorkspacesLayout({
           >
             <SearchAutocomplete />
           </div>
-        </div>
-        
-        {/* Right side - Actions */}
-        <div className="flex-none flex items-center gap-2">
-          <Button
-            variant="destructive"
-            onClick={resetDB}>
-              reset DB
-            </Button>
         </div>
       </header>
       <main className="flex w-full h-full overflow-hidden flex-row break-all">
