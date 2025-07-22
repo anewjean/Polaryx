@@ -44,17 +44,22 @@ WHERE id = %(user_id)s
   AND deleted_at IS NULL;
 """
 
-find_member_by_id = """
-SELECT * 
-FROM workspace_members 
-WHERE id = %(user_id)s
-AND deleted_at IS NULL;
-"""
-
 find_member_by_email = """
 SELECT *
 FROM workspace_members
 WHERE email = %(email)s;
+"""
+
+find_member_by_user_id_simple = """
+SELECT 
+    wm.nickname,
+    wm.image,
+    wm.github,
+    wm.blog
+FROM workspace_members wm
+WHERE wm.user_id = %(user_id)s
+AND wm.workspace_id = %(workspace_id)s
+AND wm.deleted_at IS NULL;
 """
 
 find_member_by_user_id = """
@@ -208,6 +213,13 @@ class QueryRepo(AbstractQueryRepo):
   
         return self.db.execute(update_workspace_member_by_user_id, params)
 
+    def find_by_user_id_simple(self, user_id: UUID.bytes, workspace_id: int):
+        param = {
+            "user_id": user_id,
+            "workspace_id": workspace_id
+        }
+        return self.db.execute(find_member_by_user_id_simple, param)
+    
     def find_by_user_id(self, user_id: UUID.bytes) -> WorkspaceMember:
         param = {
             "user_id": user_id

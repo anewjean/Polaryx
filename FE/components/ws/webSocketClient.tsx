@@ -7,6 +7,7 @@ const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
 import { jwtDecode } from "jwt-decode";
+import { alarmSSE, webPush } from "@/apis/notificationApi";
 
 interface JWTPayload {
   user_id: string;
@@ -131,9 +132,10 @@ export const WebSocketClient = ({
         content: message,
         file_url: fileUrl,
       };
-
-      useMessageStore.getState().setFileUrl(null);
+      alarmSSE(workspaceId, tabId, "new_message");
+      webPush(workspaceId, tabId, payload.content)
       socketRef.current.send(JSON.stringify(payload));
+      useMessageStore.getState().setFileUrl(null);
       setSendFlag(false); // 전송 후 플래그 초기화
     }
   }, [sendFlag, message, fileUrl, setSendFlag]);
