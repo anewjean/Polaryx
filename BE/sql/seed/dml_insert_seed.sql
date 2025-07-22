@@ -1,11 +1,11 @@
-INSERT INTO jungle_slam.`groups` (id, name,workspace_id) VALUES
+INSERT INTO polaryx.`groups` (id, name,workspace_id) VALUES
      (1, '정글8기',1),
      (2, '307',1),
      (3, 'Frontend',1),
      (4, 'Backend',1),
      (5, '정글9기',1);
 
-INSERT INTO jungle_slam.group_members (group_id,user_id,user_name) VALUES
+INSERT INTO polaryx.group_members (group_id,user_id,user_name) VALUES
      (1, UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'), '안유진'),
      (1, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '박은채'),
      (1, UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'), '김윤석'),
@@ -42,7 +42,7 @@ INSERT INTO jungle_slam.group_members (group_id,user_id,user_name) VALUES
    
 
 
-INSERT INTO jungle_slam.messages (tab_id, sender_id, content, is_updated, sender_name, url, created_at, check_cnt, clap_cnt, like_cnt, sparkle_cnt, pray_cnt, workspace_id) VALUES
+INSERT INTO polaryx.messages (tab_id, sender_id, content, is_updated, sender_name, url, created_at, check_cnt, clap_cnt, like_cnt, sparkle_cnt, pray_cnt, workspace_id) VALUES
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://docs.google.com/spreadsheets/d/1TJwPk-ouY0S6WZm54-8CovGEOavEiZ6M/edit?gid=1806443967#gid=1806443967">링크</a></p> 로 접속 바랍니다.', 0, '이동석코치님', NULL, '2025-03-13 08:36:55', 51, 13, 117, 0, 33, 1),
      (1, UNHEX('CEF6C2175C1711F0A8650242AC110002'), '교육 현장 점검 종료 됐습니다.', 0, '유윤선코치님', NULL, '2025-03-13 08:49:02', 0, 22, 124, 1, 1, 1),
      (1, UNHEX('8430DCCE5C1411F0A6350242AC110002'), '307호는 301호의 발표가 늦어져서 지연될 예정이니 참고해주시면 감사하겠습니다. 다들 열심히 준비해주세요!', 0, '이동석코치님', NULL, '2025-03-13 09:03:44', 98, 0, 121, 0, 0, 1),
@@ -157,7 +157,7 @@ INSERT INTO jungle_slam.messages (tab_id, sender_id, content, is_updated, sender
      (16, UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), '참석', 0, '박은채', NULL, '2025-03-15 19:16:55', 1, 8, 0, 1, 1, 1),
      (16, UNHEX('CCCCCAAAAAAAAAAAAAAAAEEAAAAADDDD'), '참석', 0, '이찬석', NULL, '2025-03-15 19:29:44', 1, 11, 1, 0, 1, 1);
 
-INSERT INTO jungle_slam.refresh_tokens (id,user_id,token,user_name) VALUES
+INSERT INTO polaryx.refresh_tokens (id,user_id,token,user_name) VALUES
      (UNHEX('0575F69EA7584D10B33A8E7E6A135580'),UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJlbWFpbCI6ImlhbWxlZTEwM0BnbWFpbC5jb20iLCJleHAiOjE3NTIwMTgwOTF9.cT61XkdJtubGSs97dzhffc3St57XClxZDOfP-3oI6SU','이재웅'),
      (UNHEX('098D09BFF5BF4DAB934807BD3447EAFA'),UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAADDDD'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2NjY2NhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWRkZGQiLCJlbWFpbCI6Imlyb290dzExQGdtYWlsLmNvbSIsImV4cCI6MTc1MTk5NTkyOH0.rH-cy_gmrMl7YNFSP6aT5zUfP_-6NR7cljQ8Fy1qyTM','신명훈'),
      (UNHEX('11CC267E96A64C03AE2C952418964973'),UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMDVlYTQ5Y2ZkOTFmNDFhMGJlNjNjYWNlMTcxOGRlNzEiLCJlbWFpbCI6ImFuZXdqZWFuMDBAZ21haWwuY29tIiwiZXhwIjoxNzUxOTk2NzUyfQ.VH-gFKU81kz-I9JZQkre0ZABcR_kuMy4T567pWlK5PI','안유진'),
@@ -165,19 +165,19 @@ INSERT INTO jungle_slam.refresh_tokens (id,user_id,token,user_name) VALUES
      (UNHEX('2A49505F1EAE4497884853841BBD9CBD'),UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2NjY2NhYWFhYWFhYWFhYmJiYWFhZWVhYWFhYWRkZGQiLCJlbWFpbCI6Imdoa3FoMDlAZ21haWwuY29tIiwiZXhwIjoxNzUxOTk0Njk0fQ.RRQM3h4L8k5aoA9CihRYOkA9GBVmsOzubfVoQY9Cs8s','박은채'),
      (UNHEX('88C4B0EA5BFF11F0A1F20242AC110002'),UNHEX('CCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAA'),'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiY2NjY2NhYWFhYWFhYWFhYmJiYWFhZWVhYWFhYWRkZGQiLCJlbWFpbCI6Imdoa3FoMDlAZ21haWwuY29tIiwiZXhwIjoxNzUxOTk0Njk0fQ.RRQM3h4L8k5aoA9CihRYOkA9GBVmsOzubfVoQY9Cs8s', '김윤석');
 
-INSERT INTO jungle_slam.roles (id, name, workspace_id, admin, announce, course, channel) VALUES
+INSERT INTO polaryx.roles (id, name, workspace_id, admin, announce, course, channel) VALUES
 	(1, 'Admin',1,1,1,1,1),
 	(2, 'Guest',1,0,0,0,0),
      (3, 'Coach',1,0,1,1,1),
 	(4, 'Jungler',1,0,0,0,1);
 
-INSERT INTO jungle_slam.sections (id,workspace_id,name) VALUES
+INSERT INTO polaryx.sections (id,workspace_id,name) VALUES
      (1,1,'Announcements'),
      (2,1,'Courses'),
      (3,1,'Channels'),
      (4,1,'Direct Messages');
 
-INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALUES
+INSERT INTO polaryx.tab_members (workspace_id,user_id,tab_id,user_name) VALUES
      (1, UNHEX('04C520DA5C8611F0A8650242AC110002'), 1, '이민하'),
      (1, UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철'),
      (1, UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁'),
@@ -403,7 +403,7 @@ INSERT INTO jungle_slam.tab_members (workspace_id,user_id,tab_id,user_name) VALU
      (1, UNHEX('E2EB5DE9609D11F0A5420242AC110013'), 19, '이윤아'),
      (1, UNHEX('E2EB5DE9609D11F0A5420242AC110014'), 19, '이현재');
 
-INSERT INTO jungle_slam.tabs (id, name,workspace_id,section_id,url) VALUES
+INSERT INTO polaryx.tabs (id, name,workspace_id,section_id,url) VALUES
      (1, '정글 공지 채널',1,1,NULL),
      (2, 'Q&A',1,1,NULL),
      (3, '[W01] 알고리즘 기초, 재귀 함수, 정렬, 완전탐색',1,2,NULL),
@@ -424,7 +424,7 @@ INSERT INTO jungle_slam.tabs (id, name,workspace_id,section_id,url) VALUES
      (18, '306호',1,3,NULL),
      (19, '9기 공지',1,1,NULL);
     
-INSERT INTO jungle_slam.member_roles (user_id, role_id, user_name)
+INSERT INTO polaryx.member_roles (user_id, role_id, user_name)
 VALUES
      (UNHEX('1F61345F5C8611F0A8650242AC110002'), 4, '임구철'),
      (UNHEX('42E101A25C8611F0A8650242AC110002'), 4, '정진영'),
@@ -509,7 +509,7 @@ VALUES
      (UNHEX('E2EB5DE9609D11F0A5420242AC110044'), 4, '정현우'),
      (UNHEX('E2EB5DE9609D11F0A5420242AC110045'), 4, '조윤호');
 
-INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) VALUES
+INSERT INTO polaryx.users (id,name,email,provider,provider_id,workspace_id) VALUES
      (UNHEX('03DF0C255C8611F0A8650242AC110002'),'이민하','minhyay01@gmail.com','local',NULL,1),
      (UNHEX('05EA49CFD91F41A0BE63CACE1718DE71'),'안유진','anewjean00@gmail.com','google','115239687263793657172',1),
      (UNHEX('1F61345F5C8611F0A8650242AC110002'),'임구철','goochul175465@gmail.com','local',NULL,1),
@@ -594,7 +594,7 @@ INSERT INTO jungle_slam.users (id,name,email,provider,provider_id,workspace_id) 
      (UNHEX('E2EB5DE9609D11F0A5420242AC110045'), '조윤호', 'user54@gmail.com', 'google', NULL, 1);
 
 
-INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,email,image,github,blog) VALUES
+INSERT INTO polaryx.workspace_members (id,user_id,workspace_id,nickname,email,image,github,blog) VALUES
      (UNHEX('04C520DA5C8611F0A8650242AC110002'), UNHEX('03DF0C255C8611F0A8650242AC110002'), 1, '이민하', 'minhyay01@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GSGL5ZK3-0c7f0765f91c-512', NULL, NULL),
      (UNHEX('2066CA895C8611F0A8650242AC110002'), UNHEX('1F61345F5C8611F0A8650242AC110002'), 1, '임구철', 'goochul175465@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08GG9DK7C2-65d136bf7de0-512', NULL, NULL),
      (UNHEX('3546C7635C8611F0A8650242AC110002'), UNHEX('32F2411E5C8611F0A8650242AC110002'), 1, '임준혁', 'jhim0228@gmail.com', 'https://ca.slack-edge.com/T01GNAFL1MX-U08G0RSLZ63-e8fc3d520338-512', NULL, NULL),
@@ -679,12 +679,12 @@ INSERT INTO jungle_slam.workspace_members (id,user_id,workspace_id,nickname,emai
      (UNHEX(REPLACE(UUID(), '-', '')), UNHEX('E2EB5DE9609D11F0A5420242AC110045'), 1, '조윤호', 'user54@gmail.com', NULL, NULL, NULL);
 
 
-INSERT INTO jungle_slam.workspaces (id, name) VALUES
+INSERT INTO polaryx.workspaces (id, name) VALUES
      (1, '정글'),
      (2, '게임랩'),
      (3, '게임테크랩');
 
-INSERT INTO jungle_slam.links (tab_id, sender_id, link_url, link_favicon, link_name) VALUES
+INSERT INTO polaryx.links (tab_id, sender_id, link_url, link_favicon, link_name) VALUES
 ('1', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://github.com/', 'https://github.com/fluidicon.png', 'Github'),
 ('1', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://chatgpt.com/', 'https://chatgpt.com/favicon.ico', 'ChatGPT'),
 ('1', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://ui.shadcn.com/', 'https://ui.shadcn.com/favicon-16x16.png', 'shardcn'),
@@ -697,7 +697,7 @@ INSERT INTO jungle_slam.links (tab_id, sender_id, link_url, link_favicon, link_n
 ('11', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://whatissoimportantyou.tistory.com/58', 'https://t1.daumcdn.net/tistory_admin/favicon/tistory_favicon_32x32.ico', 'vs code로 디버깅하는 법'),
 ('11', UNHEX('CCCCCAAAAAAAAAABBBAAAEEAAAAADDDD'), 'https://wonit.tistory.com/368', 'https://wonit.tistory.com/favicon.ico', 'github 협업을 위한 fork');
 
-INSERT INTO jungle_slam.push_subscriptions (
+INSERT INTO polaryx.push_subscriptions (
   user_id,
   endpoint,
   p256dh,
@@ -713,7 +713,7 @@ INSERT INTO jungle_slam.push_subscriptions (
   (UNHEX('BEA1232F5C8511F0A8650242AC110002'), 'https://fcm.googleapis.com/fcm/send/fgfEAmTmYsw:APA91bE56UFNSL_QBxA6hQfVhgoufWtplvReLE8vi0SqUQEHaPwjiTomgSc188UrJtFRzDMNdAo2beEFNg3099Mb29gpO4oKjnSQ49nI7VGsXQi_MVWyd2NWTFxtFb1FJfgdWDMykt8q', 'BKTg3rGbyidW03YQBSyShSZNzn0t0wEdMXQQ1PvJE44u7qoMfwcEzA1XURDrmyaGxt2AmijRScCLgo7t9TOCQXs', 'wcVI3b1GEHdrjwAybO6Rhg'),
   (UNHEX('E2EB5DE9609D11F0A5420242AC110002'), 'https://fcm.googleapis.com/fcm/send/cFF0xqaPJww:APA91bGpXt3Vvm0TO7PV1Cv0PmoIpH_olqAtISmLNNKg5oX9bye_0a5wudOCXWHlFYXKo71zaddV19qniWG4_ZKSQgGR4WOiGYoFLPbDBmewD00vD2LNNGtDssQceAKiod41HIaKoxDm', 'BHFE8b6hcIQeVFrrjn5B1UZZIkO7lB3I_EsN3xGvYQqCpM8QUCdnA427vcrNFw6QH0ZGS9O9RJipFEXHoF5f19I', 'YiiowSjoJaF7Wyq_IU8JNQ');
 
-INSERT INTO jungle_slam.save_messages (user_id, workspace_id, content) VALUES
+INSERT INTO polaryx.save_messages (user_id, workspace_id, content) VALUES
 (UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p>반갑습니다, 정글 0기 여러분! 🙂</p><p>채팅방 관련 공지 드립니다.</p><ol><li><p><code>공지방</code><strong>/</strong><code>Q&amp;A방</code>에 초대되신 분들은 교육생 분들끼리 새로운 채널을 생성하여 커뮤니케이션에 사용할 수 있습니다.</p></li><li><p><strong>표시이름 / 성명 / 프로필 사진 업데이트 해주세요!!!</strong></p></li></ol>'),
 (UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p><strong>내일 일정 사전 공지 드립니다.</strong></p><ul><li><p>1400-1500 퀴즈</p></li></ul><p>내일 퀴즈에는 <strong>⭐페이징⭐</strong>에 관련된 문제가 출제됩니다. 다들 미리 공부해 두시길 바랍니다.</p>'),
 (UNHEX('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'), 1, '<p><strong>퀴즈를 진행하겠습니다.</strong></p><p>아래 파일은 퀴즈 문제입니다.</p><p>다운로드 받은 후 <strong>14:00~15:00(1시간)</strong> 동안 풀어보세요.시험 완료한 분들은 <a target="_blank" rel="noopener noreferrer" class="c-link" href="https://docs.google.com/forms/d/19jXpztoX_MVoAqJs7pMlNwDhF2IgIK2id0vOweIJH8w">링크</a>로 <strong>답안을 촬영한 사진</strong>을 제출해 주시면 됩니다. (먼저 마친 분들은 다른 동료들에게 방해되지 않게 부탁드려요.)</p><p><strong>⚠️&lt;주의사항&gt;⚠️</strong></p><ol><li><p><strong>컴퓨터를 이용하지 않고 푸는 테스트입니다.</strong></p></li><li><p>문제에 명시한 경우를 제외하고는 <em>구글링/GPT/의논 금지</em>입니다<em>.</em></p></li><li><p>단답형으로<em> </em>끝내지<em> </em>마시고<em> </em>완성된<em> </em>문장을<em> </em>쓰는<em> </em>연습을<em> </em>해보세요<em>.</em></p></li></ol>'),

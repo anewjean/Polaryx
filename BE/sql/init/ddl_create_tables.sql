@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS jungle_slam;
-USE jungle_slam;
+CREATE DATABASE IF NOT EXISTS polaryx;
+USE polaryx;
 
 CREATE TABLE `canvases` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
