@@ -10,8 +10,9 @@ class ConnectionManager:
     def __init__(self):
         self.activate_connections: Dict[int, Dict[int, List[WebSocket]]] = {}
         self.server_id = uuid.uuid4().hex[:8]  # 서버 고유 ID
-        self._redis_client: Optional = None
-        self._pubsub_client: Optional = None
+        self.socket_type: str = None
+        self._redis_client: Optional[str] = None
+        self._pubsub_client: Optional[str] = None
         self._pubsub_task: Optional[asyncio.Task] = None
         self._is_listening = False
     
@@ -27,15 +28,20 @@ class ConnectionManager:
             self._pubsub_client = await RedisManager.get_pubsub_redis()
         return self._pubsub_client
     
-    async def connect(self, workspace_id: int, tab_id: int, websocket: WebSocket):
+    async def connect(self, socket_type: str, workspace_id: int, tab_id: int, websocket: WebSocket):
         await websocket.accept()
+        self.socket_type = socket_type
+        print("******************")
+        print(socket_type)
+
+        if socket_type not in self.activate_connections:
+            self.activate_connections[socket_type] = {}
+        if workspace_id not in self.activate_connections[socket_type]:
+            self.activate_connections[socket_type][workspace_id] = {}
+        if tab_id not in self.activate_connections[socket_type][workspace_id]:
+            self.activate_connections[socket_type][workspace_id][tab_id] = []
         
-        if workspace_id not in self.activate_connections:
-            self.activate_connections[workspace_id] = {}
-        if tab_id not in self.activate_connections[workspace_id]:
-            self.activate_connections[workspace_id][tab_id] = []
-        
-        self.activate_connections[workspace_id][tab_id].append(websocket)
+        self.activate_connections[socket_type][workspace_id][tab_id].append(websocket)
 
         # Redis에 서버별 연결 정보 저장
         await self._update_redis_connection_info(workspace_id, tab_id, 'connect')
@@ -45,17 +51,21 @@ class ConnectionManager:
     
     async def disconnect(self, workspace_id: int, tab_id: int, websocket: WebSocket):
         try:
-            tab_connections = self.activate_connections.get(workspace_id, {}).get(tab_id)
+            tab_connections = self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id)
             if tab_connections and websocket in tab_connections:
                 tab_connections.remove(websocket)
 
                 # 탭 내 소켓이 모두 비어있으면 탭 삭제
                 if not tab_connections:
-                    del self.activate_connections[workspace_id][tab_id]
+                    del self.activate_connections[self.socket_type][workspace_id][tab_id]
 
                 # 워크스페이스 내 탭이 모두 없어졌으면 워크스페이스 삭제
-                if not self.activate_connections[workspace_id]:
-                    del self.activate_connections[workspace_id]
+                if not self.activate_connections[self.socket_type][workspace_id]:
+                    del self.activate_connections[self.socket_type][workspace_id]
+                
+                # 타입 내 워크스페이스가 모두 없어졌으면 타입 삭제
+                if not self.activate_connections[self.socket_type]:
+                    del self.activate_connections[self.socket_type]
                 
                 # Redis에 서버별 연결 정보 업데이트
                 await self._update_redis_connection_info(workspace_id, tab_id, 'disconnect')
@@ -63,13 +73,10 @@ class ConnectionManager:
         except Exception as e:
             print(f"소켓 연결 해제 에러가 발생했습니다 :: {e}")
             pass
-
-    async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
     
     async def broadcast_local(self, workspace_id: int, tab_id: int, message: str):
         """로컬 서버의 연결된 클라이언트들에게만 브로드캐스트"""
-        connections = self.activate_connections.get(workspace_id, {}).get(tab_id, [])
+        connections = self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id, [])
         for connection in connections[:]:
             try:
                 await connection.send_text(message)
@@ -84,7 +91,7 @@ class ConnectionManager:
         # Redis를 통해 다른 서버들에게 알림
         try:
             redis_client = await self._get_redis_client()
-            channel = f"workspace:{workspace_id}:tab:{tab_id}"
+            channel = f"type:{self.socket_type}:workspace:{workspace_id}:tab:{tab_id}"
             redis_message = {
                 "message": message,
                 "sender_server": self.server_id,
@@ -114,7 +121,7 @@ class ConnectionManager:
             pubsub = pubsub_client.pubsub()
 
             # 모든 워크스페이스:탭 채널 구독
-            await pubsub.psubscribe("workspace:*:tab:*")
+            await pubsub.psubscribe("type:*:workspace:*:tab:*")
 
             async for message in pubsub.listen():
                 if message["type"] == "pmessage":
@@ -130,19 +137,18 @@ class ConnectionManager:
         try:
             channel = redis_message["channel"]
             data = json.loads(redis_message["data"])
+            # print(data)
             
             # 자신이 보낸 메시지는 무시
             if data.get("sender_server") == self.server_id:
                 return
             
             # 채널에서 workspace_id, tab_id 추출
-            # 형식: workspace:123:tab:456
             parts = channel.split(":")
-            if len(parts) >= 4:
-                workspace_id = int(parts[1])
-                tab_id = int(parts[3])
+            if len(parts) >= 6:
+                workspace_id = int(parts[3])
+                tab_id = int(parts[5])
                 message = data.get("message", "")
-                
                 # 로컬 연결된 클라이언트들에게 브로드캐스트
                 await self.broadcast_local(workspace_id, tab_id, message)
                 
@@ -164,10 +170,10 @@ class ConnectionManager:
         """Redis에 서버별 연결 정보 업데이트"""
         try:
             redis_client = await self._get_redis_client()
-            key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
+            key = f"type:{self.socket_type}:workspace:{workspace_id}:tab:{tab_id}"
             
             # 현재 서버의 연결 수 계산
-            current_connections = len(self.activate_connections.get(workspace_id, {}).get(tab_id, []))
+            current_connections = len(self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id, []))
             
             if current_connections > 0:
                 # 서버별 연결 수 저장 (Hash 사용)
@@ -181,29 +187,29 @@ class ConnectionManager:
         except Exception as e:
             print(f"Redis 연결 정보 업데이트 에러: {e}")
     
-    async def get_total_connections(self, workspace_id: int, tab_id: int) -> int:
-        """특정 워크스페이스:탭의 전체 연결 수 조회"""
-        try:
-            redis_client = await self._get_redis_client()
-            key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
+    # async def get_total_connections(self, workspace_id: int, tab_id: int) -> int:
+    #     """특정 워크스페이스:탭의 전체 연결 수 조회"""
+    #     try:
+    #         redis_client = await self._get_redis_client()
+    #         key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
             
-            # 모든 서버의 연결 수 합계
-            server_connections = await redis_client.hgetall(key)
-            total = sum(int(count) for count in server_connections.values())
+    #         # 모든 서버의 연결 수 합계
+    #         server_connections = await redis_client.hgetall(key)
+    #         total = sum(int(count) for count in server_connections.values())
             
-            return total
-        except Exception as e:
-            print(f"Redis 연결 정보 조회 에러: {e}")
-            return 0
+    #         return total
+    #     except Exception as e:
+    #         print(f"Redis 연결 정보 조회 에러: {e}")
+    #         return 0
     
-    async def get_server_connections(self, workspace_id: int, tab_id: int) -> Dict[str, int]:
-        """특정 워크스페이스:탭의 서버별 연결 수 조회"""
-        try:
-            redis_client = await self._get_redis_client()
-            key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
+    # async def get_server_connections(self, workspace_id: int, tab_id: int) -> Dict[str, int]:
+    #     """특정 워크스페이스:탭의 서버별 연결 수 조회"""
+    #     try:
+    #         redis_client = await self._get_redis_client()
+    #         key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
             
-            server_connections = await redis_client.hgetall(key)
-            return {server_id: int(count) for server_id, count in server_connections.items()}
-        except Exception as e:
-            print(f"Redis 서버별 연결 정보 조회 에러: {e}")
-            return {}
+    #         server_connections = await redis_client.hgetall(key)
+    #         return {server_id: int(count) for server_id, count in server_connections.items()}
+    #     except Exception as e:
+    #         print(f"Redis 서버별 연결 정보 조회 에러: {e}")
+    #         return {}
