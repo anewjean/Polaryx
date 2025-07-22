@@ -53,7 +53,12 @@ export default function SaveMessages({
   };
 
   return (
-    <HoverCard open={hoverOpen} onOpenChange={(open) => setHoverOpen(open)}>
+    <HoverCard
+      open={hoverOpen}
+      onOpenChange={(open) => setHoverOpen(open)}
+      openDelay={100}
+      closeDelay={100}
+    >
       {/* 재호버 방지 */}
       <button onClick={() => setHoverOpen((o) => !o)}>
         <HoverCardTrigger asChild>{children}</HoverCardTrigger>
@@ -62,6 +67,8 @@ export default function SaveMessages({
         side="top"
         align="end"
         className="w-100 bg-white text-black border m-0 p-0 mb-0.5 mr-1"
+        onPointerEnter={() => setHoverOpen(true)}
+        onPointerLeave={() => setHoverOpen(false)}
       >
         <div>
           <div className="flex flex-row items-center justify-between pl-5 pr-3 py-3">
@@ -92,6 +99,7 @@ export default function SaveMessages({
                   key={message.save_message_id}
                   onClick={() => {
                     editor?.commands.setContent(message.content);
+                    console.log("saveMessages content", message.content); // delete
                     setHoverOpen(false);
                   }}
                   className={`
