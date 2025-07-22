@@ -6,6 +6,8 @@ const NEXT_PUBLIC_WS = process.env.NEXT_PUBLIC_WS;
 
 import { useEffect, useRef } from "react";
 import { useMessageStore } from "@/store/messageStore";
+import { useTabStore } from "@/store/tabStore";
+import { useProfileStore } from "@/store/profileStore";
 import { jwtDecode } from "jwt-decode";
 
 interface JWTPayload {
@@ -25,6 +27,8 @@ export const WebSocketProfileClient = ({
 }) => {
   const socketRef = useRef<WebSocket | null>(null);
   const { sendEditFlag, editTarget, setSendEditFlag, updateUserProfile } = useMessageStore();
+  const { refreshTabs } = useTabStore();
+  const { profile, updateProfile } = useProfileStore();
 
   useEffect(() => {
     {
@@ -55,9 +59,10 @@ export const WebSocketProfileClient = ({
             "image": rawMsg.image == 'none' ? undefined:rawMsg.image
         };
 
+        console.log("asdgad")
         // file_url을 fileUrl로 변환하고 원본 제거
-        updateUserProfile(targetUserId, editThings)
-
+        updateUserProfile(targetUserId, editThings);
+        updateProfile(targetUserId, editThings['nickname'], editThings['image']);
       } catch {
         console.warn("Invalid message format: ", event.data);
       }
@@ -77,7 +82,7 @@ export const WebSocketProfileClient = ({
     };
   }, [workspaceId, tabId]);
 
-  // 메시지 전송 감지
+  // 프로필 수정 감지
   useEffect(() => {
     if (
         sendEditFlag &&
@@ -99,9 +104,10 @@ export const WebSocketProfileClient = ({
         image: editTarget["image"],
       };
 
-    //   useMessageStore.getState().setFileUrl(null);
       socketRef.current.send(JSON.stringify(payload));
+      refreshTabs();
       setSendEditFlag(false); // 전송 후 플래그 초기화
+      useMessageStore.getState().setFileUrl(null);
     }
   }, [sendEditFlag, setSendEditFlag]);
 
