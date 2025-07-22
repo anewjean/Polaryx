@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS test_jungle_slam;
-USE test_jungle_slam;
+CREATE DATABASE IF NOT EXISTS jungle_slam;
+USE jungle_slam;
 
 CREATE TABLE `canvases` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -21,7 +21,7 @@ CREATE TABLE `emoji` (
   `e_sparkle` smallint(6) DEFAULT '0',
   `msg_id` bigint(20) NOT NULL,
   `user_id` binary(16) NOT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
@@ -30,7 +30,7 @@ CREATE TABLE `group_members` (
   `group_id` int(11) NOT NULL,
   `user_id` binary(16) NOT NULL,
   `user_name` varchar(32) DEFAULT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_group_user` (`group_id`,`user_id`)
@@ -39,7 +39,7 @@ CREATE TABLE `group_members` (
 CREATE TABLE `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `links` (
   `link_url` text NOT NULL,
   `link_favicon` text,
   `link_name` varchar(255) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE `member_roles` (
   `user_id` binary(16) NOT NULL,
   `role_id` int(11) NOT NULL,
   `user_name` varchar(32) DEFAULT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_role_user` (`role_id`,`user_id`)
@@ -87,7 +87,7 @@ CREATE TABLE `messages` (
   `like_cnt` int(11) DEFAULT '0',
   `sparkle_cnt` int(11) DEFAULT '0',
   `pray_cnt` int(11) DEFAULT '0',
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8mb4;
 
@@ -100,7 +100,7 @@ CREATE TABLE `notifications` (
   `type` int(11) NOT NULL,
   `content` varchar(255) NOT NULL,
   `is_read` tinyint(1) DEFAULT '0',
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `read_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -123,7 +123,7 @@ CREATE TABLE `refresh_tokens` (
   `user_id` binary(16) NOT NULL,
   `token` varchar(255) NOT NULL,
   `user_name` varchar(32) DEFAULT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE `refresh_tokens` (
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `admin` tinyint(1) NOT NULL,
   `announce` tinyint(1) NOT NULL,
   `course` tinyint(1) NOT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `save_messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` binary(16) NOT NULL,
-  `workspace_id` bigint(20) NOT NULL,
+  `workspace_id` bigint(20) NOT NULL DEFAULT 1,
   `content` mediumtext NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -157,23 +157,9 @@ CREATE TABLE `save_messages` (
 
 CREATE TABLE `sections` (
   `id` int(11) NOT NULL,
-  `workspace_id` int(11) NOT NULL,
+  `workspace_id` int(11) NOT NULL DEFAULT 1,
   `name` varchar(64) NOT NULL,
   UNIQUE KEY `uq_section` (`id`,`workspace_id`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `sub_messages` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `message_id` bigint(20) NOT NULL,
-  `sender_id` binary(16) NOT NULL,
-  `content` text NOT NULL,
-  `is_updated` tinyint(1) DEFAULT '0',
-  `sender_name` varchar(32) DEFAULT NULL,
-  `url` varchar(256) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `tab_members` (
@@ -205,7 +191,7 @@ CREATE TABLE `users` (
   `email` varchar(128) NOT NULL,
   `provider` varchar(16) NOT NULL,
   `provider_id` varchar(255) DEFAULT NULL,
-  `workspace_id` int(11) DEFAULT NULL,
+  `workspace_id` int(11) DEFAULT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
