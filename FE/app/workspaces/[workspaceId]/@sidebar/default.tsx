@@ -43,6 +43,8 @@ import {
   ChevronDownIcon,
   ChevronsUpDown,
   Plus,
+  Badge,
+  Bell,
 } from "lucide-react";
 import { logout } from "@/apis/logout";
 import { createTab, getTabList, Tab, checkTabName } from "@/apis/tabApi";
@@ -241,7 +243,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="flex size-4 p-3 text-gray-200"
+                  className="flex size-5 p-1 text-gray-200"
                   onClick={() => toggleSection(section.id)}
                 >
                   {openSections[section.id] ? (
@@ -254,7 +256,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                   size: 22,
                   className: "text-gray-200",
                 })}
-                <span className="text-m font-bold text-gray-200 truncate">
+                <span className="text-lg font-bold text-gray-200 truncate">
                   {section.label}
                 </span>
               </SidebarGroupLabel>
@@ -276,7 +278,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                           <SidebarMenuItem key={tab.tab_id}>
                             <SidebarMenuButton
                               isActive={isActive}
-                              className={`flex items-center px-2 py-1 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer
+                              className={`flex items-center px-2 py-5 space-x-2 rounded-sm flex-1 min-w-0 cursor-pointer
                               ${emphasized && "text-white font-bold"}`}
                               onClick={() => {
                                 clearUnread(tab.tab_id);
@@ -293,16 +295,21 @@ export default function AppSidebar({ width }: SidebarProps) {
                                 }
                               }}
                             >
-                              <span className="flex flex-row gap-1.5 items-center truncate">
+                              <span className="flex flex-row gap-1.5 items-center min-w-0">
                                 {/* dm 방이면 사람 아이콘 추가 */}
                                 {Number(section.id) === 4 && (
                                   <User className="size-5" />
                                 )}
-                                {tab.tab_name}
+                                <span className="truncate">{tab.tab_name}</span>
                               </span>
                               {hasUnread && !isActive && (
                                 <span className="ml-auto text-s-bold">
-                                  {count}
+                                  <Button 
+                                    variant="default"                                    
+                                    className="flex flex-fit items-center justify-center bg-yellow-500 text-black font-bold size-6 rounded-full"
+                                  >                                    
+                                    {count}
+                                  </Button>
                                 </span>
                               )}
                             </SidebarMenuButton>
@@ -325,7 +332,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                             <SidebarMenuButton
                               asChild
                               isActive={false}
-                              className="flex items-center px-2 py-1 space-x-2 flex-1 min-w-0 cursor-pointer"
+                              className="flex items-center px-2 py-5 space-x-2 flex-1 min-w-0 cursor-pointer"
                             >
                               <span className="flex flex-row gap-2 items-center truncate">
                                 <Plus
