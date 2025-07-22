@@ -12,7 +12,7 @@ export default function WorkspacesLayout({
   return (
     <div className="flex h-full flex-col w-full overflow-hidden">
       {/* 상단 바 */}
-      <header className="flex h-11 items-center p-4 bg-black shadow-xl justify-between">
+      <header className="flex h-11 items-center p-4 bg-gray-900 shadow-xl justify-between">
         {/* Left side - Logo */}
         <div className="flex-none flex items-center">
           <img src="/logo.png" className="w-7 h-7 mr-1" />
