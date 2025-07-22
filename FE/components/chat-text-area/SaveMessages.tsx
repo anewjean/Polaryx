@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { CircleCheck, Ban } from "lucide-react";
 import { Editor } from "@tiptap/react";
 import { useSaveMessagesStore } from "@/store/saveMessagesStore";
+import { useMessageStore } from "@/store/messageStore";
 
 // props 타입 정의
 interface SaveMessagesProps {
@@ -98,7 +99,16 @@ export default function SaveMessages({
                 <div
                   key={message.save_message_id}
                   onClick={() => {
+                    const imgMatch = message.content.match(
+                      /<img[^>]+src=['"]([^'"]+)['"]/,
+                    );
+                    const fileUrl = imgMatch ? imgMatch[1] : null;
+
                     editor?.commands.setContent(message.content);
+
+                    if (fileUrl) {
+                      useMessageStore.getState().setFileUrl(fileUrl);
+                    }
                     console.log("saveMessages content", message.content); // delete
                     setHoverOpen(false);
                   }}
