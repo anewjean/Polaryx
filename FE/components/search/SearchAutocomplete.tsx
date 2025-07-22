@@ -75,7 +75,7 @@ export default function SearchAutocomplete() {
   };
 
   return (
-    <div className="flex justify-center items-center ">
+    <div className="relative flex justify-center items-center ">
       {/* 검색 모드 셀렉터 (사용자 찾기 / 메시지 찾기) */}
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>

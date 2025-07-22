@@ -31,7 +31,7 @@ export default function ProfilePage() {
   const myUserId = useMyUserStore((s) => s.userId);
 
   // store에서 targetId 가져오기
-  const { isOpen, userId: bufferTargetId } = useProfileStore();
+  const { isOpen, userId: bufferTargetId, profile, setProfile } = useProfileStore();
   const { uploadToS3 } = useProfileImageUpload();
   const editProfile = useMessageStore((s) => s.editProfile);
 
@@ -40,9 +40,6 @@ export default function ProfilePage() {
 
   // 프로필 편집 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 프로필 데이터 상태 관리
-  const [profile, setProfile] = useState<Profile | null>(null);
 
   // 프로필 편집 폼 데이터 상태 관리
   const [form, setForm] = useState<{
@@ -91,6 +88,24 @@ export default function ProfilePage() {
       }
     })();
   }, [bufferTargetId, isModalOpen]);
+
+  // 프로필 변경시 바로 반영
+  useEffect(() => {
+    (async () => {
+      if (bufferTargetId === null || profile === null) {
+        return;
+      }
+      try {
+        setForm({
+          nickname: profile.nickname,
+          github: profile?.github ?? "",
+          blog: profile?.blog ?? "",
+        });
+      } catch (error) {
+        console.error("프로필 조회 실패:", error);
+      }
+    })();
+  }, [profile]);
 
   // 프로필 수정
   const saveChange = async (e: React.FormEvent<HTMLFormElement>) => {
