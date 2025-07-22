@@ -100,7 +100,6 @@ jobs:
             --parameters commands='[
               "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
               "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-              "cd /home/ec2-user",
               "docker compose -f docker-compose.yml pull",
               "docker compose -f docker-compose.yml down",
               "docker compose -f docker-compose.yml up -d",
@@ -116,7 +115,6 @@ jobs:
             --parameters commands='[
               "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
               "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-              "cd /home/ec2-user",
               "docker compose -f docker-compose.yml pull",
               "docker compose -f docker-compose.yml down",
               "docker compose -f docker-compose.yml up -d",
