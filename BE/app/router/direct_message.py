@@ -4,7 +4,8 @@ from app.schema.direct_message.request import CreateTabRequest
 from app.schema.direct_message.response import CreateTabResponse
 from app.service.tab import TabService
 from app.service.direct_message import DMService
-
+from app.router.sse import send_sse_notification
+import asyncio
 
 router = APIRouter(prefix="/workspaces")
 dm_service = DMService()
@@ -12,7 +13,7 @@ tab_service = TabService()
 
 # dm 생성
 @router.post("/{workspace_id}/dms", response_model=CreateTabResponse)
-def get_tab(workspace_id: int, tab_data: CreateTabRequest):
+async def get_tab(workspace_id: int, tab_data: CreateTabRequest):
     creator_id = tab_data.user_id
     member_ids = tab_data.user_ids
     members_map = dm_service.find_member_names(member_ids)
@@ -22,4 +23,12 @@ def get_tab(workspace_id: int, tab_data: CreateTabRequest):
 
     section_id = 4
     row = dm_service.get_tab(creator_id, member_ids, workspace_id, tab_name, section_id)
+    target_ids = dm_service.find_member_id(row[0])
+    payload = {
+        "type": "invited_to_tab",
+        "tab_id": row[0],
+        "user_ids": target_ids,
+        "message": "새 탭에 초대됨",
+    }
+    asyncio.create_task(send_sse_notification(str(workspace_id), payload))
     return CreateTabResponse.from_row(row, creator_name)
