@@ -15,7 +15,6 @@ from app.service.notification import NotificationService
 from app.router.sse import send_sse_notification
 
 import uuid
-import re
 
 router = APIRouter()
 
@@ -31,31 +30,6 @@ push_service = PushService()
 notification_service = NotificationService()
 
 
-# HTML 태그 제거 함수
-def strip_tags(text: str) -> str:
-    return re.sub(r'<[^>]+>', '', text)
-
-# 이미지 파일인지 확인하는 함수
-def check_file_type(file_url: str) -> str:
-    if not file_url:
-        return "none"
-    
-    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg']
-    if any(file_url.lower().endswith(ext) for ext in image_extensions):
-        return "image"
-    else:
-        return "file"
-
-# 알림 메시지 생성 함수
-def create_push_message(nickname: str, content: str, file_url: str) -> str:
-    file_type = check_file_type(file_url)
-    if file_type == "image":
-        return f"{nickname}: 사진이 첨부되었습니다"
-    elif file_type == "file":
-        return f"{nickname}: 파일이 첨부되었습니다"
-    else:
-        clean_content = strip_tags(content)
-        return f"{nickname}: {clean_content}"
 
 
 @router.websocket("/{workspace_id}/{tab_id}")
@@ -67,23 +41,18 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
         while True:
             print("************* in ws endpoint, while **************")
             raw_data = await websocket.receive_text()
-
             data = json.loads(raw_data)
             type = data.get("type")
             if type == "send":
                 sender_id = (data.get("sender_id"))
                 content = data.get("content")
                 file_data = data.get("file_url")
-                
-                clean_content = strip_tags(content)
 
                 workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
-                
                 nickname = workspace_member[0][2]
                 image = workspace_member[0][4]
 
                 message_id = await message_service.save_message(tab_id, sender_id, content, file_data)
-
                 payload = {
                     "type": "send",
                     "file_url": file_data,
@@ -95,48 +64,19 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                     "sender_id": sender_id
                 }
 
-                # SSE 알림 전송
-                await send_sse_notification(
-                    str(workspace_id),
-                    {
-                    "type": "new_message",
-                    "tab_id": tab_id,
-                    "content": content,
-                    "nickname": nickname,
-                    "image": image,
-                    "message_id": message_id,
-                    "sender_id": sender_id
-                    }
-                )
 
                 await message_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
-                
-                members = tab_service.get_tab_members(workspace_id, tab_id)
-                tab_info = tab_service.find_tab(workspace_id, tab_id)
-                tab_name = tab_info[0][1]
-                
-                sender_uuid = uuid.UUID(sender_id)
-                recipients = [
-                str(uuid.UUID(bytes=row[0]))
-                for row in members
-                if uuid.UUID(bytes=row[0]) != sender_uuid
-                ]
 
-                await push_service.send_push_to(recipients, {
-                    "title": tab_name,
-                    "body": f"{nickname}: {clean_content}",
-                    "url": f"/workspaces/{workspace_id}/tabs/{tab_id}"
-                })
-
-                for receiver in recipients:
-                    await notification_service.create_notification(
-                        receiver_id= receiver,
-                        sender_id=sender_id,
-                        tab_id=tab_id,
-                        message_id=message_id,
-                        type=1,
-                        content=clean_content,
-                    )
+                # for receiver in recipients:
+                #     print("\n\nreceiver:\n", receiver)
+                #     await notification_service.create_notification(
+                #         receiver_id= receiver,
+                #         sender_id=sender_id,
+                #         tab_id=tab_id,
+                #         message_id=message_id,
+                #         type=1,
+                #         content=clean_content,
+                #     )
             else:  # 수정한 메세지 broadcast
                 message_id = (data.get("msg_id"))
                 content = data.get("content")

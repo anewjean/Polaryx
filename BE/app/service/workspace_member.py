@@ -65,8 +65,12 @@ class WorkspaceMemberService:
             })
         workspace_member = self.workspace_member_repo.bulk_insert_workspace_member(workspace_member_list)
         return workspace_member
-    # test
-    
+
+    def get_member_by_user_id_simple(self, id: UUID | bytes, workspace_id: int):
+        user_id_bytes = id.bytes if isinstance(id, UUID) else id  
+        workspace_member = self.workspace_member_repo.find_by_user_id_simple(user_id_bytes, workspace_id)
+        return workspace_member    
+
     def get_member_by_user_id(self, id: UUID | bytes) -> WorkspaceMember:
         user_id_bytes = id.bytes if isinstance(id, UUID) else id  
         workspace_member = self.workspace_member_repo.find_by_user_id(user_id_bytes)
