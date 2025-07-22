@@ -102,14 +102,27 @@ export default function SaveMessages({
                     const imgMatch = message.content.match(
                       /<img[^>]+src=['"]([^'"]+)['"]/,
                     );
-                    const fileUrl = imgMatch ? imgMatch[1] : null;
+                    const imgFileUrl = imgMatch ? imgMatch[1] : null;
+
+                    // 파일 다운로드 div에서 fileUrl 추출
+                    const fileDivMatch = message.content.match(
+                      /<div[^>]+fileurl=['"]([^'"]+)['"][^>]*data-type=['"]file-download['"][^>]*>/,
+                    );
+                    const fileDownloadUrl = fileDivMatch
+                      ? fileDivMatch[1]
+                      : null;
 
                     editor?.commands.setContent(message.content);
 
-                    if (fileUrl) {
-                      useMessageStore.getState().setFileUrl(fileUrl);
+                    // 이미지 또는 파일 다운로드 URL 설정
+                    if (imgFileUrl) {
+                      useMessageStore.getState().setFileUrl(imgFileUrl);
+                    } else if (fileDownloadUrl) {
+                      useMessageStore.getState().setFileUrl(fileDownloadUrl);
                     }
                     console.log("saveMessages content", message.content); // delete
+                    console.log("imgFileUrl:", imgFileUrl);
+                    console.log("fileDownloadUrl:", fileDownloadUrl);
                     setHoverOpen(false);
                   }}
                   className={`
