@@ -19,9 +19,9 @@ export default function WorkspacesLayout({
         {/* Left side - Logo */}
         <div className="flex-none flex items-center">
           <img src="/logo.png" className="w-7 h-7 mr-1" />
-          <span className="zen-antique-soft-regular font-bold text-xl text-white tracking-widest">
+          <span className="kaisei-harunoumi-bold font-bold text-xl text-white tracking-[0.2rem]">
             Polaris
-            <span className="relative -translate-y-3.5 inline-block text-blue-200">
+            <span className="relative -translate-y-4 inline-block text-blue-200">
               .
             </span>
           </span>

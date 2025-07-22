@@ -13,7 +13,6 @@ class MessageService:
         self.files_repo = FilesRepo()
     
     async def save_message(self, tab_id: int, sender_id: uuid.UUID, content: str, file_data: Optional[str]) -> None:
-        print("file_data: ", file_data) # debug: 나중에 지울 것
         message = Message.of(tab_id, sender_id, content, file_data)
         res = self.message_repo.insert(message)
         return res["lastrowid"]
