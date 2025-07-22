@@ -15,6 +15,8 @@ class ConnectionManager:
         self._pubsub_client: Optional[str] = None
         self._pubsub_task: Optional[asyncio.Task] = None
         self._is_listening = False
+        self._pending_broadcasts = {}  # 브로드캐스트 배치 처리용
+        self._batch_task: Optional[asyncio.Task] = None
     
     async def _get_redis_client(self):
         """Redis 클라이언트 lazy 초기화"""
@@ -43,8 +45,8 @@ class ConnectionManager:
         
         self.activate_connections[socket_type][workspace_id][tab_id].append(websocket)
 
-        # Redis에 서버별 연결 정보 저장
-        await self._update_redis_connection_info(workspace_id, tab_id, 'connect')
+        # Redis 초기화 (한 번만)
+        await self._ensure_redis_initialized()
 
         if not self._is_listening:
             await self._start_redis_listener()
@@ -66,9 +68,6 @@ class ConnectionManager:
                 # 타입 내 워크스페이스가 모두 없어졌으면 타입 삭제
                 if not self.activate_connections[self.socket_type]:
                     del self.activate_connections[self.socket_type]
-                
-                # Redis에 서버별 연결 정보 업데이트
-                await self._update_redis_connection_info(workspace_id, tab_id, 'disconnect')
             
         except Exception as e:
             print(f"소켓 연결 해제 에러가 발생했습니다 :: {e}")
@@ -84,26 +83,62 @@ class ConnectionManager:
                 connections.remove(connection)
     
     async def broadcast(self, workspace_id: int, tab_id: int, message: str):
-        """로컬 브로드캐스트 + Redis를 통한 다른 서버 브로드캐스트"""
+        """최적화된 브로드캐스트: 로컬 즉시 전송 + Redis 배치 처리"""
         # 로컬 연결된 클라이언트들에게 즉시 전송
         await self.broadcast_local(workspace_id, tab_id, message)
         
-        # Redis를 통해 다른 서버들에게 알림
+        # Redis 브로드캐스트를 배치로 처리
+        await self._queue_redis_broadcast(workspace_id, tab_id, message)
+    
+    async def _ensure_redis_initialized(self):
+        """Redis 클라이언트 미리 초기화"""
+        if self._redis_client is None:
+            self._redis_client = await RedisManager.get_redis()
+        if self._pubsub_client is None:
+            self._pubsub_client = await RedisManager.get_pubsub_redis()
+    
+    async def _queue_redis_broadcast(self, workspace_id: int, tab_id: int, message: str):
+        """Redis 브로드캐스트를 큐에 추가하고 배치 처리"""
+        channel = f"type:{self.socket_type}:workspace:{workspace_id}:tab:{tab_id}"
+        
+        if channel not in self._pending_broadcasts:
+            self._pending_broadcasts[channel] = []
+        
+        self._pending_broadcasts[channel].append({
+            "message": message,
+            "sender_server": self.server_id,
+            "timestamp": asyncio.get_event_loop().time()
+        })
+        
+        # 배치 처리 태스크가 없으면 시작
+        if self._batch_task is None or self._batch_task.done():
+            self._batch_task = asyncio.create_task(self._process_batch_broadcasts())
+    
+    async def _process_batch_broadcasts(self):
+        """배치로 모인 브로드캐스트들을 처리"""
+        await asyncio.sleep(0.01)  # 10ms 대기로 배치 수집
+        
+        if not self._pending_broadcasts:
+            return
+            
         try:
             redis_client = await self._get_redis_client()
-            channel = f"type:{self.socket_type}:workspace:{workspace_id}:tab:{tab_id}"
-            redis_message = {
-                "message": message,
-                "sender_server": self.server_id,
-                "timestamp": asyncio.get_event_loop().time()
-            }
-            await redis_client.publish(channel, json.dumps(redis_message))
+            pipe = redis_client.pipeline()
+            
+            # 배치로 모든 메시지 publish
+            for channel, messages in self._pending_broadcasts.items():
+                for msg_data in messages:
+                    pipe.publish(channel, json.dumps(msg_data))
+            
+            await pipe.execute()
+            self._pending_broadcasts.clear()
+            
         except Exception as e:
-            print(f"Redis publish 에러: {e}")
-            # Redis 에러가 있어도 로컬 브로드캐스트는 성공했으므로 계속 진행
+            print(f"배치 Redis publish 에러: {e}")
+            self._pending_broadcasts.clear()
     
     async def _start_redis_listener(self):
-        """Redis Pub/Sub 리스너 시작"""
+        """Redis Pub/Sub 리스너 시작 (타입별 구독으로 최적화)"""
         if self._is_listening:
             return
             
@@ -115,13 +150,14 @@ class ConnectionManager:
             self._is_listening = False
     
     async def _redis_listener(self):
-        """Redis 메시지 수신 및 처리"""
+        """Redis 메시지 수신 및 처리 (타입별 구독)"""
         try:
             pubsub_client = await self._get_pubsub_client()
             pubsub = pubsub_client.pubsub()
 
-            # 모든 워크스페이스:탭 채널 구독
-            await pubsub.psubscribe("type:*:workspace:*:tab:*")
+            # 해당 타입의 채널만 구독 (더 효율적)
+            pattern = f"type:{self.socket_type}:workspace:*:tab:*"
+            await pubsub.psubscribe(pattern)
 
             async for message in pubsub.listen():
                 if message["type"] == "pmessage":
@@ -157,6 +193,13 @@ class ConnectionManager:
     
     async def cleanup(self):
         """리소스 정리"""
+        if self._batch_task:
+            self._batch_task.cancel()
+            try:
+                await self._batch_task
+            except asyncio.CancelledError:
+                pass
+        
         if self._pubsub_task:
             self._pubsub_task.cancel()
             try:
@@ -165,51 +208,3 @@ class ConnectionManager:
                 pass
         
         await RedisManager.close_connections()
-    
-    async def _update_redis_connection_info(self, workspace_id: int, tab_id: int, action: str):
-        """Redis에 서버별 연결 정보 업데이트"""
-        try:
-            redis_client = await self._get_redis_client()
-            key = f"type:{self.socket_type}:workspace:{workspace_id}:tab:{tab_id}"
-            
-            # 현재 서버의 연결 수 계산
-            current_connections = len(self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id, []))
-            
-            if current_connections > 0:
-                # 서버별 연결 수 저장 (Hash 사용)
-                await redis_client.hset(key, self.server_id, current_connections)
-                # TTL 설정 (1시간)
-                await redis_client.expire(key, 3600)
-            else:
-                # 연결이 없으면 해당 서버 정보 삭제
-                await redis_client.hdel(key, self.server_id)
-                
-        except Exception as e:
-            print(f"Redis 연결 정보 업데이트 에러: {e}")
-    
-    # async def get_total_connections(self, workspace_id: int, tab_id: int) -> int:
-    #     """특정 워크스페이스:탭의 전체 연결 수 조회"""
-    #     try:
-    #         redis_client = await self._get_redis_client()
-    #         key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
-            
-    #         # 모든 서버의 연결 수 합계
-    #         server_connections = await redis_client.hgetall(key)
-    #         total = sum(int(count) for count in server_connections.values())
-            
-    #         return total
-    #     except Exception as e:
-    #         print(f"Redis 연결 정보 조회 에러: {e}")
-    #         return 0
-    
-    # async def get_server_connections(self, workspace_id: int, tab_id: int) -> Dict[str, int]:
-    #     """특정 워크스페이스:탭의 서버별 연결 수 조회"""
-    #     try:
-    #         redis_client = await self._get_redis_client()
-    #         key = f"workspace:{workspace_id}:tab:{tab_id}:connections"
-            
-    #         server_connections = await redis_client.hgetall(key)
-    #         return {server_id: int(count) for server_id, count in server_connections.items()}
-    #     except Exception as e:
-    #         print(f"Redis 서버별 연결 정보 조회 에러: {e}")
-    #         return {}
