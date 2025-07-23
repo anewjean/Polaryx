@@ -75,52 +75,50 @@ export default function SearchAutocomplete() {
   };
 
   return (
-    <div className="relative flex items-center w-full">
+    <div className="relative flex justify-center items-center ">
       {/* 검색 모드 셀렉터 (사용자 찾기 / 메시지 찾기) */}
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="flex-none px-3 text-white justify-between bg-gray-700 rounded-r-none hover:bg-gray-600"
+            className="flex-none h-[30px] w-[130px] px-3 text-gray-400 justify-between bg-gray-700 rounded-l-[3px] rounded-r-none hover:bg-gray-600 border border-gray-500 border-r-0"
           >
             {searchMode === "user" ? (
-              <div className="inline-flex items-center space-x-2">
-                <User className="h-4 w-4" />
-                <span>User</span>
+              <div className="inline-flex items-center space-x-2">                
+                <User className="size-4" />
+                <span>Member</span>
               </div>
             ) : (
               <div className="inline-flex items-center space-x-2">
-                <MessageSquare className="h-4 w-4" />
+                <MessageSquare className="size-4" />
                 <span>Message</span>
               </div>
-            )}
+            )} 
             <ChevronsUpDown className="h-3 w-3 ml-[-3px]" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-32 py-[2px] text-white" align="start">
-          <div>
-            <Button
-              className="w-full justify-start text-sm bg-gray-700"
-              onClick={() => handleModeSelect("user")}
-            >
-              <User className="size-4" />
-              User
-            </Button>
-            <hr className="border-gray-500" />
-            <Button
-              className="w-full justify-start text-sm bg-gray-700"
-              onClick={() => handleModeSelect("tab")}
-              disabled={!tabId}
-            >
-              <MessageSquare className="size-4" />
-              Message
-            </Button>
-          </div>
+        <PopoverContent className="w-32 text-white" align="start" sideOffset={0}>          
+          <Button
+            className="w-full justify-start text-sm bg-gray-700 rounded-none hover:bg-gray-600"
+            onClick={() => handleModeSelect("user")}
+          >
+            <User className="size-4" />
+            Member
+          </Button>
+          <hr className="border-gray-500" />
+          <Button
+            className="w-full justify-start text-sm bg-gray-700 rounded-none hover:bg-gray-600"
+            onClick={() => handleModeSelect("tab")}
+            disabled={!tabId}
+          >
+            <MessageSquare className="size-4" />
+            Message
+          </Button>
         </PopoverContent>
       </Popover>
 
       {/* 검색창 */}
-      <div className="relative flex-1 min-w-0">
+      <div className="relative flex-1 max-w-[calc(100%-400px)]">
         <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
         <Input
           type="text"
@@ -128,7 +126,7 @@ export default function SearchAutocomplete() {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="pl-7 w-full bg-gray-700 text-white border-gray-600 rounded-l-none"
+          className="pl-7 w-full h-[30px] bg-gray-700 text-white rounded-l-none rounded-r-[3px] hover:bg-gray-600 border border-gray-500 focus:outline-none focus:ring-0"
         />
       </div>
 

@@ -27,7 +27,18 @@ self.addEventListener("push", function (event) {
     icon: '/logo.png',
     data: { url: data.url }
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+  // event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil((async () => {
+    const clientList = await clients.matchAll({ includeUncontrolled: true });
+    clientList.forEach(client => {
+      client.postMessage({
+        type: 'play-sound',
+        sound: data.sound || '/alarm.wav'
+      });
+    });
+    await self.registration.showNotification(title, options);
+  })());
+
 });
 self.addEventListener("notificationclick", function (event) {
   event.notification.close();
