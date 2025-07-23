@@ -156,7 +156,10 @@ async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, ta
                 "image": image
             }
 
-            await profile_connection.broadcast(workspace_id, tab_id, json.dumps(payload))
+            # 수정한 멤버가 속한 모든 탭 조회해서 다 뿌려주기.
+            tab_ids = tab_service.find_tabs(workspace_id, sender_id)
+            for tab_id in tab_ids:
+                await profile_connection.broadcast(workspace_id, tab_id[0], json.dumps(payload))
 
     except WebSocketDisconnect:
         print("********* Like websocket disconnected *********")

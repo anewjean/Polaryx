@@ -25,10 +25,23 @@ async def event_generator(request: Request, workspace_id: str):
                     print("연결 끊을게요")
                     break
 
-                data = await queue.get()
-                # payload['type'] 을 event 이름으로 쓰고, data: 에 JSON을 실어서 보냄
-                yield f"event: {data['type']}\n"
-                yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+                get_data_task = asyncio.create_task(queue.get())
+                sleep_task = asyncio.create_task(asyncio.sleep(60))
+
+                done, pending = await asyncio.wait(
+                    [get_data_task, sleep_task],
+                    return_when=asyncio.FIRST_COMPLETED,
+                )
+
+                if get_data_task in done: # sleep 태스크는 취소
+                    sleep_task.cancel()
+                    data = get_data_task.result()
+                    yield f"event: {data['type']}\n"
+                    yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+                else: # 60초 타임아웃
+                    get_data_task.cancel()
+                    yield "event: ping\n"
+                    yield "data: {}\n\n"
             except CancelledError:
                 print("클라이언트가 연결 끊음")
                 raise
