@@ -22,6 +22,7 @@ function convertToExtendedRecordMap(notionData: any): ExtendedRecordMap {
 export default function Page() {
   const params = useParams();
   const canvasId = params.canvasId as string;
+  const tabId = params.tabId as string;
   
   const [recordMap, setRecordMap] = useState<ExtendedRecordMap | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +33,8 @@ export default function Page() {
       try {             
         // 테스트 ID 사용 (Notion 공개 페이지 ID)
         // 실제 사용 시 canvasId 사용
-        const testId = "231bae03622f80679bfcfc9b96a0ff03";
+        // const testId = "231bae03622f80679bfcfc9b96a0ff03";
+        const testId = tabId === "11" ? "233bae03622f8038ba4ad4eed11aae93" : "231bae03622f80679bfcfc9b96a0ff03";
         const apiUrl = `https://notion-api.splitbee.io/v1/page/${testId}`;
         
         console.log("API 요청 URL:", apiUrl);
