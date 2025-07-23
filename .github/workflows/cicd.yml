@@ -93,35 +93,29 @@ jobs:
           target: /home/ec2-user
 
       - name: Deploy to Backend Server 1 via SSM
-        run: |
-          aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceIds,Values=${{ secrets.EC2_BACKEND_1_ID }}" \
-            --parameters commands='[
-              "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
-              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-              "docker compose -f docker-compose.yml pull",
-              "docker compose -f docker-compose.yml down",
-              "docker compose -f docker-compose.yml up -d",
-              "docker image prune -a -f"
-            ]' \
-            --region ${{ env.AWS_REGION }}
+        uses: peterkimzz/aws-ssm-send-command@master
+        id: ssm
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance-ids: ${{ secrets.EC2_BACKEND_1_ID }}
 
-      - name: Deploy to Backend Server 2 via SSM
-        run: |
-          aws ssm send-command \
-            --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceIds,Values=${{ secrets.EC2_BACKEND_2_ID }}" \
-            --parameters commands='[
-              "printf \"%s\n\" \"${{ secrets.PROD_ENV_FILE }}\" | base64 -d > /home/ec2-user/.env",
-              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-              "docker compose -f docker-compose.yml pull",
-              "docker compose -f docker-compose.yml down",
-              "docker compose -f docker-compose.yml up -d",
-              "docker image prune -a -f"
-            ]' \
-            --region ${{ env.AWS_REGION }}
+          working-directory: /root
+          command: docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d && docker image prune -a -f
 
+      - name: Deploy to Backend Server 1 via SSM
+        uses: peterkimzz/aws-ssm-send-command@master
+        id: ssm2
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance-ids: ${{ secrets.EC2_BACKEND_2_ID }}
+
+          working-directory: /root
+          command: docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d && docker image prune -a -f
+  
       - name: Deploy to Frontend Server
         uses: appleboy/ssh-action@master
         with:
