@@ -39,6 +39,7 @@ async def event_generator(request: Request, workspace_id: str):
                     yield f"event: {data['type']}\n"
                     yield f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
                 else: # 60초 타임아웃
+                    print("SSE ping")
                     get_data_task.cancel()
                     yield "event: ping\n"
                     yield "data: {}\n\n"
@@ -58,7 +59,13 @@ async def sse_notifications(request: Request, workspaceId: str):
     클라이언트는 ?workspaceId=xxx 쿼리로 워크스페이스 구분해서 연결함
     """
     generator = event_generator(request, workspaceId)
-    return StreamingResponse(generator, media_type="text/event-stream")
+    return StreamingResponse(generator, 
+        media_type="text/event-stream", 
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # for Nginx
+        })
 
 async def send_sse_notification(workspace_id: str, payload: dict):
     """
