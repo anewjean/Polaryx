@@ -82,6 +82,16 @@ jobs:
           docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$BE_ECR_REPOSITORY:latest
 
+      - name: Debug Secrets
+        run: |
+          echo "Backend 1 ID length: ${#EC2_BACKEND_1_ID}"
+          echo "Backend 2 ID length: ${#EC2_BACKEND_2_ID}"
+          echo "Backend 1 ID pattern: $EC2_BACKEND_1_ID"
+          echo "Backend 2 ID pattern: $EC2_BACKEND_2_ID"
+        env:
+          EC2_BACKEND_1_ID: ${{ secrets.EC2_BACKEND_1_ID }}
+          EC2_BACKEND_2_ID: ${{ secrets.EC2_BACKEND_2_ID }}
+
       - name: Copy frontend docker-compose to Frontend Server
         uses: appleboy/scp-action@master
         with:
