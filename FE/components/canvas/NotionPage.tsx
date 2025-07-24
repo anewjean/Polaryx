@@ -63,7 +63,7 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
             nextLink: Link,
             Header: () => null,
             Breadcrumbs: () => null,
-          }}
+          } as any}
         />
       </div>
     </div>
