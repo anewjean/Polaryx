@@ -11,6 +11,7 @@ import { CircleCheck, Ban } from "lucide-react";
 import { Editor } from "@tiptap/react";
 import { useSaveMessagesStore } from "@/store/saveMessagesStore";
 import { useMessageStore } from "@/store/messageStore";
+import "./styles.scss";
 
 // props 타입 정의
 interface SaveMessagesProps {
