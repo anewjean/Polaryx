@@ -82,9 +82,14 @@ interface MessageStore {
   clearInvitedTab: (tabId: number) => void;
 
   // EmojiGroup: 이벤트가 발생한 이모지를 배열로 관리
-  pendingEmojiUpdates: PendingEmojiUpdate[];
+  pendingEmojiUpdates: PendingEmojiUpdate[];  
   addPendingEmojiUpdate: (update: PendingEmojiUpdate) => void;
   clearPendingEmojiUpdates: () => void;
+
+  // 서버 응답을 기다리는 큐
+  inFlightEmojiUpdates: PendingEmojiUpdate[];
+  addInFlightEmojiUpdates: (updates: PendingEmojiUpdate[]) => void;
+  clearInFlightEmojiUpdates: () => void;
 
   // 웹소켓에서 브로드캐스트된 emoji count를 설정하는 함수
   updateEmojiCounts: (msgId: number, emojiData: EmojiCounts) => void;
@@ -198,34 +203,78 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
 
-  // 이벤트가 발생한 이모지를 배열로 관리 (새로운 방식)
+  // 이벤트가 발생한 이모지를 배열로 관리
   pendingEmojiUpdates: [],
+  inFlightEmojiUpdates: [],
   addPendingEmojiUpdate: (update) =>
-    set((state) => ({
-      pendingEmojiUpdates: [...state.pendingEmojiUpdates, update],
-    })),
+    set((state) => {
+      // 동일 이모지에 대한 중복 업데이트는 마지막 동작만 남깁니다
+      const existingIndex = state.pendingEmojiUpdates.findIndex(
+        (u) => u.msgId === update.msgId && u.emojiType === update.emojiType,
+      );
+
+      if (existingIndex > -1) {
+        const newUpdates = [...state.pendingEmojiUpdates];
+        newUpdates[existingIndex] = update;
+        return { pendingEmojiUpdates: newUpdates };
+      }
+
+      return { pendingEmojiUpdates: [...state.pendingEmojiUpdates, update] };
+    }),
   clearPendingEmojiUpdates: () => set({ pendingEmojiUpdates: [] }),
+  addInFlightEmojiUpdates: (updates) =>
+    set((state) => ({
+      inFlightEmojiUpdates: [...state.inFlightEmojiUpdates, ...updates],
+    })),
+  clearInFlightEmojiUpdates: () => set({ inFlightEmojiUpdates: [] }),
+  removeFirstInFlightUpdate: (msgId: number) =>
+    set((state) => {
+      const idx = state.inFlightEmojiUpdates.findIndex(
+        (u) => u.msgId === msgId,
+      );
+      if (idx === -1) return {} as any;
+      const newUpdates = [...state.inFlightEmojiUpdates];
+      newUpdates.splice(idx, 1);
+      return { inFlightEmojiUpdates: newUpdates };
+    }),
 
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
 
   // 서버로부터 받은 최종 이모지 카운트로 업데이트
   updateEmojiCounts: (msgId, emojiData) =>
-    set((state) => ({
-      messages: state.messages.map((msg) => {
-        if (msg.msgId === msgId) {
-          return {
-            ...msg,
-            checkCnt: emojiData.checkCnt,
-            prayCnt: emojiData.prayCnt,
-            sparkleCnt: emojiData.sparkleCnt,
-            clapCnt: emojiData.clapCnt,
-            likeCnt: emojiData.likeCnt,
-          };
-        }
-        return msg;
-      }),
-    })),
+    set((state) => {
+      // 전달받은 업데이트가 처리한 in-flight 작업을 제거합니다.
+      const idx = state.inFlightEmojiUpdates.findIndex(
+        (u) => u.msgId === msgId,
+      );
+      const remainingInFlight = [...state.inFlightEmojiUpdates];
+      if (idx > -1) {
+        remainingInFlight.splice(idx, 1);
+      }
+
+      // 해당 메시지에 추가로 대기 중인 작업이 있다면 서버 값을 적용하지 않고 대기합니다.
+      const hasMorePending = remainingInFlight.some((u) => u.msgId === msgId);
+      if (hasMorePending) {
+        return { inFlightEmojiUpdates: remainingInFlight };
+      }
+
+      return {
+        messages: state.messages.map((msg) =>
+          msg.msgId === msgId
+            ? {
+                ...msg,
+                checkCnt: emojiData.checkCnt,
+                prayCnt: emojiData.prayCnt,
+                sparkleCnt: emojiData.sparkleCnt,
+                clapCnt: emojiData.clapCnt,
+                likeCnt: emojiData.likeCnt,
+              }
+            : msg,
+        ),
+        inFlightEmojiUpdates: remainingInFlight,
+      };
+    }),
 
   // 이모지 버튼 선택 시 동작할 함수
   toggleEmoji: () => {

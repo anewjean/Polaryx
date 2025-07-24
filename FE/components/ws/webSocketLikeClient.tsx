@@ -20,7 +20,7 @@ export function WebSocketLikeClient({
   tabId,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  const { sendEmojiFlag, setSendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, updateEmojiCounts } = useMessageStore();
+  const { sendEmojiFlag, setSendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, addInFlightEmojiUpdates, updateEmojiCounts } = useMessageStore();
 
   // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
@@ -94,11 +94,14 @@ export function WebSocketLikeClient({
         socketRef.current?.send(JSON.stringify(payload));
       });
 
+      // 서버 응답을 기다리는 큐로 이동
+      addInFlightEmojiUpdates(pendingEmojiUpdates);
+      
       // 작업 큐를 비우고 플래그를 리셋합니다.
       clearPendingEmojiUpdates();
       setSendEmojiFlag(false);
     }
-  }, [sendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, setSendEmojiFlag]); // 의존성 배열을 업데이트합니다.
+  }, [sendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, addInFlightEmojiUpdates, setSendEmojiFlag]); // 의존성 배열을 업데이트합니다.
 
   return null;
 }
