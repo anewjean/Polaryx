@@ -4,6 +4,7 @@ import { useSearchParams, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { searchUsers } from "@/apis/userApi";
 import { Profile } from "@/apis/profileApi";
+import { useProfileStore } from "@/store/profileStore";
 
 export default function WorkspaceSearchPage() {
   const params = useParams();
@@ -11,6 +12,7 @@ export default function WorkspaceSearchPage() {
   const searchParams = useSearchParams();
   const keyword = searchParams.get("q") || "";
   const [users, setUsers] = useState<Profile[]>([]);
+  const openProfile = useProfileStore((s) => s.openWithId);
 
   useEffect(() => {
     if (!keyword) return;
@@ -23,7 +25,11 @@ export default function WorkspaceSearchPage() {
       {keyword ? (
         <ul className="space-y-2">
           {users.map((u) => (
-            <li key={u.user_id} className="flex items-center gap-2">
+            <li
+              key={u.user_id}
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => openProfile(u.user_id)}
+            >
               <img
                 src={u.image || "/user_default.png"}
                 className="w-12 h-12 rounded-md bg-gray-400 object-cover"
