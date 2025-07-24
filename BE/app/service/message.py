@@ -23,7 +23,7 @@ class MessageService:
             self.message_repo.plus_emoji(emoji)
         else:
             self.message_repo.minus_emoji(emoji)
-        self.message_repo.update_emoji_cnt(emoji)
+        self.message_repo.update_emoji_cnt(emoji, plus)
         return self.get_emoji_counts(msg_id)
 
     def get_emoji_counts(self, msg_id: int):
