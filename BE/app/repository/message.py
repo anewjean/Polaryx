@@ -194,6 +194,17 @@ SET
 WHERE id = %(msg_id)s;
 """
 
+get_emoji_counts = """
+SELECT
+    check_cnt,
+    clap_cnt,
+    like_cnt,
+    pray_cnt,
+    sparkle_cnt
+FROM messages
+WHERE id = %(msg_id)s;
+"""
+
 update_message = """
 UPDATE messages
 SET 
@@ -535,4 +546,11 @@ class QueryRepo(AbstractQueryRepo):
             "pattern": f"%{keyword}%",
         }
         return self.db.execute(search_messages_by_keyword, param)
+
+    def get_emoji_counts(self, msg_id: int):
+        params = {"msg_id": msg_id}
+        return self.db.execute(get_emoji_counts, params)
+
+
+
         
