@@ -176,6 +176,42 @@ CREATE TABLE `sub_messages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `notifications` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    receiver_id BINARY(16) NOT NULL,
+    sender_id BINARY(16) NOT NULL,
+    tab_id BIGINT NOT NULL,
+    message_id BIGINT NOT NULL,
+    type INTEGER NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read_at TIMESTAMP NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE IF NOT EXISTS `push_subscriptions` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    endpoint TEXT NOT NULL,
+    p256dh TEXT NOT NULL,
+    auth TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    UNIQUE KEY uq_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE IF NOT EXISTS `save_messages` (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BINARY(16) NOT NULL,
+    workspace_id INTEGER NOT NULL,
+    content MEDIUMTEXT NOT NULL,  
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+    UNIQUE KEY uq_save_message (user_id, workspace_id, message_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 CREATE TABLE `tab_members` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `workspace_id` int(11) NOT NULL,

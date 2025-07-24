@@ -20,19 +20,26 @@ const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string | undefine
 const BASE = process.env.NEXT_PUBLIC_BASE;
 
 
-  export function usePush() {
-    useEffect(() => {
-      if (!PUBLIC_KEY || !BASE) return;
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        return;
+export function usePush() {
+  useEffect(() => {
+    if (!PUBLIC_KEY || !BASE) return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      return;
+    }
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'play-sound' && event.data.sound) {
+        const audio = new Audio(event.data.sound);
+        audio.play().catch(() => {});
       }
-      Notification.requestPermission().then(async perm => {
-        if (perm !== 'granted') return;
-        const reg = await navigator.serviceWorker.register('/sw.js');
-        const sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
-        });
+    };
+    navigator.serviceWorker.addEventListener('message', handleMessage);
+    Notification.requestPermission().then(async perm => {
+      if (perm !== 'granted') return;
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY),
+      });
         const token = localStorage.getItem('access_token');
         if (!token) return;        // token이 없으면 중단
 
@@ -43,6 +50,8 @@ const BASE = process.env.NEXT_PUBLIC_BASE;
           body: JSON.stringify({ user_id, subscription: sub }),
         });
       });
-    }, []);                        // 한 번만 실행
-  }
-
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', handleMessage);
+    };
+  }, []);                        // 한 번만 실행
+}

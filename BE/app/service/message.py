@@ -66,7 +66,6 @@ class MessageService:
         
     
     
-    
     # 검색
-    async def search_messages(self, tab_id: int, keyword: str) -> List[Message]:
-        return self.message_repo.search_messages(tab_id, keyword)
+    async def search_messages(self, tab_id: int, keyword: str, user_id: str) -> List[Message]:
+        return self.message_repo.search_messages(tab_id, keyword, user_id)
