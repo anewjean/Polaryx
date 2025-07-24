@@ -93,7 +93,7 @@ export default function SearchAutocomplete() {
                 <MessageSquare className="size-4" />
                 <span>Message</span>
               </div>
-            )}
+            )} 
             <ChevronsUpDown className="h-3 w-3 ml-[-3px]" />
           </Button>
         </PopoverTrigger>
