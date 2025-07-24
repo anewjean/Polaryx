@@ -103,7 +103,13 @@ async def delete_message(
     
 #검색
 @router.get("/workspaces/{workspace_id}/tabs/{tab_id}/messages/search", response_model=MessagesResponse)
-async def search_messages(workspace_id: int, tab_id: int, q: str = Query(...)) -> MessagesResponse:
-    rows = await message_service.search_messages(tab_id, q)
+async def search_messages(
+    workspace_id: int,
+    tab_id: int,
+    q: str = Query(...),
+    token_data: dict = Depends(verify_token_and_get_token_data)
+) -> MessagesResponse:
+    current_user_id = token_data["user_id"]
+    rows = await message_service.search_messages(tab_id, q, current_user_id)
     messages = [MessageSchema.from_row(row) for row in rows]
     return MessagesResponse(messages=messages)

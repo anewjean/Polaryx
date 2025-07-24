@@ -64,7 +64,7 @@ class QueryRepo(AbstractQueryRepo):
             "link_id": int(link_id),
             "deleted_at": datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M:%S")
         }
-        print("\n\n\delete_link, params: ", params)
+        print("\n\ndelete_link, params: ", params)
         res = self.db.execute(delete_link_at_tab, params)
         print("insert_link, res: ", res["rowcount"])
         return res["rowcount"] == 1 
