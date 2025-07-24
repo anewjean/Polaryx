@@ -47,6 +47,9 @@ interface ChatProfileProps {
   clapCnt: number;
   likeCnt: number;
   myToggle: Record<string, boolean>;
+  isEditMode: boolean;
+  onStartEdit: () => void;
+  onEndEdit: () => void;
 }
 
 function isImageFile(url: string) {
@@ -70,6 +73,9 @@ export function ChatProfile({
   clapCnt,
   likeCnt,
   myToggle,
+  isEditMode,
+  onStartEdit,
+  onEndEdit,
 }: ChatProfileProps) {
   // 프로필
   const openProfile = useProfileStore((s) => s.openWithId);
@@ -78,7 +84,7 @@ export function ChatProfile({
   const safeHTML = DOMPurify.sanitize(content, {
     FORBID_TAGS: ["img"], // 👈 img 태그 완전 제거
   });
-  const [isEditMode, setIsEditMode] = useState(false);
+  // const [isEditMode, setIsEditMode] = useState(false); // 부모로부터 받으므로 이 줄은 삭제합니다.
   const [editContent, setEditContent] = useState(content);
   const params = useParams();
   const workspaceId = params.workspaceId as string;
@@ -88,7 +94,7 @@ export function ChatProfile({
   // 메시지 저장 핸들러
   const handleSave = async (newContent: string) => {
     setEditContent(newContent);
-    setIsEditMode(false);
+    onEndEdit(); // props로 받은 함수를 호출하여 수정 모드를 종료합니다.
     try {
       await updateMessageApi(workspaceId, tabId, msgId, newContent); // 서버에 PATCH
       setEditMsgFlag(msgId, newContent); // broadcast
@@ -132,7 +138,7 @@ export function ChatProfile({
 
   // 편집 취소 핸들러
   const handleCancel = () => {
-    setIsEditMode(false);
+    onEndEdit(); // props로 받은 함수를 호출하여 수정 모드를 종료합니다.
   };
 
   // 이모지 메뉴 열기
@@ -274,7 +280,7 @@ export function ChatProfile({
             userId={senderId}
             content={editContent}
             onEmoji={openEmojiGroup}
-            onEdit={() => setIsEditMode(true)}
+            onEdit={onStartEdit}
             onDelete={openDeleteDialog}
             onClose={closeMenu}
           />

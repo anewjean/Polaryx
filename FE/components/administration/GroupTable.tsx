@@ -17,7 +17,7 @@ export function GroupTable({ columns, onGroupsLoaded }: GroupTableProps = {}) {
   const workspaceId = params.workspaceId as string;
 
   // Zustand 스토어에서 그룹 데이터 가져오기
-  const { groups, fetchGroups } = useGroupStore();
+  const { groups, fetchGroups, refreshTrigger } = useGroupStore();
 
   // 로컬 상태 - 로딩 상태만 관리
   const [isLoading, setIsLoading] = useState(true);
@@ -35,8 +35,9 @@ export function GroupTable({ columns, onGroupsLoaded }: GroupTableProps = {}) {
 
   // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
+    console.log("group table 리렌더링")
     loadGroups();
-  }, [loadGroups]);
+  }, [refreshTrigger, loadGroups]);
   
   // 그룹 데이터가 변경되면 콜백 호출
   useEffect(() => {
