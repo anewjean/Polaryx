@@ -51,6 +51,9 @@ export function MostLikedMessage() {
                                     sparkleCnt={msg.sparkleCnt || 0}
                                     likeCnt={msg.likeCnt || 0}
                                     myToggle={msg.myToggle || { check: false, clap: false, pray: false, sparkle: false, like: false }}
+                                    isEditMode={false}
+                                    onStartEdit={() => (0)}
+                                    onEndEdit={() => (0)}
                                     className="hover:bg-transparent"
                                 />
                             </div>
