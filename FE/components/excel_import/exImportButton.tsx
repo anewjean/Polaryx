@@ -7,11 +7,13 @@ import { createUsers } from "@/apis/excelApi";
 import { toast } from "sonner";
 import { CircleCheck, Ban, FileSpreadsheet, Loader2 } from "lucide-react";
 import { useUserStore } from "@/store/userStore";
+import { useGroupStore } from "@/store/groupStore";
 
 export function ExUpload() {
   const workspaceId = usePathname().split("/")[2];
   const inputRef = useRef<HTMLInputElement>(null);
   const { fetchUsers } = useUserStore();
+  const { triggerRefresh } = useGroupStore();
 
   // 로딩 상태 관리
   const [isLoading, setIsLoading] = useState(false);
@@ -86,6 +88,8 @@ export function ExUpload() {
 
       const result = await createUsers(memberList, uniqueGroups, workspaceId);
       await fetchUsers(workspaceId, true);
+      console.log("엑셀 등록 그룹")
+      triggerRefresh(workspaceId);
 
       if (result.success_count === 0) {
         toast.error("등록에 실패했습니다", {

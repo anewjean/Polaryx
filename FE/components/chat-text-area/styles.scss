@@ -164,3 +164,11 @@
     padding: 10px 15px;
   }
 }
+
+.message-content img {
+  max-width: 50px;
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}

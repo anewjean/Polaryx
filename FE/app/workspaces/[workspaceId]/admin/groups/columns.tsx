@@ -103,9 +103,6 @@ export const createGroupColumns = (
     header: "Members",
     size: 4.5,
     cell: ({ row }) => {
-      // 디버깅용 로그 추가
-      console.log("Row data:", row.original);
-
       // user_names 필드에 직접 접근
       const user_names = (row.original.user_names as string[]) || [];
 

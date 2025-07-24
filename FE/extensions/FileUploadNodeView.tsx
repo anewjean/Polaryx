@@ -20,7 +20,11 @@ export const FileDownloadComponent = ({ node }: { node: any }) => {
           className="relative"
           style={{ marginTop: "22px", marginLeft: "2px" }}
         >
-          <img src={fileIcon} alt="file icon" className="w-10 h-10" />
+          <img
+            src={fileIcon}
+            alt="file icon"
+            className="w-10 h-10 rounded-lg"
+          />
         </div>
 
         {/* 파일명과 확장자 (세로 정렬) */}

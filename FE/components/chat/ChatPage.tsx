@@ -32,11 +32,12 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
-
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetching = useRef(false);
   const prevMessageLengthRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isBottom, setIsBottom] = useState(false);
+  const [editingMsgId, setEditingMsgId] = useState<number | null>(null);
   const lastMsgId = useMemo(() => {
     return messages.length > 0 ? messages[messages.length - 1].msgId : null;
   }, [messages]);
@@ -70,15 +71,27 @@ export function ChatPage({
         setMessages([]);
       }
       setIsLoading(false);
+      setIsBottom(true);
     })();
   }, [workspaceId, tabId, setMessages]);
 
-  // 새로운 메세지가 추가되었을 때,
+  // 스크롤이 최하단인 경우 메세지 이모지 넣을때,
   useEffect(() => {
-    if (!isLoading && containerRef.current) {
+    if (isBottom && containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, [isLoading]);
+  }, [...messages.slice(-12)]);
+
+  useEffect(() => {
+    if (isBottom && containerRef.current) {
+      requestAnimationFrame(() => {
+        if (containerRef.current) {
+          containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+      });
+      console.log("containerRef.current.scrollTop", containerRef.current.scrollTop)
+    }
+  }, [editingMsgId]);
 
   useEffect(() => {
     // 최초 로딩 중에는 이 훅이 동작하지 않도록 방지
@@ -96,6 +109,10 @@ export function ChatPage({
   // 스크롤을 올려서 과거 메세지들을 불러와
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
+
+    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 30) setIsBottom(true);
+    else setIsBottom(false);
+
     if (el.scrollTop < 30 && !isFetching.current && messages.length > 0) {
       isFetching.current = true;
       const oldestId = messages[0]?.msgId;
@@ -217,6 +234,9 @@ export function ChatPage({
                 clapCnt={msg.clapCnt}
                 likeCnt={msg.likeCnt}
                 myToggle={msg.myToggle}
+                isEditMode={editingMsgId === msg.msgId}
+                onStartEdit={() => setEditingMsgId(msg.msgId ? msg.msgId:0)}
+                onEndEdit={() => setEditingMsgId(null)}
               />
             </React.Fragment>
           );
