@@ -3,13 +3,14 @@ USE polaryx;
 
 CREATE TABLE `canvases` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `tab_id` bigint(20) NOT NULL,
-  `content` text NOT NULL,
   `workspace_id` int(11) NOT NULL,
+  `tab_id` bigint(20) NOT NULL,
+  `page_id` varchar(256) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_canvas` (`workspace_id`, `tab_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `emoji` (
