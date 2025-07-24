@@ -29,19 +29,29 @@ export function SSEListener() {
     es.onopen = () => console.log("SSE: 연결");
 
     // SSE 오류
-    es.onerror = () => es.close();
+    es.onerror = () => {
+      console.log("SSE: 연결 끊김");
+      es.close();
+    } 
 
     // 새로운 메시지 도착함 (new_message 타입)
     es.addEventListener("new_message", (e: MessageEvent) => {
       const p: SSEPayload = JSON.parse(e.data);
+      console.log("SSE: 새 메세지 도착");
       if (p.tab_id.toString() !== tabId) {
         incUnread(p.tab_id);
       }
     });
 
+    // SSE 유지를 위한 핑
+    es.addEventListener("ping", () => {
+      console.log("SSE: 유지 ping");
+    });
+
     // 새로운 탭에 초대됨
     es.addEventListener("invited_to_tab", (e: MessageEvent) => {
       const p: SSEPayload = JSON.parse(e.data);
+      console.log("SSE: 새로운 탭 초대");
       addInvitedTab(p.tab_id);
       refreshTabs(); // 사이드바 갱신
     });

@@ -13,7 +13,6 @@ export const getFileExtension = (fileName: string): string => {
 
 export const getFileIcon = (fileName: string): string => {
   const ext = fileName.split(".").pop()?.toLowerCase() || "";
-  console.log(ext);
 
   switch (ext) {
     case "pdf":
