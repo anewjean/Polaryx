@@ -316,7 +316,6 @@ WHERE id > 0;
 """
 
 #검색
-#검색
 search_messages_by_keyword = """
 SELECT
     m.id,

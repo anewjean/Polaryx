@@ -62,4 +62,3 @@ class PushService:
             except WebPushException as e:
                 print("Web push error:", repr(e))
         await asyncio.gather(*tasks, return_exceptions=True)
-        
