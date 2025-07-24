@@ -417,7 +417,7 @@ class QueryRepo(AbstractQueryRepo):
             elif emoji.emoji_type == "clap":
                 sql = insert_emoji_clap
             elif emoji.emoji_type == "sparkle":
-                sql = insert_emoji_clap
+                sql = insert_emoji_sparkle
             elif emoji.emoji_type == "pray":
                 sql = insert_emoji_pray
             else:
@@ -461,7 +461,7 @@ class QueryRepo(AbstractQueryRepo):
         self.db.execute(sql, params)
         target = self.db.execute(find_msg_emoji, params)
         
-        if target[0][1] and target[0][2] and target[0][3]:
+        if target and not any(target[0][1:6]):
             self.db.execute(delete_emoji, params)
         return
     
