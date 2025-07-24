@@ -138,7 +138,7 @@ export default function SaveMessages({
                         <div className="mt-2">
                           <FileDownload
                             fileUrl={fileDownloadUrl}
-                            extensionClassName="absolute left-14.5 top-7 text-xs text-gray-500"
+                            iconClassName="rounded-lg object-contain !w-[40px] !h-[40px]"
                             downloadEvent={() => {}}
                           />
                         </div>

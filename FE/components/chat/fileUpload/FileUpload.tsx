@@ -15,7 +15,7 @@ interface FileDownloadProps {
 export function FileDownload({
   fileUrl,
   buttonClassName = "w-60 h-16 px-2 py-0 relative flex items-center justify-start",
-  iconClassName = "w-10 h-10",
+  iconClassName = "w-10 h-10 rounded-lg",
   extensionClassName = "absolute left-12 top-6 text-xs text-gray-500",
   fileNameClassName = "text-sm -translate-y-1 overflow-hidden whitespace-nowrap pb-3 text-ellipsis max-w-[160px]",
   downloadEvent,
