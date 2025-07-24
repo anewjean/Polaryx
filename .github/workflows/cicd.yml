@@ -92,16 +92,31 @@ jobs:
             docker-compose.frontend.yml
           target: /home/ec2-user
 
+      - name: Validate EC2 Instance IDs
+        run: |
+          echo "Validating instance IDs format..."
+          if [[ "${{ secrets.EC2_BACKEND_1_ID }}" =~ ^i-[0-9a-f]{8}$|^i-[0-9a-f]{17}$ ]]; then
+            echo "✅ Backend 1 ID format is valid"
+          else
+            echo "❌ Backend 1 ID format is invalid: ${{ secrets.EC2_BACKEND_1_ID }}"
+            exit 1
+          fi
+          
+          if [[ "${{ secrets.EC2_BACKEND_2_ID }}" =~ ^i-[0-9a-f]{8}$|^i-[0-9a-f]{17}$ ]]; then
+            echo "✅ Backend 2 ID format is valid"
+          else
+            echo "❌ Backend 2 ID format is invalid: ${{ secrets.EC2_BACKEND_2_ID }}"
+            exit 1
+          fi
+
       - name: Deploy to Backend Server 1 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
         id: ssm1
-        env:
-          EC2_BACKEND_1_ID: ${{ secrets.EC2_BACKEND_1_ID }}
         with:
           aws-region: ${{ env.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: ${{ env.EC2_BACKEND_1_ID }}
+          instance-ids: ${{ secrets.EC2_BACKEND_1_ID }}
           working-directory: /root
           command: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
@@ -110,13 +125,11 @@ jobs:
       - name: Deploy to Backend Server 2 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
         id: ssm2
-        env:
-          EC2_BACKEND_2_ID: ${{ secrets.EC2_BACKEND_2_ID }}
         with:
           aws-region: ${{ env.AWS_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          instance-ids: ${{ env.EC2_BACKEND_2_ID }}
+          instance-ids: ${{ secrets.EC2_BACKEND_2_ID }}
           working-directory: /root
           command: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
