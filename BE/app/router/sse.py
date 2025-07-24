@@ -11,9 +11,6 @@ router = APIRouter()
 subscribers: Dict[str, Set[asyncio.Queue]] = {}
 
 async def event_generator(request: Request, workspace_id: str):
-    """
-    클라이언트가 연결할 때 각각 호출됨
-    """
     queue = asyncio.Queue()
     subscribers.setdefault(workspace_id, set()).add(queue)
 
@@ -42,7 +39,7 @@ async def event_generator(request: Request, workspace_id: str):
                     print("SSE ping")
                     get_data_task.cancel()
                     yield "event: ping\n"
-                    yield "data: {}\n\n"
+                    yield "data: p\n\n"
             except CancelledError:
                 print("클라이언트가 연결 끊음")
                 raise
