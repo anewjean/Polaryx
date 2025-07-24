@@ -32,17 +32,19 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
+
   const containerRef = useRef<HTMLDivElement>(null);
-  // 메시지 로딩 중인지 여부를 추적하는 ref
+  
   const isFetching = useRef(false);
-  // 이전 메시지 길이를 저장하는 ref (스크롤 위치 조정용)
-  const prevMessageLengthRef = useRef(0);
+
+  const [editingMsgId, setEditingMsgId] = useState<number | null>(null);
+
   // 로딩 상태 관리
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isBottom, setIsBottom] = useState(false);  
   
-  // 가장 최근 메시지의 ID를 메모이제이션
-  const [isBottom, setIsBottom] = useState(false);
-  const [editingMsgId, setEditingMsgId] = useState<number | null>(null);
+  // 가장 최근 메시지의 ID를 메모이제이션  
   const lastMsgId = useMemo(() => {
     return messages.length > 0 ? messages[messages.length - 1].msgId : null;
   }, [messages]);
