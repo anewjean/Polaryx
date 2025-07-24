@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Mail } from "lucide-react";
 import { SquarePen } from "lucide-react";
-import { CardModal } from "@/components/modal/CardModal";
+import { DialogModal } from "@/components/modal/DialogModal";
 import { Input } from "@/components/ui/input";
 import { useProfileStore } from "@/store/profileStore";
 import { getProfile, patchProfile, Profile } from "@/apis/profileApi";
@@ -31,7 +31,7 @@ export default function ProfilePage() {
   const myUserId = useMyUserStore((s) => s.userId);
 
   // store에서 targetId 가져오기
-  const { isOpen, userId: bufferTargetId } = useProfileStore();
+  const { isOpen, userId: bufferTargetId, profile, setProfile } = useProfileStore();
   const { uploadToS3 } = useProfileImageUpload();
   const editProfile = useMessageStore((s) => s.editProfile);
 
@@ -40,9 +40,6 @@ export default function ProfilePage() {
 
   // 프로필 편집 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 프로필 데이터 상태 관리
-  const [profile, setProfile] = useState<Profile | null>(null);
 
   // 프로필 편집 폼 데이터 상태 관리
   const [form, setForm] = useState<{
@@ -84,7 +81,7 @@ export default function ProfilePage() {
         setForm({
           nickname: profile.nickname,
           github: profile.github ?? "",
-          blog: profile.blog ?? "",          
+          blog: profile.blog ?? "",
         });
       } catch (error) {
         console.error("프로필 조회 실패:", error);
@@ -92,8 +89,27 @@ export default function ProfilePage() {
     })();
   }, [bufferTargetId, isModalOpen]);
 
+  // 프로필 변경시 바로 반영
+  useEffect(() => {
+    (async () => {
+      if (bufferTargetId === null || profile === null) {
+        return;
+      }
+      try {
+        setForm({
+          nickname: profile.nickname,
+          github: profile?.github ?? "",
+          blog: profile?.blog ?? "",
+        });
+      } catch (error) {
+        console.error("프로필 조회 실패:", error);
+      }
+    })();
+  }, [profile]);
+
   // 프로필 수정
-  const saveChange = async () => {
+  const saveChange = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!profile) return;
     setSaving(true);
     try {
@@ -119,7 +135,7 @@ export default function ProfilePage() {
       const updatedProfile = await patchProfile(
         workspaceId,
         myUserId!,
-        payload,
+        payload
       );
 
       setProfile(updatedProfile);
@@ -164,7 +180,7 @@ export default function ProfilePage() {
   return (
     <div
       className="flex flex-col h-full w-full gap-0 pt-4 bg-background text-foreground"
-      style={{ flexBasis: "100%" }} 
+      style={{ flexBasis: "100%" }}
     >
       <div className="flex flex-col gap-3 pb-2 border-b border-gray-200">
         {/* 헤더 (프로필과 닫기 버튼) */}
@@ -211,7 +227,7 @@ export default function ProfilePage() {
             <span className="truncate">Direct Message</span>
           </Button>
           {myUserId == bufferTargetId && (
-            <CardModal
+            <DialogModal
               trigger={
                 <Button
                   variant="outline"
@@ -226,15 +242,7 @@ export default function ProfilePage() {
               open={isModalOpen}
               onOpenChange={setIsModalOpen}
             >
-              {/* CardModal 내용: 프로필 편집 폼 */}              
-              <form
-                className="flex flex-col gap-5"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  saveChange();
-                }}
-              >
+              <form className="flex flex-col gap-5" onSubmit={saveChange}>
                 <div className="flex flex-row gap-5 overflow-y-auto scrollbar-thin">
                   {/* 프로필 이미지 */}
                   <div className="flex flex-col justify-between h-full w-[235px] gap-2">
@@ -313,12 +321,14 @@ export default function ProfilePage() {
                     <Input
                       type="text"
                       value={form.blog}
-                      onChange={(e) => setForm({ ...form, blog: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, blog: e.target.value })
+                      }
                       className="w-full border rounded px-2 py-1 font-normal"
                     />
                   </label>
-                </div>             
-                <CardFooter className="flex sticky bottom-0 justify-end p-0">
+                </div>
+                <div className="flex justify-end p-0 pt-4">
                   <Button
                     type="submit"
                     variant="default"
@@ -327,13 +337,13 @@ export default function ProfilePage() {
                   >
                     {saving ? "Saving..." : "Save Changes"}
                   </Button>
-                </CardFooter>  
-              </form>            
-            </CardModal>
+                </div>
+              </form>
+            </DialogModal>
           )}
-          </div>
         </div>
-      <div className="flex flex-col gap-4 py-3 overflow-y-auto scrollbar-thin">        
+      </div>
+      <div className="flex flex-col gap-4 py-3 overflow-y-auto scrollbar-thin">
         {/* 이메일 */}
         <div className="flex flex-col min-h-[48px] w-full min-w-0 justify-start gap-1 px-4">
           <span className="flex-1 min-w-0 text-md font-bold text-gray-500 truncate">
