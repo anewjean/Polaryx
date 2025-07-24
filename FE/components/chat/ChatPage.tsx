@@ -37,6 +37,7 @@ export function ChatPage({
   const prevMessageLengthRef = useRef(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isBottom, setIsBottom] = useState(false);
+  const [editingMsgId, setEditingMsgId] = useState<number | null>(null);
   const lastMsgId = useMemo(() => {
     return messages.length > 0 ? messages[messages.length - 1].msgId : null;
   }, [messages]);
@@ -82,6 +83,17 @@ export function ChatPage({
   }, [...messages.slice(-12)]);
 
   useEffect(() => {
+    if (isBottom && containerRef.current) {
+      requestAnimationFrame(() => {
+        if (containerRef.current) {
+          containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+      });
+      console.log("containerRef.current.scrollTop", containerRef.current.scrollTop)
+    }
+  }, [editingMsgId]);
+
+  useEffect(() => {
     // 최초 로딩 중에는 이 훅이 동작하지 않도록 방지
     if (isLoading) return;
 
@@ -98,7 +110,7 @@ export function ChatPage({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     const el = event.currentTarget;
 
-    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 10) setIsBottom(true);
+    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 30) setIsBottom(true);
     else setIsBottom(false);
 
     if (el.scrollTop < 30 && !isFetching.current && messages.length > 0) {
@@ -222,6 +234,9 @@ export function ChatPage({
                 clapCnt={msg.clapCnt}
                 likeCnt={msg.likeCnt}
                 myToggle={msg.myToggle}
+                isEditMode={editingMsgId === msg.msgId}
+                onStartEdit={() => setEditingMsgId(msg.msgId ? msg.msgId:0)}
+                onEndEdit={() => setEditingMsgId(null)}
               />
             </React.Fragment>
           );
