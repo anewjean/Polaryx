@@ -11,6 +11,7 @@ import { CircleCheck, Ban } from "lucide-react";
 import { Editor } from "@tiptap/react";
 import { useSaveMessagesStore } from "@/store/saveMessagesStore";
 import { useMessageStore } from "@/store/messageStore";
+import { FileDownload } from "@/components/chat/fileUpload/FileUpload";
 import "./styles.scss";
 
 // props 타입 정의
@@ -96,57 +97,66 @@ export default function SaveMessages({
 
             {!loading &&
               !error &&
-              items.map((message, idx) => (
-                <div
-                  key={message.save_message_id}
-                  onClick={() => {
-                    const imgMatch = message.content.match(
-                      /<img[^>]+src=['"]([^'"]+)['"]/,
-                    );
-                    const imgFileUrl = imgMatch ? imgMatch[1] : null;
+              items.map((message, idx) => {
+                // 파일 다운로드 URL 추출
+                const fileDivMatch = message.content.match(
+                  /<div[^>]+fileurl=['"]([^'"]+)['"][^>]*data-type=['"]file-download['"][^>]*>/,
+                );
+                const fileDownloadUrl = fileDivMatch ? fileDivMatch[1] : null;
 
-                    // 파일 다운로드 div에서 fileUrl 추출
-                    const fileDivMatch = message.content.match(
-                      /<div[^>]+fileurl=['"]([^'"]+)['"][^>]*data-type=['"]file-download['"][^>]*>/,
-                    );
-                    const fileDownloadUrl = fileDivMatch
-                      ? fileDivMatch[1]
-                      : null;
-
-                    editor?.commands.setContent(message.content);
-
-                    // 이미지 또는 파일 다운로드 URL 설정
-                    if (imgFileUrl) {
-                      useMessageStore.getState().setFileUrl(imgFileUrl);
-                    } else if (fileDownloadUrl) {
-                      useMessageStore.getState().setFileUrl(fileDownloadUrl);
-                    }
-                    console.log("saveMessages content", message.content); // delete
-                    console.log("imgFileUrl:", imgFileUrl);
-                    console.log("fileDownloadUrl:", fileDownloadUrl);
-                    setHoverOpen(false);
-                  }}
-                  className={`
-                  ${idx !== 0 ? "border-t-1" : ""}
-                  border-gray-200 flex flex-row justify-between hover:bg-gray-100 cursor-pointer`}
-                >
-                  <div className="flex-1 message-content text-sm px-5 py-3">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: message.content }}
-                    />
-                  </div>
-                  {/* 메시지 삭제 버튼 */}
+                return (
                   <div
-                    onClick={(e) => {
-                      e.stopPropagation(); // 이벤트가 더 위로 안 올라가게 차단
-                      handleDelete(message.save_message_id);
+                    key={message.save_message_id}
+                    onClick={() => {
+                      const imgMatch = message.content.match(
+                        /<img[^>]+src=['"]([^'"]+)['"]/,
+                      );
+                      const imgFileUrl = imgMatch ? imgMatch[1] : null;
+
+                      editor?.commands.setContent(message.content);
+
+                      // 이미지 또는 파일 다운로드 URL 설정
+                      if (imgFileUrl) {
+                        useMessageStore.getState().setFileUrl(imgFileUrl);
+                      } else if (fileDownloadUrl) {
+                        useMessageStore.getState().setFileUrl(fileDownloadUrl);
+                      }
+                      setHoverOpen(false);
                     }}
-                    className="pr-3 pb-3 flex items-end justify-end"
+                    className={`
+                    ${idx !== 0 ? "border-t-1" : ""}
+                    border-gray-200 flex flex-row justify-between hover:bg-gray-100 cursor-pointer`}
                   >
-                    <Trash2 className="w-5 h-5 mt-2 cursor-pointer text-gray-400 hover:text-red-300 hover:fill-red-100" />
+                    <div className="flex-1 message-content text-sm px-5 py-3">
+                      {/* 메시지 내용 먼저 출력 */}
+                      <div
+                        dangerouslySetInnerHTML={{ __html: message.content }}
+                      />
+
+                      {/* 파일이 있으면 파일 다운로드 컴포넌트 추가 */}
+                      {fileDownloadUrl && (
+                        <div className="mt-2">
+                          <FileDownload
+                            fileUrl={fileDownloadUrl}
+                            extensionClassName="absolute left-14.5 top-7 text-xs text-gray-500"
+                            downloadEvent={() => {}}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    {/* 메시지 삭제 버튼 */}
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(message.save_message_id);
+                      }}
+                      className="pr-3 pb-3 flex items-end justify-end"
+                    >
+                      <Trash2 className="w-5 h-5 mt-2 cursor-pointer text-gray-400 hover:text-red-300 hover:fill-red-100" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </div>
       </HoverCardContent>
