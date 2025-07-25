@@ -29,45 +29,46 @@ export function ProfileMenu({ logout, router }: ProfileMenuProps) {
   const myUserId = useMyUserStore((s) => s.userId);
 
   return (
-    <div className="flex flex-1 flex-col">
-      <PopoverClose>
-        <Button
-          variant="ghost"
-          className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-          onClick={() => openProfile(myUserId!)}
-        >
-          <UserRoundCog />
-          프로필
-        </Button>
-      </PopoverClose>
-      <hr className="border-gray-500" />
-      <PopoverClose>
-        <Button
-          variant="ghost"
-          className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-          onClick={() => {
-            router.push(`/workspaces/${workspaceId}/admin/users`);
-          }}
-        >
-          <Settings />
-          관리 메뉴
-        </Button>
-      </PopoverClose>
-      <hr className="border-gray-500" />
-      <PopoverClose>
-        <Button
-          onClick={() => {
-            logout();
-            window.alert("로그아웃 되었습니다.");
-            router.push("/");
-          }}
-          variant="ghost"
-          className="flex flex-1 items-center justify-start px-4 py-4 rounded-none text-gray-200 text-lg"
-        >
-          <LogOut />
-          로그아웃
-        </Button>
-      </PopoverClose>
+    <div className="flex w-full h-43 flex-col">
+      <div className="flex flex-col">
+        <PopoverClose>
+          <Button
+            variant="ghost"
+            className="flex flex-1 items-center justify-start px-4 py-3 rounded-md text-gray-300 text-lg font-semibold mx-1 mt-1"
+            onClick={() => openProfile(myUserId!)}
+          >
+            <UserRoundCog className="size-7 border border-gray-400 text-gray-400 rounded-md p-1"/>
+            <span className="ml-2">프로필</span>
+          </Button>
+        </PopoverClose>      
+        <PopoverClose>
+          <Button
+            variant="ghost"
+            className="flex flex-1 items-center justify-start px-4 py-3 rounded-md text-gray-300 text-lg font-semibold mx-1 mb-1"
+            onClick={() => {
+              router.push(`/workspaces/${workspaceId}/admin/users`);
+            }}
+          >
+            <Settings className="size-7 border border-gray-400 text-gray-400 rounded-md p-1"/>
+            <span className="ml-2">관리 메뉴</span>
+          </Button>
+        </PopoverClose>
+        <hr className="border-gray-500" />
+        <PopoverClose>
+          <Button
+            onClick={() => {
+              logout();
+              window.alert("로그아웃 되었습니다.");
+              router.push("/");
+            }}
+            variant="ghost"
+            className="flex flex-1 items-center justify-start px-4 py-3 rounded-md text-gray-300 text-lg font-semibold mx-1 m-1"
+          >
+            <LogOut className="size-7 border border-gray-400 text-gray-400 rounded-md p-1"/>
+            <span className="ml-2">로그아웃</span>
+          </Button>
+        </PopoverClose>
+      </div>
     </div>
   );
 }
