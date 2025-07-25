@@ -17,7 +17,7 @@ export interface PossibleMembersModalProps {
   tabId: string;
   possibleMembers: Member[];
   onBack: () => void;
-  onInviteComplete: () => void;
+  onInviteComplete: () => void;  
 }
 
 export function PossibleMembersModal({
@@ -58,8 +58,8 @@ export function PossibleMembersModal({
   };
 
   return (
-    <SidebarProvider className="flex flex-col h-full">
-      <SidebarMenu className="flex-1 overflow-y-auto scrollbar-thin">
+    <SidebarProvider className="flex flex-col justify-between h-full">
+      <SidebarMenu className="flex overflow-y-auto scrollbar-thin">
         {possibleMembers.length === 0 && (
           <h1 className="py-10 text-center">No possible members</h1>
         )}
