@@ -215,7 +215,7 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
 
       if (existingIndex > -1) {
         const newUpdates = [...state.pendingEmojiUpdates];
-        newUpdates[existingIndex] = update;
+        newUpdates.splice(existingIndex, 1); // 기존 업데이트 제거
         return { pendingEmojiUpdates: newUpdates };
       }
 
