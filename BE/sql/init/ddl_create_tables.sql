@@ -24,7 +24,7 @@ CREATE TABLE `emoji` (
   `user_id` binary(16) NOT NULL,
   `workspace_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `group_members` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -59,7 +59,7 @@ CREATE TABLE `links` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `member_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -117,7 +117,7 @@ CREATE TABLE `push_subscriptions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_push_sub` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=343 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=343 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `refresh_tokens` (
   `id` binary(16) NOT NULL,
