@@ -32,14 +32,44 @@ export function ChatPage({
   className?: string;
 }) {
   const { messages, prependMessages, setMessages } = useMessageStore();
+
   const containerRef = useRef<HTMLDivElement>(null);
+  
   const isFetching = useRef(false);
-  const prevMessageLengthRef = useRef(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isBottom, setIsBottom] = useState(false);
+
   const [editingMsgId, setEditingMsgId] = useState<number | null>(null);
+
+  // 로딩 상태 관리
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [isBottom, setIsBottom] = useState(false);  
+  
+  // 가장 최근 메시지의 ID를 메모이제이션  
   const lastMsgId = useMemo(() => {
     return messages.length > 0 ? messages[messages.length - 1].msgId : null;
+  }, [messages]);
+
+  // 이모지 개수 변경 감지를 위해 이전 메시지들의 이모지 총합을 저장하는 ref
+  const prevMessageLengths = useRef<number[]>([]);
+  
+  // 메시지가 변경될 때마다 (새 메시지 또는 이모지 업데이트) 스크롤 위치 조정
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // 사용자가 현재 스크롤이 하단 근처에 있는지 확인 (100px 이내)
+    const isAtBottom = 
+      container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+
+    // 사용자가 하단 근처에 있거나 초기 로딩 시 스크롤을 하단으로 이동
+    if (isAtBottom || prevMessageLengths.current.length === 0) {
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // 각 메시지의 이모지 총합을 계산하여 저장 (변경 감지용)
+    prevMessageLengths.current = messages.map(m => 
+      m.checkCnt + m.prayCnt + m.sparkleCnt + m.clapCnt + m.likeCnt
+    );
   }, [messages]);
 
   // 최초 메시지 불러오기 + 로딩 해제
