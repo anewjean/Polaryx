@@ -93,7 +93,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
 
     except WebSocketDisconnect:
         print("********* Message websocket disconnected *********")
-        message_connection.disconnect(workspace_id, tab_id, websocket)
+        await message_connection.disconnect(workspace_id, tab_id, websocket)
 
 @router.websocket("/like/{workspace_id}/{tab_id}")
 async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_id: int):
@@ -133,10 +133,10 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
 
     except WebSocketDisconnect:
         print("********* Like websocket disconnected *********")
-        like_connection.disconnect(workspace_id, tab_id, websocket)
+        await like_connection.disconnect(workspace_id, tab_id, websocket)
     except Exception as e:
         print(f"An error occurred in like websocket: {e}")        
-        like_connection.disconnect(workspace_id, tab_id, websocket)
+        await like_connection.disconnect(workspace_id, tab_id, websocket)
 
 @router.websocket("/profile/{workspace_id}/{tab_id}")
 async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, tab_id: int):
@@ -165,7 +165,7 @@ async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, ta
 
     except WebSocketDisconnect:
         print("********* Like websocket disconnected *********")
-        profile_connection.disconnect(workspace_id, tab_id, websocket)
+        await profile_connection.disconnect(workspace_id, tab_id, websocket)
     except Exception as e:
         print(f"An error occurred in like websocket: {e}")
-        profile_connection.disconnect(workspace_id, tab_id, websocket)
+        await profile_connection.disconnect(workspace_id, tab_id, websocket)
