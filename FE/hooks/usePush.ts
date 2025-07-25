@@ -26,12 +26,36 @@ export function usePush() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
       return;
     }
+
+    // const handleMessage = (event: MessageEvent) => {
+    //   if (event.data && event.data.type === 'play-sound' && event.data.sound) {
+    //     const audio = new Audio(event.data.sound);
+    //     audio.play().catch(() => {});
+    //   }
+    // };
+
     const handleMessage = (event: MessageEvent) => {
-      if (event.data && event.data.type === 'play-sound' && event.data.sound) {
-        const audio = new Audio(event.data.sound);
-        audio.play().catch(() => {});
-      }
-    };
+  if (event.data && event.data.type === 'play-sound' && event.data.sound) {
+    const audio = new Audio(event.data.sound);
+    // 사용자 상호작용이 필요한 경우를 위한 처리
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // 재생 성공
+          console.log('알람 소리 재생됨');
+        })
+        .catch((error) => {
+          console.log('알람 소리 재생 실패:', error);
+          // 사용자 상호작용이 필요한 경우 알림
+          if (error.name === 'NotAllowedError') {
+            console.log('사용자 상호작용이 필요합니다');
+          }
+        });
+    }
+  }
+};
+
     navigator.serviceWorker.addEventListener('message', handleMessage);
     Notification.requestPermission().then(async perm => {
       if (perm !== 'granted') return;
