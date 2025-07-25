@@ -140,6 +140,9 @@ export default function SaveMessages({
                         useMessageStore.getState().setFileUrl(imgFileUrl);
                       } else if (fileDownloadUrl) {
                         useMessageStore.getState().setFileUrl(fileDownloadUrl);
+                      } else {
+                        // 둘 다 null이면 파일 URL 초기화
+                        useMessageStore.getState().setFileUrl(null);
                       }
                       setHoverOpen(false);
                       setManualClose(true);
