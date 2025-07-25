@@ -62,7 +62,6 @@ export function TipTap() {
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
 
-
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [linkText, setLinkText] = useState("");
@@ -290,7 +289,7 @@ export function TipTap() {
   const addCurrentContent = () => {
     if (!editor || !workspaceId || !userId) return;
     const content = editor.getHTML();
-    if (!content.trim()) return;
+    if (!content.trim()) return; // 삭제해도 될 것 같음
     handleAddSaveMessage(content);
   };
 
@@ -334,7 +333,7 @@ export function TipTap() {
           {/* 저장 메시지 호버 카드 */}
           <SaveMessages workspaceId={workspaceId} editor={editor}>
             {/* 에디터가 빈 상태면 비활성화 */}
-            {editor?.getText().trim().length > 0 ? (
+            {!editor?.isEmpty ? (
               <ClipboardPlus
                 onClick={addCurrentContent}
                 className="mb-1.5 w-4 h-4 cursor-pointer text-gray-300 stroke-2 hover:text-yellow-500"
