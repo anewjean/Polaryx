@@ -125,7 +125,7 @@ export default function SaveMessages({
                     }}
                     className={`
                     ${idx !== 0 ? "border-t-1" : ""}
-                    border-gray-200 flex flex-row justify-between hover:bg-gray-100 cursor-pointer`}
+                    border-gray-200 flex flex-row justify-between hover:bg-gray-200 cursor-pointer`}
                   >
                     <div className="flex-1 message-content text-sm px-5 py-3">
                       {/* 메시지 내용 먼저 출력 */}
