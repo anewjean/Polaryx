@@ -194,6 +194,17 @@ SET
 WHERE id = %(msg_id)s;
 """
 
+get_emoji_counts = """
+SELECT
+    check_cnt,
+    clap_cnt,
+    like_cnt,
+    pray_cnt,
+    sparkle_cnt
+FROM messages
+WHERE id = %(msg_id)s;
+"""
+
 update_message = """
 UPDATE messages
 SET 
@@ -417,7 +428,7 @@ class QueryRepo(AbstractQueryRepo):
             elif emoji.emoji_type == "clap":
                 sql = insert_emoji_clap
             elif emoji.emoji_type == "sparkle":
-                sql = insert_emoji_clap
+                sql = insert_emoji_sparkle
             elif emoji.emoji_type == "pray":
                 sql = insert_emoji_pray
             else:
@@ -461,40 +472,30 @@ class QueryRepo(AbstractQueryRepo):
         self.db.execute(sql, params)
         target = self.db.execute(find_msg_emoji, params)
         
-        if target[0][1] and target[0][2] and target[0][3]:
+        if target and not any(target[0][1:6]):
             self.db.execute(delete_emoji, params)
         return
     
-    def update_emoji_cnt(self, emoji: Emoji):
-        # sender_id가 이미 UUID라면 변환하지 않고, str이면 UUID로 변환
-        sender_id = emoji.user_id
-        if isinstance(sender_id, UUID):
-            sender_id_bytes = sender_id.bytes
-        else:
-            sender_id_bytes = UUID(str(sender_id)).bytes
+    def update_emoji_cnt(self, emoji: Emoji, plus: bool):        
+        res = self.db.execute(get_emoji_counts, {"msg_id": emoji.msg_id})
+        if not res:
+            return
 
-        params = {
-            "tab_id": emoji.tab_id,
-            "sender_id": sender_id_bytes,
-            "msg_id": emoji.msg_id,
+        row = res[0]
+        current_map = {
+            "check": row[0],
+            "clap": row[1],
+            "like": row[2],
+            "pray": row[3],
+            "sparkle": row[4],
         }
-        if emoji.emoji_type == "check":
-            sql = count_checks
-        elif emoji.emoji_type == "clap":
-            sql = count_claps
-        elif emoji.emoji_type == "sparkle":
-            sql = count_sparkles
-        elif emoji.emoji_type == "pray":
-            sql = count_prays
-        else:
-            sql = count_likes
-        res = self.db.execute(sql, params)
-        print("\n\n\n 확인좀 하자, cnt: ", res[0][0])
+        current_cnt = current_map.get(emoji.emoji_type, 0)
+        new_cnt = current_cnt + (1 if plus else -1)
+        if new_cnt < 0:
+            new_cnt = 0
 
-        params = {
-            "msg_id": emoji.msg_id,
-            "cnt": res[0][0],
-        }
+        params = {"msg_id": emoji.msg_id, "cnt": new_cnt}
+
         if emoji.emoji_type == "check":
             sql = update_check_cnt
         elif emoji.emoji_type == "clap":
@@ -505,7 +506,7 @@ class QueryRepo(AbstractQueryRepo):
             sql = update_pray_cnt            
         else:
             sql = update_like_cnt
-        return self.db.execute(sql, params)
+        self.db.execute(sql, params)
     
     def update_message_content(self, message_id: int, new_content: str, current_user_id: str):
         params = {
@@ -547,4 +548,11 @@ class QueryRepo(AbstractQueryRepo):
             "user_id": UUID(user_id).bytes
         }
         return self.db.execute(search_messages_by_keyword, param)
+
+    def get_emoji_counts(self, msg_id: int):
+        params = {"msg_id": msg_id}
+        return self.db.execute(get_emoji_counts, params)
+
+
+
         

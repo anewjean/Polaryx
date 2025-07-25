@@ -20,7 +20,7 @@ export function WebSocketLikeClient({
   tabId,
 }: WebSocketLikeClientProps) {
   const socketRef = useRef<WebSocket | null>(null);
-  const { sendEmojiFlag, target, emojiAction, setSendEmojiFlag, setEmojiCount } = useMessageStore();
+  const { sendEmojiFlag, setSendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, addInFlightEmojiUpdates, updateEmojiCounts } = useMessageStore();
 
   // 1. WebSocket 연결 및 수신 전용 useEffect
   useEffect(() => {
@@ -37,13 +37,12 @@ export function WebSocketLikeClient({
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // 서버로부터 'like' 타입의 메시지를 받으면 like count 상태를 업데이트합니다.
-        if (data.type === "emoji" && data.emojiType !== undefined && data.messageId !== undefined && data.count !== undefined) {
-          console.log("Like WebSocket: Received like update", data);
-          //////////////////////////////////////////////////// 
-          // broadcast 결과를 받아와서 처리하는 로직 추가해야됨
-          setEmojiCount(data.messageId, data.emojiType, data.count);
-          ////////////////////////////////////////////////////
+        console.log("WebSocket message received:", data);
+
+        switch (data.type) {
+          case 'emoji_update':
+            updateEmojiCounts(data.messageId, data);
+            break;       
         }
       } catch (e) {
         console.warn("Like WebSocket: Invalid message format received:", event.data);
@@ -71,9 +70,10 @@ export function WebSocketLikeClient({
     if (
       sendEmojiFlag &&
       socketRef.current?.readyState === WebSocket.OPEN &&
-      target
+      pendingEmojiUpdates.length > 0      
     ) {
-      const token = localStorage.getItem("access_token")
+      console.log("updated Emoji:", pendingEmojiUpdates);
+      const token = localStorage.getItem("access_token");
 
       if (!token) {
         console.log("토큰없당"); // 추후 수정
@@ -81,25 +81,27 @@ export function WebSocketLikeClient({
       }
 
       const { user_id } = jwtDecode<JWTPayload>(token);
-      
-      const keys = Object.keys(target).filter((key) => key !== "msgId");
-      const emojiType = keys[0];
 
-      const payload = {
-        type: "emoji",
-        messageId: target["msgId"],
-        userId: user_id,
-        action: emojiAction ? 'like':'unlike',
-        emojiType: emojiType as keyof typeof target,
-        count: target[emojiType]
-      };
+      // 각 업데이트 요청을 순회하며 서버에 전송합니다.
+      pendingEmojiUpdates.forEach((update) => {
+        const payload = {
+          type: "emoji",
+          messageId: update.msgId,
+          userId: user_id,
+          action: update.emojiAction, // 'like' 또는 'unlike' 문자열을 직접 사용합니다.
+          emojiType: update.emojiType          
+        };        
+        socketRef.current?.send(JSON.stringify(payload));
+      });
+
+      // 서버 응답을 기다리는 큐로 이동
+      addInFlightEmojiUpdates(pendingEmojiUpdates);
       
-      console.log("Like WebSocket: Sending data with action...", payload);
-      socketRef.current.send(JSON.stringify(payload));
-      
+      // 작업 큐를 비우고 플래그를 리셋합니다.
+      clearPendingEmojiUpdates();
       setSendEmojiFlag(false);
     }
-  }, [sendEmojiFlag, setSendEmojiFlag]); // 이 effect는 '좋아요' 클릭으로 상태가 바뀔 때 실행됩니다.
+  }, [sendEmojiFlag, pendingEmojiUpdates, clearPendingEmojiUpdates, addInFlightEmojiUpdates, setSendEmojiFlag]); // 의존성 배열을 업데이트합니다.
 
   return null;
 }

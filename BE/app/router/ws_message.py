@@ -106,25 +106,18 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
             user_id = data["userId"]
             message_id = data["messageId"]
             emoji_type = data["emojiType"]
-            action = data["action"] == "like"
-            count = data["count"]
-
-            if action:
-                count += 1
-            else:
-                count -= 1
+            action = data["action"] == "like"           
 
             if not user_id or not message_id:
                 print(f"Invalid like data received: {data}")
                 continue
 
-            await message_service.toggle_like(tab_id, message_id, user_id, emoji_type, action)
+            counts = await message_service.toggle_like(tab_id, message_id, user_id, emoji_type, action)
 
             payload = {
-                "type": "emoji",
-                "emojiType": emoji_type,
+                "type": "emoji_update",
                 "messageId": message_id,
-                "count": count
+                **counts
             }
 
             await like_connection.broadcast(workspace_id, tab_id, json.dumps(payload))

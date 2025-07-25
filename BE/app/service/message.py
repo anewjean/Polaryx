@@ -17,13 +17,33 @@ class MessageService:
         res = self.message_repo.insert(message)
         return res["lastrowid"]
     
-    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool) -> None:
+    async def toggle_like(self, tab_id: int, msg_id: int, user_id: uuid.UUID, type: str, plus: bool):
         emoji = Emoji.of(tab_id, user_id, msg_id, type)
-        if (plus):
+        if plus:
             self.message_repo.plus_emoji(emoji)
         else:
             self.message_repo.minus_emoji(emoji)
-        return self.message_repo.update_emoji_cnt(emoji)        
+        self.message_repo.update_emoji_cnt(emoji, plus)
+        return self.get_emoji_counts(msg_id)
+
+    def get_emoji_counts(self, msg_id: int):
+        res = self.message_repo.get_emoji_counts(msg_id)
+        if res and len(res) > 0:
+            row = res[0]
+            return {
+                "checkCnt": row[0],
+                "clapCnt": row[1],
+                "likeCnt": row[2],
+                "prayCnt": row[3],
+                "sparkleCnt": row[4],
+            }
+        return {
+            "checkCnt": 0,
+            "clapCnt": 0,
+            "likeCnt": 0,
+            "prayCnt": 0,
+            "sparkleCnt": 0,
+        }
 
 
     async def find_recent_messages(self, tab_id: int, before_id: int, user_id: str) -> List[Message]:

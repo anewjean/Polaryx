@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import confetti from 'canvas-confetti';
-import { useMessageStore } from '@/store/messageStore';
-
-// 1. 타입을 명확히 정의하여 코드 안정성 확보
-type EmojiType = 'check' | 'pray' | 'sparkle' | 'clap' | 'like';
+import React, { useState, useMemo } from "react";
+import confetti from "canvas-confetti";
+import { useMessageStore, EmojiType } from "@/store/messageStore";
+import { debounce } from "lodash";
 
 interface EmojiGroupMenuProps {
   msgId: number;
@@ -31,23 +29,30 @@ interface EmojiGroupProps {
   myToggle: Record<EmojiType, boolean>;
 }
 
-const emojis: { symbol: string, type: EmojiType }[] = [
-  { symbol: '✅', type: 'check' },
-  { symbol: '🙏', type: 'pray' },
-  { symbol: '✨', type: 'sparkle' },
-  { symbol: '👏', type: 'clap' },
-  { symbol: '❤️', type: 'like' },
+const emojis: { symbol: string; type: EmojiType }[] = [
+  { symbol: "✅", type: "check" },
+  { symbol: "🙏", type: "pray" },
+  { symbol: "✨", type: "sparkle" },
+  { symbol: "👏", type: "clap" },
+  { symbol: "❤️", type: "like" },
 ];
 
 const emojiSymbolMap: Record<string, EmojiType> = {
   '✅': 'check', '🙏': 'pray', '✨': 'sparkle', '👏': 'clap', '❤️': 'like'
 };
 
-
 export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleCnt, likeCnt, onClose, myToggle }: EmojiGroupMenuProps) {
   // 클릭된 이모지 상태 관리
   const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
-  const { toggleEmoji, setTargetEmoji, setAction, toggleMyEmoji } = useMessageStore();
+  const { toggleEmoji, addPendingEmojiUpdate, toggleMyEmoji } = useMessageStore();
+  
+  // 이모지 이벤트를 그룹화하여 일정 시간 후 서버 전송
+  const debouncedToggleEmoji = useMemo(
+    () => debounce(() => {
+      toggleEmoji();
+    }, 500),
+    [toggleEmoji]
+  );
 
   const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emojiSymbol: string) => {
     
@@ -56,10 +61,9 @@ export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, spar
 
     const countMap: Record<EmojiType, number> = {
         check: checkCnt, pray: prayCnt, sparkle: sparkleCnt, clap: clapCnt, like: likeCnt
-    };
-    const currentCount = countMap[emojiType];
+    };    
     const isAlreadyToggled = myToggle[emojiType];
-    const action = isAlreadyToggled ? 'unlike' : 'like';    
+    const emojiAction: "like" | "unlike" = isAlreadyToggled ? "unlike" : "like";
     
     if (!myToggle[emojiType]) {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -97,14 +101,20 @@ export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, spar
       setTimeout(() => {
         onClose();
       }, 600); // 애니메이션이 시작될 수 있도록 약간의 지연을 줍니다.
-    }
-        
-    // UI를 즉시 업데이트하기 위해 새로운 액션을 먼저 호출합니다.
-    toggleMyEmoji(msgId, emojiType);
+    }       
     
-    setTargetEmoji(msgId, emojiType, currentCount);
-    setAction(action === 'like');
-    toggleEmoji();
+    // UI 즉시 업데이트
+    toggleMyEmoji(msgId, emojiType);
+
+    // 서버에 보낼 업데이트 작업 큐에 추가
+    addPendingEmojiUpdate({
+      msgId,
+      emojiType,
+      emojiAction,
+    });
+
+    // 디바운스된 함수를 호출하여 일정 시간 후 서버 전송 트리거
+    debouncedToggleEmoji();
   };
 
   return (
@@ -130,7 +140,7 @@ export function EmojiGroupMenu({ msgId, userId, checkCnt, clapCnt, prayCnt, spar
 
 export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleCnt, likeCnt, onClose, myToggle }: EmojiGroupProps) {
     const [pressedEmoji, setPressedEmoji] = useState<string | null>(null);
-    const { toggleEmoji, setTargetEmoji, setAction, toggleMyEmoji } = useMessageStore();
+    const { toggleEmoji, addPendingEmojiUpdate, toggleMyEmoji } = useMessageStore();
 
     const emojiData: { symbol: string; count: number; type: EmojiType }[] = [
       { symbol: '✅', count: checkCnt, type: 'check' },
@@ -140,11 +150,19 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
       { symbol: '❤️', count: likeCnt, type: 'like' },
     ];
 
+    // 이모지 이벤트를 그룹화하여 일정 시간 후 서버 전송
+    const debouncedToggleEmoji = useMemo(
+      () => debounce(() => {
+        toggleEmoji();
+      }, 500),
+      [toggleEmoji]
+    );
+
     const handleEmojiClick = (e: React.MouseEvent<HTMLButtonElement>, emojiType: EmojiType, currentCount: number) => {
       
       const isAlreadyToggled = myToggle[emojiType];
-      const action = isAlreadyToggled ? 'unlike' : 'like';
-      const emojiSymbol = emojis.find(em => em.type === emojiType)?.symbol || '';
+      const emojiAction: "like" | "unlike" = isAlreadyToggled ? "unlike" : "like";
+      const emojiSymbol = emojis.find(em => em.type === emojiType)?.symbol || '';  
 
       if (!myToggle[emojiType]) {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -177,12 +195,18 @@ export function EmojiGroup({ msgId, userId, checkCnt, clapCnt, prayCnt, sparkleC
         }       
       }
       
-      // UI를 즉시 업데이트하기 위해 새로운 액션을 먼저 호출합니다.
+      // UI 즉시 업데이트
       toggleMyEmoji(msgId, emojiType);
 
-      setTargetEmoji(msgId, emojiType, currentCount);
-      setAction(action === 'like');
-      toggleEmoji();
+      // 서버에 보낼 업데이트 작업 큐에 추가
+      addPendingEmojiUpdate({
+        msgId,
+        emojiType,
+        emojiAction        
+      });
+
+      // 디바운스된 함수를 호출하여 일정 시간 후 서버 전송 트리거
+      debouncedToggleEmoji();
     };
 
   return (
