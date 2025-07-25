@@ -12,10 +12,10 @@ import { WebSocketProfileClient } from "../ws/webSocketProfileClient";
 function SkeletonChat() {
   return (
     <div className="flex px-[8px] py-[4.5px]">
-      <Skeleton className="w-[40px] h-[40px] mt-1 mr-[8px] rounded-lg bg-gray-200" />
+      <Skeleton className="w-[40px] h-[40px] mt-1 mr-[8px] rounded-lg bg-gray-300" />
       <div className="mt-1 space-y-2">
-        <Skeleton className="h-4 w-[70px] bg-gray-200" />
-        <Skeleton className="h-10 w-[300px] bg-gray-200" />
+        <Skeleton className="h-4 w-[70px] bg-gray-300" />
+        <Skeleton className="h-10 w-[300px] bg-gray-300" />
       </div>
     </div>
   );
@@ -183,7 +183,9 @@ export function ChatPage({
   if (isLoading) {
     return (
       <div className="flex flex-col justify-start w-full">
-        <div className="sticky top-1.5 mx-auto w-[120px] h-[28px] my-2 bg-gray-200 flex rounded-full" />
+        <div className="sticky top-1.5 mx-auto w-[120px] h-[28px] z-1 my-2">
+          <Skeleton className="w-full h-full bg-gray-300 rounded-full" />
+        </div>
         <div className="text-m min-h-0 pl-5 w-full">
           {Array.from({ length: 10 }).map((_, i) => (
             <SkeletonChat key={i} />

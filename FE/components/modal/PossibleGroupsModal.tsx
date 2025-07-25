@@ -17,7 +17,7 @@ export interface PossibleGroupsModalProps {
   tabId: string;
   possibleGroups: Group[];
   onBack: () => void;
-  onInviteComplete: () => void;
+  onInviteComplete: () => void; 
 }
 
 export function PossibleGroupsModal({
