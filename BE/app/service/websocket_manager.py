@@ -1,14 +1,17 @@
 import json
 import uuid
 import asyncio
+import weakref
 from fastapi import WebSocket
-from typing import Dict, List, Optional
+from typing import Set, Dict, List, Optional
 from app.util.database.redis import RedisManager
 
 
 class ConnectionManager:
     def __init__(self):
         self.activate_connections: Dict[int, Dict[int, List[WebSocket]]] = {}
+        self.connection_metadata: Dict[WebSocket, Dict] = weakref.WeakKeyDictionary()
+        self._lock = asyncio.Lock() # 동시성 제어를 위한 락
         self.server_id = uuid.uuid4().hex[:8]  # 서버 고유 ID
         self.socket_type: str = None
         self._redis_client: Optional[str] = None
@@ -31,9 +34,10 @@ class ConnectionManager:
         return self._pubsub_client
     
     async def connect(self, socket_type: str, workspace_id: int, tab_id: int, websocket: WebSocket):
-        await websocket.accept()
+        async with self._lock:
+            await websocket.accept()
+    
         self.socket_type = socket_type
-        print("******************")
         print(socket_type)
 
         if socket_type not in self.activate_connections:
@@ -41,37 +45,90 @@ class ConnectionManager:
         if workspace_id not in self.activate_connections[socket_type]:
             self.activate_connections[socket_type][workspace_id] = {}
         if tab_id not in self.activate_connections[socket_type][workspace_id]:
-            self.activate_connections[socket_type][workspace_id][tab_id] = []
+            self.activate_connections[socket_type][workspace_id][tab_id] = set()
         
-        self.activate_connections[socket_type][workspace_id][tab_id].append(websocket)
+        self.activate_connections[socket_type][workspace_id][tab_id].add(websocket)
 
         # Redis 초기화 (한 번만)
         await self._ensure_redis_initialized()
 
+        # 메타데이터 저장
+        self.connection_metadata[websocket] = {
+            "socket_type": socket_type,
+            "workspace_id": workspace_id,
+            "tab_id": tab_id,
+            "connected_at": asyncio.get_event_loop().time()
+        }
         if not self._is_listening:
             await self._start_redis_listener()
     
     async def disconnect(self, workspace_id: int, tab_id: int, websocket: WebSocket):
-        try:
-            tab_connections = self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id)
-            if tab_connections and websocket in tab_connections:
-                tab_connections.remove(websocket)
+        async with self._lock: 
+            try:
+                metadata = self.connection_metadata.get(websocket) 
+                if not metadata:
+                    return
 
-                # 탭 내 소켓이 모두 비어있으면 탭 삭제
-                if not tab_connections:
-                    del self.activate_connections[self.socket_type][workspace_id][tab_id]
-
-                # 워크스페이스 내 탭이 모두 없어졌으면 워크스페이스 삭제
-                if not self.activate_connections[self.socket_type][workspace_id]:
-                    del self.activate_connections[self.socket_type][workspace_id]
+                socket_type = metadata["socket_type"]
+                metadata["is_active"] = False
                 
-                # 타입 내 워크스페이스가 모두 없어졌으면 타입 삭제
-                if not self.activate_connections[self.socket_type]:
-                    del self.activate_connections[self.socket_type]
+                # 안전한 연결 제거
+                removed = await self._safe_remove_connection(socket_type, workspace_id, tab_id, websocket)
+                if not removed:
+                    await self._close_websocket_safely(websocket)
             
+            except Exception as e:
+                await self._force_cleanuup_websocket(websocket)
+    
+    async def _safe_remove_connection(self, socket_type: str, workspace_id: int, tab_id: int, websocket: WebSocket) -> bool:
+        """안전한 연결 제거 (KeyError 방지)"""
+        try:
+            # 단계별 존재 확인
+            if socket_type not in self.activate_connections:
+                return False
+            if workspace_id not in self.activate_connections[socket_type]:
+                return False
+            if tab_id not in self.activate_connections[socket_type][workspace_id]:
+                return False
+            tab_connections = self.active_connections[socket_type][workspace_id][tab_id]
+            
+            if websocket in tab_connections:
+                tab_connections.remove(websocket)
+                await self._cleanup_empty_containers(socket_type, workspace_id, tab_id)
+                return True
+            return False
+
         except Exception as e:
-            print(f"소켓 연결 해제 에러가 발생했습니다 :: {e}")
-            pass
+            return False
+        
+    async def _cleanup_empty_containers(self, socket_type: str, workspace_id: int, tab_id: int):
+        """빈 컨테이너 정리"""
+        try: 
+            # 탭 레벨 정리
+            if not self.activate_connections[socket_type][workspace_id][tab_id]: 
+                del self.activate_connections[socket_type][workspace_id]
+        
+        except KeyError:
+            pass # 이미 다른 서버에서 정리함
+    
+    async def _colse_websocket_safely(self, websocket: WebSocket):
+        """웹소켓 안전한 종료"""
+        if websocket.client_state.value in [1, 2]:
+            await websocket.close()
+    
+    async def _force_cleanup_websocket(self, websocket: WebSocket):
+        """강제 웹소켓 정리 (에러 발생 시 최후 수단)"""
+        try:
+            # 모든 연결에서 해당 Websocket 제거
+            for socket_type in list(self.active_connectoins.keys()):
+                for workspace_id in list(self.activate_connections[socket_type].keys()):
+                    for tab_id in list(self.activate_connections[socket_type][workspace_id].keys()):
+                        connections = self.activate_connections[socket_type][workspace_id][tab_id]
+                        if websocket in connections:
+                            connections.discard(websocket)
+                            await self._cleanup_empty_containers(socket_type, workspace_id, tab_id)
+        except Exception as e:
+            print(f"웹소켓 제거 중 에러 발생: {e}")
     
     async def broadcast_local(self, workspace_id: int, tab_id: int, message: str):
         """로컬 서버의 연결된 클라이언트들에게만 브로드캐스트"""
