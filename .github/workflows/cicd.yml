@@ -92,23 +92,6 @@ jobs:
             docker-compose.frontend.yml
           target: /home/ec2-user
 
-      - name: Validate EC2 Instance IDs
-        run: |
-          echo "Validating instance IDs format..."
-          if [[ "${{ secrets.EC2_BACKEND_1_ID }}" =~ ^i-[0-9a-f]{8}$|^i-[0-9a-f]{17}$ ]]; then
-            echo "✅ Backend 1 ID format is valid"
-          else
-            echo "❌ Backend 1 ID format is invalid: ${{ secrets.EC2_BACKEND_1_ID }}"
-            exit 1
-          fi
-          
-          if [[ "${{ secrets.EC2_BACKEND_2_ID }}" =~ ^i-[0-9a-f]{8}$|^i-[0-9a-f]{17}$ ]]; then
-            echo "✅ Backend 2 ID format is valid"
-          else
-            echo "❌ Backend 2 ID format is invalid: ${{ secrets.EC2_BACKEND_2_ID }}"
-            exit 1
-          fi
-
       - name: Deploy to Backend Server 1 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
         id: ssm1
@@ -120,8 +103,11 @@ jobs:
           working-directory: /root
           command: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d && docker image prune -a -f
-
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up -d
+            docker image prune -a -f
+        
       - name: Deploy to Backend Server 2 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
         id: ssm2
@@ -133,8 +119,11 @@ jobs:
           working-directory: /root
           command: |
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml down && docker compose -f docker-compose.yml up -d && docker image prune -a -f
-  
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up -d
+            docker image prune -a -f
+          
       - name: Deploy to Frontend Server
         uses: appleboy/ssh-action@master
         with:
