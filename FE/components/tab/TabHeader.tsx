@@ -62,14 +62,14 @@ export function TabHeader() {
   };
 
   return (
-    <div className="sticky top-0 bg-white shadow-sm">
+    <div className="sticky top-0 bg-white border-b-[1px] border-gray-400 shadow-sm">
       <div className="flex items-center h-[50px] px-[17px]">
         <div className="flex flex-1 justify-between items-center h-[30px] px-[3px]">
           <div className="flex items-center">
             {tabInfo?.tab_name ? (
               <p className="text-lg font-semibold">{tabInfo.tab_name}</p>
             ) : (
-              <div className="w-40 h-7 rounded-md bg-gray-200 animate-pulse" />
+              <div className="w-40 h-7 rounded-md bg-gray-300 animate-pulse" />
             )}
           </div>
 

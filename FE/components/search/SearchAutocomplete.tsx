@@ -81,7 +81,7 @@ export default function SearchAutocomplete() {
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
-            className="flex-none h-[30px] w-[130px] px-3 text-gray-400 justify-between bg-gray-700 rounded-l-[3px] rounded-r-none hover:bg-gray-600 border border-gray-500 border-r-0"
+            className="flex-none h-[30px] w-[127px] px-3 text-gray-400 justify-between bg-gray-700 rounded-l-[3px] rounded-r-none hover:bg-gray-600 border border-gray-500 border-r-0"
           >
             {searchMode === "user" ? (
               <div className="inline-flex items-center space-x-2">                
@@ -118,25 +118,25 @@ export default function SearchAutocomplete() {
       </Popover>
 
       {/* 검색창 */}
-      <div className="relative flex-1 max-w-[calc(100%-400px)]">
+      <div className="relative flex-1">
         <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
         <Input
           type="text"
           placeholder={getPlaceholderText()}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="pl-7 w-full h-[30px] bg-gray-700 text-white rounded-l-none rounded-r-[3px] hover:bg-gray-600 border border-gray-500 focus:outline-none focus:ring-0"
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}          
+          className="pl-7 h-[30px] bg-gray-700 text-white rounded-l-none rounded-r-[3px] hover:bg-gray-600 border border-gray-500 focus:outline-none focus:ring-0 focus-visible:ring-0"
         />
       </div>
 
       {/* User Search Results */}
       {searchMode === "user" && results.length > 0 && (
-        <ul className="absolute z-10 mt-1 top-full left-32 right-0 max-h-60 overflow-y-auto bg-white border rounded-md shadow">
+        <ul className="absolute z-10 mt-1 top-full left-32 right-0 max-h-60 overflow-y-auto bg-white border rounded-xs shadow offset-0">
           {results.map((u) => (
             <li
               key={u.user_id}
-              className="flex justify-between items-center px-2 py-1 hover:bg-gray-100"
+              className="flex justify-between items-center px-2 py-1 hover:bg-gray-200"
             >
               <div
                 className="flex items-center gap-2 cursor-pointer"

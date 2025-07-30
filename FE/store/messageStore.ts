@@ -1,5 +1,20 @@
-import { ms } from "date-fns/locale";
 import { create } from "zustand";
+
+export type EmojiType = 'check' | 'pray' | 'sparkle' | 'clap' | 'like';
+
+export interface PendingEmojiUpdate {
+  msgId: number;
+  emojiType: EmojiType;
+  emojiAction: 'like' | 'unlike';
+}
+
+export interface EmojiCounts {
+  checkCnt: number;
+  prayCnt: number;
+  sparkleCnt: number;
+  clapCnt: number;
+  likeCnt: number;
+}
 
 interface Message {
   tabId: number;
@@ -66,15 +81,18 @@ interface MessageStore {
   addInvitedTab: (tabId: number) => void;
   clearInvitedTab: (tabId: number) => void;
 
-  // 좋아요 실시간 전파
-  // EmojiType, EmojiCount 저장.
-  target: Record<string, number>;
-  setTargetEmoji: (messageId: number, emojiType: string, count: number) => void;
-  emojiAction: boolean;
-  setAction: (flag: boolean) => void;
+  // EmojiGroup: 이벤트가 발생한 이모지를 배열로 관리
+  pendingEmojiUpdates: PendingEmojiUpdate[];  
+  addPendingEmojiUpdate: (update: PendingEmojiUpdate) => void;
+  clearPendingEmojiUpdates: () => void;
 
-  // 웹소켓에서 브로드캐스트된 like_count를 설정하는 함수
-  setEmojiCount: (messageId: number, emojiType: string, count: number) => void;
+  // 서버 응답을 기다리는 큐
+  inFlightEmojiUpdates: PendingEmojiUpdate[];
+  addInFlightEmojiUpdates: (updates: PendingEmojiUpdate[]) => void;
+  clearInFlightEmojiUpdates: () => void;
+
+  // 웹소켓에서 브로드캐스트된 emoji count를 설정하는 함수
+  updateEmojiCounts: (msgId: number, emojiData: EmojiCounts) => void;
 
   // '좋아요' 버튼 클릭 시 UI가 호출할 단 하나의 함수
   toggleEmoji: () => void;
@@ -83,7 +101,7 @@ interface MessageStore {
   editTarget: Record<string, string>;
   editProfile: (editName: string, editImage: string| undefined) => void;
 
-  // 나의 이모지 토글 상태 업데이트
+  // 나의 이모지 토글 상태 업데이트 (서버 응답 기다리지 않고 UI 먼저 업데이트)
   toggleMyEmoji: (msgId: number, emojiType: string) => void;
 
   // 메세지 수정
@@ -185,39 +203,90 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
       invitedTabs: state.invitedTabs.filter((id) => id !== tabId),
     })),
 
-  // 전송 후, 모든 관련 상태를 리셋
-  target: {},
-  setTargetEmoji: (msgId, Type, count) => set({ target: {"msgId": msgId, [Type]: count} }),
-  emojiAction: false,
-  setAction: (flag) => set({ emojiAction: flag }),
+  // 이벤트가 발생한 이모지를 배열로 관리
+  pendingEmojiUpdates: [],
+  inFlightEmojiUpdates: [],
+  addPendingEmojiUpdate: (update) =>
+    set((state) => {
+      // 동일 이모지에 대한 중복 업데이트는 마지막 동작만 남깁니다
+      const existingIndex = state.pendingEmojiUpdates.findIndex(
+        (u) => u.msgId === update.msgId && u.emojiType === update.emojiType,
+      );
+
+      if (existingIndex > -1) {
+        const newUpdates = [...state.pendingEmojiUpdates];
+        newUpdates.splice(existingIndex, 1); // 기존 업데이트 제거
+        return { pendingEmojiUpdates: newUpdates };
+      }
+
+      return { pendingEmojiUpdates: [...state.pendingEmojiUpdates, update] };
+    }),
+  clearPendingEmojiUpdates: () => set({ pendingEmojiUpdates: [] }),
+  addInFlightEmojiUpdates: (updates) =>
+    set((state) => ({
+      inFlightEmojiUpdates: [...state.inFlightEmojiUpdates, ...updates],
+    })),
+  clearInFlightEmojiUpdates: () => set({ inFlightEmojiUpdates: [] }),
+  removeFirstInFlightUpdate: (msgId: number) =>
+    set((state) => {
+      const idx = state.inFlightEmojiUpdates.findIndex(
+        (u) => u.msgId === msgId,
+      );
+      if (idx === -1) return {} as any;
+      const newUpdates = [...state.inFlightEmojiUpdates];
+      newUpdates.splice(idx, 1);
+      return { inFlightEmojiUpdates: newUpdates };
+    }),
 
   sendEmojiFlag: false,
   setSendEmojiFlag: (flag) => set({ sendEmojiFlag: flag }),
 
-  // 실시간 이모지 수 업데이트
-  setEmojiCount: (messageId, emojiType, count) => set((state) => ({
-    messages: state.messages.map((msg) =>
-      msg.msgId === messageId
-    ? {
-      ...msg,
-      [`${emojiType}Cnt`]: count, 
-    }
-        : msg
-    )
-  })),
+  // 서버로부터 받은 최종 이모지 카운트로 업데이트
+  updateEmojiCounts: (msgId, emojiData) =>
+    set((state) => {
+      // 전달받은 업데이트가 처리한 in-flight 작업을 제거합니다.
+      const idx = state.inFlightEmojiUpdates.findIndex(
+        (u) => u.msgId === msgId,
+      );
+      const remainingInFlight = [...state.inFlightEmojiUpdates];
+      if (idx > -1) {
+        remainingInFlight.splice(idx, 1);
+      }
+
+      // 해당 메시지에 추가로 대기 중인 작업이 있다면 서버 값을 적용하지 않고 대기합니다.
+      const hasMorePending = remainingInFlight.some((u) => u.msgId === msgId);
+      if (hasMorePending) {
+        return { inFlightEmojiUpdates: remainingInFlight };
+      }
+
+      return {
+        messages: state.messages.map((msg) =>
+          msg.msgId === msgId
+            ? {
+                ...msg,
+                checkCnt: emojiData.checkCnt,
+                prayCnt: emojiData.prayCnt,
+                sparkleCnt: emojiData.sparkleCnt,
+                clapCnt: emojiData.clapCnt,
+                likeCnt: emojiData.likeCnt,
+              }
+            : msg,
+        ),
+        inFlightEmojiUpdates: remainingInFlight,
+      };
+    }),
 
   // 이모지 버튼 선택 시 동작할 함수
   toggleEmoji: () => {
     set((state) => ({
-      sendEmojiFlag: true // 이모지 전송 플래그 설정
+      sendEmojiFlag: true, // 이모지 전송 플래그 설정
     }));
   },
 
   // Edit Profile 기능
   sendEditFlag: false,
-  setSendEditFlag: (flag) => set({sendEditFlag : flag}),
-  
-  
+  setSendEditFlag: (flag) => set({ sendEditFlag: flag }),
+
   editTarget: {"":""},
   editProfile: (editName, editImage) => {
     set((state) => ({
@@ -230,17 +299,22 @@ export const useMessageStore = create<MessageStore>((set, get) => ({
   },
 
   // 나의 이모지 토글 상태 업데이트
-  toggleMyEmoji: (msgId, emojiType) => set((state) => ({
-    messages: state.messages.map(msg => {
-      if (msg.msgId === msgId) {
-        const newMyToggle = { ...msg.myToggle };
-        // 현재 토글 상태를 반전시킵니다.
-        newMyToggle[emojiType] = !newMyToggle[emojiType];
-        return { ...msg, myToggle: newMyToggle };
-      }
-      return msg;
-    }),
-  })),
+  toggleMyEmoji: (msgId, emojiType) =>
+    set((state) => ({
+      messages: state.messages.map((msg) => {
+        if (msg.msgId === msgId) {
+          const newMyToggle = { ...msg.myToggle };
+          const isToggled = newMyToggle[emojiType];
+          newMyToggle[emojiType] = !isToggled;
+
+          const currentCount = msg[`${emojiType}Cnt` as keyof Message] as number;
+          const newCount = newMyToggle[emojiType] ? currentCount + 1 : Math.max(0, currentCount - 1);
+
+          return { ...msg, myToggle: newMyToggle, [`${emojiType}Cnt`]: newCount };
+        }
+        return msg;
+      }),
+    })),
 
   // 메세지 수정 기능
   editMsgFlag: false,

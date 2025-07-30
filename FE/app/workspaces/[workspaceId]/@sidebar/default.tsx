@@ -306,7 +306,7 @@ export default function AppSidebar({ width }: SidebarProps) {
                                 <span className="ml-auto flex-none flex-shrink-0">
                                   <Button
                                     variant="default"
-                                    className="flex items-center justify-center bg-yellow-500 text-black font-bold size-6 rounded-full"
+                                    className="flex items-center justify-center bg-yellow-500 text-black font-bold size-6 rounded-full hover:bg-yellow-500"
                                   >
                                     {count}
                                   </Button>
@@ -413,7 +413,7 @@ export default function AppSidebar({ width }: SidebarProps) {
             </PopoverTrigger>
             <PopoverContent
               side="right"
-              sideOffset={17}
+              sideOffset={12}
               className="flex overflow-hidden bg-gray-700 rounded-md w-48"
             >
               <ProfileMenu logout={logout} router={router} />

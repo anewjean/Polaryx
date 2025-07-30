@@ -37,6 +37,18 @@ export default function SaveMessages({
   const removeMessage = useSaveMessagesStore((s) => s.remove);
 
   const [hoverOpen, setHoverOpen] = useState(false);
+  const [manualClose, setManualClose] = useState(false);
+
+  // manualClose가 true가 되면 0.5초 후에 false로 변경
+  useEffect(() => {
+    if (manualClose) {
+      const timer = setTimeout(() => {
+        setManualClose(false);
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [manualClose]);
 
   // 컴포넌트 마운트 시 메시지 불러오기
   useEffect(() => {
@@ -57,21 +69,29 @@ export default function SaveMessages({
 
   return (
     <HoverCard
-      open={hoverOpen}
-      onOpenChange={(open) => setHoverOpen(open)}
+      open={hoverOpen && !manualClose}
+      onOpenChange={(open) => {
+        if (!manualClose) {
+          setHoverOpen(open);
+        }
+        // 마우스가 나갈 때 호버카드를 닫고, hover 상태 제어도 초기화해줍니다.
+        if (!open) {
+          setHoverOpen(false);
+          setManualClose(false);
+        }
+      }}
       openDelay={100}
       closeDelay={100}
     >
-      {/* 재호버 방지 */}
-      <button onClick={() => setHoverOpen((o) => !o)}>
-        <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      </button>
+      <HoverCardTrigger asChild onMouseLeave={() => setManualClose(false)}>
+        {children}
+      </HoverCardTrigger>
       <HoverCardContent
         side="top"
         align="end"
         className="w-100 bg-white text-black border m-0 p-0 mb-0.5 mr-1"
-        onPointerEnter={() => setHoverOpen(true)}
-        onPointerLeave={() => setHoverOpen(false)}
+        // onPointerEnter={() => setHoverOpen(true)}
+        // onPointerLeave={() => setHoverOpen(false)}
       >
         <div>
           <div className="flex flex-row items-center justify-between pl-5 pr-3 py-3">
@@ -120,12 +140,16 @@ export default function SaveMessages({
                         useMessageStore.getState().setFileUrl(imgFileUrl);
                       } else if (fileDownloadUrl) {
                         useMessageStore.getState().setFileUrl(fileDownloadUrl);
+                      } else {
+                        // 둘 다 null이면 파일 URL 초기화
+                        useMessageStore.getState().setFileUrl(null);
                       }
                       setHoverOpen(false);
+                      setManualClose(true);
                     }}
                     className={`
                     ${idx !== 0 ? "border-t-1" : ""}
-                    border-gray-200 flex flex-row justify-between hover:bg-gray-100 cursor-pointer`}
+                    border-gray-200 flex flex-row justify-between hover:bg-gray-200 cursor-pointer`}
                   >
                     <div className="flex-1 message-content text-sm px-5 py-3">
                       {/* 메시지 내용 먼저 출력 */}

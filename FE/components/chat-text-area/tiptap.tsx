@@ -29,7 +29,7 @@ import { Extension } from "@tiptap/core";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LinkDialog } from "./LinkDialog";
 import { FileDownloadExtension } from "@/extensions/FileUploadExtension";
-import { ClipboardPlus, ClipboardX } from "lucide-react";
+import { ClipboardPlus, Clipboard, ClipboardX } from "lucide-react";
 import SaveMessages from "./SaveMessages";
 import { addSaveMessage } from "@/apis/saveMessageApi";
 import { useMyUserStore } from "@/store/myUserStore";
@@ -61,7 +61,6 @@ export function TipTap() {
 
   // 유저 id 불러오기
   const userId = useMyUserStore((state) => state.userId);
-
 
   // 링크 다이얼로그 상태
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
@@ -290,7 +289,7 @@ export function TipTap() {
   const addCurrentContent = () => {
     if (!editor || !workspaceId || !userId) return;
     const content = editor.getHTML();
-    if (!content.trim()) return;
+    if (!content.trim()) return; // 삭제해도 될 것 같음
     handleAddSaveMessage(content);
   };
 
@@ -301,17 +300,10 @@ export function TipTap() {
       <div className="chat-text-area border border-gray-300 rounded-[7px]">
         <input style={{ display: "none" }} />
         {/* 툴바 스켈레톤 */}
-        <div className="toolbar-container rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-[#f5f5f5]">
-          <div className="flex gap-2">
-            {/* 툴바 버튼 5개 정도 */}
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="w-9 h-9 rounded-md" />
-            ))}
-          </div>
-        </div>
+        <div className="toolbar-container h-[40px] mb-[5px] rounded-t-[7px] px-[15px] pt-[5px] pb-0 bg-slate-500"/>
         {/* 에디터 스켈레톤 */}
-        <div className="editor-container flex px-[15px] py-[10px]">
-          <Skeleton className="h-6 w-[20%] rounded-md" />
+        <div className="editor-container">
+          <Skeleton className="h-5 w-[20%] rounded-md" />
         </div>
       </div>
     );
@@ -341,13 +333,13 @@ export function TipTap() {
           {/* 저장 메시지 호버 카드 */}
           <SaveMessages workspaceId={workspaceId} editor={editor}>
             {/* 에디터가 빈 상태면 비활성화 */}
-            {editor?.getText().trim().length > 0 ? (
+            {!editor?.isEmpty ? (
               <ClipboardPlus
                 onClick={addCurrentContent}
-                className="mb-1.5 w-5.5 h-5.5 cursor-pointer text-blue-300"
+                className="mb-1.5 w-4 h-4 cursor-pointer text-gray-300 stroke-2 hover:text-yellow-500"
               />
             ) : (
-              <ClipboardPlus className="mb-1.5 w-5.5 h-5.5 cursor-default text-gray-400" />
+              <Clipboard className="mb-1.5 w-4 h-4 cursor-default text-gray-300 stroke-2 hover:text-yellow-500" />
             )}
           </SaveMessages>
         </div>

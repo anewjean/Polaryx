@@ -76,7 +76,9 @@ export function MemberModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="p-0 pt-2 gap-0 w-[30vw] max-w-md h-3/4 flex flex-col">
-        <DialogHeader className="p-4 flex flex-row items-center flex-none">
+        <DialogHeader className={`p-4 flex flex-row items-center flex-none ${
+          view != "members" && view != "groups" ? "border-b-[1px] border-gray-400 shadow-sm" : ""
+        }`}>
           {(view === "add-members" || view === "add-groups") && (
             <Button onClick={handleBack} variant="ghost" size="icon" className="mr-2">
               <ChevronLeft />
@@ -87,12 +89,12 @@ export function MemberModal({
 
         {(view === "members" || view === "groups") && (
           <div className="flex-none">
-            <Tabs value={view} onValueChange={(value) => setView(value as any)} className="w-full">
+            <Tabs value={view} onValueChange={(value) => setView(value as any)} className="w-full border-b-[1px] border-gray-400 shadow-sm">
               <TabsList>
-                <TabsTrigger value="members" className="text-sm font-bold">
+                <TabsTrigger value="members">
                   Members ({membersCount})
                 </TabsTrigger>
-                <TabsTrigger value="groups" className="text-sm font-bold">
+                <TabsTrigger value="groups">
                   Groups ({tabGroups.length})
                 </TabsTrigger>
               </TabsList>
