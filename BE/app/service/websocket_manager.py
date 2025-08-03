@@ -133,7 +133,12 @@ class ConnectionManager:
     async def broadcast_local(self, workspace_id: int, tab_id: int, message: str):
         """로컬 서버의 연결된 클라이언트들에게만 브로드캐스트"""
         connections = self.activate_connections.get(self.socket_type, {}).get(workspace_id, {}).get(tab_id, [])
-        for connection in connections[:]:
+        
+        ############ 이전에 set으로 만들어놔서 슬라이싱이 안됨 ##############
+        connection_list = list(connections)
+        ############### 그래서 리스트로 바꿔서 반복문 돌리기 ###############
+        # for connection in connections[:]:
+        for connection in connection_list:
             try:
                 await connection.send_text(message)
             except Exception:
