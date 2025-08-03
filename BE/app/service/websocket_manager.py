@@ -78,7 +78,7 @@ class ConnectionManager:
                     await self._close_websocket_safely(websocket)
             
             except Exception as e:
-                await self._force_cleanuup_websocket(websocket)
+                await self._force_cleanup_websocket(websocket)
     
     async def _safe_remove_connection(self, socket_type: str, workspace_id: int, tab_id: int, websocket: WebSocket) -> bool:
         """안전한 연결 제거 (KeyError 방지)"""
@@ -111,7 +111,7 @@ class ConnectionManager:
         except KeyError:
             pass # 이미 다른 서버에서 정리함
     
-    async def _colse_websocket_safely(self, websocket: WebSocket):
+    async def _close_websocket_safely(self, websocket: WebSocket):
         """웹소켓 안전한 종료"""
         if websocket.client_state.value in [1, 2]:
             await websocket.close()
@@ -120,7 +120,7 @@ class ConnectionManager:
         """강제 웹소켓 정리 (에러 발생 시 최후 수단)"""
         try:
             # 모든 연결에서 해당 Websocket 제거
-            for socket_type in list(self.active_connectoins.keys()):
+            for socket_type in list(self.active_connections.keys()):
                 for workspace_id in list(self.activate_connections[socket_type].keys()):
                     for tab_id in list(self.activate_connections[socket_type][workspace_id].keys()):
                         connections = self.activate_connections[socket_type][workspace_id][tab_id]
