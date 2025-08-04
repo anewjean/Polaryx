@@ -9,3 +9,4 @@ services:
     restart: always
     environment:
       - ENVIRONMENT=PROD
+      
