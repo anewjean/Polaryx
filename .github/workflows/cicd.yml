@@ -91,6 +91,63 @@ jobs:
           source: |
             docker-compose.frontend.yml
           target: /home/ec2-user
+      
+      # Backend 인스턴스는 private subnet에 위치하기 때문에 파일 복사가 안됨 (인터넷 통신이 안되기에).
+      # 그래서 docker.backend.yml 파일 생성 or S3에 올린 뒤 다운로드 받는 방식으로 진행해야 됨.
+      # 근데 파일 생성하는건 한번 해봤으니까, S3에 올리고, 다운받는 방식으로 설계해봄.
+      # 사실 docker-compose.backend.yml 파일은 ci/cd 매번 돌릴때마다 S3에 업로드하고, 다운로드 받는건 불필요함.
+      # 그래서 이 파일이 수정되었을때만 S3에 업로드하고, 다운로드 하도록 조건 달아줌.
+      
+      # 1. 파일 변경 감지
+      - name: Check if docker-compose file changed
+        id: check-changes
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...${{ github.head_ref }} | grep -q "docker-compose.backend.yml"; then
+            echo "file_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "file_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 2. 조건부 S3 업로드
+      - name: Upload docker-compose to S3 (if changed)
+        if: steps.check-changes.outputs.file_changed == 'true'
+        run: |
+          aws s3 rm s3://file-import-s3-bucket/docker-compose.backend.yml
+          echo "Old file removed from S3"
+          aws s3 cp docker-compose.backend.yml s3://file-import-s3-bucket/docker-compose.backend.yml
+          echo "File uploaded to S3"
+
+      # 3. 조건부 S3 다운로드
+      - name: Download docker-compose from S3 to Backend Server 1
+        if: steps.check-changes.outputs.file_changed == 'true'
+        uses: peterkimzz/aws-ssm-send-command@master
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance-ids: ${{ secrets.EC2_BACKEND_1_ID }}
+          working-directory: /home/ec2-user
+          command: |
+            rm -f /home/ec2-user/docker-compose.backend.yml
+            echo "Old file removed from server"
+            aws s3 cp s3://file-import-s3-bucket/docker-compose.backend.yml /home/ec2-user/docker-compose.backend.yml
+            echo "File downloaded from S3"
+
+      - name: Download docker-compose from S3 to Backend Server 2
+        if: steps.check-changes.outputs.file_changed == 'true'
+        uses: peterkimzz/aws-ssm-send-command@master
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          instance-ids: ${{ secrets.EC2_BACKEND_2_ID }}
+          working-directory: /home/ec2-user
+          command: |
+            rm -f /home/ec2-user/docker-compose.backend.yml
+            echo "Old file removed from server"
+            aws s3 cp s3://file-import-s3-bucket/docker-compose.backend.yml /home/ec2-user/docker-compose.backend.yml
+            echo "File downloaded from S3"
+
 
       - name: Deploy to Backend Server 1 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
@@ -100,12 +157,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: ${{ secrets.EC2_BACKEND_1_ID }}
-          working-directory: /root
+          working-directory: /home/ec2-user
           command: |
+            sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker compose -f docker-compose.yml pull
-            docker compose -f docker-compose.yml down
-            docker compose -f docker-compose.yml up -d
+            docker compose -f /home/ec2-user/docker-compose.backend.yml pull
+            docker compose -f /home/ec2-user/docker-compose.backend.yml down
+            docker compose -f /home/ec2-user/docker-compose.backend.yml up -d
             docker image prune -a -f
         
       - name: Deploy to Backend Server 2 via SSM
@@ -116,12 +174,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: ${{ secrets.EC2_BACKEND_2_ID }}
-          working-directory: /root
+          working-directory: /home/ec2-user
           command: |
+            sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            docker compose -f docker-compose.yml pull
-            docker compose -f docker-compose.yml down
-            docker compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.backend.yml pull
+            docker compose -f docker-compose.backend.yml down
+            docker compose -f docker-compose.backend.yml up -d
             docker image prune -a -f
           
       - name: Deploy to Frontend Server
