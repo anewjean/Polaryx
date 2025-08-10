@@ -118,13 +118,12 @@ async def auth_callback(provider: Provider, code: str, response:Response):
             )
 
             user = userinfo_res.json()
-
             # UUID 객체 생성. 객체명은 바로 바꿀거라 중요하지 않음.
             uuid_obj2 = uuid.uuid4()
             # 16바이트 바이너리로 변환
             refresh_token_uuid = uuid_obj2.bytes
 
-            data = {"user_email": user["email"], "user_provider_id": user["id"]}
+            data = {"user_email": user["email"], "user_provider_id": user["id"], "user_name": user["name"]}
 
             # 유저 처리 로직 넣기 (DB에 존재하는 유저인가?) #
             user_INdb = AuthService.find_db(data)
