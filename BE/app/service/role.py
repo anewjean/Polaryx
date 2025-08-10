@@ -42,6 +42,26 @@ class RoleService:
         
         return self.repo.bulk_insert_member_roles(member_roles_list)
 
+    def insert_member_roles(self, data: dict):
+        # 1. 모든 role 정보 가져오기 (role_id, role_name)
+        roles_data = self.repo.get_all_roles()  # [(1, 'Admin'), (2, 'Guest'), ...]
+        
+        # 2. role_name -> role_id 매핑 딕셔너리 생성
+        role_name_to_id = {role_name: role_id for role_id, role_name in roles_data}
+        
+        # 3. 
+        role_name = data.get("role_name")
+        
+        # role_name으로 role_id 찾기
+        if role_name in role_name_to_id:
+            role_id = role_name_to_id[role_name]
+            params = {
+                "user_id": data["user_id"],
+                "user_name": data["user_name"],
+                "role_id": role_id
+            }
+        self.repo.insert_member_roles(params)
+    
     def find_all(self, workspace_id: int) -> List[Role]:
         try:
             rows = self.repo.find_all(workspace_id)

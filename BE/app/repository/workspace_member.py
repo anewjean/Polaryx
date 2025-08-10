@@ -193,6 +193,9 @@ class QueryRepo(AbstractQueryRepo):
 
     def bulk_insert_workspace_member(self, data: dict):
         return self.db.execute_many(insert_workspace_member, data)
+    
+    def insert_workspace_member(self, data: dict):
+        return self.db.execute(insert_workspace_member, data)
 
     def find_by_email(self, email: str) -> WorkspaceMember:
         param = {

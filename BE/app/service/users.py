@@ -38,5 +38,5 @@ class UserService:
         # 한 번에 모든 사용자 삽입
         return user_repo.bulk_insert_users(user_list)
 
-
-                
+    def create_user(self, data: dict):
+        user_repo.insert_user(data)
