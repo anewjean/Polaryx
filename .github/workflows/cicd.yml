@@ -158,7 +158,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: ${{ secrets.EC2_BACKEND_1_ID }}
           working-directory: /home/ec2-user
-          command: |
+          commands: |
             sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             docker compose -f /home/ec2-user/docker-compose.backend.yml pull
@@ -175,7 +175,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           instance-ids: ${{ secrets.EC2_BACKEND_2_ID }}
           working-directory: /home/ec2-user
-          command: |
+          commands: |
             sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml
             aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             docker compose -f docker-compose.backend.yml pull
