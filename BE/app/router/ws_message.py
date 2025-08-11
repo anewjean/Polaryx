@@ -1,4 +1,5 @@
 import json
+import asyncio
 from fastapi import WebSocket, WebSocketDisconnect
 from fastapi import APIRouter
 from datetime import datetime
@@ -29,6 +30,9 @@ tab_service = TabService()
 push_service = PushService()
 notification_service = NotificationService()
 
+# 사용자 정보 캐시 (메모리 캐시)
+user_cache = {}
+
 
 
 
@@ -40,7 +44,6 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
 
     try:
         while True:
-            print("************* in ws endpoint, while **************")
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
             type = data.get("type")
@@ -49,11 +52,31 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
                 content = data.get("content")
                 file_data = data.get("file_url")
 
-                workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
-                nickname = workspace_member[0][2]
-                image = workspace_member[0][4]
+                # 사용자 정보 캐시 확인 (DB 조회 최소화)
+                if sender_id not in user_cache:
+                    workspace_member = workspace_member_service.get_member_by_user_id(uuid.UUID(sender_id).bytes)
+                    user_cache[sender_id] = {
+                        "nickname": workspace_member[0][2],
+                        "image": workspace_member[0][4]
+                    }
+                
+                user_info = user_cache[sender_id]
+                nickname = user_info["nickname"]
+                image = user_info["image"]
 
-                message_id = await message_service.save_message(tab_id, sender_id, content, file_data)
+                # 임시 ID로 즉시 응답, 실제 저장은 백그라운드에서 처리
+                temp_message_id = f"temp_{int(datetime.now().timestamp() * 1000)}"
+                
+                # 백그라운드에서 DB 저장 처리 (UI 블로킹 없음)
+                async def save_message_background():
+                    try:
+                        real_message_id = await message_service.save_message(tab_id, sender_id, content, file_data)
+                        # 필요시 실제 ID로 업데이트 브로드캐스트 가능
+                    except Exception as e:
+                        print(f"메시지 저장 에러: {e}")
+                
+                asyncio.create_task(save_message_background())
+                message_id = temp_message_id
                 payload = {
                     "type": "send",
                     "file_url": file_data,
@@ -81,8 +104,6 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: int, tab_id: in
             else:  # 수정한 메세지 broadcast
                 message_id = (data.get("msg_id"))
                 content = data.get("content")
-                print("content: ", content)
-                print("message_id: ", message_id)
 
                 payload = {
                     "type": "edit",
@@ -101,7 +122,6 @@ async def websocket_endpoint_like(websocket: WebSocket, workspace_id: int, tab_i
     await like_connection.connect(socket_type, workspace_id, tab_id, websocket)
     try:
         while True:
-            print("********* in ws like endpoint, while **********")
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
 
@@ -137,7 +157,6 @@ async def websocket_endpoint_profile(websocket: WebSocket, workspace_id: int, ta
     await profile_connection.connect(socket_type, workspace_id, tab_id, websocket)
     try:
         while True:
-            print("********* in ws profile endpoint, while **********")
             raw_data = await websocket.receive_text()
             data = json.loads(raw_data)
 
