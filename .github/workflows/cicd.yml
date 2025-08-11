@@ -160,12 +160,14 @@ jobs:
           working-directory: /home/ec2-user
           command: >-
             sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml &&
-            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} &&
-            sudo -u ec2-user docker compose -f /home/ec2-user/docker-compose.backend.yml pull &&
-            sudo -u ec2-user docker compose -f /home/ec2-user/docker-compose.backend.yml down &&
-            sudo -u ec2-user docker compose -f /home/ec2-user/docker-compose.backend.yml up -d &&
-            docker image prune -a -f
-        
+            sudo -u ec2-user bash -c "
+              aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} &&
+              docker compose -f /home/ec2-user/docker-compose.backend.yml pull &&
+              docker compose -f /home/ec2-user/docker-compose.backend.yml down &&
+              docker compose -f /home/ec2-user/docker-compose.backend.yml up -d &&
+              docker image prune -a -f
+            "
+            
       - name: Deploy to Backend Server 2 via SSM
         uses: peterkimzz/aws-ssm-send-command@master
         id: ssm2
@@ -177,11 +179,13 @@ jobs:
           working-directory: /home/ec2-user
           command: >-
             sudo chown ec2-user:ec2-user /home/ec2-user/docker-compose.backend.yml &&
-            aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} &&
-            sudo -u ec2-user docker compose -f docker-compose.backend.yml pull &&
-            sudo -u ec2-user docker compose -f docker-compose.backend.yml down &&
-            sudo -u ec2-user docker compose -f docker-compose.backend.yml up -d &&
-            docker image prune -a -f
+            sudo -u ec2-user bash -c "
+              aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }} &&
+              docker compose -f docker-compose.backend.yml pull &&
+              docker compose -f docker-compose.backend.yml down &&
+              docker compose -f docker-compose.backend.yml up -d &&
+              docker image prune -a -f
+            "
           
       - name: Deploy to Frontend Server
         uses: appleboy/ssh-action@master
