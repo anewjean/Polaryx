@@ -65,3 +65,8 @@ class QueryRepo(AbstractQueryRepo):
 
     def bulk_insert_users(self, user_list: list):
         return self.db.execute_many(insert_user, user_list)
+
+    def insert_user(self, user_data: dict):
+        self.db.execute(insert_user, user_data)
+        print("ok")
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")

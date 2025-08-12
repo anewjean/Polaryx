@@ -154,12 +154,7 @@ class QueryRepo(AbstractQueryRepo):
         return self.db.execute_many(bulk_insert_member_roles, member_roles_list)
 
     def insert_member_roles(self, data: dict):
-        params = {
-            "user_id": data["user_id"],
-            "user_name": data["nickname"],
-            "role_name": data["role"]
-        }
-        return self.db.execute(insert_member_roles, params)
+        return self.db.execute(insert_member_roles, data)
     
     # 수정해야함
     def find_all(self, workspace_id: int):
