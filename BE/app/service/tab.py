@@ -12,6 +12,8 @@ connection = ConnectionManager()
 message_service = MessageService()
 
 class TabService:
+    DEFAULT_TAB_IDS: tuple[int, ...] = tuple(range(1, 15))
+    
     def __init__(self):
         self.repo = TabRepository()
 
@@ -69,6 +71,9 @@ class TabService:
 
         return row
     
+    def add_member_to_default_tabs(self, workspace_id: int, user_id: str) -> int:
+        self.repo.insert_member_to_tabs(workspace_id, self.DEFAULT_TAB_IDS, user_id)
+
     async def exit_tab(self, workspace_id: int, tab_id: int, user_ids: List[str]):
         users = self.repo.exit_members(workspace_id, tab_id, user_ids)
         users.sort()

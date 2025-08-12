@@ -3,7 +3,7 @@ from app.util.database.db_factory import DBFactory
 from app.repository.auth.mysql_query_repo import QueryRepo
 from jose import jwt, ExpiredSignatureError
 from app.config.config import settings
-
+from app.service.workspace_member import WorkspaceMemberService
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = "HS256"
@@ -11,11 +11,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 REFRESH_TOKEN_EXPIRE_MINUTES = settings.REFRESH_TOKEN_EXPIRE_MINUTES
 
 db = DBFactory.get_db("MYSQL")
+workspace_member_service = WorkspaceMemberService()
 query_repo = QueryRepo()
 
 class AuthService:
 
-    def find_db(data):        
+    def find_db(data):  
         params = {"user_email": data["user_email"], 
                   "user_provider_id": data["user_provider_id"], 
                   }
@@ -24,11 +25,14 @@ class AuthService:
         sql = query_repo.get_sql("find_user_by_email")
         result = db.execute(sql, {"user_email": data["user_email"]})
 
-        # 만약 email과 일치하는 회원이 없다면 바로 짤.
         if not result:
-            print("\n\n email과 일치하는 회원이 없다.")
-            return None
-        
+            # 만약 email과 일치하는 회원이 없다면 게스트로 등록
+            data["user_name"] = data["user_name"]
+            data["role_id"] = 4
+            workspace_id = 1
+            workspace_member_service.register_guest(workspace_id, data)
+            result = db.execute(sql, {"user_email": data["user_email"]})
+            
         # email을 통해 데이터를 찾아오긴 했지만,
         # provider_id 가 존재하지 않는 경우, 즉 처음으로 로그인 했을 때,
         if not result[0][4]:
@@ -46,8 +50,6 @@ class AuthService:
         sql = query_repo.get_sql("find_user_by_provider_id_and_email")
         result = db.execute(sql, params)
         return result
-
-        
 
 
     
