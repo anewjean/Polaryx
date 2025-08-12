@@ -70,9 +70,9 @@ app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)
 
-
-
-
+@app.get("/api/health")
+async def health_check():
+    return {"status": "healthy", "message": "Service is running"}
 
 
 
