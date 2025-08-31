@@ -416,3 +416,12 @@ class TabRepository(AbstractQueryRepo):
             "updated_at": datetime.now()
         }
         self.db.execute(update_tab_name, param)
+    
+    def insert_member_to_tabs(self, workspace_id: int, tab_ids: tuple[int], user_id: str):
+        for tab_id in tab_ids:  
+            param = {
+                "workspace_id": workspace_id,
+                "tab_id": tab_id,
+                "user_id": user_id 
+            }
+            self.db.execute(insert_tab_members, param)
