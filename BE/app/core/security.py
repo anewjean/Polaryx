@@ -22,8 +22,6 @@ def is_token_expired(token: str) -> bool:
         return False
     except ExpiredSignatureError:
         return True
-    except JWTError:
-        return False
     
 def is_token_bad(token: str) -> bool:
     """토큰 유효성 확인"""
