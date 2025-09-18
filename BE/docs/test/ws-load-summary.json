@@ -1,0 +1,175 @@
+{
+  "root_group": {
+    "checks": [
+      {
+        "name": "status is 101",
+        "path": "::status is 101",
+        "id": "b26b36ccbc717178372f638aae5b6111",
+        "passes": 15587,
+        "fails": 11
+      }
+    ],
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": []
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  },
+  "state": {
+    "isStdOutTTY": true,
+    "isStdErrTTY": true,
+    "testRunDurationMs": 3144443.777
+  },
+  "metrics": {
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 1081.4742517173916,
+        "min": 1031.183791,
+        "med": 1056.8892085,
+        "max": 8760.820917,
+        "p(90)": 1090.8943793,
+        "p(95)": 1127.3797375
+      }
+    },
+    "ws_session_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 79.83569889492242,
+        "min": 30.284875,
+        "med": 56.165417000000005,
+        "max": 7760.50275,
+        "p(90)": 87.01903750000001,
+        "p(95)": 119.27437234999996
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 287,
+        "value": 21,
+        "min": 19
+      }
+    },
+    "ws_connecting": {
+      "contains": "time",
+      "values": {
+        "max": 7760.48375,
+        "p(90)": 65.1917001,
+        "p(95)": 89.60589554999997,
+        "avg": 61.97498691518161,
+        "min": 22.168084,
+        "med": 40.8457085
+      },
+      "type": "trend"
+    },
+    "connect_latency": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 1083.8497465836915,
+        "min": 22,
+        "med": 41,
+        "max": 1049094,
+        "p(90)": 65,
+        "p(95)": 89.6999999999993
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.9992947813822285,
+        "passes": 15587,
+        "fails": 11
+      }
+    },
+    "ws_msgs_sent": {
+      "contains": "default",
+      "values": {
+        "count": 15695,
+        "rate": 4.991343815653791
+      },
+      "type": "counter"
+    },
+    "ws_msg_out_total": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 15695,
+        "rate": 4.991343815653791
+      }
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 400,
+        "min": 400,
+        "max": 400
+      }
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 15598,
+        "rate": 4.960495752568834
+      }
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 10117100,
+        "rate": 3217.4529797611326
+      }
+    },
+    "ws_connect_total": {
+      "values": {
+        "count": 15587,
+        "rate": 4.956997518610746
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "ws_error_total": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 15587,
+        "rate": 4.956997518610746
+      }
+    },
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 43985105,
+        "rate": 13988.198905551619
+      }
+    },
+    "ws_sessions": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 15598,
+        "rate": 4.960495752568834
+      }
+    }
+  }
+}
